@@ -27,7 +27,7 @@ public class AuthController extends BaseController {
     }
 
     //Api Login
-    @GetMapping
+    @GetMapping(value = "/login")
     public JwtResponse login(@RequestParam String username, @RequestParam String password) {
         if (username == null || username.isEmpty()) {
             throw new ErrorException("Username không được để trống!");
