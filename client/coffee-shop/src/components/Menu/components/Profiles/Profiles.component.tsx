@@ -53,8 +53,8 @@ const Profiles = (props: ProfilesProps) => {
             onClick={() => setOpen((prev) => !prev)}
             id="menu-user-profiles"
           >
-            <Avatar size="32" round="20px" name={authState.user?.fullName} color="green" md5Email={md5Email} />
-            <ListItemText primary={authState.user?.fullName} classes={{ root: classes.profileName }} />
+            <Avatar size="32" round="20px" name={authState.user?.name} color="green" md5Email={md5Email} />
+            <ListItemText primary={authState.user?.name} classes={{ root: classes.profileName }} />
             <ExpandMoreIcon className="icon-collapse" />
           </ListItem>
           {open && (

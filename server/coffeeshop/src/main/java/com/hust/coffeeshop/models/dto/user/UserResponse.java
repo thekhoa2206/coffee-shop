@@ -17,11 +17,11 @@ public class UserResponse extends BaseResponse {
     private String email;
     private Date dob;
     private String status;
-    private List<RoleResponse> roles;
+    private List<RoleResponse> roleResponses;
 
     @Getter
     @Setter
-    public class RoleResponse extends BaseResponse{
+    public static class RoleResponse extends BaseResponse{
         private String code;
         private String name;
         private String status;

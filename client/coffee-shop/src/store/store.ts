@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import themeReducer from "./Theme/themeSlice";
 import authenticateReducer from "./Authenticate/authenticateSlice";
 import menuReducer from "./Menu/menuSlice";
-import storeContextReducer from "./StoreContext/storeSlice";
 const rootReducerConfig = {
   key: "frontend-root",
   storage,
@@ -16,7 +15,6 @@ const rootReducerConfig = {
 const reducers = combineReducers({
   theme: themeReducer,
   application: applicationReducer,
-  storeContext: storeContextReducer,
   auth: authenticateReducer,
   menu: menuReducer,
 });

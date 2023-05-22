@@ -1,5 +1,5 @@
-import { CustomerResponse } from "services/OrdersService";
-import { StoreContext } from "store/StoreContext/types";
+import { CustomerResponse } from "services/PartnerService";
+
 
 export type DialogAddCustomerProps = {
     id?: string;
@@ -7,5 +7,4 @@ export type DialogAddCustomerProps = {
     onClose: () => void;
     customer?: CustomerResponse;
     initData?: (customer?: CustomerResponse) => void;
-    storeContext?: StoreContext;
   }

@@ -27,104 +27,31 @@ const useGenMenuData = () => {
     };
     return menu;
   };
-  const genMenuOrder = () => {
-    let menu: MenuItem = {
-      id: "order",
-      icon: MenuOrderIcon,
-      title: "Đơn hàng",
-      subMenus: [],
-      path: "/admin/orders",
-    };
-    menu.subMenus = [
-      {
-        title: "Tạo đơn hàng",
-        path: "/admin/orders/create",
-        typeRoute: "default",
-      },
-      {
-        title: "Danh sách đơn hàng",
-        path: "/admin/orders",
-        includePaths: ["/admin/orders/:id"],
-        excludePaths: ["/admin/orders/create"],
-        typeRoute: "default",
-      },
-    ];
 
-    return menu;
-  };
-  const genMenuAccount = () => {
+  const genMenuCustomer = () => {
     let menu: MenuItem = {
-      id: "account",
+      id: "customer",
       icon: AccountSettingIcon,
-      title: "Nhân viên",
+      title: "Khách hàng",
       subMenus: [],
-      path: "/admin/accounts",
+      path: "/admin/customers",
     };
     menu.subMenus = [
-      {
-        title: "Tạo nhân viên",
-        path: "/admin/accounts/create",
-        typeRoute: "default",
-      },
-      {
-        title: "Nhân viên",
-        path: "/admin/accounts",
-        includePaths: ["/admin/accounts/:id"],
-        excludePaths: ["/admin/accounts/create"],
-        typeRoute: "default",
-      },
-    ];
-
-    return menu;
-  };
-
-  const genMenuPartner = () => {
-    let menu: MenuItem = {
-      id: "partner",
-      icon: AccountSettingIcon,
-      title: "Đối tác",
-      subMenus: [],
-      path: "/admin/partners",
-    };
-    menu.subMenus = [
-      {
-        title: "Cửa hàng",
-        path: "/admin/stores",
-        typeRoute: "default",
-      },
       {
         title: "Khách hàng",
-        path: "/admin/partners",
+        path: "/admin/customers",
         typeRoute: "default",
       },
     ];
-    if(!hasPermission([AccountRole.ADMIN, AccountRole.STAFF], auth.user)){
-      menu.subMenus = menu.subMenus.filter((item) => item.path !== "/admin/stores");
-    }
     return menu;
   };
 
-  const genMenuInfoUser = () => {
-    let menu: MenuItem = {
-      id: "userInfo",
-      icon: UserIcon,
-      title: "Thông tin cá nhân",
-      subMenus: [],
-      path: "/admin/information",
-    };
-    return menu;
-  };
 
 
   const genMenuData = () => {
     let listMenu: MenuItem[] = [];
     listMenu.push(genMenuDashboard());
-    listMenu.push(genMenuOrder());
-    if(hasPermission([AccountRole.ADMIN, AccountRole.STAFF], auth.user)){
-      listMenu.push(genMenuAccount());
-    }
-    listMenu.push(genMenuPartner());
-    listMenu.push(genMenuInfoUser());
+    listMenu.push(genMenuCustomer());
     return listMenu;
   };
   const genSapoMenu = async () => {

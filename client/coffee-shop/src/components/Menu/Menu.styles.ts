@@ -35,7 +35,8 @@ const useStyles = makeStyles((theme: Theme) =>
         top: 0,
         bottom: 0,
         left: 0,
-        backgroundColor: "#0b0f10",
+        //Màu nên của menu
+        backgroundColor: "#2e0303",
         "& .menuTopHeader": {
           height: 55,
           // borderBottom: "1px solid #15202c",

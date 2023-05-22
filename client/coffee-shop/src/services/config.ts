@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from "axios";
 import qs from "qs";
 import { getCookie } from "utilities";
 
-export const REACT_APP_API_BASE_URL = `http://localhost:8086/admin`;
+export const REACT_APP_API_BASE_URL = `http://localhost:8888/api`;
 export const getAxiosConfig = (): AxiosRequestConfig => {
     let jwt = getCookie("jwt");
     return {

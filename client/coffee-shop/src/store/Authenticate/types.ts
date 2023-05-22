@@ -1,8 +1,8 @@
-import { AccountResponse } from "services/types";
+import { UserResponse } from "services/types";
 
 export interface AuthState {
     isAuthenticated: boolean;
-    user: AccountResponse;
+    user: UserResponse;
     errorType?: string;
     error?: Error;
     loadingAuth?: boolean;

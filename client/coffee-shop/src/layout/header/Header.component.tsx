@@ -84,9 +84,9 @@ function Header(props: HeaderProps) {
               className={`${anchorEl !== null ? "open" : ""} ${classes.helper} ${classes.info}`}
               onClick={showUserOptions}
             >
-              <Avatar size="30" round="20px" name={authState.user?.fullName} md5Email={md5Email} maxInitials={1} />
+              <Avatar size="30" round="20px" name={authState.user?.name} md5Email={md5Email} maxInitials={1} />
               <Typography color="textPrimary" className={classes.userName}>
-                {authState.user?.fullName}
+                {authState.user?.name}
               </Typography>
               <KeyboardArrowDownIcon className="arrow-avatar" />
               <UserOptionsPopoverComponent

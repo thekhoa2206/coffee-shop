@@ -38,8 +38,8 @@ export const Login = (props: LoginProps) => {
         password: password,
       });
       if (res != null) {
-        if (res.data.JwtResponse.token) {
-          let jwt = res.data.JwtResponse.token;
+        if (res.data.token) {
+          let jwt = res.data.token;
           setCookie("jwt", jwt, {
             path: "/",
             expires: new Date(Date.now() + 7200 * 1000),

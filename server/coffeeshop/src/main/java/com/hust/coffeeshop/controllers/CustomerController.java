@@ -1,9 +1,11 @@
 package com.hust.coffeeshop.controllers;
 
+import com.hust.coffeeshop.configuration.jwt.JwtProvider;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.customer.CustomerFilterRequest;
 import com.hust.coffeeshop.models.dto.customer.CustomerRequest;
 import com.hust.coffeeshop.models.dto.customer.CustomerResponse;
+import com.hust.coffeeshop.models.repository.UserRepository;
 import com.hust.coffeeshop.services.CustomerService;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +13,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/customer")
 public class CustomerController extends BaseController{
     private final CustomerService customerService;
+    private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
 
-
-    public CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService, UserRepository userRepository, JwtProvider jwtProvider) {
+        super(userRepository, jwtProvider);
         this.customerService = customerService;
+        this.userRepository = userRepository;
+        this.jwtProvider = jwtProvider;
     }
 
     @GetMapping("/{id}")
