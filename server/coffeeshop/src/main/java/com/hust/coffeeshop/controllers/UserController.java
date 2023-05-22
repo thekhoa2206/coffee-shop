@@ -2,10 +2,12 @@ package com.hust.coffeeshop.controllers;
 
 import com.hust.coffeeshop.models.exception.BaseException;
 import com.hust.coffeeshop.models.exception.ErrorException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController(value = "/api/user")
+@CrossOrigin("http://localhost:3000")
 public class UserController extends BaseException {
     @GetMapping("/test")
     public String test(){

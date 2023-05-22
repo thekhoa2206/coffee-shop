@@ -2,6 +2,7 @@ package com.hust.coffeeshop.controllers;
 
 import com.hust.coffeeshop.configuration.jwt.JwtProvider;
 import com.hust.coffeeshop.models.dto.security.JwtResponse;
+import com.hust.coffeeshop.models.dto.user.UserResponse;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.UserRepository;
 import lombok.val;
@@ -10,11 +11,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController(value = "/api")
+@RestController
+@RequestMapping(value = "/api")
+@CrossOrigin("http://localhost:3000")
 public class AuthController extends BaseController {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
@@ -52,6 +53,11 @@ public class AuthController extends BaseController {
         val jwtData = new JwtResponse();
         jwtData.setToken(jwt);
         return jwtData;
+    }
+
+    @GetMapping(value = "/profiles")
+    public UserResponse getProfile(@RequestParam String username, @RequestParam String password) {
+        return null;
     }
 
 }
