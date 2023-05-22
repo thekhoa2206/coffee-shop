@@ -1,0 +1,88 @@
+{
+  "index": {
+    "title": "Danh sách đơn trả hàng",
+    "name": "đơn trả hàng",
+    "btnCreate": "Tạo đơn trả hàng",
+    "placeHolderSearch": "Tìm kiếm theo mã đơn hàng, đơn trả, tên, số điện thoại KH",
+    "placeHolderSearchOrder": "Tìm kiếm theo mã đơn hàng, tên, SĐT khách hàng",
+    "fistScreen": {
+      "contentFirst": "Cửa hàng của bạn chưa có đơn trả hàng nào",
+      "contentLast": "Tất cả đơn trả hàng của bạn sẽ được quản lý tại đây!"
+    },
+    "tab": {
+      "allOrderReturn": "Tất cả đơn trả",
+      "unReceive": "Chưa nhận hàng",
+      "unPaid": "Chưa hoàn tiền"
+    },
+    "column": {
+      "code": "Mã đơn trả hàng",
+      "orderCode": "Mã đơn hàng",
+      "customerName": "Khách hàng",
+      "status": "Trạng thái",
+      "refundStatus": "Hoàn tiền",
+      "totalAmount": "Tổng tiền",
+      "receivedOn": "Ngày nhận hàng",
+      "reason": "Lý do trả hàng",
+      "otherLocationOrderReturn": "Hình thức trả hàng",
+      "location": "Chi nhánh",
+      "account": "Nhân viên tạo phiếu",
+      "modifiedOn": "Ngày cập nhật cuối",
+      "orderReturn": "Đơn trả"
+    },
+    "otherLocationOrderReturn": {
+      "location": "Trả hàng đúng kho",
+      "otherLocation": "Trả hàng khác kho"
+    },
+    "otherFilter": {
+      "title": "Bộ lọc khác"
+    },
+    "fieldsExport": {
+      "titleOrderReturnInfo": "Thông tin đơn trả",
+      "titleCustomerInfo": "Thông tin khách hàng",
+      "orderReturnCode": "Mã đơn trả hàng",
+      "orderCode": "Mã đơn hàng",
+      "status": "Trạng thái",
+      "issuedOn": "Ngày chứng từ",
+      "receivedOn": "Ngày nhận hàng",
+      "customerName": "Tên khách hàng",
+      "address": "Địa chỉ",
+      "paidOn": "Ngày thanh toán",
+      "sku": "Mã SKU",
+      "variantName": "Tên sản phẩm",
+      "quantity": "Số lượng",
+      "totalAmount": "Tổng tiền trả hàng",
+      "email": "Email",
+      "reason": "Lý do trả hàng",
+      "otherLocationOrderReturn": "Hình thức trả hàng",
+      "location": "Chi nhánh",
+      "note": "Ghi chú",
+      "reference": "Tham chiếu",
+      "phoneNumber": "Số điện thoại",
+      "interConnectionStatus": "Trạng thái liên thông dược"
+    },
+    "exportFile": {
+      "allOrder": "Tất cả đơn hàng",
+      "inpage": "Đơn hàng trên trang này",
+      "searchOrder": " đơn hàng phù hợp với kết quả tìm kiếm hiện tại"
+    },
+    "dialogSelectOrder": {
+      "title": "Chọn đơn hàng để trả",
+      "notFound": "Không tìm thấy đơn hàng phù hợp",
+      "column": {
+        "orderCode": "Mã đơn hàng",
+        "createdOn": "Ngày tạo",
+        "assignee": "Nhân viên",
+        "customer": "Khách hàng",
+        "totalMoney": "Tổng tiền",
+        "action": "Thao tác",
+        "returnExchange": "Đổi trả"
+      }
+    },
+    "bulkAction": {
+      "fail": "Đơn trả hàng duyệt không thành công",
+      "success": "Đơn trả hàng duyệt thành công",
+      "acceptPostInterconnectionPharmacy": "Bạn có muốn xác nhận liên thông {{quantity}} đơn trả hàng đã chọn?",
+      "interconnectionOrder": "Liên thông đơn trả hàng"
+    }
+  }
+}

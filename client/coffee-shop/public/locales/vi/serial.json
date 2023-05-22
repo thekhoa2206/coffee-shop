@@ -1,0 +1,36 @@
+{
+  "name": "Sản phẩm Serial/IMEI",
+  "firstScreen": {
+    "noSerial": "Cửa hàng của bạn chưa có sản phẩm Serial/IMEI",
+    "addSerial": "Tạo sản phẩm Serial/IMEI "
+  },
+  "index": {
+    "filter": {
+      "tabAll": "Tất cả Serial/IMEI",
+      "searchPlaceholder": "Tìm theo mã Serial/IMEI"
+    },
+    "column": {
+      "label": "Mã Serial/IMEI",
+      "product": "Sản phẩm",
+      "variant": "Phiên bản sản phẩm",
+      "status": "Trạng thái",
+      "location": "Chi nhánh",
+      "category": "Loại sản phẩm",
+      "brand": "Nhãn hiệu",
+      "createdOn": "Ngày tạo",
+      "modifiedOn": "Cập nhật cuối",
+      "salePrice":  "Giá bán lẻ",
+      "whosalessPrice": "Giá bán buôn",
+      "importPrice":  "Giá nhập",
+      "taxable": "Áp dụng thuế"
+    },
+    "exportFile": {
+      "serial": "Serial/IMEI",
+      "selectAll": "Chọn tất cả",
+      "exportAll" : "Tất cả mã Serial/IMEI",
+      "currentPage": "Tất cả mã Serial/IMEI trên trang này",
+      "currentSearch": "Mã Serial/IMEI phù hợp với kết quả tìm kiếm hiện tại"
+    },
+    "settingColumnTitle": "Điều chỉnh cột hiển thị trên trang danh sách"
+  }
+}

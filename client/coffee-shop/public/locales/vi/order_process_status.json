@@ -1,0 +1,43 @@
+{
+  "page": {
+    "title": "Trạng thái xử lý đơn hàng",
+    "description": "Áp dụng những trạng thái xử lý khác của đơn hàng theo quy định riêng của cửa hàng",
+    "name": "Trạng thái xử lý",
+    "note": "Ghi chú",
+    "orderStatus": "Trạng thái đơn hàng",
+    "status": "Áp dụng cho cửa hàng",
+    "active": "Đang áp dụng",
+    "inactive": "Ngừng áp dụng"
+  },
+  "button": {
+    "create": "Thêm trạng thái xử lý"
+  },
+  "orderStatus": {
+    "draft": "Đặt hàng",
+    "finalized": "Đang giao dịch",
+    "finished": "Kết thúc",
+    "completed": "Hoàn thành",
+    "cancelled": "Đã hủy"
+  },
+  "Dialog": {
+    "titleUpdate": "Cập nhật trạng thái đơn hàng",
+    "titleCreate": "Thêm trạng thái đơn hàng",
+    "titleDelete": "Xóa trạng thái xử lý đơn hàng",
+    "placeholderName": "Nhập tên trạng thái",
+    "placeholderNote": "Nhập ghi chú",
+    "name": "Tên trạng thái",
+    "note": "Ghi chú",
+    "orderStatus": "Trạng thái đơn hàng",
+    "status": "Áp dụng cho cửa hàng",
+    "deleteFirst": "Bạn có chắc chắn muốn xóa trạng thái",
+    "deleteLast": "? Thao tác này không thể khôi phục."
+  },
+  "firstScreen": {
+    "noRecord": "Cửa hàng của bạn chưa có trạng thái xử lý đơn hàng nào"
+  },
+  "validate": {
+    "nameNotNull": "Tên trạng thái không được để trống",
+    "nameTooLong": "Tên trạng thái không được vượt quá 255 ký tự",
+    "noteTooLong": "Ghi chú không được vượt quá 255 ký tự"
+  }
+}

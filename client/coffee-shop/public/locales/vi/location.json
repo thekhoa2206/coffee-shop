@@ -1,0 +1,75 @@
+{
+  "actionLog": {
+    "title": "Thông tin chi nhánh",
+    "createdOn": "Ngày tạo chi nhánh",
+    "label": "Tên chi nhánh",
+    "phoneNumber": "Số điện thoại",
+    "code": "Mã chi nhánh",
+    "zipCode": "Mã bưu điện",
+    "isPrimary": {
+      "title": "Chi nhánh mặc định",
+      "yes": "Có",
+      "no": "Không"
+    },
+    "address1": "Địa chỉ 1",
+    "city": "Tỉnh/Thành phố",
+    "district": "Quận/Huyện",
+    "ward": "Phường xã",
+    "address2": "Địa chỉ 2"
+  },
+  "table":{
+    "label": "Tên chi nhánh",
+    "code": "Mã CN",
+    "address": "Địa chỉ",
+    "area": "Khu vực",
+    "endDate": "Ngày hết hạn",
+    "status" : "Trạng thái",
+    "isDefault": "CN mặc định",
+    "emptyData": "Chưa có dữ liệu về chi nhánh",
+    "helpText" : "Thử thêm chi nhánh mới"
+  },
+  "status":{
+    "active": "Đang hoạt động",
+    "locked": "Đã bị khóa"
+  },
+  "button":{
+    "addLocationButton": "Thêm chi nhánh",
+    "connectGMB": "Kết nối Google My Business"
+  },
+  "locationPage":{
+    "title" : "Quản lý chi nhánh"
+  },
+  "dialogLocation":{
+    "addLocation" : "Thêm chi nhánh",
+    "updateLocation": "Cập nhật thông tin chi nhánh",
+    "name": "Tên",
+    "placeHolderName": "Nhập tên chi nhánh",
+    "phone": "Số điện thoại",
+    "placeHoderPhone": "Nhập số điện thoại",
+    "address1":"Địa chỉ 1",
+    "placeHoderAddress":"Nhập số nhà, tên đường,...",
+    "address2":"Địa chỉ 2",
+    "area":"Khu vực",
+    "ward":"Phường xã",
+    "code":"Mã chi nhánh",
+    "placeHoderCode":"Nhập mã chi nhánh",
+    "zipCode":"Mã bưu điện",
+    "placeHoderZipCode":"Nhập mã bưu điện",
+    "isPrimary": {
+      "title": "Chi nhánh mặc định",
+      "yes": "Có",
+      "no": "Không"
+    },
+    "notiAddLocationSuccess":"Thêm chi nhánh thành công",
+    "notiUpdateLocationSuccess":"Chỉnh sửa chi nhánh thành công",
+    "invalidPhoneNumberValidate": "Số điện thoại không đúng định dạng",
+    "requirePhoneNumberValidate": "Số điện thoại không đúng định dạng",
+    "labelValidate": "Tên chi nhánh không được để trống",
+    "labelLenghtValidate": "Tên chi nhánh không được vượt quá 255 kí tự",
+    "notiReuireAddress": "Địa chỉ không được để trống",
+    "cityDistricValidate": "Khu vực không được để trống",
+    "wardValidate": "Phường xã không được để trống",
+    "codeValidate": "Mã chi nhánh không được vượt quá 50 kí tự  ",
+    "theFirtAddressValidate": "Địa chỉ không được vượt quá 255 kí tự"
+  }
+}

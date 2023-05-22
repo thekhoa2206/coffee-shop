@@ -1,0 +1,10 @@
+{
+  "filter": {
+    "fields": {
+      "createdOn": "Ngày tạo",
+      "supplier": "Nhà cung cấp",
+      "account": "Nhân viên",
+      "product": "Sản phẩm"
+    }
+  }
+}

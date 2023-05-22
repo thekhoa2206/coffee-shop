@@ -1,0 +1,35 @@
+{
+    "InformationPage": {
+        "title": "Thông tin cửa hàng",
+        "backToSetting": "Quay lại Cấu hình",
+        "contact": "Thông tin liên hệ",
+        "address": "Địa chỉ cửa hàng",
+        "account": "Thông tin tài khoản",
+        "informationContact": "Thông tin được sử dụng để Sapo và khách hàng liên hệ đến bạn",
+        "addressStore": "Thông tin được sử dụng trong các thông báo về cửa hàng và địa chỉ để liên hệ đến cửa hàng",
+        "informationAccount": "Các thông tin về tài khoản của cửa hàng trên Sapo",
+        "name": "Tên cửa hàng",
+        "email": "Địa chỉ email",
+        "phone": "Số điện thoại",
+        "fax": "Số fax",
+        "industry": "Lĩnh vực kinh doanh",
+        "address1": "Địa chỉ",
+        "address2": "Địa chỉ 2",
+        "cityDistrict": "Khu vực",
+        "ward": "Phường/Xã",
+        "addressLogin": "Địa chỉ đăng nhập",
+        "createdOn": "Ngày tạo",
+        "expirationDate": "Ngày hết hạn",
+        "uploadImage": "Upload ảnh logo cửa hàng",
+        "detailUpload": "Dung lượng tối đa ảnh tải lên là 2MB",
+        "typeFile": "(.PNG .JPG .JPEG .GIF)"
+    },
+    "DialogConvertIndustry":{
+        "title": "Đổi lĩnh vực kinh doanh sang Nhà thuốc",
+        "content":"Bạn có chắc chắn muốn đổi sang lĩnh vực kinh doanh Nhà thuốc. Hệ thống sẽ có thêm những nghiệp vụ liên thông với hệ thống Dược Quốc gia và bạn sẽ không thể chuyển sang lĩnh vực khác"
+    },
+    "buttonHeader": {
+        "save": "Lưu",
+        "agree": "Đồng ý"
+    }
+}

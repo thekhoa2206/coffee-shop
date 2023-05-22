@@ -1,0 +1,127 @@
+{
+  "AccountPage": {
+    "title": "Danh sách nhân viên",
+    "titleCreateAccount": "Thêm mới nhân viên",
+    "titleAccountDetail": "Chi tiết nhân viên ",
+    "totalAccount": "Tất cả nhân viên",
+    "headerInformationLabel": "Thông tin nhân viên",
+    "updatePassword": "Đổi mật khẩu",
+    "backToSetting": "Quay lại Cấu hình",
+    "backToListAccount": "Quay lại Danh sách nhân viên",
+    "headerRoleLabel": "Vai trò nhân viên",
+    "listTenantRole": "Danh sách vai trò cửa hàng ",
+    "addAccountBtnLabel": "Thêm nhân viên khác",
+    "settingTenantRoleBtnLabel": "Phân quyền vai trò"
+  },
+  "filter": {
+    "name": "Tên nhân viên",
+    "phoneNumber":  "Số điện thoại",
+    "email": "Email",
+    "created": "Ngày tạo",
+    "status": "Trạng thái",
+    "role": "Vai trò",
+    "address": "Địa chỉ"
+  },
+  "accountStatus": {
+    "active": "Đang làm việc",
+    "inactive": "Đã nghỉ việc",
+    "invite": "Đã gửi lời mời"
+  },
+  "accountRole": {
+    "owner": "Chủ cửa hàng",
+    "totalLocation": "Tất cả chi nhánh",
+    "validate": {
+      "isValidTenantRole": "Bạn chưa chọn vai trò",
+      "isValidLocation": "Bạn chưa chọn chi nhánh"
+    }
+  },
+  "accountFormValidate": {
+    "fullName": "Họ và tên nhân viên",
+    "status": "Trạng thái",
+    "phoneNumber": "Số điện thoại",
+    "phoneNumberSSO": "Số điện thoại đăng nhập cửa hàng",
+    "email": "Email",
+    "emailWithNote": "Email đăng nhập cửa hàng",
+    "address": "Địa chỉ",
+    "dob": "Ngày sinh",
+    "description": "Ghi chú",
+    "role": "Vai trò",
+    "location": "Chi nhánh",
+    "addRole": "Gán thêm vai trò",
+    "totalLocation": "Toàn bộ chi nhánh",
+    "sizeLocation": "{{size}} chi nhánh",
+    "addNewTenantRole": "Thêm mới vai trò",
+    "searchTenantRole": "Tìm kiếm vai trò",
+    "selectTenantRole": "Chọn vai trò",
+    "roleOwner": "Chủ cửa hàng",
+    "allLocation": "Tất cả kho.",
+    "searchLocation": "Tìm kiếm chi nhánh",
+    "selectLocation": "Chọn chi nhánh",
+    "validate": {
+      "fullNameCannotBlank": "Tên nhân viên không được bỏ trống.",
+      "maxLengthFullName": "Tên nhân viên không được quá 255 kí tự",
+      "mobileCannotBlank": "Số điện thoại không được để trống",
+      "mobileStartWithZero": "Số điện thoại phải bắt đầu là 0",
+      "invalidMobileLength": "Số điện thoại phải từ 8-25 số",
+      "emailCannotBlank": "Email không được bỏ trống.",
+      "invalidEmailFormat": "Email không đúng định dạng.",
+      "addressMaxLength": "Địa chỉ không được quá 255 kí tự",
+      "descriptionMaxLength": "Ghi chú không được quá 255 kí tự",
+      "sso": {
+        "existedPhoneNumberNotification": "Số điện thoại {{mobile}} đã được sử dụng trong cửa hàng này.",
+        "existedPhoneNumber": "Số điện thoại đã được sử dụng trong cửa hàng này.",
+        "existedEmailNotification": "Email {{email}} đã được sử dụng trong cửa hàng này.",
+        "existedEmail": "Email đã được sử dụng trong cửa hàng này.",
+        "maxAccount": "Số nhân viên tạo đã tối đa.",
+        "invalidTenant": "Cửa hàng không tồn tại.",
+        "locationNotFound": "Chi nhánh không tồn tại",
+        "locationInvalid": "Chi nhánh không hợp lệ"
+      }
+    },
+    "updateAccountSuccess": "Cập nhật nhân viên thành công",
+    "insertAccountSuccess": "Thêm mới nhân viên thành công",
+    "password": "Mật khẩu đăng nhập cửa hàng",
+    "retypePassword": "Nhập lại mật khẩu",
+    "notePassword": "Mật khẩu có ít nhất 8 ký tự, trong đó có 1 ký tự số, 1 ký tự chữ và 1 ký tự đặc biệt"
+  },
+  "buttonHeader": {
+    "deleteAccount": "Xóa",
+    "exit": "Thoát",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "invite": "Gửi lời mời"
+  },
+  "deleteAccount": {
+    "dialogTitle": "Bạn chắc chắn muốn xóa nhân viên này?",
+    "notificationMessage": "Thao tác này sẽ xóa nhân viên \"<1>{{accountName}}</1>\". Thao tác này không thể khôi phục.",
+    "notificationDeletedSuccess": "Xóa nhân viên thành công"
+  },
+  "noteUpdatePassword": {
+    "email": "Email đăng nhập",
+
+    "password": "Mật khẩu tài khoản đang đăng nhập",
+    "newPassword": "Mật khẩu mới cho nhân viên",
+    "retypeNewPassword": "Nhập lại mật khẩu mới",
+    "headerNote": "Lưu ý: Mật khẩu cần thỏa mãn các điều kiện sau",
+    "note1": "Độ dài ít nhất 8 ký tự",
+    "note2": "Chứa ít nhất 01 ký tự số, 01 ký tự chữ và 01 ký tự đặc biệt",
+    "note3": "Không được trùng với 4 mật khẩu gần nhất",
+    "updatePasswordSuccess": "Thay đổi mật khẩu thành công",
+    "validate": {
+      "passwordCannotBlank": "Mật khẩu không được để trống.",
+      "invalidPassword": "Mật khẩu không hợp lệ",
+      "retypePasswordNotMatch": "Mật khẩu không khớp nhau"
+    }
+  },
+  "noteUpdateProfileSSO": "Để cập nhật thông tin nhân viên, bạn vui lòng báo nhân viên vào “Tài khoản của tôi” trong trang quản trị Sapo hoặc truy cập đường dẫn ",
+  "inviteAccount": {
+    "requestAccountPhoneNumber": "Đã gửi lời mời tham gia cửa hàng đến số điện thoại <1>{{phoneNumber}}</1>",
+    "requestAccountPhoneNumber2": "Bạn vui lòng thông báo <1>{{fullName}}</1> kiểm tra điện thoại và xác nhận tham gia cửa hàng",
+    "requestAccountEmail": "Đã gửi lời mời tham gia cửa hàng đến email <1>{{email}}</1>",
+    "requestAccountEmail2": "ạn vui lòng thông báo <1>{{fullName}}</1> kiểm tra điện thoại và xác nhận tham gia cửa hàng"
+  },
+  "index": {
+    "placeHolderFilterSearch": "Tìm kiếm theo email, số điện thoại, tên nhân viên"
+  },
+  "emptyResultFilter": "Không tìm thấy nhân viên nào phù hợp với điều kiện tìm kiếm"
+}

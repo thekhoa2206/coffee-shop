@@ -1,0 +1,73 @@
+{
+  "location": "Chi nhánh",
+  "selectLocation": "Chọn chi nhánh",
+  "allLocation": "Tất cả chi nhánh",
+  "showMore": "Xem thêm",
+  "collapse": "Thu gọn",
+  "quickActiveNote": "Vui lòng chờ trong khi Sapo cài đặt dữ liệu cho bạn...",
+  "quickActiveTitle": "Chào mừng bạn đến với Sapo",
+  "adminTitle": "Tổng quan",
+  "detail": "Chi tiết",
+  "processingData": "Đang xử lý dữ liệu",
+  "processedData": "Xử lý dữ liệu hoàn tất",
+  "custom": "Tùy chọn",
+  "doProcessData": "Xử lý dữ liệu",
+  "description": "Mô tả",
+  "tags": "Tags",
+  "content": "Nội dung",
+  "provisional": "Tạm tính",
+  "closeTab": "Các thay đổi bạn đã thực hiện có thể không được lưu.",
+  "noPermission": "Bạn không có quyền truy cập chức năng này",
+  "moreInfo": "Thông tin thêm",
+  "canRefund": "Có thể hoàn trả",
+  "refundQuantity": "Số lượng trả",
+  "printStatus": {
+    "yes": "Đã in",
+    "no": "Chưa in"
+  },
+  "createInvoice": {
+    "yes": "Có",
+    "no": "Không"
+  },
+  "conditions": {
+    "title": "Điều kiện",
+    "titleGroup": "Nhóm điều kiện",
+    "should": "Thỏa mãn một trong các điều kiện",
+    "must": "Thỏa mãn tất cả điều kiện",
+    "add": "Thêm điều kiện",
+    "edit": "Sửa điều kiện",
+    "delete": "Xóa điều kiện",
+    "choiceGroup": "Chọn nhóm điều kiện",
+    "lessThan": "Nhỏ hơn",
+    "lessThanOrEquals": "Nhỏ hơn hoặc bằng",
+    "greaterThan": "Lớn hơn",
+    "greaterThanOrEquals": "Lớn hơn hoặc bằng",
+    "equals": "Bằng",
+    "is": "Là",
+    "in": "Là một trong số",
+    "contains": "Có chứa",
+    "startWith": "Bắt đầu bằng",
+    "between": "Nằm trong khoảng",
+    "fromCapitalize": "Từ",
+    "toCapitalize": "Đến",
+    "to": "đến",
+    "inifity": "Không giới hạn"
+  },
+  "serialStatus": {
+    "active": "Chưa xuất kho",
+    "inactive": "Đã xuất kho",
+    "processing": "Đang xử lý",
+    "returned": "Đã xuất trả"
+  },
+  "placeholder": {
+    "description": "Nhập mô tả"
+  },
+  "latePickup": {
+    "yes": "Có lấy trễ",
+    "no": "Không lấy trễ"
+  },
+  "lateDelivery": {
+    "yes": "Có giao trễ",
+    "no": "Không giao trễ"
+  }
+}

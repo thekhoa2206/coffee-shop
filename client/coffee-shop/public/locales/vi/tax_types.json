@@ -1,0 +1,31 @@
+{
+    "TaxTypePage":{
+        "taxTypeDefault": "Thiết lập thuế sản phẩm mặc định",
+        "taxTypeDefaultDesciption": "Áp dụng thuế sản phẩm mặc định khi thêm mới sản phẩm",
+        "taxTypeManage": "Quản lý thuế sản phẩm",
+        "setupTaxType": "Thiết lập các loại thuế phục vụ thuế đầu vào, đầu ra cho sản phẩm/dịch vụ.",
+        "note": "Bạn không thể sửa mức thuế suất mặc định hoặc đang áp dụng trong sản phẩm",
+        "taxTypeSaleDefault": "Thuế bán hàng mặc định",
+        "taxTypeImportDefault": "Thuế nhập hàng mặc định",
+        "taxTypeNoIncluded": "Giá chưa bao gồm thuế",
+        "taxTypeIncluded": "Giá đã bao gồm thuế",
+        "taxTypes": "Thuế:",
+        "backToListTaxType": "Quay lại Danh sách thuế"
+    },
+    "TaxTypeButton":{
+        "addTaxType": "Thêm mức thuế suất"
+    },
+    "Dialog":{
+        "titleCreate": "Thêm thông tin thuế",
+        "titleUpdate": "Cập nhật thông tin thuế",
+        "name": "Tên thuế",
+        "code": "Mã thuế",
+        "tax": "Thuế suất (%)",
+        "confirm": "Xác nhận",
+        "placeholderName":"Ví dụ: VAT",
+        "placeholderCode":"Ví dụ: THUEDAUVAO",
+        "placeholderTax":"Ví dụ: 10%",
+        "titleDelete": "Bạn chắc chắn muốn xóa mức thuế này?",
+        "content": "Thao tác này sẽ xóa Thuế nhập hàng. Thao tác này không thể khôi phục."
+    }
+}

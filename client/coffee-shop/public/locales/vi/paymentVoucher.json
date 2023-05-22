@@ -1,0 +1,135 @@
+{
+  "firstScreen": {
+    "storeEmptyPaymentVoucher": "Cửa hàng của bạn chưa có phiếu chi nào",
+    "description": "Xem thêm hướng dẫn cài đặt và sử dụng",
+    "hereText": "tại đây",
+    "btnCreate": "Tạo phiếu chi đầu tiên"
+  },
+  "index": {
+    "title": "Phiếu chi",
+    "name": "phiếu chi",
+    "allReceiptVoucher": "Tất cả phiếu chi",
+    "createPaymentVoucher": "Tạo phiếu chi",
+    "placeHolderFilterSearch": "Tìm kiếm theo mã phiếu chi, tham chiếu, mã chứng từ gốc",
+    "printMultipleReceiptVoucher": "In nhiều phiếu chi",
+    "cancelReceiptVoucher": "Hủy phiếu chi",
+    "bulkCancel": {
+      "title": "Hủy phiếu chi",
+      "chooseVoucherGroupAuto": "Không được hủy các phiếu chi Tự động, Thanh toán cho đơn nhập hàng và trạng thái “Đã hủy”",
+      "confirmCancelTitle": "Bạn chắc chắn muốn hủy phiếu chi này?",
+      "confirmCancelContent": "Thao tác này sẽ hủy các phiếu chi bạn đã chọn. Thao tác này không thể khôi phục.",
+      "confirm": "Xác nhận",
+      "success": "Hủy phiếu chi thành công",
+      "fail": "Hủy phiếu chi không thành công",
+      "cancelled": "Đã hủy phiếu chi"
+    },
+    "column": {
+      "locationName": "Chi nhánh",
+      "documentRoot": "Chứng từ gốc",
+      "objectType": "Nhóm người nhận",
+      "counted": "Hạch toán kết quả kinh doanh",
+      "paymentMethodName": "Hình thức thanh toán",
+      "groupName": "Loại phiếu",
+      "code": "Mã phiếu",
+      "note": "Mô tả",
+      "createOn": "Ngày tạo",
+      "issuedOn": "Ngày ghi nhận",
+      "accountName": "Người tạo",
+      "amount": "Số tiền chi",
+      "status": "Trạng thái",
+      "reference": "Tham chiếu",
+      "objectName": "Tên người nhận",
+      "objectCode": "Mã người nhận"
+    },
+    "status": {
+      "active": "Hoàn thành",
+      "canceled": "Đã hủy"
+    },
+    "filter": {
+      "tabReceiptVoucherActive": "Phiếu chi hoàn thành",
+      "tabReceiptVoucherCancelled": "Phiếu chi đã hủy"
+    },
+    "objectType": {
+      "customer": "Khách hàng",
+      "supplier": "Nhà cung cấp",
+      "voucherActor": "Đối tượng khác",
+      "employee": "Nhân viên",
+      "shipper": "Đối tác vận chuyển"
+    }
+  },
+  "voucherGroups": {
+    "title": "Quản lý loại phiếu chi",
+    "placeholderSearchBox": "Tìm kiếm theo mã loại, tên loại",
+    "name": "loại phiếu chi",
+    "create": "Thêm loại phiêu chi",
+    "delete": "Xóa loại phiếu chi",
+    "bulkDelete": {
+      "success": "Loại phiếu chi xóa thành công",
+      "fail": "Loại phiếu chi xóa không thành công",
+      "deleted": "Đã xóa loại phiếu chi"
+    },
+    "column": {
+      "name": "Tên loại",
+      "code": "Mã loại",
+      "counted": "Hạch toán kết quả kinh doanh",
+      "createdOn": "Ngày tạo",
+      "note": "Mô tả"
+    },
+    "dialogCreate": {
+      "title": "Thêm mới loại phiếu chi",
+      "titleUpdate": "Cập nhật loại phiếu chi",
+      "name": "Tên",
+      "placeholderName": "Nhập tên phiếu chi",
+      "code": "Mã",
+      "placeholderCode": "Nhập mã phiếu chi",
+      "counted": "Hạch toán kết quả kinh doanh",
+      "note": "Mô tả",
+      "nameEmpty": "Tên loại phiếu chi không được để trống",
+      "nameMaxLength": "Tên loại phiếu chi không được vượt quá 255 ký tự",
+      "noteMaxLength": "Mô tả không được vượt quá 255 ký tự",
+      "codeMaxLength": "Mã không được vượt quá 50 ký tự",
+      "codeUnicode": "Mã không được chứa ký tự unicode",
+      "createSuccess": "Thêm mới loại phiếu chi thành công",
+      "updateSuccess": "Cập nhật loại phiếu chi thành công",
+      "deleteSuccess": "Xóa loại phiếu chi thành công",
+      "tooltipCounted": "Các phiếu chi tích chọn sẽ được ghi nhận vào báo cáo lãi lỗ."
+    },
+    "confirmDelete": {
+      "title": "Bạn chắc chắn muốn xóa loại phiếu chi này?",
+      "content1": "Thao tác này sẽ xoá loại phiếu chi “{{name}}”. Thao tác này không thể khôi phục.",
+      "content2": "Thao tác này sẽ xoá loại phiếu chi bạn đã chọn. Thao tác này không thể khôi phục.",
+      "notPermission": "Không thể xóa loại phiếu chi của hệ thống"
+    }
+  },
+  "create": {
+    "title": "Thêm mới phiếu chi",
+    "print": "In phiếu chi",
+    "objectType": "Nhóm người nhận",
+    "objectName": "Tên người nhận",
+    "group": "Loại phiếu chi",
+    "groupPlaceholder": "Chọn loại phiếu chi",
+    "addNewVoucherGroup": "Thêm mới loại phiếu chi",
+    "descriptionCounted": "Lưu ý: Hạch toán kết quả kinh doanh đang được thiết lập theo loại phiếu chi. Bạn có thể thay đổi hoặc sửa thiết lập mặc định",
+    "createSuccess": "Tạo phiếu chi thành công",
+    "orderByAsc": "Nhập trước thanh toán trước",
+    "orderByDesc": "Nhập sau thanh toán trước",
+    "codeDescription": "Mã phiếu chi không trùng lặp. Nếu để trống mã phiếu tự sinh với tiền tố",
+    "validate": {
+      "codeInvalid": "Mã phiếu không được chứa tiền tố PVN của hệ thống",
+      "objectType": "Người nhận không được để trống",
+      "group": "Loại phiếu chi không được để trống"
+    },
+    "titleAddSuccess": "Phiếu chi {{code}} đã được tạo",
+    "createOther": "Tạo phiếu chi khác",
+    "updateVoucher": "Cập nhật phiếu chi",
+    "titleUpdate": "Quay lại danh sách phiếu chi",
+    "orderCode": "Mã đơn nhập",
+    "updateSuccess": "Cập nhật phiếu chi thành công",
+    "buttonCancel": "Hủy phiếu chi",
+    "cancelledSuccess": "Hủy phiếu chi thành công",
+    "saveChange": "Lưu thay đổi",
+    "descriptionVoucherAllocation": "Phiếu chi tự động phân bổ cho các đơn nhập hàng",
+    "titleConfirmCancel": "Bạn chắc chắn muốn hủy phiếu chi này?",
+    "confirmCancel": "Thao tác này sẽ hủy phiếu chi <1>{{code}}</1>. Thao tác này không thể khôi phục."
+  }
+}

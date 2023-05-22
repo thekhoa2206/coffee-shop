@@ -1,0 +1,842 @@
+{
+  "option": {
+    "value": "Giá trị",
+    "placeHolder": "Gõ ký tự và ấn Enter để thêm thuộc tính",
+    "optionName": "Tên thuộc tính",
+    "addOtherUnit": "Thêm thuộc tính khác",
+    "size": "Kích thước",
+    "color": "Màu sắc",
+    "material": "Chất liệu",
+    "headerNote": "Thêm mới thuộc tính giúp sản phẩm có nhiều lựa chọn, như kích cỡ hay màu sắc",
+    "boxTitle": "Thuộc tính",
+    "toolTipContent": {
+      "content1": "Tạo các thuộc tính để phân biệt các phiên bản khác nhau của sản phẩm.",
+      "content2": "Ví dụ:",
+      "content3": "Kích thước, Màu sắc, Chất liệu,..."
+    }
+  },
+  "packsize": {
+    "title": "Phiên bản sản phẩm",
+    "namePacksize": "Đơn vị quy đổi",
+    "packsizeQuantity": "Số lượng",
+    "selectVariant": "Chọn phiên bản",
+    "selectAll": "Tất cả",
+    "placeholderName": "Nhập tên đơn vị",
+    "placeholderQuantity": "Quy đổi tương ứng"
+  },
+  "retailPrice": "Giá bán lẻ",
+  "importPrice": "Giá nhập",
+  "wholeSalePrice": "Giá bán buôn",
+  "create": {
+    "defaultOptValue": "Mặc định",
+    "createProductSuccess": "Tạo sản phẩm thành công",
+    "initialWarehouse": {
+      "location": "Chi nhánh",
+      "initStock": "Tồn kho ban đầu",
+      "initPrice": "Giá vốn",
+      "tooltipDescriptionInitPrice": "Là tất cả chi phí bạn bỏ ra để sở hữu 1 sản phẩm (thường bao gồm giá mua sản phẩm, phí giao hàng,...)",
+      "linkDetailInitPrice": "Chi tiết khái niệm và cách xác định giá vốn",
+      "expandLocation": "Mở rộng chi nhánh",
+      "collapseLocation": "Thu gọn chi nhánh",
+      "dialogWarningInventory": {
+        "title": "Sản phẩm chưa được nhập giá vốn",
+        "notiWarning": "Sản phẩm chưa được nhập giá vốn (giá vốn = 0) tại một số chi nhánh. Sản phẩm có tồn kho nhưng không có giá vốn sẽ dẫn tới sai sót về số liệu báo cáo, lợi nhuận.",
+        "notShowAgain": "Không hiển thị lại nữa",
+        "continueSaveProduct": "Tiếp tục lưu sản phẩm",
+        "writeInitStock": "Nhập giá vốn"
+      }
+    },
+    "category": {
+      "title": "Loại sản phẩm",
+      "createCategoryProduct": "Thêm mới loại sản phẩm",
+      "placeholderCreate": "Tìm kiếm hoặc nhập mới",
+      "placeholderSelect": "Chọn loại sản phẩm",
+      "validate": {
+        "requiredName": "Tên loại sản phẩm không được để trống",
+        "maxLength": "Tên loại sản phẩm không quá 255 ký tự"
+      },
+      "createSuccess": "Thêm loại sản phẩm thành công",
+      "dialogCreate": {
+        "title": "Thêm loại sản phẩm",
+        "nameCategory": "Tên loại sản phẩm"
+      }
+    },
+    "brand": {
+      "title": "Nhãn hiệu",
+      "placeholderCreate": "Tìm kiếm hoặc nhập mới",
+      "placeholderSelect": "Chọn nhãn hiệu",
+      "createBrand": "Thêm mới nhãn hiệu",
+      "validate": {
+        "requiredName": "Tên nhãn hiệu không được để trống",
+        "maxLength": "Tên nhãn hiệu quá 255 ký tự"
+      },
+      "createSuccess": "Thêm nhãn hiệu thành công",
+      "dialogCreate": {
+        "title": "Thêm nhãn hiệu",
+        "nameBrand": "Tên nhãn hiệu"
+      }
+    },
+    "warranty": {
+      "createWarrantySuccess": "Thêm chính sách bảo hành thành công",
+      "createWarranty": "Thêm chính sách bảo hành",
+      "nameWarrantyTerm": "Tên chính sách bảo hành",
+      "placeholderName": "Nhập tên chính sách bảo hành",
+      "termNumber": "Kỳ hạn bảo hành",
+      "placeholderTermNumber": "Nhập kỳ hạn bảo hành",
+      "validate": {
+        "termNumberRequired": "Kỳ hạn bảo hành không được để trống",
+        "nameRequired": "Tên chính sách không được để trống"
+      }
+    },
+    "titles": {
+      "productInformation": "Thông tin chung",
+      "titlePage": "Thêm mới sản phẩm",
+      "titleCombo": "Thêm mới combo",
+      "titleCloneCombo": "Sao chép combo",
+      "titleBack": "Quay lại danh sách sản phẩm",
+      "titleBackProductSource": "Quay lại danh sách sản phẩm gốc",
+      "settingManagementTitle": "Hình thức quản lý",
+      "viewImages": "Chi tiết ảnh",
+      "medicines": "Thông tin thuốc",
+      "deleteImages": "Xoá tất cả ảnh?",
+      "chooseImage": "Chọn ảnh",
+      "composite": "Thành phần trong combo",
+      "moreInfo": "Thông tin bổ sung"
+    },
+    "placeholder": {
+      "name": "Nhập tên sản phẩm",
+      "comboName": "Nhập tên combo sản phẩm",
+      "barcode": "Nhập tay hoặc sử dụng máy quét mã vạch",
+      "inventory": "Ghi nhận số lượng Tồn kho ban đầu và Giá vốn của sản phẩm tại các Chi nhánh",
+      "inventoryLots": "Đối với <1>sản phẩm quản lý theo lô - hạn sử dụng</1>, hệ thống chưa hỗ trợ khởi tạo kho. Sau khi hoàn tất tạo mới, bạn tiếp tục nhập hàng vào kho để sẵn sàng quản lý.",
+      "inventorySerial": "Đối với <1>sản phẩm quản lý theo serial/IMEI</1>, hệ thống chưa hỗ trợ khởi tạo kho. Sau khi hoàn tất tạo mới, bạn tiếp tục nhập hàng vào kho để sẵn sàng quản lý.",
+      "packsize": "Tạo và quy đổi các đơn vị tính khác nhau",
+      "searchOrAddNew": "Tìm kiếm hoặc nhập mới",
+      "chooseWarranty": "Chọn chính sách bảo hành",
+      "warrantyLots": "Sản phẩm quản lý theo lô - hạn sử dụng chưa hỗ trợ bảo hành.",
+      "searchProduct": "Tìm kiếm sản phẩm",
+      "composite": "Bạn có thể chọn các sản phẩm thường, lô date làm thành phần trong combo sản phẩm"
+    },
+    "fields": {
+      "name": "Tên sản phẩm",
+      "comboName": "Tên combo sản phẩm",
+      "sku": "Mã sản phẩm/SKU",
+      "barcode": "Mã vạch/Barcode",
+      "weightValue": "Khối lượng",
+      "unit": "Đơn vị tính",
+      "price": "Giá sản phẩm",
+      "retailPrice": "Giá bán lẻ",
+      "wholeSalePrice": "Giá bán buôn",
+      "importPrice": "Giá nhập",
+      "images": "Ảnh sản phẩm",
+      "inventories": "Khởi tạo kho hàng",
+      "packsizes": "Thêm đơn vị quy đổi",
+      "variants": "Phiên bản",
+      "sellable": "Cho phép bán",
+      "taxable": "Áp dụng thuế",
+      "warranty": "Áp dụng bảo hành",
+      "inputTax": "Thuế đầu vào",
+      "outputTax": "Thuế đầu ra",
+      "priceIncludedTax": "Giá áp dụng thuế",
+      "beforeExpiration": "Thời gian trước khi hết hạn (ngày)",
+      "expirationAlertTime": "Nhập số ngày",
+      "day": "ngày"
+    },
+    "tooltip": {
+      "name": "Tên sản phẩm không bao gồm các giá trị thuộc tính như màu sắc, chất liệu, kích cỡ...",
+      "nameVariant": "Tên phiên bản không bao gồm các giá trị thuộc tính như màu sắc, chất liệu, kích cỡ...",
+      "sku": "Mã <strong>không trùng lặp</strong> để định danh giữa các sản phẩm.<br />Nếu để trống trường này, mã sản phẩm sẽ được tự sinh với <strong>tiền tố PVN</strong>",
+      "barcodeLine1": "Mã để in lên tem nhãn sản phẩm, phục vụ cho việc quét và bán hàng nhanh.",
+      "barcodeLine2": "Nếu để trống trường này, mã sản phẩm sẽ được hiểu là mã vạch",
+      "barcodeVariant": "Mã vạch nên chứa < 15 ký tự và không có ký tự đặc biệt.",
+      "barcodeSupport": "Lưu ý: Hệ thống không in được tem mã vạch có > 15 ký tự hoặc chứa ký tự đặc biệt.",
+      "retailPrice": "Giá bán cho các khách hàng mua lẻ",
+      "wholeSalePrice": "Giá bán cho các khách hàng mua với số lượng lớn",
+      "importPrice": "Giá <strong>tự động gợi ý</strong> khi bạn <strong>tạo đơn nhập hàng</strong> từ nhà cung cấp. Bạn có thể thay đổi tuỳ theo giá nhập hàng thực tế",
+      "packsizeLine1": "Tạo thêm các đơn vị để quản lý sản phẩm.",
+      "packsizeLine2": "<1>Ví dụ:</1> 1 thùng = 10 chai",
+      "settingManagementTitle": "Sapo hỗ trợ quản lý sản phẩm theo các hình thức:",
+      "settingManagementNormal": "<b>Sản phẩm thường:</b> Sản phẩm quản lý thuần theo số lượng",
+      "settingManagementSerial": "<b>Quản lý theo số serial/imei:</b> Sản phẩm có mã định danh của nhà sản xuất như điện thoại, điện tử,...",
+      "settingManagementLotsDate": "<b>Quản lý theo lô – hạn sử dụng:</b> Sản phẩm có hạn sử dụng như thực phẩm, thuốc, hàng tạp hóa,...",
+      "importImage": "Kéo thả <br /> hoặc tải ảnh",
+      "importImage2Line1": "Kéo thả hoặc",
+      "importImage2Line2": "tải ảnh lên từ thiết bị",
+      "tags": "Chọn hoặc thêm các thẻ cho sản phẩm, thẻ này phục vụ cho việc lọc các sản phẩm",
+      "status": "Cho phép tìm kiếm sản phẩm và tạo đơn hàng",
+      "taxable": "Sản phẩm có tính thuế, hệ thống sẽ tự động gợi ý giá trị thuế  cho sản phẩm theo chính sách thuế của cửa hàng",
+      "applyExpirationAlert": "Cài đặt số ngày để nhận thông báo cảnh báo về điện thoại với lô sắp hết hạn"
+    },
+    "actions": {
+      "hideDescription": "Ẩn mô tả sản phẩm",
+      "showDescription": "Mô tả sản phẩm",
+      "addPrice": "Thêm chính sách giá",
+      "showPriceList": "Hiển thị thêm chính sách giá",
+      "hidePriceList": "Thu gọn giá sản phẩm",
+      "deleteImages": "Xoá tất cả",
+      "addNewPacksize": "Thêm đơn vị khác",
+      "exit": "Thoát",
+      "save": "Lưu",
+      "saveAndPrintBarcode": "Lưu và in mã vạch",
+      "addWarranty": "Thêm chính sách bảo hành",
+      "setting": "Thiết lập",
+      "createPurchaseOrder": "Tạo đơn nhập hàng",
+      "searchDrugCategory": "Tra cứu thuốc",
+      "createDrugCategory": "Tạo thuốc cơ sở",
+      "addProductComposite": "Thêm sản phẩm ngay",
+      "createProduct": "Tạo sản phẩm",
+      "addTaxType": "Thêm loại thuế"
+    },
+    "setting": {
+      "status": "Trạng thái",
+      "tax": "Thuế",
+      "warranty": "Bảo hành",
+      "warrantyDue": "Kỳ hạn",
+      "productTypeNormal": "Sản phẩm thường",
+      "productTypeSerial": "Sản phẩm Serial/iMei",
+      "productTypeLotsDate": "Sản phẩm lô date/ HSD",
+      "priceIncludedTax": "Giá đã bao gồm thuế",
+      "priceNotIncludeTax": "Giá chưa bao gồm thuế",
+      "applyExpirationAlert": "Cảnh báo lô sắp hết hạn"
+    },
+    "alerts": {
+      "noPermission": "Bạn không có quyền thực hiện chức năng này",
+      "isBlankFieldName": "Tên sản phẩm không được để trống",
+      "isBlankFieldNameCombo": "Tên combo không được để trống",
+      "inValidSku": "Mã sản phẩm không được có tiền tố PVN của hệ thống",
+      "inValidSkuUnicode": "Mã sản phẩm không được chứa ký tự unicode",
+      "inValidSkuSpecialChar": "Mã sản phẩm không được chứa ký tự , hoặc '",
+      "inValidSkuMaxLength": "Mã sản phẩm không được quá 50 ký tự",
+      "inValidBarcodeUnicode": "Barcode không được chứa ký tự unicode",
+      "inValidBarcodeSpecialChar": "Barcode không được chứa ký tự , hoặc '",
+      "inValidWarranty": "Sản phẩm bảo hành cần có tối thiểu 1 chính sách bảo hành",
+      "isBlankFieldUnit": "Đơn vị tính không được để trống",
+      "isBlankFieldPacksizeName": "Tên đơn vị quy đổi không được để trống",
+      "isBlankFieldPacksizeQuantity": "Giá trị quy đổi không được để trống",
+      "isBlankFieldPacksizeVariant": "Chưa chọn phiên bản sản phẩm cho đơn vị quy đổi",
+      "isBlankFieldPriceListName": "Tên chính sách giá không được để trống",
+      "notFoundResult": "Không tìm thấy thuốc phù hợp với từ khóa tìm kiếm",
+      "imageNotValid": "Ảnh không đúng định dạng",
+      "imageOutOfSize": "Ảnh có dung lượng quá lớn",
+      "deleteImages": "Bạn có chắc chắn muốn xóa tất cả ảnh sản phẩm? Thao tác này không thể khôi phục.",
+      "inValidWarrantyPacksize": "Sản phẩm có đơn vị quy đổi không được có chính sách bảo hành",
+      "blankOptionName": "Tên thuộc tính không được để trống",
+      "blankOptionValue": "Giá trị thuộc tính không được để trống",
+      "maxOptionValue": "Giá trị mỗi thuộc tính nhập tối đa là 100",
+      "duplicateOptionValue": "Thuộc tính {{valueDuplicate}} đã bị trùng",
+      "blankVariantDefault": "Không thể khởi tạo sản phẩm không có phiên bản mặc định",
+      "noCompositeItem": "Combo chưa có sản phẩm nào",
+      "needUpdateVariant": "Bạn vừa thay đổi thông tin sản phẩm, hệ thống sẽ cập nhật bảng phiên bản theo giá trị vừa thay đổi. Vui lòng kiểm tra lại trước khi tạo sản phẩm.",
+      "medicine": {
+        "registrationNo": "Số đăng ký không được để trống",
+        "content": "Hoạt chất chính không được để trống",
+        "element": "Hàm lượng không được để trống",
+        "packing": "Quy cách đóng gói không được để trống",
+        "manufacturer": "Hãng sản xuất không được để trống",
+        "manufacturerCountry": "Nước sản xuất không được để trống",
+        "unit": "Đơn vị tính nhỏ nhất không được để trống",
+        "drugRoute": "Đường dùng không được để trống"
+      }
+    },
+    "dialogCreatePriceList": {
+      "title": "Thêm chính sách giá",
+      "createSuccess": "Thêm chính sách giá thành công",
+      "namePriceList": "Tên chính sách giá",
+      "priceListCode": "Mã chính sách giá",
+      "placeholderName": "Ví dụ: Giá bán lẻ",
+      "placeholderCode": "Ví dụ: GBL01",
+      "validate": {
+        "requiredName": "Tên chính sách giá không được để trống",
+        "requiredCode": "Mã chính sách giá không được để trống"
+      },
+      "acceptBy": "Áp dụng cho:",
+      "sale": "Bán hàng",
+      "import": "Nhập hàng"
+    },
+    "productVariantsPacksize": {
+      "title": "Phiên bản",
+      "validateBulkAction": "Chưa có phiên bản nào được chọn",
+      "bulkActionButton": "Chọn ảnh cho tất cả phiên bản được chọn",
+      "name": "Tên phiên bản",
+      "sku": "Mã SKU",
+      "barcode": "Barcode",
+      "weight": "Khối lượng",
+      "initStock": "Tồn ban đầu",
+      "initPrice": "Giá vốn",
+      "bulkAction": {
+        "selectVariants": "Đã chọn {{count}} phiên bản",
+        "selectAllVariant": "Đã chọn tất cả phiên bản",
+        "addImageVariant": "Thêm ảnh cho phiên bản",
+        "removeVariant": "Xóa phiên bản sản phẩm"
+      },
+      "dialogConfirmDeleteVariant": {
+        "title": "Xoá phiên bản sản phẩm",
+        "content": "Thao tác này sẽ xoá {{count}} phiên bản ra khỏi danh sách khởi tạo sản phẩm. Bạn có có chắc chắn muốn xoá không?"
+      }
+    },
+    "variantImages": {
+      "validate": {
+        "invalidFormat": "Ảnh không đúng định dạng",
+        "maxSize": "Ảnh có dung lượng quá lớn"
+      },
+      "versionSelect": "phiên bản được chọn",
+      "version": "Phiên bản",
+      "notVersionSelect": "Không có phiên bản nào được chọn",
+      "notFoundImageVariants": "Chưa có ảnh cho {{count}} phiên bản được chọn, hãy tải ảnh lên",
+      "notFoundImageVariant": "Chưa có ảnh cho phiên bản {{nameVariant}}, hãy tải ảnh lên",
+      "dropDragOrUpload": "Kéo thả <br /> hoặc tải ảnh",
+      "applyVariants": "Áp dụng cho tất cả phiên bản có cùng",
+      "notImageSelected": "Bạn chưa chọn ảnh"
+    }
+  },
+  "name": "sản phẩm",
+  "nameCapitalize": "Sản phẩm",
+  "nameVariant": "phiên bản",
+  "nameVariantCapitalize": "Phiên bản",
+  "index": {
+    "title": "Danh sách sản phẩm",
+    "titleTabAll": "Tất cả sản phẩm",
+    "titleTabMedicine": "Thuốc",
+    "labelTabMedicine": "Sản phẩm thuốc",
+    "placeHolderFilterSearch": "Tìm kiếm theo mã sản phẩm, tên sản phẩm, barcode",
+    "header": {
+      "btnLinkCategory": "Loại sản phẩm",
+      "btnManagerOther": "Quản lý khác",
+      "btnNationalDrugCategories": "Danh mục thuốc",
+      "btnCreateProduct": "Thêm sản phẩm",
+      "btnCreateMedicine": "Thêm thuốc",
+      "btnCreateProductNormal": "Thêm sản phẩm thường",
+      "btnCreateProductCombo": "Thêm sản phẩm combo",
+      "btnCreateProductPackSize": "Thêm sản phẩm có đơn vị quy đổi",
+      "btnCreateProductSerial": "Thêm sản phẩm Serial/IMEI",
+      "btnCreateProductLotsdate": "Thêm sản phẩm quản lý theo lô - hạn sử dụng",
+      "btnImportFile": "Nhập file sản phẩm thường",
+      "btnImportFileMedicine": "Nhập file thuốc",
+      "btnImportFileComposite": "Nhập file sản phẩm combo",
+      "btnImportFilePacksize": "Nhập file sản phẩm quy đổi",
+      "btnLinkLotsDate": "Lô - HSD",
+      "btnLinkSerials": "Serial/IMEI",
+      "btnLinkComposite": "Combo",
+      "btnLinkPacksize": "Sản phẩm quy đổi",
+      "btnLinkSerial": "Serial/IMEI"
+    },
+    "validationOption": {
+      "requiredOptionName": "Tên thuộc tính không được để trống",
+      "requiredOptionVal": "Giá trị thuộc tính không được để trống"
+    },
+    "bulkAction": {
+      "checkInventory": "Kiểm tra tồn kho",
+      "printBarcode": "In mã vạch",
+      "updateActive": "Đang giao dịch",
+      "updateInactive": "Ngừng giao dịch",
+      "delete": "Xóa sản phẩm",
+      "labelItemSuccess": "Sản phẩm cập nhật thành công",
+      "labelItemFail": "Sản phẩm cập nhật không thành công",
+      "dialogDelete": {
+        "title": "Xóa sản phẩm",
+        "contentFirst": "Thao tác này sẽ xóa",
+        "contentLast": "sản phẩm bạn đã chọn. Thao tác này không thể khôi phục."
+      },
+      "dialogActive": {
+        "title": "Cập nhật trạng thái",
+        "contentFirst": "Thao tác này sẽ cập nhật trạng thái giao dịch cho",
+        "contentLast": "sản phẩm bạn đã chọn."
+      },
+      "dialogInactive": {
+        "title": "Ngừng giao dịch",
+        "contentFirst": "Thao tác này sẽ ngừng giao dịch",
+        "contentLast": "sản phẩm bạn đã chọn."
+      }
+    },
+    "popupInventory": {
+      "fields": {
+        "incoming": "Hàng đang về",
+        "committed": "Đang giao dịch",
+        "onway": "Hàng đang giao"
+      }
+    },
+    "column": {
+      "image": "Ảnh",
+      "name": "Sản phẩm",
+      "productName": "Sản phẩm",
+      "categoryName": "Loại",
+      "brandName": "Nhãn hiệu",
+      "available": "Có thể bán",
+      "onHand": "Tồn kho",
+      "status": "Trạng thái",
+      "createdOn": "Ngày khởi tạo",
+      "modifiedOn": "Cập nhật cuối",
+      "sku": "Mã SKU",
+      "barcode": "Mã vạch",
+      "incoming": "Hàng đang về",
+      "onWay": "Hàng đang giao",
+      "committed": "Đang giao dịch",
+      "sellable": "Cho phép bán",
+      "taxable": "Áp dụng thuế",
+      "giaNhap": "Giá nhập",
+      "banLe": "Giá bán lẻ",
+      "banBuon": "Giá bán buôn",
+      "location": "Chi nhánh",
+      "tooltip": {
+        "onHand": "Tổng hàng hoá có trong kho",
+        "available": "Tổng hàng hoá có trong kho và đang chưa có giao dịch",
+        "committed": "Tổng số lượng hàng hoá có trong kho và đang nằm trong các giao dịch liên quan",
+        "incoming": "Tổng số lượng hàng hoá đang chuẩn bị về kho",
+        "onWay": "Tổng số lượng hàng hoá đang được đưa từ kho đi, chưa đến điểm nhận"
+      }
+    },
+    "fieldsExport": {
+      "productName": "Tên sản phẩm",
+      "description": "Mô tả sản phẩm",
+      "otp": "Tên thuộc tính",
+      "variantSku": "Mã SKU",
+      "weightUnit": "Đơn vị khối lượng",
+      "applyTax": "Áp dụng thuế",
+      "inputVat": "Thuế đầu vào",
+      "outputVat": "Thuế đầu ra",
+      "priceIncludedTax": "Giá áp dụng thuế",
+      "minValue": "Tồn tối thiểu",
+      "productType": "Hình thức quản lý sản phẩm",
+      "brand": "Nhãn hiệu",
+      "otpValue": "Giá trị thuộc tính",
+      "variantBarcode": "Barcode",
+      "imageFullPath": "Ảnh đại diện",
+      "mac": "Giá vốn khởi tạo",
+      "maxValue": "Tồn tối đa",
+      "categoryCode": "Loại sản phẩm",
+      "tags": "Tags",
+      "variantName": "Tên phiên bản sản phẩm",
+      "weightValue": "Khối lượng",
+      "unit": "Đơn vị",
+      "onHand": "Tồn kho ban đầu",
+      "binLocation": "Điểm lưu kho",
+      "expirationAlertTime": "Số ngày cảnh báo hết hạn"
+    },
+    "fieldsExportMedicine": {
+      "code": "Mã thuốc",
+      "registrationNo": "Số đăng ký lưu hành",
+      "content": "Hoạt chất chính",
+      "element": "Hàm lượng",
+      "packing": "Quy cách đóng gói",
+      "manufacture": "Hãng sản xuất",
+      "manufactureCountry": "Nước sản xuất",
+      "drugRoute": "Đường dùng"
+    },
+    "importFile": {
+      "pharmacyDescription": "Tham khảo danh mục thuốc đã được công bố bởi Cục Quản lý Dược Quốc gia",
+      "title": "dữ liệu sản phẩm",
+      "titleMedicine": "dữ liệu sản phẩm thuốc",
+      "titleComposite": "dữ liệu sản phẩm Combo",
+      "titlePacksize": "dữ liệu sản phẩm quy đổi",
+      "warningUpdate": "Mẫu nhập file sản phẩm đã được thay đổi vào",
+      "checkFile": "Bạn vui lòng kiểm tra và tải lại file mới để tránh sai lệch dữ liệu"
+    },
+    "exportFile": {
+      "allProduct": "Tất cả sản phẩm",
+      "currentProductPage": "Sản phẩm trên trang này",
+      "selectedProducts": "Các sản phẩm được chọn",
+      "productWithSearchResult": "sản phẩm phù hợp với kết quả tìm kiếm hiện tại",
+      "groupName": {
+        "product": "Sản phẩm",
+        "medicine": "Thông tin thuốc"
+      }
+    }
+  },
+  "firstScreen": {
+    "btnCreateProductOther": "Thêm sản phẩm khác",
+    "tenantEmptyProduct": "Cửa hàng của bạn chưa có sản phẩm nào",
+    "addOrImportProduct": "Thêm mới sản phẩm hoặc nhập danh sách sản phẩm của bạn",
+    "importFileExcel": "Nhập file excel",
+    "descriptionButtonImportProducts": "Sử dụng khi bạn muốn nhập danh sách sản phẩm",
+    "downloadFileTemplate": "Tải file mẫu",
+    "descriptionButtonCreateProduct": "Sử dụng khi bạn muốn tạo danh sách sản phẩm",
+    "productComposite": "Sản phẩm combo",
+    "productPacksize": "Sản phẩm quy đổi",
+    "productMedicine": "Sản phẩm thuốc",
+    "productNormal": "Sản phẩm thường"
+  },
+  "status": {
+    "active": "Đang giao dịch",
+    "inactive": "Ngừng giao dịch",
+    "deleted": "Đã xóa"
+  },
+  "productType": {
+    "serial": "Serial",
+    "normal": "Sản phẩm thường",
+    "lots_date": "Lô - Hạn sử dụng",
+    "composite": "Combo",
+    "fullName": {
+      "serial": "Sản phẩm quản lý theo Serial/IMEI",
+      "normal": "Sản phẩm thường",
+      "lots_date": "Sản phẩm quản lý theo lô - hạn sử dụng",
+      "composite": "Sản phẩm Combo"
+    }
+  },
+  "inventory": {
+    "title": "Kiểm tra thông tin tồn kho",
+    "filter": {
+      "inventory": {
+        "selected": "chi nhánh được chọn"
+      }
+    },
+    "fields": {
+      "sku": "Mã SKU",
+      "productName": "Tên sản phẩm",
+      "priceList": "Chính sách giá",
+      "onHand": "Tồn kho",
+      "available": "Có thể bán",
+      "incoming": "Đang về",
+      "committed": "Đang giao dịch",
+      "onway": "Đang giao hàng",
+      "total": "Tổng",
+      "onwayProduct": "Hàng đang giao",
+      "incomingProduct": "Hàng đang về",
+      "totalSystem": "Tổng hệ thống"
+    },
+    "exportFile": {
+      "result": "Tổng số dòng dữ liệu được xuất:",
+      "title": "Bạn có thể tải file dữ liệu tại:",
+      "description": "Thông báo được gửi vào địa chỉ email: <strong>{{email}}</strong> (có hiệu lực trong 7 ngày)",
+      "descriptionNoneEmail": "Cập nhật email <Link>tại đây</Link> để nhận file về email trong lần xuất dữ liệu sau",
+      "fileMission": "Danh sách các file đã được xuất tại phần <Link>Thông tin cá nhân -> Xuất nhập file</Link>",
+      "note": "<span>Lưu ý</span>: Sapo giới hạn tối đa 20,000 dòng dữ liệu cho mỗi lần xuất file"
+    }
+  },
+  "nationalDrugCategories": {
+    "headerTitle": "Danh mục thuốc quốc gia",
+    "code": "Mã thuốc",
+    "name": "Tên thuốc",
+    "registrationNo": "Số đăng ký",
+    "content": "Hoạt chất chính",
+    "element": "Hàm lượng",
+    "packing": "Quy cách đóng gói",
+    "manufacturer": "Hãng sản xuất",
+    "manufacturerCountry": "Nước sản xuất",
+    "unit": "Đơn vị tính",
+    "drugRoute": "Đường dùng",
+    "placeholderSearchBoxLabel": "Tìm kiếm theo mã thuốc, tên thuốc, số đăng kí",
+    "nationalDrugFields": {
+      "unit": "Đơn vị tính nhỏ nhất",
+      "code": "Mã thuốc quốc gia",
+      "placeholderSearchBoxLabel": "Tìm kiếm trên kho dữ liệu với hơn 100,000 sản phẩm thuốc"
+    }
+  },
+  "details": {
+    "productType": {
+      "serial": "Sản phẩm Serial",
+      "normal": "Sản phẩm thường",
+      "lots_date": "Sản phẩm lô - Hạn sử dụng",
+      "composite": "Sản phẩm combo"
+    },
+    "actions": {
+      "delete": "Xoá",
+      "edit": "Sửa sản phẩm",
+      "exit": "Thoát",
+      "deleteVariants": "Xóa phiên bản",
+      "cancel": "Huỷ",
+      "purchaseOrder": "Nhập hàng",
+      "createOtherProduct": "Tạo sản phẩm khác",
+      "createOtherCombo": "Tạo combo sản phẩm khác",
+      "printBarcode": "In mã vạch",
+      "printBarcodeV2": "In tem mã vạch",
+      "printBarcodeV3": "In tem mã",
+      "seeAllLotsDate": "Xem tất cả lô hàng",
+      "seeAllSerial": "Xem tất cả mã Serial",
+      "exportFile": "Xuất file",
+      "accept": "Xác nhận",
+      "cloneCombo": "Sao chép combo sản phẩm"
+    },
+    "contents": {
+      "notFoundProduct": "Sản phẩm này không tồn tại hoặc đã bị xoá!",
+      "notFoundVariant": "Phiên bản sản phẩm này không tồn tại hoặc đã bị xoá!",
+      "deleteProduct": "Thao tác này sẽ xóa các sản phẩm bạn đã chọn. Thao tác này không thể khôi phục.",
+      "deleteVariant": "Thao tác này sẽ xóa các phiên bản sản phẩm bạn đã chọn. Thao tác này không thể khôi phục.",
+      "taxable": "Áp dụng thuế",
+      "sellable": "Cho phép bán",
+      "applyExpirationAlert": "Cảnh báo lô sắp hết hạn",
+      "expirationAlertTime": "Trước khi hết hạn {{day}} ngày",
+      "warranty": "Áp dụng bảo hành",
+      "deleteVariantSuccess": "Sản phẩm cập nhật thành công",
+      "deleteVariantFail": "Sản phẩm cập nhật không thành công",
+      "nonImage": "Phiên bản chưa có ảnh tải lên",
+      "nonImageProduct": "Sản phẩm chưa có ảnh tải lên",
+      "nonImageComposite": "Combo chưa có ảnh tải lên",
+      "action": "Thao tác",
+      "onHand": "Tồn kho",
+      "available": "Có thể bán",
+      "deleteProductSuccess": "Xoá sản phẩm thành công",
+      "notSupportWarranty": "Sản phẩm quản lý theo lô - hạn sử dụng chưa hỗ trợ bảo hành.",
+      "warrantyContent": "Bảo hành",
+      "defaultOptValue": "Mặc định",
+      "defaultOptName": "Kích thước",
+      "searchLotsDate": "Tìm kiếm lô",
+      "searchSerial": "Tìm kiếm Serial",
+      "allLocation": "Tất cả chi nhánh",
+      "allStatus": "Tất cả trạng thái",
+      "unExpired": "Chưa hết hạn",
+      "outOfDate": "Đã hết hạn",
+      "noneLotsDate": "Sản phẩm chưa có lô hàng nào!",
+      "noneSerial": "Sản phẩm chưa có mã Serial nào!",
+      "serialNumber": "mã Serial",
+      "lotsNumber": "mã Lô",
+      "createdTitle": "Để tăng tồn kho cho sản phẩm, vui lòng <a href='{{purchaseLink}}' target='_blank'>nhập hàng tại đây</a>",
+      "productDesc": "Xem mô tả",
+      "nonDesc": "Sản phẩm này chưa có mô tả nào!",
+      "invenHistory": "Lịch sử kho",
+      "noDataInventory": "Chưa có giao dịch nào cho sản phẩm này!",
+      "stt": "STT",
+      "fulfillCode": "Mã phiếu",
+      "quantity": "Số lượng",
+      "tooltips": {
+        "sellable": "Cho phép tìm kiếm sản phẩm và tạo đơn hàng",
+        "taxable": "Sản phẩm có tính thuế, hệ thống sẽ tự động gợi ý giá trị thuế  cho sản phẩm theo chính sách thuế của cửa hàng",
+        "warranty": "Sản phẩm có bảo hành, hệ thống sẽ tự động xuất phiếu bảo hành khi bán hàng",
+        "onHand": "Tổng số lượng hàng hoá có trong kho <br /> <i>Tồn kho = Có thể bán + Đang giao dịch</i>",
+        "available": "Tổng số lượng hàng hoá có trong kho và đang chưa có giao dịch",
+        "committed": "Tổng số lượng hàng hoá có trong kho và đang có giao dịch liên quan",
+        "incoming": "Tổng số lượng hàng hoá đang chuẩn bị về kho",
+        "onway": "Tổng số lượng hàng hoá đang được đưa từ kho đi, chưa đến điểm nhận",
+        "minValue": "Định mức tồn tối thiểu của sản phẩm theo kho",
+        "maxValue": "Định mức tồn tối đa của sản phẩm theo kho",
+        "binLocation": "Kho của bạn có thể được bố trí theo khu, hàng, kệ khác nhau <br /> Ví dụ: Khu A, khu B, hàng trái, hàng phải, kệ 34...v..v",
+        "mac": "Là tất cả chi phí bạn bỏ ra để sở hữu 1 sản phẩm (thường bao gồm giá mua sản phẩm, phí giao hàng,...)<br/> <Link href='https://support.sapo.vn/tim-hieu-ve-gia-von' target='_blank'>Chi tiết khái niệm và cách xác định giá vốn</Link>"
+      }
+    },
+    "titles": {
+      "pageTitle": "Chi tiết sản phẩm",
+      "deleteProduct": "Bạn chắc chắn muốn xóa sản phẩm này?",
+      "deleteVariant": "Bạn chắc chắn muốn xóa phiên bản sản phẩm này?",
+      "productInfo": "Thông tin sản phẩm",
+      "productInfoCombo": "Thông tin Combo",
+      "productPrices": "Giá sản phẩm",
+      "productMoreInfo": "Thông tin thêm",
+      "titleBack": "Quay lại danh sách sản phẩm",
+      "detailVariant": "Chi tiết phiên bản",
+      "selectAllVariant": "Đã chọn tất cả phiên bản",
+      "variant": "Phiên bản",
+      "selected": "Đã chọn",
+      "variantInfo": "Thông tin chi tiết phiên bản",
+      "variantPacksizeInfo": "Thông tin chi tiết phiên bản quy đổi",
+      "updateVariantStatus": "Cập nhật trạng thái",
+      "viewImages": "Chi tiết ảnh",
+      "listLotsDate": "Danh sách các Lô",
+      "listSerial": "Danh sách Serial",
+      "createdTitle": "Sản phẩm {{productName}} đã được tạo",
+      "createdMedicineTitle": "Sản phẩm thuốc {{productName}} đã được tạo",
+      "createComboTitle": "Combo {{productName}} đã được tạo",
+      "productDesc": "Mô tả sản phẩm",
+      "wareHouse": "Kho"
+    },
+    "fields": {
+      "sku": "Mã SKU",
+      "name": "Tên sản phẩm",
+      "variantName": "Tên phiên bản sản phẩm",
+      "variantNamePacksize": "Tên phiên bản quy đổi",
+      "weightValue": "Khối lượng",
+      "weightUnit": "Đơn vị khối lượng",
+      "unit": "Đơn vị tính",
+      "barcode": "Mã barcode",
+      "packsizeQuantity": "Số lượng quy đổi",
+      "productType": "Phân loại",
+      "category": "Loại sản phẩm",
+      "brand": "Nhãn hiệu",
+      "tags": "Tags",
+      "createOn": "Ngày tạo",
+      "lastModifyOn": "Ngày cập nhật cuối",
+      "lotsDate": {
+        "lotsNumber": "Mã lô",
+        "manufactureDate": "Ngày sản xuất",
+        "expirationDate": "Hạn sử dụng",
+        "onHand": "Số lượng tồn",
+        "costPrice": "Giá vốn"
+      },
+      "serial": {
+        "label": "Mã Serial",
+        "location": "Chi nhánh",
+        "status": "Trạng thái",
+        "costPrice": "Giá vốn"
+      },
+      "inventory": {
+        "mac": "Giá vốn",
+        "onHand": "Tồn kho",
+        "onway": "Hàng đang giao",
+        "available": "Có thể bán",
+        "minValue": "Tồn tối thiểu",
+        "maxValue": "Tồn tối đa",
+        "location": "Chi nhánh",
+        "incoming": "Hàng đang về",
+        "committed": "Đang giao dịch",
+        "binLocation": "Điểm lưu kho",
+        "issuedAtUtc": "Ngày ghi nhận",
+        "account": "Nhân viên",
+        "source": "Thao tác",
+        "onHandAdj": "Số lượng thay đổi",
+        "transObjectId": "Mã chứng từ",
+        "onHandShort": "Tồn"
+      }
+    }
+  },
+  "edit": {
+    "actions": {
+      "edit": "Sửa",
+      "save": "Lưu",
+      "exit": "Thoát",
+      "nextVariant": "Chuyển phiên bản",
+      "cancel": "Huỷ",
+      "update": "Cập nhật",
+      "addOption": "Thêm thuộc tính",
+      "deleteOption": "Xoá thuộc tính",
+      "addVariant": "Thêm phiên bản",
+      "showMore": "Xem thêm",
+      "collapse": "Thu gọn",
+      "updateVariantsName": "Lưu và cập nhật tên phiên bản",
+      "justUpdateProductName": "Chỉ cập nhật tên sản phẩm",
+      "updateImage": "Cập nhật ảnh"
+    },
+    "titles": {
+      "titleBack": "Quay lại chi tiết sản phẩm",
+      "titleCreateBack": "Quay lại sản phẩm gốc",
+      "pageTitle": "Sửa sản phẩm",
+      "productMoreInfo": "Thông tin thêm",
+      "productImage": "Ảnh sản phẩm",
+      "variantDetail": "Chi tiết phiên bản",
+      "packsize": "Quy đổi",
+      "opt": "Thuộc tính",
+      "warning": "Cảnh báo",
+      "createVariant": "Tạo phiên bản",
+      "popupSuggestUpdateName": "Cập nhật tên sản phẩm cho phiên bản?"
+    },
+    "contents": {
+      "updateSuccess": "Cập nhật thành công!",
+      "isBlankVariantName": "Tên phiên bản không được để trống",
+      "isValidPacksizeQuantity": "Số lượng quy đổi phải lớn hơn 1",
+      "samePacksize": "Quy đổi tương ứng",
+      "packsizeQuantity": "Số lượng quy đổi",
+      "notification": "Thông báo",
+      "changeNotSave": "Các thông tin vừa thay đổi sẽ không được lưu lại nếu bạn chuyển sang phiên bản khác. Bạn có chắc chắn muốn chuyển không?",
+      "isValidOption1": "Giá trị thuộc tính 1 không được để trống",
+      "isValidOption2": "Giá trị thuộc tính 2 không được để trống",
+      "isValidOption3": "Giá trị thuộc tính 3 không được để trống",
+      "isInValidWarranty": "Sản phẩm có đơn vị quy đổi không được có chính sách bảo hành",
+      "duplicateOption": "Thuộc tính đã bị trùng",
+      "changeVariantImage": "Thay đổi ảnh",
+      "nonWarrantyTermId": "Vui lòng chọn chính sách bảo hành",
+      "emptyExpirationAlertTime": "Chưa nhập số ngày cảnh báo lô sắp hết hạn",
+      "limitExpirationAlertTime": "Số ngày nhập không lớn hơn 365",
+      "isValidVariantUnit": "Đơn vị tính của phiên bản có đơn vị quy đổi không được để trống",
+      "editOptions": "Sửa thuộc tính",
+      "variantIsBlankUnit": "Sản phẩm bạn chọn chưa có đơn vị tính",
+      "placeholderPacksizeQuantity": "Nhập số lượng quy đổi tương ứng",
+      "isBlankOptionName": "Không để trống tên thuộc tính",
+      "maxOptionName": "Tên thuộc tính không được quá 500 ký tự",
+      "isBlankOptionValue": "Không để trống gía trị thuộc tính",
+      "editOption": "Chỉnh sửa thuộc tính",
+      "optValue": "Giá trị",
+      "deleteMultipleOption": " <text>Thao tác này sẽ xoá {{ countDelete }} phiên bản có thuộc tính {{ optionName }} “{{ optionValue }}” và không thể khôi phục. Bạn có chắc chắn muốn xoá không?</text>",
+      "deleteOption": "Thao tác này sẽ xoá thuộc tính {{optionName}} “{{optionValue}}” và không thể khôi phục. Bạn có chắc chắn muốn xoá không?",
+      "addPacksizeSuccess": "Thêm đơn vị quy đổi thành công!",
+      "deleteDefaultOption": "Không thể xóa phiên bản sản phẩm duy nhất!",
+      "validMinValue": "Tồn tối thiểu phải nhỏ hơn hoặc bằng tồn tối đa!",
+      "validMaxValue": "Tồn tối đa phải lớn hơn hoặc bằng tồn tối thiểu!",
+      "createVariantSuccess": "Tạo phiên bản sản phẩm thành công ",
+      "currentVariantName": "Tên phiên bản hiện tại",
+      "newVariantName": "Tên phiên bản mới",
+      "suggestUpdateVariantName": "Bạn đang điều chỉnh tên sản phẩm thành <strong>{{productName}}</strong>. Bạn có muốn thay tên các phiên bản theo tên sản phẩm mới không?"
+    },
+    "fields": {
+      "variantName": "Tên phiên bản sản phẩm",
+      "variantNamePacksize": "Tên phiên bản quy đổi"
+    }
+  },
+  "composite": {
+    "suggest": {
+      "quantity": "Số lượng"
+    },
+    "fields": {
+      "stt": "STT",
+      "image": "Ảnh",
+      "sku": "Mã SKU",
+      "compositeItem": "Phiên bản sản phẩm",
+      "quantity": "Số lượng",
+      "salePrice": "Giá bán lẻ",
+      "toMoney": "Thành tiền",
+      "totalMoney": "Tổng tiền thành phần"
+    }
+  },
+  "common": {
+    "contents": {
+      "duplicateBarcode": "Mã barcode của sản phẩm đã tồn tại trên hệ thống. Bạn có muốn tiếp tục không?",
+      "duplicateBarcodeCreate": "Thông tin mã barcode của các phiên bản đang bị trùng nhau. Bạn có muốn tiếp tục không?"
+    },
+    "titles": {
+      "updateProduct": "Cập nhật sản phẩm",
+      "duplicateBarcode": "Mã barcode đã tồn tại",
+      "duplicateBarcodeCreate": "Thông tin mã barcode của phiên bản bị trùng"
+    }
+  },
+  "actionLog": {
+    "title": "Thông tin sản phẩm",
+    "removeVariant": "Xoá phiên bản {{name}}",
+    "productName": "Tên sản phẩm",
+    "category": "Loại sản phẩm",
+    "brand": "Nhãn hiệu",
+    "description": "Mô tả",
+    "tags": "Tags",
+    "settingManagementTitle": "Hình thức quản lý",
+    "product": "Hình thức quản lý",
+    "variant": {
+      "title": "Phiên bản sản phẩm",
+      "updateVariant": "Cập nhật: {{variantName}}",
+      "name": "Tên phiên bản",
+      "sellable": "Cho phép bán",
+      "taxable": "Áp dụng thuế",
+      "warranty": "Bảo hành",
+      "applyWarranty": "Áp dụng bảo hành",
+      "warrantyPolicy": "Chính sách bảo hành",
+      "result": {
+        "yes": "Có",
+        "no": "Không"
+      },
+      "apply": {
+        "yes": "Áp dụng",
+        "no": "Không áp dụng"
+      },
+      "sku": "Mã SKU",
+      "barcode": "Barcode",
+      "weight": "Khối lượng",
+      "locationInit": "Chi nhánh khởi tạo kho",
+      "initStock": "Tồn ban đầu",
+      "initPrice": "Giá vốn",
+      "unit": "Đơn vị tính",
+      "retailPrice": "Giá bán lẻ",
+      "wholeSalePrice": "Giá bán buôn",
+      "importPrice": "Giá nhập"
+    },
+    "opt": "Thuộc tính",
+    "namePacksize": "Đơn vị quy đổi",
+    "medicine": {
+      "type": "Thuốc",
+      "code": "Mã thuốc",
+      "registrationNo": "Số đăng ký",
+      "content": "Hoạt chất chính",
+      "element": "Hàm lượng",
+      "packing": "Quy cách đóng gói",
+      "manufacture": "Hãng sản xuất",
+      "manufactureCountry": "Nước sản xuất",
+      "drugRoute": "Đường dùng"
+    }
+  },
+  "printBarcode": {
+    "title": "In mã vạch",
+    "titleBack": "Quay lại danh sách sản phẩm",
+    "actions": {
+      "exit": "Thoát",
+      "exportPDFFile": "Xuất file PDF",
+      "printBarcode": "In mã vạch"
+    },
+    "body": {
+      "selectProducts": "Chọn sản phẩm in mã vạch",
+      "searchPlaceholder": "Tìm theo tên, mã SKU, hoặc quét mã Barcode ... (F3)"
+    }
+  }
+}

@@ -1,0 +1,250 @@
+{
+  "menuItems": {
+    "dashboard": {
+      "title": "Tổng quan"
+    },
+    "order": {
+      "title": "Đơn hàng",
+      "subMenus": {
+        "createOrder": {
+          "title": "Tạo đơn và giao hàng"
+        },
+        "listOrder": {
+          "title": "Danh sách đơn hàng"
+        },
+        "orderReturn": {
+          "title": "Khách trả hàng"
+        },
+        "fulfillment": {
+          "title": "Quản lý đóng gói"
+        },
+        "einvoice": {
+          "title": "Hóa đơn điện tử"
+        }
+      }
+    },
+    "shipping": {
+      "title": "Vận chuyển",
+      "subMenus": {
+        "dashboard": {
+          "title": "Tổng quan"
+        },
+        "shipment": {
+          "title": "Quản lý vận đơn"
+        },
+        "deliveryCollation": {
+          "title": "Đối soát COD và phí"
+        },
+        "shippers": {
+          "title": "Kết nối đối tác"
+        },
+        "setting": {
+          "title": "Cấu hình giao hàng"
+        }
+      }
+    },
+    "customer": {
+      "title": "Khách hàng",
+      "subMenus": {
+        "listCustomer": {
+          "title": "Danh sách khách hàng"
+        },
+        "listCustomerGroup": {
+          "title": "Nhóm khách hàng"
+        }
+      }
+    },
+    "product": {
+      "title": "Sản phẩm",
+      "subMenus": {
+        "listProduct": {
+          "title": "Danh sách sản phẩm"
+        },
+        "inventoryManager": {
+          "title": "Quản lý kho",
+          "subMenus": {
+            "variant": {
+              "title": "Toàn bộ phiên bản"
+            },
+            "composite": {
+              "title": "Combo sản phẩm"
+            },
+            "packsize": {
+              "title": "Sản phẩm quy đổi"
+            }
+          }
+        },
+        "purchaseOrder": {
+          "title": "Nhập hàng"
+        },
+        "stockAdjustment": {
+          "title": "Kiểm hàng"
+        },
+        "stockTransfer": {
+          "title": "Chuyển hàng"
+        },
+        "supplier": {
+          "title": "Nhà cung cấp"
+        },
+        "priceAdjustment": {
+          "title": "Điều chỉnh giá vốn"
+        }
+      }
+    },
+    "voucher": {
+      "title": "Sổ quỹ",
+      "subMenus": {
+        "dashboard": {
+          "title": "Tổng quan"
+        },
+        "receiptVoucher": {
+          "title": "Phiếu thu"
+        },
+        "paymentVoucher": {
+          "title": "Phiếu chi"
+        },
+        "reports": {
+          "title": "Sổ quỹ"
+        }
+      }
+    },
+    "warranty": {
+      "title": "Bảo hành",
+      "subMenus": {
+        "warrantyCard": {
+          "title": "Phiếu bảo hành"
+        },
+        "warrantyClaimCard": {
+          "title": "Yêu cầu bảo hành"
+        },
+        "warrantyTerm": {
+          "title": "Chính sách bảo hành"
+        }
+      }
+    },
+    "report": {
+      "title": "Báo cáo",
+      "subMenus": {
+        "dashboard": {
+          "title": "Tổng quan"
+        },
+        "analytic": {
+          "title": "Báo cáo bán hàng"
+        },
+        "purchaseOrder": {
+          "title": "Báo cáo nhập hàng"
+        },
+        "inventorie": {
+          "title": "Báo cáo kho"
+        },
+        "finance": {
+          "title": "Báo cáo tài chính"
+        },
+        "customer": {
+          "title": "Báo cáo khách hàng"
+        }
+      }
+    },
+    "setting": {
+      "title": "Cấu hình"
+    },
+    "pos": {
+      "title": {
+        "ver1": "Bán tại quầy",
+        "ver2": "Bán hàng"
+      }
+    },
+    "fpage": {
+      "title": "Kênh Social"
+    },
+    "marketplace": {
+      "title": "Sàn TMĐT"
+    },
+    "bizwebChannel": {
+      "adminWebsite": "Quản trị Website",
+      "reportSync": "Báo cáo đồng bộ",
+      "product": "Sản phẩm",
+      "order": "Đơn hàng",
+      "setting": "Cấu hình",
+      "error": "Danh sách lỗi"
+    },
+    "webOrder": {
+      "title": "Đặt hàng Online"
+    },
+    "advanced": {
+      "title": "Ứng dụng",
+      "subMenus": {
+        "saleOff": {
+          "title": "Khuyến mại",
+          "subMenus": {
+            "listSaleOff": {
+              "title": "Quản lý khuyến mại"
+            },
+            "coupon": {
+              "title": "Quản lý mã giảm giá"
+            },
+            "setting": {
+              "title": "Cấu hình"
+            }
+          }
+        },
+        "loyaltie": {
+          "title": "Tích điểm",
+          "subMenus": {
+            "dashboard": {
+              "title": "Tổng quan"
+            },
+            "customer": {
+              "title": "Khách hàng"
+            },
+            "loyaltyCard": {
+              "title": "Hạng thẻ tích điểm"
+            },
+            "loyaltyAdjustment": {
+              "title": "Điều chỉnh điểm"
+            },
+            "setting": {
+              "title": "Cấu hình"
+            }
+          }
+        },
+        "sapoExpress": {
+          "title": "Sapo Express",
+          "subMenus": {
+            "listCrossChecking": {
+              "title": "Đối soát"
+            },
+            "deliveryOrder": {
+              "title": "Danh sách vận đơn"
+            }
+          }
+        },
+        "allApp": {
+          "title": "Tất cả ứng dụng"
+        }
+      }
+    },
+    "crmMarketing": {
+      "title": "Marketing",
+      "subMenus": {
+        "list": {
+          "title": "Danh sách chiến dịch"
+        },
+        "report": {
+          "title": "Báo cáo chiến dịch"
+        },
+        "setting": {
+          "title": "Cấu hình"
+        }
+      }
+    },
+    "grabMart": {
+      "title": "Grabmart"
+    },
+    "loyalty": {
+      "title": "Loyalty"
+    }
+  },
+  "labelSaleChannelArea": "Kênh bán hàng",
+  "textButtonAddSaleChannel": "Thêm kênh bán hàng"
+}

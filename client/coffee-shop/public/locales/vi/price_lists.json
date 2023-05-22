@@ -1,0 +1,43 @@
+{
+    "back": "Quay lại Danh sách chính sách giá",
+    "PriceListPage":{
+        "setupPrice": "Thiết lập giá",
+        "descriptionSetup": "Thông tin được sử dụng để Sapo và khách hàng liên hệ đến bạn",
+        "managePriceList":"Quản lý chính sách giá",
+        "descriptionManage": "Bên cạnh 3 chính sách giá mặc định được áp dụng khi bán hàng và nhập hàng, bạn có thể bổ sung thêm các giá phù hợp với nhu cầu kinh doanh của cửa hàng.",
+        "buttonAddPriceList":"Thêm chính sách giá",
+        "editPrice":"Sửa giá khi bán hàng",
+        "salePriceDefault": "Giá bán hàng mặc định",
+        "purchase": "Giá nhập hàng mặc định",
+        "suggestionPrice": "Sử dụng chức năng gợi ý giá bán gần nhất",
+        "column":{
+            "name": "Tên",
+            "code": "Mã",
+            "typePrice": "Loại giá",
+            "default": "Mặc định"
+        }
+    },
+    "PriceListContant":{
+        "noneAll": "Không cho phép sửa toàn kênh bán hàng",
+        "online": "Chỉ áp dụng cho bán online - Sửa giá và chiết khấu",
+        "onlineDiscount": "Chỉ áp dụng cho bán online - Sửa chiết khấu",
+        "pos": "Chỉ áp dụng tại quầy - Sửa giá và chiết khấu",
+        "posDiscount": "Chỉ áp dụng tại quầy - Sửa chiết khấu",
+        "all": "Áp dụng toàn kênh bán hàng - Sửa giá và chiết khấu",
+        "allDiscount": "Áp dụng toàn kênh bán hàng - Sửa chiết khấu"
+    },
+    "Dialog": {
+        "titleCreate": "Thêm chính sách giá",
+        "titleUpdate": "Cập nhật chính sách giá",
+        "titleDelete": "Xoá chính sách giá",
+        "content": "Bạn có muốn xóa chính sách giá này không? Hành động này không thể khôi phục.",
+        "name": "Tên chính sách giá",
+        "code": "Mã chính sách giá",
+        "placeholderName": "Giá bán lẻ",
+        "placeholderCode": "BANLE",
+        "apply": "Áp dụng cho:",
+        "sale": "Bán hàng",
+        "purchase": "Nhập hàng",
+        "confirm": "Xác nhận"
+    }
+}

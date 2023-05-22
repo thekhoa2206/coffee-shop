@@ -1,0 +1,37 @@
+{
+    "registration": {
+        "promptMessage": "Kích hoạt thành viên để tích điểm và xét hạng thẻ cho khách hàng",
+        "activateSuccess": "Khách hàng đã được kích hoạt chương trình tích điểm",
+        "inactiveCustomerNotify": "Khách hàng chưa được kích hoạt điểm và hạng thành viên",
+        "activateNow": "Kích hoạt ngay"
+    },
+    "note": "Lưu ý",
+    "phoneChangeWarning": "Sau khi đổi số điện thoại khách hàng, <b>điểm tích luỹ</b> và <b>hạng thành viên</b> của khách hàng có thể được xoá và tính lại từ đầu. Bạn có muốn tiếp tục đổi số điện thoại khách hàng?",
+    "releaseInfo": {
+        "title": "Ra mắt hệ thống Loyalty tích điểm đa kênh",
+        "description": "Mang đến giải pháp giữ chân khách hàng thông qua các chương trình thành viên thân thiết áp dụng trên cả website và tại cửa hàng",
+        "features": [
+            "Phân nhóm khách hàng, hạng thẻ thành viên theo nhiều tiêu chí",
+            "Khách hàng mua tại shop hay trên website đều có thể được tích điểm, đổi điểm",
+            "Gửi các chương trình chăm sóc, ưu đãi, khuyến mại đến từng nhóm khách hàng"
+        ],
+        "explore": "Tìm hiểu thêm",
+        "upgradeNow": "Nâng cấp ngay",
+        "useNow": "Sử dụng ngay"
+    },
+    "upgradeToV2": {
+        "title": "Xác nhận nâng cấp lên Sapo Loyalty - Tích điểm đa kênh",
+        "description": "Sapo hỗ trợ bạn nâng cấp tự động từ ứng dụng Tích điểm cũ lên Sapo Loyalty để có thể tích điểm và sử dụng điểm đa kênh, các thông tin, dữ liệu tích điểm cũ được chuyển đổi tự động, bao gồm:",
+        "features": [
+            "Cài đặt chương trình tích điểm, hạng thẻ hiện tại",
+            "Cấu hình điều kiện tích điểm",
+            "Điểm và hạng thẻ của toàn bộ khách hàng có số điện thoại"
+        ],
+        "notes": [
+            "Sau khi nâng cấp thành công, Sapo tự động đóng ứng dụng Tích điểm trước đây, bạn truy cập vào mục Loyalty để quản lý điểm, hạng thẻ của khách hàng và chỉnh sửa cài đặt.",
+            "Quá trình nâng cấp có thể kéo dài từ <b>10 phút lên tới 60 phút</b> phụ thuộc vào số lượng khách hàng hiện tại, trong quá trình nâng cấp có thể ảnh hưởng đến việc tích điểm và sử dụng điểm cho khách hàng, Sapo khuyến khích bạn chọn nâng cấp khi cửa hàng đã dừng giao dịch."
+        ],
+        "upgrade": "Bắt đầu nâng cấp",
+        "migrationInProgress": "Quá trình nâng cấp đã được bắt đầu!"
+    }
+}

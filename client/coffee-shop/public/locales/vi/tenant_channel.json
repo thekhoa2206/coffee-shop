@@ -1,0 +1,17 @@
+{
+  "page": {
+    "title": "Quản lý kênh bán hàng",
+    "description": "Bạn có thể đưa sản phẩm tới tay khách hàng thông qua các kênh bán hàng.",
+    "linkHelp": "Xem thêm hướng dẫn",
+    "linkConnect": "Kết nối kênh",
+    "linkAccess": "Truy cập kênh",
+    "linkDisconnect": "Tắt kênh",
+    "linkSetting": "Cài đặt kênh"
+  },
+  "Dialog": {
+    "titleDelete": "Tắt kênh",
+    "disconnectBtn": "Tắt kênh",
+    "deleteFirst": "Bạn có chắc chắn muốn tắt ",
+    "deleteLast": "? Thao tác này không thể khôi phục."
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "error": {
+    "notHaveAccess": "Bạn không có quyền truy cập chức năng này",
+    "noData": "Chưa có dữ liệu",
+    "errorCommon": "Có lỗi xảy ra",
+    "notHaveAction": "Bạn không có quyền thực hiện thao tác này",
+    "unexpectedError": "Đã có lỗi xảy ra, xin vui lòng thử lại!"
+  }
+}

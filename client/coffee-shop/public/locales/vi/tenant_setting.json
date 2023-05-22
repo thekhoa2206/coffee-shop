@@ -1,0 +1,99 @@
+{
+  "actionLog": {
+    "apply": {
+      "true": "Áp dụng",
+      "false": "Không áp dụng"
+    },
+    "generalInformation": {
+      "title": "Thiết lập thuế mặc định",
+      "defaultSalesTax": "Thuế bán hàng mặc định",
+      "defaultPurchaseTax": "Thuế nhập hàng mặc định",
+      "taxTreatment": {
+        "title": "Thuế",
+        "inclusive": "Giá đã bao gồm thuế",
+        "exclusive": "Giá chưa bao gồm thuế"
+      }
+    },
+    "inventoryManager": {
+      "title": "Thông tin quản lý kho",
+      "intRestrictInventoryInfo": {
+        "title": "Hiển thị tồn kho trên các trang danh sách",
+        "true": "Theo chi nhánh được phân quyền",
+        "false": "Theo tổng tồn kho"
+      },
+      "allowNegotivedDraftCreateOrder": "Cho phép tạo đơn đặt hàng âm",
+      "allowNegotivedFinalizeCreateOrder": "Cho phép duyệt đơn âm",
+      "allowNegotivedPackAndShip": "Cho phép đóng gói và tạo phiếu giao hàng âm",
+      "allowedNegotivedSell": "Cho phép xuất kho âm",
+      "allowOtherLocationOrderReturn": "Cho phép khách trả hàng tại chi nhánh khác chi nhánh mua",
+      "allowShowInventoryStockAdjustment": "Cho phép hiển thị thông tin tồn chi nhánh khi nhân viên kho thực hiện kiểm hàng"
+    },
+    "onhandManager": {
+      "title": "Quản lý tồn kho",
+      "allowProductSerial": "Quản lý sản phẩm theo serial/imei",
+      "allowProductLots": "Quản lý sản phẩm theo lô - hạn sử dụng",
+      "allowStockTransferPrice": "Cho phép điều chỉnh giá trị chuyển hàng giữa các chi nhánh"
+    },
+    "warrantyProduct": {
+      "title": "Quản lý sản phẩm bảo hành",
+      "allowWarranty": "Quản lý sản phẩm bảo hành."
+    },
+    "salesManager": {
+      "title": "Thiết lập quản lý bán hàng",
+      "multiplePrint": {
+        "title": "In nhiều liên hoá đơn",
+        "1": "In 1 liên",
+        "2": "In 2 liên",
+        "3": "In 3 liên",
+        "4": "In 4 liên"
+      },
+      "paymentMethod": "Phương thức thanh toán mặc định",
+      "defaultDeliveryService": {
+        "title": "Phương thức giao hàng mặc định",
+        "pickup": "Nhận tại cửa hàng",
+        "courier": "Dịch vụ giao hàng"
+      },
+      "allowedChangeTime": "Cho phép thay đổi thời gian bán hàng trên màn hình bán hàng",
+      "orderProcessStatus": "Áp dụng thêm trạng thái xử lý đơn hàng",
+      "allowGeneralReasonSetting": "Áp dụng lý do hủy trả",
+      "allowNoRefundOrderExchangeAmount": "Không hoàn tiền cho khách khi đổi trả hàng có giá trị nhỏ hơn",
+      "allowElectronicScale": "Cho phép thiết lập cân điện tử",
+      "allowCancelAfterShipped": "Cho phép hủy đơn hàng sau khi xuất kho",
+      "allowSaleLotsDateExpire": "Cho phép bán lô hàng đã hết hạn sử dụng",
+      "allowedChangePrice": {
+        "title": "Sửa giá khi bán hàng",
+        "none_all": "Không cho phép sửa toàn kênh bán hàng",
+        "online": "Chỉ áp dụng cho bán online - Sửa giá và chiết khấu",
+        "online_discount": "Chỉ áp dụng cho bán online - Sửa chiết khấu",
+        "pos": "Chỉ áp dụng tại quầy - Sửa giá và chiết khấu",
+        "pos_discount": "Chỉ áp dụng tại quầy - Sửa chiết khấu",
+        "all": "Áp dụng toàn kênh bán hàng - Sửa giá và chiết khấu",
+        "all_discount": "Áp dụng toàn kênh bán hàng - Sửa chiết khấu"
+      },
+      "salePriceList": "Giá bán hàng mặc định",
+      "purchasePriceList": "Giá nhập hàng mặc định",
+      "allowSuggestNearlyPrice": "Sử dụng chức năng gợi ý giá bán gần nhất",
+      "paymentRequireFillingStr": {
+        "title": "Nhập tiền thanh toán",
+        "none": "Không áp dụng",
+        "require": "Bắt buộc thanh toán toàn bộ",
+        "suggest": "Chỉ gợi ý tiền thanh toán"
+      },
+      "allowOfflineSale": "Cho phép tự động chuyển sang chế độ bán hàng offline khi kết nối internet bị gián đoạn",
+      "allowIndependentPacking": "Sử dụng quy trình đóng gói độc lập",
+      "allowShipmentHandover": "Cho phép quản lý bàn giao và hoàn trả vận đơn"
+    },
+    "socialLogin": {
+      "title": "Đăng nhập Facebook/Google",
+      "allowedSocialLogin": "Cho phép đăng nhập bằng Facebook/Google"
+    },
+    "invoiceManager": {
+      "title": "Phát hành hóa đơn điện tử",
+      "allowPublishInvoice": "Cho phép phát hành hóa đơn điện tử cho mỗi đơn hàng"
+    },
+    "voucherManager": {
+      "title": "Thiết lập phiếu thu chi",
+      "allowIssuedOnVoucher": "Cho phép điều chỉnh ngày ghi nhận khi tạo phiếu thu chi"
+    }
+  }
+}

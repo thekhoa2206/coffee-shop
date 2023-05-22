@@ -1,0 +1,36 @@
+{
+    "name": "nhà cung cấp",
+    "addNewSupplier": "Thêm mới nhà cung cấp",
+    "quickCreate": {
+        "placeholderSearch": "Tìm theo tên, SĐT, mã nhà cung cấp ... (F2)",
+        "title": "Thêm mới nhà cung cấp",
+        "addSuccess": "Thêm nhà cung cấp thành công",
+        "validate": {
+            "nameNullable": "Tên nhà cung cấp không được để trống!",
+            "nameOutOfLength": "Tên nhà cung cấp không được quá 255 ký tự!",
+            "addressNullable": "Địa chỉ không được để trống!",
+            "addressOutOfLength": "Địa chỉ không được quá 255 ký tự!",
+            "invalidPhoneNumber": "Số điện thoại không đúng định dạng!",
+            "invalidEmail": "Email không đúng định dạng!"
+        },
+        "field": {
+            "name": "Tên nhà cung cấp",
+            "address": "Địa chỉ",
+            "phoneNumber": "Số điện thoại",
+            "supplierGroup": "Nhóm nhà cung cấp",
+            "district": "Khu vực",
+            "ward": "Phường xã"
+        },
+        "common": {
+            "pickupSupplierGroup": "Chọn nhóm nhà cung cấp",
+            "pickupCityName": "Chọn Tỉnh/Thành phố",
+            "pickupDistrictName": "Quận/Huyện",
+            "pickupCityAndDistrictName": "Chọn Tỉnh/Thành phố - Quận/Huyện",
+            "pickupWardName": "Chọn Phường/Xã",
+            "placeholderSelectSupplierGroup": "Chọn nhóm nhà cung cấp",
+            "placeholderSupplierGroup": "Tìm kiếm nhóm nhà cung cấp",
+            "placeholderSearchDistrict": "Tìm kiếm khu vực",
+            "placeholderSearchWard": "Tìm kiếm phường xã"
+        }
+    }
+}

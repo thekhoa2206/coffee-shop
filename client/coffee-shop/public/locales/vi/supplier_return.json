@@ -1,0 +1,194 @@
+{
+  "common": {
+    "paymentMethod": "Phương thức thanh toán",
+    "selectPaymentMethod": "Chọn phương thức thanh toán",
+    "paymentAmount": "Số tiền thanh toán",
+    "reference": "Tham chiếu",
+    "whoPay": "Người thanh toán"
+  },
+  "index": {
+    "title": "Danh sách hoàn trả Nhà cung cấp",
+    "titlePurchaseOrder": "Quản lý đơn nhập hàng",
+    "serialNotExists": "Mã serial {{serial}} không tồn tại trong hệ thống",
+    "dupSerial": "Mã serial {{serial}} đã có trong đơn trả",
+    "filter": {
+      "titleTabAll": "Tất cả đơn trả",
+      "placeHolderFilterSearch": "Tìm theo mã đơn nhập hàng, tên nhà cung cấp",
+      "code": "Mã đơn hoàn trả",
+      "purchase_order_ids": "Mã đơn nhập hàng",
+      "created_on": "Ngày tạo đơn",
+      "supplier": "Tên nhà cung cấp",
+      "location": "Chi nhánh",
+      "status": "Trạng thái",
+      "financial_status": "Hoàn tiền",
+      "account_name": "Nhân viên tạo phiếu",
+      "modified_on": "Ngày cập nhật cuối",
+      "interconnection_status": "Trạng thái liên thông dược"
+    },
+    "columns": {
+      "code": "Mã đơn hoàn trả",
+      "created_on": "Ngày tạo đơn",
+      "purchase_order_code": "Mã đơn nhập hàng",
+      "supplier": "Tên nhà cung cấp",
+      "location": "Chi nhánh",
+      "status": "Trạng thái",
+      "financial_status": "Hoàn tiền",
+      "refundable_amount": "Tổng tiền hoàn",
+      "refund_reason": "Lý do hoàn trả",
+      "account_name": "Nhân viên tạo phiếu",
+      "last_modify_on": "Ngày cập nhật cuối",
+      "interconnection_status": "Trạng thái liên thông dược"
+    },
+    "actions": {
+      "quickCreateReturn": "Tạo đơn trả nhanh",
+      "btnChoosePurchaseOrder": "Chọn đơn nhập để trả"
+    },
+    "choosePurchaseOrder": {
+      "title": "Chọn đơn nhập để trả",
+      "searchPlaceholder": "Tìm kiếm theo mã đơn nhập hàng, tên, SĐT nhà cung cấp",
+      "purchaseOrderColumn": {
+        "code": "Mã đơn nhập hàng",
+        "createdOn": "Ngày tạo",
+        "account": "Nhân viên",
+        "supplier": "Nhà cung cấp",
+        "totalPrice": "Giá trị đơn nhập hàng"
+      }
+
+    }
+  },
+  "firstScreen": {
+    "subcontent1": "Cửa hàng của bạn chưa có đơn hoàn trả nhà cung cấp",
+    "subcontent2": "Tất cả các đơn hoàn trả hàng nhập cho nhà cung cấp sẽ được quản lý tại đây!",
+    "or": "hoặc"
+  },
+  "create": {
+    "title": "Tạo đơn hoàn trả Nhà cung cấp",
+    "createButton": "Tạo đơn hoàn trả",
+    "page": {
+      "supplier": {
+        "title": "Thông tin nhà cung cấp",
+        "debt": "Nợ hiện tại",
+        "totalPurchaseOrder": "Tổng đơn nhập",
+        "totalReturnAmount": "Giá trị hoàn"
+      },
+      "information": {
+        "title": "Thông tin khác",
+        "refundLocation": "Chi nhánh trả hàng",
+        "reference": "Tham chiếu",
+        "pickupLocation": "Chọn chi nhánh",
+        "refundReason": "Lý do hoàn trả",
+        "typeRefundReason": "Nhập lý do hoàn trả"
+      },
+      "product": {
+        "title": "Thông tin sản phẩm trả",
+        "refundAmount": "Giá trị hàng trả",
+        "refundAmountTooltip": "Giá trị hàng trả = Tổng tiền - Chiết khấu + Thuế phải trả thêm",
+        "totalLineAmount": "Tổng tiền ({{lineQuantity}} sản phẩm)",
+        "tax": "Thuế",
+        "totalTaxAmountTooltip": "Tổng tiền thuế của các sản phẩm trả.",
+        "taxInLineTooltip": "Thuế đã bao gồm trong SP",
+        "taxNeededTooltip": "Thuế phải trả thêm",
+        "discount": "Chiết khấu",
+        "refundPrice": "Giá trị hoàn tiền",
+        "refundPriceFromSupplier": "Giá trị cửa hàng có thể được nhận lại từ NCC.",
+        "refundPriceFormula": "Giá trị hoàn tiền = Giá trị hàng trả + Chi phí hoàn trả - Giảm trừ",
+        "emptyProduct": "Đơn hoàn trả chưa có sản phẩm nào",
+        "separateProduct": "Tách dòng",
+        "landed_cost_amount": "Chi phí hoàn trả",
+        "deduction_amount": "Giảm trừ",
+        "fields": {
+          "index": "STT",
+          "image": "Ảnh",
+          "name": "Tên sản phẩm",
+          "unit": "Đơn vị",
+          "quantity": "Số lượng",
+          "price": "Đơn giá",
+          "discount": "Chiếu khấu",
+          "tax": "Thuế",
+          "amount": "Thành tiền"
+        }
+      }
+    },
+    "validate": {
+      "lineItem": {
+        "discount": "Chiết khấu sản phẩm không được lớn hơn giá trị sản phẩm",
+        "notEnoughQuantity": "Sản phẩm {{sku}} không đủ số lượng xuất trả",
+        "invalidQuantity": "Số lượng xuất trả không được để trống và tối thiểu bằng 1",
+        "inactiveSerial": "Mã serial {{serial}} không đủ điều kiện xuất trả",
+        "nonLotsDate": "Sản phẩm có mã SKU {{sku}} phải truyền mã lô",
+        "nonSerial": "Sản phẩm có mã SKU {{sku}} phải truyền mã serial",
+        "maxSerial": "Số lượng serial tối đa không vượt quá 100 mã/sản phẩm",
+        "maxLotsDate": "Số lượng lô tối đa không vượt quá 20 mã/sản phẩm"
+      },
+      "discount": "Chiết khấu không được lớn hơn giá trị đơn hàng",
+      "deduction_amount": "Giảm trừ không được lớn hơn tổng giá trị hàng trả và chi phí hoàn trả",
+      "transaction_amount": "Số tiền thanh toán không được lớn hơn giá trị đơn hàng",
+      "total_price": "Tổng giá trị sản phẩm trả không được quá 100 tỷ",
+      "payment_method": "Vui lòng chọn phương thức thanh toán",
+      "deduction_reason": "Lý do giảm trừ không được quá 500 ký tự",
+      "nonProduct": "Thông tin sản phẩm không được để trống",
+      "nonSupplier": "Thông tin nhà cung cấp không được để trống",
+      "reasonLength": "Lý do hoàn trả không được quá 500 ký tự",
+      "nonLocation": "Chi nhánh trả không được để trống",
+      "msgOutOfStock": "không được nhập số lượng trả lớn hơn có thể hoàn trả"
+    }
+  },
+  "detail": {
+    "title": "Chi tiết đơn trả",
+    "page": {
+      "billing": {
+        "refundedAmount": "Đơn trả hàng đã được hoàn tiền toàn bộ",
+        "billingInformation": "Thông tin thanh toán",
+        "dontNeedPayment": " Đơn trả hàng không yêu cầu hoàn tiền",
+        "confirmPayment": "Xác nhận thanh toán",
+        "supplierNeedRefund": "NCC cần hoàn lại",
+        "received": "Đã nhận",
+        "notReceived": "Còn lại chưa nhận",
+        "confirmTransaction": "Xác nhận thanh toán cho đơn hoàn trả {{code}}",
+        "success": "thành công"
+      },
+      "product": {
+        "normalDiscount": "Chiết khấu thường"
+      }
+    }
+  },
+  "actionLog": {
+    "title": "Thông tin đơn trả",
+    "productInformation": "Thông tin sản phẩm",
+    "status": {
+      "name": "Trạng thái",
+      "active": "Đang giao dịch",
+      "completed": "Hoàn thành"
+    },
+    "note": "Lý do hoàn trả",
+    "discrepancyReason": "Lý do giảm trừ",
+    "accountOwner": "Chủ cửa hàng",
+    "supplierName": "Nhà cung cấp",
+    "assignee": "Nhân viên trả hàng",
+    "totalLineAmount": "Tổng tiền đơn trả hàng",
+    "deliveryFee": "Phí giao hàng",
+    "totalDiscount": "Chiết khấu tổng đơn trả hàng",
+    "totalAmount": "Tổng tiền phải trả",
+    "createdSupplierReturnName": "Nhân viên trả hàng",
+    "taxTreatment": {
+      "name": "Áp dụng thuế",
+      "inclusive": "Giá đã bao gồm thuế",
+      "exclusive": "Giá chưa bao gồm thuế"
+    },
+    "location": "Chi nhánh tạo đơn trả hàng",
+    "createdOn": "Ngày tạo đơn trả hàng",
+    "product": "Sản phẩm",
+    "quantity": "Số lượng",
+    "price": "Đơn giá",
+    "discount": "Chiết khấu",
+    "tax": "Thuế",
+    "amount": "Thành tiền",
+    "transactions": {
+      "title": "Thông tin thanh toán",
+      "processedOn": "Ngày thanh toán",
+      "paymentMethodName": "Phương thức thanh toán",
+      "amount": "Giá trị"
+    },
+    "locationName": "Chi nhánh"
+  }
+}

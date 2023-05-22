@@ -1,0 +1,102 @@
+{
+  "index": {
+    "title": "Danh sách sản phẩm combo",
+    "name": "sản phẩm combo",
+    "titleTabAll": "Tất cả combo",
+    "placeHolderFilterSearch": "Tìm theo tên và mã combo",
+    "header": {
+      "btnCreateComposite": "Thêm combo"
+    },
+    "product": "sản phẩm",
+    "column": {
+      "sku": "Mã sku",
+      "ingredient": "Thành phần",
+      "image": "Ảnh",
+      "name": "Tên combo",
+      "categoryName": "Loại",
+      "brandName": "Nhãn hiệu",
+      "available": "Có thể bán",
+      "onHand": "Tồn kho",
+      "incoming": "Hàng đang về",
+      "onWay": "Hàng đang giao",
+      "committed": "Đang giao dịch",
+      "status": "Trạng thái",
+      "createdOn": "Ngày khởi tạo",
+      "modifiedOn": "Cập nhật cuối",
+      "giaNhap": "Giá nhập",
+      "banLe": "Giá bán lẻ",
+      "banBuon": "Giá bán buôn"
+    },
+    "exportFile": {
+      "allComposites": "Tất cả sản phẩm combo",
+      "currentPage": "Sản phẩm combo trên trang này",
+      "selected": "Các sản phẩm combo được chọn",
+      "withSearchResult": "sản phẩm combo phù hợp với kết quả tìm kiếm hiện tại"
+    },
+    "bulkAction": {
+      "checkInventory": "Kiểm tra tồn kho",
+      "printBarcode": "In mã vạch",
+      "taxable": "Áp dụng thuế",
+      "sellable": "Cho phép bán",
+      "delete": "Xóa sản phẩm combo",
+      "notSelectStatusUpdate": "Chưa chọn trạng thái cập nhật",
+      "dialogProcessUpdate": {
+        "titleSuccess": "Sản phẩm combo cập nhật thành công: ",
+        "titleFail": "Sản phẩm combo cập nhật thất bại",
+        "itemUpdateSuccess": "Cập nhật sản phẩm combo thành công"
+      },
+      "dialogDelete": {
+        "title": "Xóa sản phẩm combo",
+        "content": "Thao tác này sẽ xóa {{count}} sản phẩm combo bạn đã chọn. Thao tác này không thể khôi phục.",
+        "labelDeleteSuccess": "Sản phẩm combo cập nhật thành công",
+        "labelDeleteFail": "Sản phẩm combo cập nhật không thành công"
+      },
+      "dialogUpdateTaxable": {
+        "title": "Cập nhật tình trạng áp dụng thuế",
+        "description": "Thao tác này sẽ cập nhật áp dụng thuế cho {{count}} sản phẩm combo.",
+        "select": {
+          "labelSelect": "Chọn trạng thái muốn cập nhật:",
+          "placeholder": "Chọn trạng thái",
+          "applyTax": "Áp dụng thuế",
+          "notApplyTax": "Không áp dụng thuế"
+        }
+      },
+      "dialogUpdateSellable": {
+        "title": "Cập nhật cho phép bán",
+        "description": "Thao tác này sẽ cập nhật cho phép bán cho {{count}} sản phẩm combo.",
+        "select": {
+          "labelSelect": "Chọn trạng thái muốn cập nhật:",
+          "placeholder": "Chọn trạng thái",
+          "applySellable": "Cho phép bán",
+          "notApplySellable": "Không cho phép bán"
+        }
+      }
+    }
+  },
+  "firstScreen": {
+    "btnCreateProductOther": "Thêm sản phẩm khác",
+    "tenantEmptyProduct": "Cửa hàng của bạn chưa có sản phẩm combo nào!",
+    "addOrImportProduct": "Thêm mới sản phẩm hoặc nhập danh sách các sản phẩm combo của bạn",
+    "importFileExcel": "Nhập file",
+    "descriptionButtonImportProducts": "Sử dụng khi bạn muốn nhập 1 danh sách combo",
+    "downloadFileTemplate": "Tải file mẫu",
+    "descriptionButtonCreateProduct": "Sử dụng khi bạn muốn tạo mới 1 combo"
+  },
+  "detail": {
+    "title": "Chi tiết sản phẩm combo",
+    "titleBack": "Quay lại danh sách sản phẩm combo",
+    "column": {
+      "stt": "STT",
+      "image": "Ảnh",
+      "sku": "Mã SKU",
+      "variant": "Phiên bản sản phẩm",
+      "status": "Trạng thái sản phẩm",
+      "quantity": "Số lượng",
+      "retailPrice": "Giá bán lẻ",
+      "intoMoney": "Thành tiền",
+      "totalMoney": "Tổng tiền thành phần"
+    },
+    "notFoundVariant": "Tất cả sản phẩm thành phần đã bị xoá",
+    "ingredientCombo": "Thành phần combo"
+  }
+}

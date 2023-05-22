@@ -1,0 +1,61 @@
+{
+  "name": "lô sản phẩm",
+  "nameCapitalize": "Lô sản phẩm",
+  "index": {
+    "title": "Quản lý lô sản phẩm",
+    "titleTabAll": "Tất cả lô sản phẩm",
+    "placeHolderFilterSearch": "Tìm kiếm theo mã lô, mã SKU",
+    "dialogEdit": {
+      "title": "Chi tiết lô",
+
+      "success": "Cập nhật thông tin lô thành công",
+      "errors": {
+        "mfgDateRequired": "Ngày sản xuất không được bỏ trống",
+        "expDateRequired": "Ngày hết hạn không được bỏ trống",
+        "validateDate": "Ngày hết hạn phải lớn hơn hoặc cùng ngày sản xuất."
+      }
+    },
+    "column": {
+      "lotsNumber": "Mã lô",
+      "manufactureDate": "Ngày sản xuất",
+      "expirationDate": "Ngày hết hạn",
+      "variantName": "Tên phiên bản sản phẩm",
+      "productName": "Tên sản phẩm",
+      "available": "Có thể bán",
+      "onHand": "Tồn kho",
+      "incoming": "Hàng đang về",
+      "onWay": "Hàng đang giao",
+      "committed": "Đang giao dịch",
+      "waitToPack": "Chờ đóng gói",
+      "createdOn": "Ngày khởi tạo",
+      "modifiedOn": "Cập nhật cuối"
+    },
+    "fieldsExport": {
+      "lotsDate": "Lô sản phẩm",
+      "name": "Tên phiên bản sản phẩm",
+      "manufacture_date": "Ngày sản xuất",
+      "location": "Chi nhánh",
+      "on_way": "Hàng đang giao",
+      "committed": "Đang giao dịch",
+      "sku": "Mã Sku",
+      "expiration_date": "Ngày hết hạn",
+      "onhand": "Tồn kho",
+      "incomming": "Hàng đang về",
+      "created_on": "Ngày tạo",
+      "code": "Mã lô",
+      "modified_on": "Ngày cập nhật",
+      "available": "Có thể bán",
+      "package": "Chờ đóng gói"
+    },
+    "exportFile": {
+      "allLotsDate": "Tất cả lô sản phẩm",
+      "currentLotsDatePage": "Lô sản phẩm trên trang này",
+      "lotsDateWithSearchResult": " lô sản phẩm phù hợp với kết quả tìm kiếm hiện tại"
+    }
+  },
+  "firstScreen": {
+    "contentFirst": "Cửa hàng của bạn chưa nhập kho cho sản phẩm lô date",
+    "contentLast": "Bạn cần vào mục “Nhập hàng” để nhập kho cho các sản phẩm lô date",
+    "btnImportProducts": "Thêm phiếu nhập hàng"
+  }
+}

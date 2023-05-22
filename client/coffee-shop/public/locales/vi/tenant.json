@@ -1,0 +1,23 @@
+{
+  "actionLog": {
+    "title": "Thông tin cửa hàng",
+    "storeLogo": "Logo cửa hàng",
+    "oldLogo": "Logo trước",
+    "currentLogo": "Logo hiện tại",
+    "information": {
+      "title": "Thông tin liên hệ",
+      "name": "Tên cửa hàng",
+      "email": "Địa chỉ email",
+      "phoneNumber": "Số điện thoại",
+      "fax": "Số fax",
+      "industry": "Lĩnh vực kinh doanh"
+    },
+    "address": {
+      "title": "Địa chỉ cửa hàng",
+      "address1": "Địa chỉ 1",
+      "address2": "Địa chỉ 2",
+      "city": "Tỉnh/Thành phố",
+      "district": "Quận/Huyện"
+    }
+  }
+}

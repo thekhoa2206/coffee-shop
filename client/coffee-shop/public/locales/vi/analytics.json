@@ -1,0 +1,231 @@
+{
+    "currency": "",
+    "salesReport": {
+        "title": "Báo cáo bán hàng",
+        "addAnalyticBtnText": "Thêm báo cáo",
+        "businessActivities": {
+            "title": "Hoạt động kinh doanh",
+            "sub": "Theo dõi doanh thu, chi phí và lợi nhuận của cửa hàng"
+        },
+        "inCome": {
+            "title": "Thông tin lợi nhuận",
+            "sub": "Lợi nhuận 7 ngày qua",
+            "tooltip": "Ghi nhận theo ngày giao hàng thành công"
+        },
+        "return": {
+            "title": "TRẢ HÀNG",
+            "sub": "7 ngày qua",
+            "tooltip": "Ghi nhận theo ngày trả hàng hoặc ngày hoàn tiền"
+        },
+        "payment": {
+            "title": "THANH TOÁN",
+            "sub": "7 ngày qua",
+            "tooltip": "Ghi nhận theo ngày thanh toán"
+        },
+        "order": {
+            "title": "ĐƠN HÀNG",
+            "sub": "7 ngày qua",
+            "tooltip": "Ghi nhận theo ngày tạo đơn"
+        },
+        "inComeMenu": {
+            "inComeSelect": "Chọn loại báo cáo",
+            "inComeByTime": "Lợi nhuận theo thời gian",
+            "inComeByVariant": "Lợi nhuận theo sản phẩm",
+            "inComeByOrder": "Lợi nhuận theo đơn hàng",
+            "inComeByProfitCustomer": "Lợi nhuận theo khách hàng",
+            "inComeByProfitGroupCustomer": "Lợi nhuận theo nhóm khách hàng",
+            "inComeByProfitSourceProduct": "Lợi nhuận theo nguồn bán hàng",
+            "inComeByProfitBranch": "Lợi nhuận theo chi nhánh",
+            "inComeSynthetic": "Báo cáo bán hàng tổng hợp"
+        },
+        "payMenu": {
+            "paySelect": "Chọn loại báo cáo",
+            "payByTime": "Báo cáo thanh toán theo thời gian",
+            "payByAccount": "Báo cáo thanh toán theo nhân viên",
+            "payByMethod": "Báo cáo theo phương thức thanh toán",
+            "payByBranch": "Báo cáo thanh toán theo chi nhánh"
+        },
+        "returnMenu": {
+            "returnSelect": "Chọn loại báo cáo",
+            "returnByOrder": "Trả hàng theo đơn hàng",
+            "returnByVariant": "Trả hàng theo sản phẩm"
+        },
+        "orderMenu": {
+            "orderSelect": "Chọn loại báo cáo",
+            "orderByOrder": "Báo cáo thống kê đơn hàng",
+            "orderBySellDetail": "Báo cáo bán hàng chi tiết"
+        },
+        "storeRevenue": {
+            "title": "DOANH THU CỬA HÀNG",
+            "revenueSevenDays": "7 ngày qua",
+            "sub": "Theo dõi doanh thu của cửa hàng",
+            "totalTooltip": "Ghi nhận theo ngày giao hàng thành công"
+        },
+        "deliveryInformation": {
+            "title": "Thông tin giao hàng",
+            "sub": "Theo dõi hoạt động giao hàng của cửa hàng"
+        },
+        "newOrders": {
+            "title": "ĐƠN HÀNG MỚI\n30 NGÀY QUA"
+        },
+        "saleMenu": {
+            "reportSelect": "Chọn loại báo cáo",
+            "revenueByMonth": "Báo cáo bán hàng theo thời gian",
+            "revenueByAccount": "Báo cáo bán hàng theo nhân viên",
+            "revenueByVariant": "Báo cáo bán hàng theo sản phẩm",
+            "revenueByOrder": "Báo cáo bán hàng theo đơn hàng",
+            "revenueByLocation": "Báo cáo bán hàng theo chi nhánh",
+            "revenueByChannel": "Báo cáo bán hàng theo nguồn bán hàng",
+            "revenueByCustomer": "Báo cáo bán hàng theo khách hàng",
+            "revenueByGroupCustomer": "Báo cáo bán hàng theo nhóm khách hàng",
+            "revenueByTax": "Báo cáo bán hàng theo thuế"
+        },
+        "link": {
+            "revenueByMonth": "/admin/analytics/business_activities?type=by_time",
+            "revenueByAccount": "/admin/analytics/business_activities?type=by_staff",
+            "revenueByVariant": "/admin/analytics/business_activities?type=by_product",
+            "revenueByOrder": "/admin/analytics/business_activities?type=by_order",
+            "revenueByLocation": "/admin/analytics/business_activities?type=by_location",
+            "revenueByChannel": "/admin/analytics/business_activities?type=by_source_order",
+            "revenueByCustomer": "/admin/analytics/business_activities?type=by_customer",
+            "revenueByGroupCustomer": "/admin/analytics/business_activities?type=by_group_customer",
+            "revenueByTax": "/admin/analytics/business_activities?type=by_tax",
+            "inComeByTime": "/admin/analytics/sale_orders/profit_time",
+            "inComeByVariant": " /admin/analytics/sale_orders/profit_product",
+            "inComeByOrder": "/admin/analytics/sale_orders/profit_oder",
+            "inComeByProfitCustomer": " /admin/analytics/sale_orders/profit_customer",
+            "inComeByProfitGroupCustomer": "/admin/analytics/sale_orders/profit_group_customer",
+            "inComeByProfitSourceProduct": "/admin/analytics/sale_orders/profit_source_product",
+            "inComeByProfitBranch": "/admin/analytics/sale_orders/profit_branch",
+            "inComeSynthetic": " /admin/analytics/sale_orders/synthetic",
+            "payByTime": "/admin/analytics/payment_details?type=by_time",
+            "payByAccount": "/admin/analytics/payment_details?type=by_staff",
+            "payByMethod": "/admin/analytics/payment_details?type=by_method",
+            "payByBranch": "/admin/analytics/payment_details?type=by_location",
+            "returnByOrder": "/admin/analytics/sale_orders/return_by_order",
+            "returnByVariant": "/admin/analytics/sale_orders/return_by_variant",
+            "orderByOrder": "/admin/analytics/sale_orders/statistical_order",
+            "orderBySellDetail": "/admin/reports/sales/by_end_day"
+        },
+        "suggest": "Gợi ý"
+    },
+    "fulfillmentReport": {
+        "storeFulfillment": {
+            "title": "THÔNG TIN GIAO HÀNG",
+            "billSevenDays": "7 ngày qua",
+            "sub": "Theo dõi vận đơn của cửa hàng",
+            "totalTooltip": "Ghi nhận theo ngày giao hàng thành công"
+        },
+        "menu": {
+            "reportSelect": "Chọn loại báo cáo",
+            "byMonth": "Tình hình giao hàng theo thời gian",
+            "byAccount": "Tình hình giao hàng theo nhân viên",
+            "byShipment": "Tình hình giao hàng theo vận đơn/phiếu giao hàng",
+            "byDelivery": "Tình hình giao hàng theo đối tác vận chuyển",
+            "byLocation": "Tình hình giao hàng theo chi nhánh/cửa hàng",
+            "byCustomer": "Tình hình giao hàng theo khách hàng",
+            "byChannel": "Tình hình giao hàng theo kênh bán hàng",
+            "bySource": "Tình hình giao hàng theo nguồn bán hàng"
+        },
+        "link": {
+            "byMonth": "/admin/analytics/shipment_details?type=by_time",
+            "byAccount": "/admin/analytics/shipment_details?type=by_account",
+            "byShipment": "/admin/analytics/shipment_details?type=by_shipment",
+            "byDelivery": "/admin/analytics/shipment_details?type=by_delivery",
+            "byLocation": "/admin/analytics/shipment_details?type=by_location",
+            "byCustomer": "/admin/analytics/shipment_details?type=by_customer",
+            "byChannel": "/admin/analytics/shipment_details?type=by_channel",
+            "bySource": "/admin/analytics/shipment_details?type=by_source_order"
+        },
+        "suggest": "Gợi ý"
+    },
+    "chartColumn": {
+        "noPermission": "Bạn không có quyền truy cập chức năng này",
+        "dataEmpty": "Chưa có dữ liệu báo cáo"
+    },
+    "orderStatus": {
+        "received": "Đã giao hàng",
+        "fulfilled": "Đang giao hàng",
+        "packed": "Chờ lấy hàng",
+        "packed_processing": "Đã đóng gói",
+        "wait_to_pack": "Chờ đóng gói",
+        "packed_cancelled": "Hủy đóng gói",
+        "fulfilled_cancelling": "Hủy giao - chờ nhận",
+        "fulfilled_cancelled": "Hủy giao - đã nhận",
+        "retry_delivery": "Chờ giao lại"
+    },
+    "addAnalytic": {
+        "title": "Tạo mới báo cáo tuỳ chỉnh",
+        "text": "Bạn có thể tự tạo báo cáo riêng và lựa chọn các thông tin cần theo dõi",
+        "textButton": "Tạo ngay",
+        "columns": {
+            "name": "Tên báo cáo",
+            "description": "Mô tả báo cáo",
+            "type": "Chọn thông tin bạn quan tâm"
+        },
+        "tooltip": {
+            "name": "tên báo cáo",
+            "type": "loại báo cáo",
+            "description": "Mô tả"
+        },
+        "placeholder": {
+            "name": "Nhập tên báo cáo của bạn",
+            "description": "Nhập mô tả báo cáo",
+            "type": " Chọn"
+        },
+        "bulkAction": {
+            "validate": {
+                "nameNotBlank": "Tên báo cáo không được để trống!",
+                "nameMaxLength": "Tên báo cáo không được quá 255 ký tự!",
+                "typeNotBlank": "Loại báo cáo không được để trống!"
+            },
+            "noteCreateSuccess": "Tạo mới báo cáo tuỳ chỉnh thành công!"
+        }
+    },
+    "analyticType": {
+        "saleProfit": "Nhóm thông tin Doanh thu - Lợi nhuận",
+        "orderGroup": "Nhóm thông tin Đơn hàng",
+        "prepayment": "Nhóm thông tin Thanh toán",
+        "returnGroup": "Nhóm thông tin Trả hàng",
+        "fulfillment": "Nhóm thông tin Giao hàng",
+        "all": "Tất cả",
+        "income": "Báo cáo Lợi nhuận - Doanh thu",
+        "quantity": "Báo cáo Giao hàng",
+        "payment": "Báo cáo Thanh toán",
+        "return": "Báo cáo Trả hàng",
+        "order": "Báo cáo Đơn hàng"
+    },
+    "analyticMessage": {
+        "default": "Mặc định",
+        "optional": "Tùy chỉnh",
+        "authMes": "Bạn không có quyền truy cập chức năng này",
+        "viewDetail": "Xem chi tiết",
+        "noDescription": "Chưa có mô tả",
+        "order": "đơn hàng",
+        "tooltip": "Kéo và thả để sắp xếp vị trí hiển thị",
+        "tooltipHeader": "Không thể thay đổi vị trí báo cáo!",
+        "tooltipBody": "Bạn cần chuyển bộ lọc báo cáo về “Tất cả” trước khi sắp xếp vị trí các báo cáo",
+        "tooltipFoot": "Chuyển bộ lọc",
+        "cancel": "Thoát"
+    },
+    "popupSurvey": {
+        "title": {
+            "newUser": "Bạn có hài lòng với báo cáo hoạt động kinh doanh không?",
+            "oldUser": "Hãy chia sẻ cảm nhận của bạn về giao diện báo cáo mới nhé!"
+        },
+        "question": {
+            "newUser": "",
+            "oldUser": "Bạn có hài lòng với giao diện báo cáo mới của Sapo không?"
+        },
+        "description": "Sapo cần cải thiện điều gì để phục vụ bạn tốt hơn",
+        "ending": "Hãy đánh giá để Sapo hiểu bạn hơn!",
+        "dontAskAgain": "Không hiển thị lại",
+        "send": "Gửi đánh giá",
+        "success": {
+            "title": "Cảm ơn bạn đã gửi đánh giá cho Sapo!",
+            "content": "Đánh giá này sẽ giúp chúng tôi cải tiến sản phẩm để phục vụ bạn tốt hơn.",
+            "close": "Đóng"
+        },
+        "error": "Có lỗi xảy ra, vui lòng thử lại!"
+    }
+}

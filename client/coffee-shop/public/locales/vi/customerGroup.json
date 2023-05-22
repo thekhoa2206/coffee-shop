@@ -1,0 +1,53 @@
+{
+  "route": {
+    "customerGroup": "Nhóm khách hàng",
+    "customerGroupStatic": "Nhóm khách hàng cố định",
+    "customerGroupDynamic": "Nhóm khách hàng tự động",
+    "addCustomerGroup": "Thêm nhóm khách hàng",
+    "updateCustomerGroup": "Cập nhật nhóm khách hàng",
+    "listCustomerGroup": "Danh sách nhóm khách hàng"
+  },
+  "type": {
+    "default": "Cố định",
+    "dynamic": "Tự động"
+  },
+  "tutorial": {
+    "customerGroup": "Sử dụng khi các khách hàng trong nhóm không có điểm chung. Bạn cần chủ động gán khách hàng vào nhóm này",
+    "customerGroupDynamic": "Sử dụng khi bạn muốn tạo một tập khách hàng có cùng điểm chung để dễ chăm sóc hoặc chạy marketing"
+  },
+  "customerGroupValidate": {
+    "codeMax": "Mã nhóm khách hàng không được vượt quá 50 ký tự",
+    "nameMax": "Tên nhóm khách hàng không được vượt quá 250 ký tự",
+    "noBlankName": "Tên nhóm khách hàng không được để trống",
+    "addCustomerGroupSuccess": "Thêm mới nhóm khách hàng thành công",
+    "name": "Tên nhóm",
+    "namePlaceHolder": "Nhập tên nhóm khách hàng",
+    "code": "Mã nhóm",
+    "codePlaceHolder": "Nhập mã nhóm khách hàng",
+    "note": "Mô tả",
+    "noteValidate": "Mô tả không được vượt quá 255 ký tự",
+    "countCustomer": "Số lượng khách hàng",
+    "createdOn": "Ngày tạo",
+    "notiAddCustomerGroup": "Thêm mới nhóm khách hàng thành công",
+    "notiUpdateCustomerGroup": "Cập nhật nhóm khách hàng thành công",
+    "notiDeleteCustomerGroup": "Xóa nhóm khách hàng thành công",
+    "titleDelete": "Xóa nhóm khách hàng?",
+    "confirmDelete": "Bạn có chắc chắn muốn xóa nhóm khách hàng",
+    "nonRevert": "? Thao tác này không thể khôi phục.",
+    "infoCommon": "Thông tin chung",
+    "noteTitle": "Mô tả khách hàng của bạn để phục vụ cho việc chăm sóc khách hàng tốt hơn",
+    "advancedSetting": "Cài đặt nâng cao",
+    "advancedSettingTitle": "Thiết lập các thông số tự động dùng trong các giao dịch",
+    "noResultCustomer": "Chưa có khách hàng nào trong nhóm",
+    "choiceConditions": "Chọn điều kiện cho nhóm khách hàng",
+    "orderPurchases": "Nhập số lượng đơn hàng",
+    "netQuantity": "Nhập số lượng sản phẩm",
+    "returnedItemQuantity": "Nhập số lượng sản phẩm trả",
+    "totalSales": "Nhập số tiền chi tiêu",
+    "groupType": "Loại nhóm",
+    "noBankConditionsType": "Loại điều kiện không được bỏ trống",
+    "emptyConditions": "Vui lòng chọn ít nhất một điều kiện"
+  },
+  "notHaveAccess1": "Vui lòng liên hệ với chủ cửa hàng để được cấp quyền",
+  "notHaveAccess2": "\"Khách hàng >> Xem tất cả khách hàng\""
+}

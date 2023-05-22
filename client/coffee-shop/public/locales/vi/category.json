@@ -1,0 +1,52 @@
+{
+  "index": {
+    "title": "Loại sản phẩm",
+    "btnLinkCategory": "Quản lý loại sản phẩm",
+    "btnManagerOther": "Quản lý khác",
+    "btnLinkProducts": "Quản lý sản phẩm",
+    "btnLinkLotsDate": "Lô - HSD",
+    "btnLinkSerials": "Serial/IMEI",
+    "btnLinkComposite": "Combo",
+    "btnLinkPacksize": "Sản phẩm quy đổi",
+    "btnCreateCategory": "Thêm loại sản phẩm",
+    "searchCategoryPlaceHolder": "Tìm kiếm loại sản phẩm theo tên, mã loại",
+    "nameObjectSelected": " loại sản phẩm",
+    "bulkAction": {
+      "delete": "Xóa loại sản phẩm",
+      "dialogDelete": {
+        "contentFirst": "Thao tác này sẽ xóa",
+        "contentLast": "loại sản phẩm bạn đã chọn. Thao tác này không thể khôi phục.",
+        "titleSuccess": "Loại sản phẩm xóa thành công:",
+        "titleFail": "Loại sản phẩm xóa không thành công:",
+        "notiSuccess": "Xóa thành công",
+        "notiFail": "Xóa không thành công",
+        "deleteSuccess": "Xóa loại sản phẩm thành công!",
+        "content": "Thao tác này sẽ xóa loại sản phẩm bạn đã chọn. Thao tác này không thể khôi phục."
+      },
+      "dialogCreate": {
+        "validate": {
+          "nameNotBlank": "Tên loại sản phẩm không được để trống!",
+          "nameMaxLength": "Tên loại sản phẩm không được quá 255 ký tự!",
+          "codeMaxLength": "Mã loại không được vượt quá 255 ký tự!",
+          "codeRequired": "Mã loại bắt buộc là số và chữ cái!",
+          "noteMaxLength": "Ghi chú không được vượt quá 255 ký tự!"
+        },
+        "noteCreateSuccess": "Thêm loại sản phẩm thành công!"
+      },
+      "dialogUpdate": {
+        "title": "Cập nhật loại sản phẩm",
+        "notiSuccess": "Cập nhật loại sản phẩm thành công!"
+      }
+    },
+    "columns": {
+      "name": "Tên loại sản phẩm",
+      "code": "Mã loại",
+      "note": "Ghi chú",
+      "createdOn": "Ngày tạo"
+    }
+  },
+  "firstScreen": {
+    "contentFirst": "Cửa hàng của bạn chưa chưa có loại sản phẩm nào",
+    "contentLast": "Thêm mới loại sản phẩm để quản lý sản phẩm tốt hơn"
+  }
+}

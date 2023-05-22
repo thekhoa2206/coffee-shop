@@ -1,0 +1,108 @@
+{
+  "name": "phiên bản sản phẩm",
+  "nameCapitalize": "Phiên bản sản phẩm",
+  "index": {
+    "title": "Quản lý kho",
+    "titleTabAll": "Tất cả phiên bản sản phẩm",
+    "placeHolderFilterSearch": "Tìm theo mã sản phẩm, tên sản phẩm, barcode",
+    "header": {
+      "btnLinkProduct": "Xem danh sách sản phẩm"
+    },
+    "bulkAction": {
+      "printBarcode": "In mã vạch",
+      "checkInventory": "Kiểm tra tồn kho",
+      "taxable": "Áp dụng thuế",
+      "sellable": "Cho phép bán",
+      "warranty": "Áp dụng bảo hành",
+      "delete": "Xóa phiên bản sản phẩm",
+      "labelItemSuccess": "Phiên bản phẩm cập nhật thành công",
+      "labelItemFail": "Phiên bản sản phẩm cập nhật không thành công",
+      "dialogDelete": {
+        "title": "Xóa phiên bản sản phẩm",
+        "contentFirst": "Thao tác này sẽ xóa",
+        "contentLast": "phiên bản sản phẩm bạn đã chọn. Thao tác này không thể khôi phục."
+      },
+      "dialogConfirmUpdateTaxable": {
+        "title": "Cập nhật tình trạng áp dụng thuế",
+        "contentFirst": "Thao tác này sẽ cập nhật áp dụng thuế cho",
+        "contentLast": "phiên bản sản phẩm.",
+        "label": "Chọn trạng thái muốn cập nhật:",
+        "noneSelect": "Chọn trạng thái",
+        "activeTax": "Áp dụng thuế",
+        "inactiveTax": "Không áp dụng thuế",
+        "notiNoneSelectTax": "Chưa chọn trạng thái cập nhật"
+      },
+      "dialogConfirmUpdateSellable": {
+        "title": "Cập nhật cho phép bán",
+        "contentFirst": "Thao tác này sẽ cập nhật cho phép bán cho",
+        "contentLast": "phiên bản sản phẩm.",
+        "label": "Chọn trạng thái muốn cập nhật:",
+        "noneSelect": "Chọn trạng thái",
+        "activeSell": "Cho phép bán",
+        "inactiveSell": "Không cho phép bán",
+        "notiNoneSelectSell": "Chưa chọn trạng thái cập nhật"
+      },
+      "dialogConfirmUpdateWarranty": {
+        "title": "Cập nhật bảo hành",
+        "contentFirst": "Thao tác này sẽ cập nhật chính sách bảo hành cho",
+        "contentLast": "phiên bản sản phẩm.",
+        "label": "Chọn chính sách muốn cập nhật:",
+        "noneSelect": "Chọn chính sách bảo hành",
+        "notiNoneSelectWarranty": "Chưa chọn chính sách bảo hành"
+      },
+      "dialogProccessData": {
+        "titleAccess": "Phiên bản sản phẩm cập nhật thành công: ",
+        "titleFail": "Phiên bản sản phẩm cập nhật thất bại: ",
+        "deleteSuccess": "Xóa phiên bản sản phẩm thành công",
+        "updateSucces": "Cập nhật phiên bản sản phẩm thành công"
+      }
+    },
+    "popupInventory": {
+      "fields": {
+        "incoming": "Hàng đang về",
+        "committed": "Đang giao dịch",
+        "onway": "Hàng đang giao"
+      },
+      "column": {
+        "numberIndex": "STT",
+        "code": "Mã phiếu",
+        "count": "Số lượng"
+      }
+    },
+    "column": {
+      "barcode": "Mã vạch",
+      "image": "Ảnh",
+      "name": "Tên phiên bản sản phẩm",
+      "categoryName": "Loại",
+      "brandName": "Nhãn hiệu",
+      "available": "Có thể bán",
+      "onHand": "Tồn kho",
+      "incoming": "Hàng đang về",
+      "onWay": "Hàng đang giao",
+      "committed": "Đang giao dịch",
+      "status": "Trạng thái",
+      "createdOn": "Ngày khởi tạo",
+      "modifiedOn": "Cập nhật cuối",
+      "sellable": "Cho phép bán",
+      "taxable": "Áp dụng thuế",
+      "giaNhap": "Giá nhập",
+      "banLe": "Giá bán lẻ",
+      "banBuon": "Giá bán buôn"
+    },
+    "drillDownComposite": {
+      "nameItem": "Sản phẩm thành phần",
+      "qtyItem": "Số lượng trong combo",
+      "price": "Giá bán lẻ",
+      "total": "Thành tiền",
+      "alertNoItem": "Tất cả sản phẩm thành phần đã bị xoá"
+    },
+    "exportFile": {
+      "result": "Tổng số dòng dữ liệu được xuất:",
+      "title": "Bạn có thể tải file dữ liệu tại:",
+      "description": "Thông báo được gửi vào địa chỉ email: <strong>{{email}}</strong> (có hiệu lực trong 7 ngày)",
+      "descriptionNoneEmail": "Cập nhật email <Link>tại đây</Link> để nhận file về email trong lần xuất dữ liệu sau",
+      "fileMission": "Danh sách các file đã được xuất tại phần <Link>Thông tin cá nhân -> Xuất nhập file</Link>",
+      "note": "<span>Lưu ý</span>: Sapo giới hạn tối đa 20,000 dòng dữ liệu cho mỗi lần xuất file"
+    }
+  }
+}

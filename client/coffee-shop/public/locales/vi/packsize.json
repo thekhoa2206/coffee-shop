@@ -1,0 +1,109 @@
+{
+  "name": "sản phẩm quy đổi",
+  "nameCapitalize": "Sản phẩm quy đổi",
+  "index": {
+    "title": "Danh sách sản phẩm quy đổi",
+    "titleTabAll": "Tất cả sản phẩm quy đổi",
+    "header": {
+      "btnCreateProduct": "Thêm sản phẩm quy đổi"
+    },
+    "column": {
+      "barcode": "Mã vạch",
+      "image": "Ảnh",
+      "name": "Sản phẩm quy đổi",
+      "variantRootName": "Sản phẩm đơn vị",
+      "packsizeQuantity": "Số lượng quy đổi",
+      "categoryName": "Loại",
+      "brandName": "Nhãn hiệu",
+      "available": "Có thể bán",
+      "onHand": "Tồn kho",
+      "incoming": "Hàng đang về",
+      "onWay": "Hàng đang giao",
+      "committed": "Đang giao dịch",
+      "status": "Trạng thái",
+      "createdOn": "Ngày khởi tạo",
+      "modifiedOn": "Cập nhật cuối",
+      "sellable": "Cho phép bán",
+      "taxable": "Áp dụng thuế",
+      "giaNhap": "Giá nhập",
+      "banLe": "Giá bán lẻ",
+      "banBuon": "Giá bán buôn"
+    },
+    "exportFile": {
+      "allPacksizes": "Tất cả sản phẩm quy đổi",
+      "currentPage": "Sản phẩm quy đổi trên trang này",
+      "selected": "Các sản phẩm quy đổi được chọn",
+      "withSearchResult": "sản phẩm quy đổi phù hợp với kết quả tìm kiếm hiện tại",
+      "title": " quy đổi"
+    },
+    "bulkAction": {
+      "checkInventory": "Kiểm tra tồn kho",
+      "printBarcode": "In mã vạch",
+      "taxable": "Áp dụng thuế",
+      "sellable": "Cho phép bán",
+      "delete": "Xóa sản phẩm quy đổi",
+      "notSelectStatusUpdate": "Chưa chọn trạng thái cập nhật",
+      "dialogProcessUpdate": {
+        "titleSuccess": "Sản phẩm quy đổi cập nhật thành công: ",
+        "titleFail": "Sản phẩm quy đổi cập nhật thất bại",
+        "itemUpdateSuccess": "Cập nhật sản phẩm quy đổi thành công"
+      },
+      "dialogDelete": {
+        "title": "Xóa sản phẩm quy đổi",
+        "content": "Thao tác này sẽ xóa {{count}} sản phẩm quy đổi bạn đã chọn. Thao tác này không thể khôi phục.",
+        "labelDeleteSuccess": "Sản phẩm quy đổi cập nhật thành công",
+        "labelDeleteFail": "Sản phẩm quy đổi cập nhật không thành công",
+        "labelDeleteItemSuccess": "Xóa sản phẩm quy đổi thành công"
+      },
+      "dialogUpdateTaxable": {
+        "title": "Cập nhật tình trạng áp dụng thuế",
+        "description": "Thao tác này sẽ cập nhật áp dụng thuế cho {{count}} sản phẩm quy đổi.",
+        "select": {
+          "labelSelect": "Chọn trạng thái muốn cập nhật:",
+          "placeholder": "Chọn trạng thái",
+          "applyTax": "Áp dụng thuế",
+          "notApplyTax": "Không áp dụng thuế"
+        }
+      },
+      "dialogUpdateSellable": {
+        "title": "Cập nhật cho phép bán",
+        "description": "Thao tác này sẽ cập nhật cho phép bán cho {{count}} sản phẩm quy đổi.",
+        "select": {
+          "labelSelect": "Chọn trạng thái muốn cập nhật:",
+          "placeholder": "Chọn trạng thái",
+          "applySellable": "Cho phép bán",
+          "notApplySellable": "Không cho phép bán"
+        }
+      }
+    }
+  },
+  "firstScreen": {
+    "tenantEmptyProduct": "Cửa hàng của bạn chưa có sản phẩm quy đổi nào!",
+    "addOrImportProduct": "Thêm mới sản phẩm hoặc nhập danh sách các sản phẩm quy đổi của bạn",
+    "importFileExcel": "Nhập file",
+    "descriptionButtonImportProducts": "Sử dụng khi bạn muốn nhập 1 danh sách quy đổi",
+    "downloadFileTemplate": "Tải file mẫu",
+    "descriptionButtonCreateProduct": "Sử dụng khi bạn muốn tạo mới 1 sản phẩm quy đổi"
+  },
+  "dialogCreatePacksize": {
+    "title": "Thêm đơn vị quy đổi",
+    "notiUnitBlank": "Vui lòng chọn sản phẩm đơn vị",
+    "notiNameLimit": "Đơn vị quy đổi không được vượt quá 255 ký tự",
+    "notiNameBlank": "Đơn vị quy đổi không được để trống",
+    "notiQtyUnit": "Số lượng quy đổi phải lớn hơn 0",
+    "notiUnitError": "Sản phẩm bạn chọn chưa có đơn vị tính",
+    "notiCreateSuccess": "Thêm đơn vị quy đổi thành công",
+    "notiGetDataError": "Có lỗi khi lấy data trả về, vui lòng kiểm tra lại",
+    "searchUnit": "Tìm kiếm sản phẩm",
+    "selectUnit": "Chọn sản phẩm đơn vị",
+    "form": {
+      "unit": "Đơn vị quy đổi",
+      "placeholderUnit": "Nhập tên đơn vị",
+      "sku": "Mã SKU",
+      "placeholderSku": "Nhập mã SKU",
+      "barcode": "Barcode",
+      "placeholderBarcode": "Nhập Barcode",
+      "weight": "Khối lượng"
+    }
+  }
+}

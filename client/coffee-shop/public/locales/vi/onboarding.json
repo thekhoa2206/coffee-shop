@@ -1,0 +1,54 @@
+{
+  "blogItem": {
+    "readMinuteText": "phút đọc"
+  },
+  "blogSupport": {
+    "title": "Hướng dẫn sử dụng",
+    "description": "Truy cập cổng hỗ trợ để xem thêm thông tin hữu ích"
+  },
+  "blogDowload": {
+    "titleApp": "TẢI APP SAPO",
+    "titleSmartphone": "CHO SMARTPHONE",
+    "description": "Giúp bạn bán hàng, theo dõi đơn hàng, xem báo cáo thuận tiện.",
+    "infoQR": "* Quét QR code hoặc tải ứng dụng trên 2 nền tảng Android và iOS"
+  },
+  "blogModal": {
+    "title": "Bạn vui lòng chọn lĩnh vực kinh doanh nhé!",
+    "chooseBusiness": "Chọn lĩnh vực kinh doanh",
+    "useBegin": "Bắt đầu sử dụng",
+    "titleSampleDataFirt": "Xin chào",
+    "titleSampleData": "Bạn vui lòng chọn lĩnh vực đang kinh doanh để Sapo hỗ trợ bạn được tốt hơn:",
+    "labelSampleData": "Sử dụng dữ liệu mẫu để trải nghiệm các tính năng",
+    "titleLoadDataDialog": "Sapo đang khởi tạo dữ liệu mẫu...",
+    "descriptionLoadDataDialog": "Bạn vui lòng chờ trong giây lát, dữ liệu mẫu sẽ sớm sẵn sàng cho quá trình bán hàng của bạn"
+  },
+  "blogVideo": {
+    "title": "Video hướng dẫn"
+  },
+  "blogWelcome": {
+    "title": "Chào mừng",
+    "titleWelcome": "Bắt đầu sử dụng phần mềm Sapo ngay nào!",
+    "description": "Hãy dành ít phút thực hiện các bước sau đây để làm quen với Sapo bạn nhé!"
+  },
+  "onboardingChannel": {
+    "titleCreateProduct": "Tạo mới và quản lý tồn kho theo từng phiên bản sản phẩm",
+    "titleStepCreateProduct": "Bước 2 <br /> Thêm sản phẩm",
+    "titleButtonCreateProduct": "Thêm sản phẩm",
+    "titleConnectFb": "Quản lý và trả lời comment, inbox từ các trang Facebook của bạn",
+    "titleStepConnectFb": "Bước 2.  Kết nối Trang Facebook",
+    "titleButtonConnectFb": "Kết nối với Facebook",
+    "titleConnectMarket": "Quản lý tập trung sản phẩm, đơn hàng từ các gian hàng TMĐT",
+    "titleStepConnectMarket": "Bước 3. Kết nối gian hàng TMĐT",
+    "titleButtonConnectMarket": "Kết nối với sàn",
+    "titleCreateOrder": "Tạo mới, quản lý đơn hàng và đơn vận chuyển",
+    "titleStepCreateOrder": "Bước 3 <br /> Thêm đơn hàng",
+    "titleButtonCreateOrder": "Thêm đơn hàng",
+    "titleConfig": "Cài đặt các thông tin cho việc bán hàng của bạn",
+    "titleStepConfig": "Bước 1 <br /> Cài đặt cửa hàng",
+    "titleButtonConfig": "Cấu hình cửa hàng",
+    "titleSuccess": "Đã hoàn thành",
+    "titleStepReport": "Bước 4 <br /> Xem báo cáo",
+    "titleReport": "Xem báo cáo tổng kết doanh thu, chi phí, số lượng đơn,...",
+    "titleButtonReport": "Xem báo cáo"
+  }
+}

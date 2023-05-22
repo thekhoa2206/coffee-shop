@@ -1,0 +1,429 @@
+{
+  "time": {
+    "day": "ngày",
+    "dayCapitalize": "Ngày",
+    "week": "tuần",
+    "weekCapitalize": "Tuần",
+    "month": "tháng",
+    "monthCapitalize": "Tháng",
+    "quarter": "quý",
+    "quarterCapitalize": "Quý",
+    "year": "năm",
+    "yearCapitalize": "Năm",
+    "from": "từ",
+    "fromCapitalize": "Từ",
+    "to": "đến",
+    "toCapitalize": "Đến",
+    "before": "trước",
+    "beforeCapitalize": "Trước",
+    "now": "nay",
+    "nowCapitalize": "Nay"
+  },
+  "dateRangeType": {
+    "todayText": "Hôm nay",
+    "yesterdayText": "Hôm qua",
+    "thisWeekText": "Tuần này",
+    "lastWeekText": "Tuần trước",
+    "thisMonthText": "Tháng này",
+    "lastMonthText": "Tháng trước",
+    "dayLast7Text": "7 ngày qua",
+    "dayLast30Text": "30 ngày qua",
+    "dayLast60Text": "60 ngày qua",
+    "dayLast90Text": "90 ngày qua",
+    "lastYear": "Năm trước",
+    "thisYear": "Năm nay"
+  },
+  "deliveryCollationStatus": {
+    "draftText": "Chờ duyệt",
+    "waitForPaidText": "Chờ thanh toán",
+    "waitPackText": "Chờ đóng gói",
+    "packedProcessingText": "Đã đóng gói",
+    "waitPackCancelledText": "Hủy đóng gói",
+    "packedText": "Chờ lấy hàng",
+    "fulfilledText": "Đang giao hàng",
+    "fulfilledCancellingText": "Hủy giao - chờ nhận",
+    "fulfilledCancelledText": "Hủy giao - đã nhận",
+    "receivedText": "Đã giao hàng",
+    "retryDeliveryText": "Chờ giao lại",
+    "waitForCodText": "Chờ thu hộ COD"
+  },
+  "helper": {
+    "errorCommonText": "Chưa có ngày tháng",
+    "errorHourText": "Chưa có giờ",
+    "thousandText": "nghìn",
+    "millionText": "triệu",
+    "billionText": "tỷ",
+    "hundredText": "trăm",
+    "oneNumberHunderedToText": "trăm linh",
+    "zeroText": "không",
+    "oneText": "một",
+    "twoText": "hai",
+    "threeText": "ba",
+    "fourText": "bốn",
+    "fiveText": "năm",
+    "sixText": "sáu",
+    "sevenText": "bảy",
+    "eightText": "tám",
+    "nineText": "chín",
+    "tenText": "mười",
+    "fifteenText": "mười lăm",
+    "oneNumberToText": "mươi",
+    "oneNumberToText1": "mươi mốt",
+    "oneNumberToText4": "mươi tư",
+    "oneNumberToText5": "mươi lăm"
+  },
+  "listBlogByPackage": {
+    "posChannel": {
+      "pos": {
+        "title": "Bán hàng tại quầy",
+        "description": "Tạo đơn, tính tiền, in hóa đơn cho khách mua tại quầy",
+        "link": "https://support.sapo.vn/ban-tai-quay"
+      },
+      "onhandManager": {
+        "title": "Quản lý tồn kho sản phẩm",
+        "description": "Kiểm soát chính xác số lượng mặt hàng trong kho",
+        "link": "https://support.sapo.vn/huong-dan-quan-ly-kho"
+      },
+      "online": {
+        "title": "Bán hàng online",
+        "description": "Tạo đơn khi khách mua hàng online, cần giao hàng",
+        "link": "https://support.sapo.vn/them-moi-don-hang-online"
+      }
+    },
+    "omni": {
+      "ecomerce": {
+        "title": "Kết nối sàn Thương mại điện tử",
+        "description": "Quản lý đồng bộ các gian hàng trên sàn TMĐT",
+        "link": "https://support.sapo.vn/san-tmdt"
+      },
+      "sapoWeb": {
+        "title": "Kết nối Sapo Web",
+        "description": "Quản lý và bán hàng trên Website",
+        "link": "https://support.sapo.vn/gioi-thieu-ve-sapo-web"
+      }
+    },
+    "go": {
+      "facebook": {
+        "title": "Kết nối Facebook",
+        "description": "Quản lý fanpage tập trung, chốt đơn livestream tự động",
+        "link": "https://support.sapo.vn/tong-quan-kenh-facebook"
+      },
+      "shopee": {
+        "title": "Kết nối Shopee",
+        "description": "Theo dõi các sản phẩm và đơn đặt hàng trên Shopee",
+        "link": "https://support.sapo.vn/tong-quan-ban-hang-tren-shopee"
+      },
+      "goChat": {
+        "title": "Sử dụng ứng dụng Sapo GO Chat",
+        "description": "Đăng nhập vào nhiều tài khoản gian hàng cùng lúc",
+        "link": "https://support.sapo.vn/phan-mem-chat-da-san-sapo-gochat"
+      }
+    }
+  },
+  "listData": {
+    "fashionText": "Thời trang",
+    "cosmeticsText": "Mỹ phẩm",
+    "miniMartText": "Siêu thị mini",
+    "buidingMaterialText": "Vật liệu xây dựng",
+    "mamyAndBabyText": "Mẹ và bé",
+    "groceryStoreText": "Cửa hàng tạp hóa",
+    "motoBikeAccessoriesText": "Xe máy - Linh kiện",
+    "bookAndStationeryText": "Sách và văn phòng phẩm",
+    "pharmaciesText": "Nhà thuốc",
+    "productAndFood": "Nông sản và thực phẩm",
+    "flowerAndGift": "Hoa và quà tặng",
+    "otherField": "Lĩnh vực khác"
+  },
+  "listVideoByPackage": {
+    "pos": {
+      "titleNewPeopleSapoPos": "HDSD phần mềm quản lý bán hàng Sapo POS cho người mới bắt đầu",
+      "linkYoutubeNewPeopleSapoPos": "https://www.youtube.com/embed/ewk3G3mpGHQ",
+      "minuteNewPeopleSapoPos": 8,
+      "titleSapoPos": "Hướng dẫn bán hàng tại cửa hàng với Sapo POS",
+      "linkYoutubeSapoPos": "https://www.youtube.com/embed/tDoi9pXNtrM",
+      "minuteSapoPos": 9,
+      "titleSapoManager": "Hướng dẫn xem các báo cáo bán hàng trên phần mềm quản lý Sapo",
+      "linkYoutubeSapoManager": "https://www.youtube.com/embed/6SkykvmZgv0",
+      "minuteSapoManager": 8
+    },
+    "omni": {
+      "pharse1": {
+        "titleNewPeopleSapoPos": "HDSD phần mềm quản lý bán hàng Sapo POS cho người mới bắt đầu",
+        "linkYoutubeNewPeopleSapoPos": "https://www.youtube.com/embed/ewk3G3mpGHQ",
+        "minuteNewPeopleSapoPos": 7,
+        "titleInventoryManager": "Hướng dẫn nghiệp vụ quản lý kho hàng trên phần mềm quản lý bán hàng Sapo",
+        "linkYoutubeInventoryManager": "https://www.youtube.com/embed/eAFxjDm04kE",
+        "minuteInventoryManager": 7,
+        "titleReportSale": "Hướng dẫn xem các báo cáo bán hàng trên phần mềm quản lý Sapo",
+        "linkYoutubeReportSale": "https://www.youtube.com/embed/6SkykvmZgv0",
+        "minuteReportSale": 9
+      },
+      "pharse2": {
+        "titleCreateWebsite": "Hướng dẫn tạo website bán hàng miễn phí dùng thử chỉ trong 3 phút",
+        "linkYoutubeCreateWebsite": "https://www.youtube.com/embed/FEw48x1wRrA",
+        "minuteCreateWebsite": 3,
+        "titleFacebook": "Giới thiệu chi tiết các tính năng trên kênh Facebook",
+        "linkYoutubeFacebook": "https://www.youtube.com/embed/DbhgaU_ypBk",
+        "minuteFacebook": 7,
+        "titleEcomerce": "Giới thiệu chi tiết các tính năng trên kênh Sàn TMĐT",
+        "linkYoutubeEcomerce": "https://www.youtube.com/embed/J98Fi1lU3Q0",
+        "minuteEcomerce": 4
+      }
+    },
+    "go": {
+      "titleEcomerce": "Giới thiệu chi tiết các tính năng trên kênh Sàn TMĐT",
+      "linkYoutubeEcomerce": "https://www.youtube.com/embed/J98Fi1lU3Q0",
+      "minuteEcomerce": 3,
+      "titleFacebook": "Giới thiệu chi tiết các tính năng trên kênh Facebook",
+      "linkYoutubeFacebook": "https://www.youtube.com/embed/DbhgaU_ypBk",
+      "minuteFacebook": 7,
+      "titleEcomerceInGo": "Đăng bán sản phẩm trên nhiều sàn TMĐT với Sapo GO",
+      "linkYoutubeEcomerceInGo": "https://www.youtube.com/embed/ipGJH08y4CU",
+      "minuteEcomerceInGo": 5
+    }
+  },
+  "packageName": {
+    "trialText": "Dùng thử",
+    "titleQuickActivePos": "Phần mềm quản lý bán hàng cho cửa hàng & bán online tốt nhất",
+    "titleQuickActiveOmni": "Nền tảng quản lý và bán hàng đa kênh được sử dụng nhiều nhất Việt Nam",
+    "titleQuickActiveGo": "Phần mềm quản lý bán hàng cho cửa hàng & bán online tốt "
+  },
+  "personGroup": {
+    "customerText": "Khách hàng",
+    "supplierText": "Nhà cung cấp",
+    "employeeText": "Nhân viên",
+    "shipperText": "Đối tác vận chuyển",
+    "voucherActorText": "Đối tượng khác"
+  },
+  "reportSalevariantCriteria": {
+    "appearedRateText": "Theo đơn hàng",
+    "amountText": "Theo doanh thu",
+    "quantityText": "Theo số lượng"
+  },
+  "sex": {
+    "maleText": "Nam",
+    "femaleText": "Nữ",
+    "otherText": "Khác",
+    "genderText": "Giới tính"
+  },
+  "orderStatus": {
+    "draftText": "Đặt hàng",
+    "activeText": "Chờ duyệt",
+    "finalizedText": "Đang giao dịch",
+    "fulfilledText": "Đã giao hàng",
+    "packedText": "Đã đóng gói",
+    "cancelledText": "Đã hủy",
+    "deletedText": "Đã xóa",
+    "returnedText": "Đã trả",
+    "finishedText": "Kết thúc",
+    "completedText": "Hoàn thành",
+    "failedStatusText": "Đồng bộ lỗi",
+    "waitingStatusText": "Chưa đồng bộ",
+    "completedStatusText": "Đã đồng bộ"
+  },
+  "taxTreatment": {
+    "inclusiveText": "Đã bao gồm thuế",
+    "exclusiveText": "Chưa bao gồm thuế"
+  },
+  "typePromotion": {
+    "orderAmountRageText": "Khuyến mại theo tổng đơn",
+    "variantAndQuantityText": "Khuyến mại theo sản phẩm",
+    "categoryAndQuantityText": "Khuyến mại theo danh mục",
+    "brandAndQuantityText": "Khuyến mại theo nhãn hiệu",
+    "variantAndQuantityrageText": "Khuyến mại theo số lượng sản phẩm",
+    "categoryAndQuantityRageText": "Khuyến mại theo số lượng danh mục",
+    "brandAndQuantityrageText": "Khuyến mại theo số lượng nhãn hiệu",
+    "buyRightGiftRightText": "Mua đích danh sản phẩm tặng đích danh sản phẩm",
+    "buyRightGiftGroupText": "Mua đích danh sản phẩm tặng bất kỳ sản phẩm",
+    "buyGroupGiftRightText": "Mua bất kỳ sản phẩm tặng đích danh sản phẩm",
+    "buyGroupGiftGroupText": "Mua bất kỳ sản phẩm tặng bất kỳ sản phẩm",
+    "giftRightByAmountText": "Mua tổng tiền tặng đích danh sản phẩm",
+    "giftGroupByAmountText": "Mua tổng tiền tặng bất kỳ sản phẩm",
+    "buyRightGiftCategoryText": "Mua đích danh sản phẩm tặng bất kỳ loại sản phẩm",
+    "buyCategoryGiftRightText": "Mua bất kỳ loại sản phẩm tặng đích danh sản phẩm",
+    "buyGroupGiftGroupCategoryText": "Mua bất kỳ sản phẩm tặng bất kỳ loại sản phẩm",
+    "buyGroupCategoryGiftGroupText": "Mại mua bất kỳ loại sản phẩm tặng bất kỳ sản phẩm",
+    "buyGroupCategoryGiftGroupCategoryText": "Mua bất kỳ loại sản phẩm tặng bất kỳ loại sản phẩm",
+    "giftGroupCategoryByAmountText": "Mua tổng tiền tặng bất kỳ loại sản phẩm"
+  },
+  "voucherType": {
+    "customer": "Khách hàng",
+    "supplier": "Nhà cung cấp",
+    "employee": "Nhân viên",
+    "shipper": "Đối tác giao hàng"
+  },
+  "sellable": {
+    "yes": "Có",
+    "no": "Không",
+    "applyName": "Cho phép bán",
+    "notApplyName": "Không cho phép bán"
+  },
+  "taxable": {
+    "yes": "Có",
+    "no": "Không",
+    "applyName": "Áp dụng thuế",
+    "notApplyName": "Không áp dụng thuế"
+  },
+  "taxIncluded": {
+    "yes": "Có",
+    "no": "Không",
+    "applyName": "Giá đã bao gốm thuế",
+    "notApplyName": "Giá chưa bao gốm thuế"
+  },
+  "warranty": {
+    "yes": "Có",
+    "no": "Không",
+    "applyName": "Sản phẩm có bảo hành",
+    "notApplyName": "Sản phẩm không bảo hành"
+  },
+  "packedStatus": {
+    "unpacked": "Chưa đóng gói",
+    "partial": "Đóng gói một phần",
+    "packed": "Đóng gói toàn bộ",
+    "processing": "Chờ xác nhận đóng gói"
+  },
+  "fulfillmentStatus": {
+    "partial": "Xuất kho một phần",
+    "shipped": "Xuất kho toàn bộ",
+    "unshipped": "Chưa xuất kho"
+  },
+  "fulfillmentPackageStatus": {
+    "fulfilled": "Đang giao hàng",
+    "packed": "Chờ lấy hàng",
+    "cancelling": "Đã hủy-chờ nhận",
+    "canceled": "Đã hủy-đã nhận",
+    "received": "Đã giao hàng"
+  },
+  "orderReturnStatus": {
+    "unreturned": "Chưa trả hàng",
+    "partial": "Trả hàng một phần",
+    "returned": "Trả hàng toàn bộ"
+  },
+  "paymentStatus": {
+    "paid": "Thanh toán toàn bộ",
+    "partial": "Thanh toán một phần",
+    "unpaid": "Chưa thanh toán"
+  },
+  "orderReturnsStatus": {
+    "returning": "Chưa nhận",
+    "returned": "Đã nhận"
+  },
+  "orderReturnRefundStatus": {
+    "unpaid": "Chưa hoàn tiền",
+    "partial": "Hoàn tiền một phần",
+    "paid": "Hoàn tiền toàn bộ"
+  },
+  "deliveryType": {
+    "pickup": "Nhận tại cửa hàng",
+    "courier": "Dịch vụ giao hàng",
+    "full": "Tất cả"
+  },
+  "einvoiceStatus": {
+    "uncreated": "Chưa tạo",
+    "draft": "Chưa phát hành",
+    "creating": "Đang khởi tạo",
+    "created": "Chờ phát hành",
+    "publishing": "Đang phát hành",
+    "published": "Đã phát hành",
+    "deleting": "Đang hủy",
+    "deleted": "Đã hủy"
+  },
+  "interconnectionStatus": {
+    "unconnected": "Chưa liên thông",
+    "connected": "Đã liên thông"
+  },
+  "discountType": {
+    "percent": "Giá trị"
+  },
+  "defaultRequireType": {
+    "showAndNoTryOn": "Cho xem hàng, không cho thử",
+    "showAndTryOn": "Cho xem hàng, cho thử",
+    "noShow": "Không cho xem hàng"
+  },
+  "collationStatus": {
+    "unresolved": "Chưa đối soát",
+    "collated": "Đã đối soát",
+    "collating": "Đang đối soát"
+  },
+  "deliveryServiceProviderType": {
+    "external_shipper": "Cá nhân",
+    "external_service": "Công ty",
+    "employee": "Ship cửa hàng"
+  },
+  "pushingStatus": {
+    "completed": "Gửi thành công",
+    "failed": "Gửi thất bại",
+    "waiting": "Đang gửi thông tin"
+  },
+  "collationsStatus": {
+    "collating": "Đang đối soát",
+    "collated": "Đã đối soát",
+    "cancelled": "Đã hủy"
+  },
+  "deliveryCollationsPaymentStatus": {
+    "paid": "Đã thanh toán",
+    "unpaid": "Chưa thanh toán",
+    "partial": "Thanh toán một phần"
+  },
+  "auditLog": {
+    "actionNameDetail": {
+      "created": "Thêm mới đơn hàng",
+      "finalized": "Duyệt đơn hàng",
+      "updated": "Cập nhật đơn hàng",
+      "prepaymentAdded": "Thêm mới thanh toán hóa đơn bán hàng",
+      "fulfillmentAdded": "Thêm mới phiếu đóng gói",
+      "fulfillmentFulfilled": "Cập nhật phiếu đóng gói: Xuất kho thành công",
+      "fulfillmentReceived": "Cập nhật phiếu đóng gói: Giao hàng thành công",
+      "fulfillmentCancelled": "Hủy phiếu đóng gói",
+      "packedFulfillmentCancelled": "Hủy phiếu đóng gói",
+      "shippedFulfillmentCancelled": "Hủy giao - Đã nhận",
+      "shippedFulfillmentCancelling": "Hủy giao - Chờ nhận",
+      "fulfillmentCancellingFulfilled": "Tiếp tục giao hàng",
+      "fulfillmentCancellingRetryDelivery": "Chờ giao lại",
+      "fulfillmentUpdated": "Cập nhật đơn giao hàng",
+      "refundAdded": "Thêm mới đơn hoàn tiền cho đơn hàng",
+      "finished": "Kết thúc đơn hàng",
+      "cancelled": "Hủy đơn hàng",
+      "returnAdded": "Thêm mới đơn trả hàng",
+      "receiveReturn": "Cập nhật nhận hàng",
+      "processStatusUpdated": "Cập nhật trạng thái xử lý đơn hàng",
+      "fulfillmentCreated": "Yêu cầu đóng gói",
+      "fulfillmentRetried": "Cập nhật phiếu giao hàng: Chờ giao lại",
+      "fulfillmentFulfilledRetry": "Cập nhật phiếu giao hàng: Đang giao hàng",
+      "fulfillmentPacked": "Xác nhận đã đóng gói",
+      "einvoiceCreated": "Phát hành hóa đơn điện tử",
+      "orderExchangeCreated": "Thêm mới đơn đổi hàng",
+      "orderExchangeFinished": "Kết thúc đơn đổi hàng",
+      "orderExchangeCancelled": "Hủy đơn đổi hàng",
+      "fulfillmentHandleBillOfLanding": "Yêu cầu giao hàng",
+      "waitToPackFulfillmentCancelled": "Hủy phiếu đóng gói",
+      "handlingFulfillmentCancelled": "Hủy phiếu đóng gói",
+      "orderExchangeUpdated": "Cập nhật đơn đổi hàng",
+      "orderExchangeFinalized": "Duyệt đơn đổi hàng"
+    },
+    "documentName": {
+      "order": "Đơn hàng",
+      "prepayment": "Thanh toán đơn hàng",
+      "fulfillment": "Đóng gói",
+      "payment": "Thanh toán đơn hàng",
+      "orderReturn": "Trả hàng",
+      "orderReturnRefund": "Thanh toán đơn trả hàng",
+      "eInvoice": "Phát hành hóa đơn điện tử"
+    }
+  },
+  "SupplierReturnStatus": {
+    "draft": "Đặt hàng",
+    "active": "Đang giao dịch",
+    "completed":  "Hoàn thành",
+    "cancelled": "Đã huỷ",
+    "closed":  "Kết thúc"
+  },
+  "purchaseFinancialReturnStatus": {
+    "partially_refunded": "Hoàn tiền một phần",
+    "nonRefundable": "Chưa hoàn tiền",
+    "refunded": "Hoàn tiền toàn bộ"
+  },
+  "purchaseDiscountType": {
+    "fixAmount": "Giá trị"
+  }
+}

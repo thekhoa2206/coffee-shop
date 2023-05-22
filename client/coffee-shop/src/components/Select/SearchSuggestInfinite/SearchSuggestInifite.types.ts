@@ -1,0 +1,57 @@
+import React, { ReactElement, ReactNode } from "react";
+import { PopperBaseProps } from "components/Popper/PopperBase";
+import { BtnTemplateProps } from "./SearchSuggestInifite";
+import { DataSource, InfiniteScrollProps } from "../types";
+
+interface SearchSuggestInfiniteProps {
+  limit?: number;
+  getOptionLabel: (option: any) => string;
+  open?: boolean;
+  inline?: boolean;
+  type?: "search" | "select-search" | "select" | "search-tags" | "filter" | "search-reason";
+  multiple?: boolean;
+  optionSelectAll?: boolean;
+  value?: any | any[] | null;
+  loading?: boolean;
+  debounce?: number;
+  inputId?: string;
+  width?: string;
+  uniqKey?: string;
+  creatable?: boolean;
+  disabled?: boolean;
+  disabledDrillIcon?: boolean;
+  creatableText?: string;
+  CreatableComponent?: any;
+  placeholder?: string;
+  placeholderSelect?: string;
+  disableCloseOnSelect?: boolean;
+  textNoOption?: string;
+  textSelectAll?: string;
+  label?: string;
+  widthPopper?: number | string;
+  getLabelSelect?: (optionsSelected: any | any[] | null) => string;
+  renderOption?: (option: any) => ReactNode;
+  onClose?: () => void;
+  onChange?: (value: any | any[] | null) => void;
+  onQueryChange?: (filter: { page: number; query: string; limit: number }) => void;
+  fetchDataSource: (filter: any) => Promise<DataSource | undefined>;
+  handleClickCreatable?: (inputValue: string) => void;
+  style?: React.CSSProperties;
+  styleRoot?: React.CSSProperties;
+  error?: boolean;
+  helperText?: string;
+  className?: string;
+  renderFakeSelectButton?: React.ComponentType<BtnTemplateProps>;
+  renderValueElement?: (optionsSelected: any | any[] | null) => JSX.Element;
+  popperProps?: PopperBaseProps;
+  placement?: string;
+  required?: boolean;
+  showResult?: boolean;
+  textButtonShowResult?: string;
+  maxHeightListOption?: number | string;
+  InfiniteScrollProps?: InfiniteScrollProps;
+  isInlineDisplay?: boolean;
+  removeable?: boolean;
+}
+
+export default SearchSuggestInfiniteProps;

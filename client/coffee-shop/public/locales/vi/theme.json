@@ -1,0 +1,13 @@
+{
+  "locale": {
+    "backButtonText": "Trang trước",
+    "labelRowsPerPage": "Số dòng trên trang:",
+    "labelDisplayedRows": "của",
+    "nextButtonText": "Trang sau",
+    "clearText": "Xóa",
+    "closeText": "Đóng",
+    "loadingText": "Đang tải...",
+    "noOptionsText": "không có kết quả phù hợp",
+    "openText": "Mở"
+  }
+}

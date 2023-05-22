@@ -1,0 +1,21 @@
+{
+  "create": {
+    "fields": {
+      "name": "Tên thuế",
+      "code": "Mã Thuế",
+      "effective_rate": "Thuế suất %"
+    },
+    "placeholders": {
+      "name": "VD: VAT",
+      "code": "VD: THUEDAUVAO",
+      "effective_rate": "VD: 10%",
+      "addTax": "Thêm thuế thông tin thuế"
+    },
+    "notifications": {
+      "name": "Tên thuế không được để trống",
+      "code": "Mã thuế không được để trống",
+      "effective_rate": "Thuế suất không được để trống",
+      "addSuccess": "Thêm thuế thành công"
+    }
+  }
+}

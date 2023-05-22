@@ -1,0 +1,239 @@
+{
+  "name": "phiếu",
+  "nameDeliver": "phiếu bàn giao",
+  "nameRefund": "phiếu xác nhận hoàn",
+  "index": {
+    "title": "Danh sách phiếu bàn giao và hoàn vận đơn",
+    "placeHolderFilterSearch": "Tìm theo mã phiếu, mã vận đơn, mã đơn hàng, tên, SĐT khách hàng",
+    "actions": {
+      "createDeliver": "Tạo phiếu bàn giao",
+      "createReturn": "Tạo phiếu xác nhận hoàn"
+    },
+    "export": {
+      "all": "Tất cả phiếu",
+      "currentPage": "Các phiếu trên trang này",
+      "selected": "Các phiếu được chọn",
+      "currentSearch": " phiếu phù hợp với kết quả tìm kiếm hiện tại"
+    },
+    "tab": {
+      "all": "Tất cả",
+      "handingOver": "Đang bàn giao",
+      "handedOver": "Đã bàn giao",
+      "handingOverRefunded": "Đã hoàn"
+    },
+    "column": {
+      "code": "Mã phiếu",
+      "typeDeliver": "Phiếu bàn giao",
+      "typeReturn": "Phiếu xác nhận hoàn",
+      "type": "Loại phiếu",
+      "createdOn": "Ngày tạo",
+      "status": "Trạng thái",
+      "countFulfillment": "SL vận đơn",
+      "deliveryServiceProviderId": "Đối tác ",
+      "accountId": "Nhân viên tạo",
+      "printStatus": "Trạng thái in",
+      "confirmOn": "Ngày bàn giao",
+      "refundOn": "Ngày xác nhận hoàn",
+      "note": "Ghi chú",
+      "tags": "Tags",
+      "locationId": "Chi nhánh",
+      "totalCod": "Tổng thu hộ"
+    },
+    "filter": {
+      "printStatus": {
+        "label": "Trạng thái in",
+        "placeholder": "Chọn trạng thái in"
+      },
+      "tag": {
+        "label": "Tags",
+        "placeholder": "Chọn tags"
+      },
+      "type": {
+        "label": "Loại phiếu",
+        "placeholder": "Chọn loại phiếu"
+      },
+      "status": {
+        "label": "Trạng thái",
+        "placeholder": "Chọn trạng thái"
+      },
+      "deliveryProvider": {
+        "label": "Đối tác",
+        "placeholder": "Chọn đối tác"
+      },
+      "account": {
+        "label": "Nhân viên tạo",
+        "placeholder": "Chọn nhân viên tạo"
+      },
+      "location": {
+        "label": "Chi nhánh tạo phiếu",
+        "placeholder": "Chọn chi nhánh tạo phiếu"
+      }
+    }
+  },
+  "firstScreen": {
+    "noRecord": "Cửa hàng của bạn chưa có phiếu bàn giao hay xác nhận hoàn vận đơn nào",
+    "note": "Thêm mới hoặc nhập file danh sách vận đơn để tạo phiếu bàn giao đơn đi và xác nhận đơn vận chuyển hoàn về",
+    "importFileExcel": "Nhập file excel"
+  },
+  "create": {
+    "titleDeliver": "Quay lại danh sách phiếu bàn giao vận đơn",
+    "titleReturn": "Quay lại danh sách phiếu xác nhận hoàn",
+    "documentTitleDeliver": "Phiếu bàn giao {{code}} | SAPO",
+    "documentTitleReturn": "Phiếu xác nhận hoàn {{code}} | SAPO",
+    "actions": {
+      "create": "Tạo phiếu",
+      "createAndFinalized": "Tạo và xác nhận bàn giao",
+      "confirm": "Xác nhận bàn giao",
+      "confirmAndShip": "Bàn giao và xuất kho",
+      "confirmRefund": "Xác nhận hoàn",
+      "draft": "Bàn giao sau",
+      "draftRefund": "Xác nhận sau",
+      "deleteImages": "Xoá tất cả",
+      "cancel": "Hủy phiếu",
+      "save": "Xác nhận bàn giao",
+      "searchFulfillHandover": "Kiểm tra vận đơn chưa bàn giao",
+      "searchFulfillReturn": "Kiểm tra vận đơn có thể hoàn",
+      "confirmCancel": "Bạn có chắc chắn muốn huỷ phiếu?"
+    },
+    "dialogDeleteImages": {
+      "title": "Xoá tất cả ảnh?",
+      "content": "Bạn có chắc chắn muốn xóa tất cả ảnh chứng từ? Thao tác này không thể khôi phục."
+    },
+    "dialogJobConfirm": {
+      "title": "Bàn giao và xuất kho cho {{count}} vận đơn",
+      "listSuccess": "Vận đơn đã xác nhận bàn giao thành công",
+      "listSuccessByHandover": "Vận đơn đã xuất kho thành công qua phiếu bàn giao",
+      "listFailedShipIndependents": "Vận đơn đã xuất kho trước khi bàn giao và xuất kho bằng phiếu bàn giao"
+    },
+    "dialogConfirmFailed": {
+      "title": "Bàn giao không thành công",
+      "ok": "Loại bỏ ngay",
+      "content": "Có {{count}} vận đơn trong phiếu bàn giao {{status}} trước khi thao tác xác nhận",
+      "pleaseRemove": "Vui lòng bỏ các vận đơn này ra khỏi phiếu để tiếp tục xác nhận bàn giao!",
+      "compositeStatus": "vận đơn {{status}} trước đó"
+    },
+    "boxPartner": {
+      "title": "Thông tin vận đơn",
+      "choicePartner": "Chọn đối tác",
+      "partnerInfo": "Thông tin đối tác",
+      "search": "Tìm kiếm đối tác",
+      "name": "đối tác vận chuyển",
+      "noResult": "Chưa có thông tin đối tác vận chuyển",
+      "deliveryProvider": "Đối tác vận chuyển",
+      "location": "Bàn giao tại",
+      "selectLocation": "Chọn chi nhánh",
+      "searchLocation": "Tìm kiếm chi nhánh",
+      "change": "Thay đổi đối tác",
+      "confirmChange": "Hệ thống sẽ xoá hết các vận đơn đã chọn hiện tại ra khỏi phiếu khi thay đổi đối tác vận chuyển. Bạn có chắc chắn muốn thay đổi không?",
+      "changeLocation": "Thay đổi kho bàn giao",
+      "confirmChangeLocation": "Hệ thống sẽ xoá hết các vận đơn đã chọn hiện tại ra khỏi phiếu khi thay đổi kho bàn giao. Bạn có chắc chắn muốn thay đổi không?",
+      "confirmChangeLocationRefund": "Hệ thống sẽ xoá hết các vận đơn đã chọn hiện tại ra khỏi phiếu khi thay đổi kho nhận hoàn. Bạn có chắc chắn muốn thay đổi không? "
+    },
+    "boxLineItems": {
+      "name": "vận đơn",
+      "empty": "Phiếu bàn giao chưa có vận đơn nào.",
+      "emptyLine2": "Vui lòng thêm vận đơn có trạng thái \"{{status}}\" vào phiếu.",
+      "emptyRefund": "Phiếu xác nhận hoàn chưa có vận đơn nào",
+      "boxInfoBottom": {
+        "tagsPlaceholder": "Nhập ký tự và ấn enter",
+        "tooltipTags": "Chọn hoặc thêm thẻ tags cho phiếu, phục vụ cho việc lọc và phân loại các phiếu theo quy trình của cửa hàng.",
+        "note": "Ghi chú",
+        "notePlaceholder": "Nhập ghi chú"
+      },
+      "tableLineItems": {
+        "stt": "STT",
+        "trackingCode": "Mã vận đơn",
+        "orderCode": "Mã đơn hàng",
+        "customerName": "Tên khách hàng",
+        "phoneNum": "SĐT",
+        "address": "Địa chỉ",
+        "total": "Giá trị đơn",
+        "customerPay": "Khách phải trả",
+        "codAmount": "Thu hộ",
+        "status": "Trạng thái vận đơn",
+        "freightAmount": "Phí shop trả ĐTVC "
+      },
+      "total": "Tổng vận đơn",
+      "totalCod": "Tổng thu hộ",
+      "totalFreightAmount": "Tổng phí trả ĐTVC"
+    },
+    "searchShipment": {
+      "search": "Tìm theo mã vận đơn, mã đơn hàng, tên, SĐT người nhận, hoặc quét mã Barcode...(F3)",
+      "add": "Thêm vận đơn",
+      "addMaxLimit": "Tối đa 200 vận đơn cho mỗi phiếu",
+      "scanNotFound": "Không tìm thấy vận đơn",
+      "validPartner": "Vận đơn không phải của đối tác đang chọn bàn giao",
+      "emptyPartner": "Vui lòng chọn đối tác vận chuyển",
+      "notHavePartner": "Vận đơn {{code}} không có thông tin đối tác vận chuyển",
+      "emptyObjRoot": "Khởi tạo phiếu thất bại, vui lòng thử lại",
+      "cantRemovePartnerOrLocation": "Vui lòng xoá vận đơn khỏi phiếu",
+      "fulfillmentConflict": "Vận đơn đã nằm trong phiếu bàn giao khác",
+      "fulfillmentDuplicate": "Vận đơn đã được thêm vào phiếu hiện tại",
+      "fulfillmentPushingStatusInvalid": "Vận đơn chưa đẩy thành công sang đối tác vận chuyển",
+      "fulfillmentInvalid": "Vận đơn không phải của đối tác đang chọn bàn giao hoặc không ở trạng thái Chờ giao hàng",
+      "fulfillmentRefundInvalid": "Vận đơn không phải của đối tác đang chọn bàn giao hoặc không ở trạng thái Chờ giao hàng",
+      "dialogFilter": {
+        "title": "Danh sách vận đơn chưa bàn giao",
+        "titleReturn": "Danh sách vận đơn chưa nhận hoàn",
+        "list": "Danh sách các vận đơn của đối tác đang chọn có trạng thái <1>{{status}}</1> và chưa được thêm vào phiếu bàn giao nào.",
+        "listReturn": "Danh sách các vận đơn của đối tác đang chọn có trạng thái <1>{{status}}</1>.",
+        "countFulfill": "Tổng vận đơn chưa bàn giao",
+        "deliveryServiceProvider": "Đối tác vận chuyển"
+      }
+    },
+    "alerts": {
+      "imageNotValid": "Ảnh không đúng định dạng",
+      "imageOutOfSize": "Ảnh {{name}} có kích thước quá {{size}}"
+    },
+    "tooltip": {
+      "importImage": "Kéo thả <br /> hoặc tải ảnh",
+      "importImage2Line1": "Kéo thả hoặc",
+      "importImage2Line2": "tải ảnh lên từ thiết bị"
+    },
+    "save": {
+      "success": "Lưu phiếu thành công",
+      "successConfirm": "Xác nhận bàn giao thành công",
+      "successConfirmRefund": "Xác nhận hoàn thành công",
+      "invalidCode": "Mã phiếu không được có tiền tố SHR của hệ thống",
+      "invalidLengthCode": "Mã phiếu không được vượt quá 50 ký tự và không có ký tự đặc biệt",
+      "codeContainUnicode": "Mã phiếu không được chứa kí tự unicode",
+      "cancelSuccess": "Huỷ phiếu thành công",
+      "invalidTags": "Tag không được quá 255 ký tự",
+      "invalidImages": "Không được quá 5 ảnh chứng từ",
+      "confirmEmptyFail": " Không thể xác nhận phiếu trắng!",
+      "dialogConfirmHanded": {
+        "title": "Xác nhận bàn giao",
+        "line1": "Vui lòng bấm <1>Xác nhận bàn giao</1> để bàn giao các vận đơn trong phiếu cho Đối tác vận chuyển.",
+        "line2": "Nút <1>Xác nhận bàn giao</1>: chỉ bàn giao vận đơn mà không xuất kho và chuyển trạng thái vận đơn",
+        "line3": "Nút <1>Bàn giao và xuất kho</1>: toàn bộ các vận đơn sẽ được bàn giao đồng thời xuất kho và cập nhật trạng thái là <1>\"Đang giao hàng\"</1>"
+      },
+      "dialogConfirmRefund": {
+        "title": "Xác nhận hoàn",
+        "countFulfill": "Vận đơn sẽ xác nhận hoàn:",
+        "haveFulfilledOrRetryDelivery": "Trong đó có <1>{{count}}</1> vận đơn ở trạng thái Đang giao hàng hoặc Chờ giao lại sẽ được Huỷ giao hàng.",
+        "content": "Các vận đơn trong phiếu sẽ được tự động chuyển sang trạng thái <1>Huỷ giao - đã nhận</1> và cộng kho cho các sản phẩm trong vận đơn sau khi bạn bấm <1>Xác nhận</1>."
+      }
+    },
+    "emptyNote": "Chưa có ghi chú",
+    "emptyTag": "Chưa có tags",
+    "steps": {
+      "create": "Tạo phiếu",
+      "confirm": "Xác nhận bàn giao",
+      "refund": "Xác nhận hoàn",
+      "cancel": "Huỷ phiếu"
+    },
+    "statuses": {
+      "handingOver": "Đang bàn giao",
+      "handedOver": "Đã bàn giao",
+      "handOverCancelled": "Đã huỷ",
+      "handingReturn": "Đang hoàn",
+      "handedReturn": "Đã hoàn"
+    }
+  },
+  "cancel": {
+    "boxLineItems": {
+      "empty": "Phiếu bàn giao chưa có vận đơn nào.",
+      "emptyRefund": "Phiếu xác nhận hoàn chưa có vận đơn nào"
+    }
+  }
+}

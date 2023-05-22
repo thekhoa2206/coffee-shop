@@ -1,0 +1,52 @@
+{
+  "filter": {
+    "role": "Vai trò",
+    "accountActive": "Nhân viên Đang làm việc",
+    "accountInactive": "Nhân viên Đã nghỉ việc",
+    "created": "Ngày tạo",
+    "modifiedOn": "Ngày cập nhật cuối",
+    "note": "Ghi chú"
+  },
+  "index": {
+    "placeHolderFilterSearch": "Tìm kiếm theo tên vai trò",
+    "totalTenantRole": "Tất cả vai trò",
+    "title": "Danh sách vai trò"
+  },
+  "buttonHeader": {
+    "addTenantRole": "Thêm vai trò",
+    "delete": "Xóa",
+    "exit": "Thoát",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "backToTenantRoleList": "Quay lại Danh sách vai trò"
+  },
+  "detail": {
+    "title": "Cập nhật vai trò",
+    "headerDetailRole": "Phân quyền chi tiết",
+    "updateTenantRoleSuccess": "Cập nhật vai trò thành công",
+    "insertTenantRoleSuccess": "Thêm mới vai trò thành công",
+    "deleteTenantRoleSuccess": "Xóa vai trò thành công",
+    "validate": {
+      "nameCannotBlank": "Tên vai trò không được để trống"
+    },
+    "delete": {
+      "notificationMessage": "Bạn có chắc chắn muốn xóa vai trò \"<1>{{name}}</1>\"? Thao tác này không thể khôi phục.",
+      "title": "Xóa vai trò"
+    },
+    "haveRoleItem": "Có quyền: {{roles}}"
+  },
+  "create": {
+    "title": "Thêm mới vai trò"
+  },
+  "formValidate": {
+    "name": "Tên vai trò",
+    "note": "Ghi chú"
+  },
+  "emptyResultFilter": "Không tìm thấy vai trò nào",
+  "tooltip": {
+    "readCustomer": "Nhân viên có quyền được xem danh sách Khách hàng mà nhân viên đó phụ trách.",
+    "readAllOrder": "Nhân viên có quyền được xem tất cả danh sách đơn hàng của cửa hàng.",
+    "readAllCustomer": "Nhân viên có quyền được xem tất cả danh sách khách hàng của cửa hàng.",
+    "readOrder": "Nhân viên có quyền được xem danh sách Đơn hàng mà nhân viên đó phụ trách."
+  }
+}

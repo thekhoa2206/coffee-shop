@@ -1,0 +1,9 @@
+{
+  "notFound": "App không tồn tại",
+  "dialogUninstall": {
+    "title": "Ngừng sử dụng",
+    "message": "Bạn có muốn ngừng sử dụng ứng dụng hiện tại. Thao tác này không thể khôi phục.",
+    "textOk": "Ngừng",
+    "success": "Gỡ app thành công"
+  }
+}

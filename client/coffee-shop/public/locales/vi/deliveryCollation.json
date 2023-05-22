@@ -1,0 +1,158 @@
+{
+    "index":{
+        "title": "Danh sách phiếu đối soát",
+        "btnAddDeliveryCollation": "Tạo phiếu đối soát",
+        "name": "phiếu đối soát",
+        "placeHolderFilterSearch": "Tìm theo mã phiếu đối soát",
+        "column":{
+            "code": "Mã phiếu đối soát",
+            "createdOn": "Ngày tạo phiếu",
+            "collatedOn": "Ngày đối soát",
+            "modifiedOn": "Ngày cập nhật",
+            "cancelledOn": "Ngày hủy phiếu",
+            "deliveryServiceProviderName": "Đối tác vận chuyển",
+            "status": "Trạng thái",
+            "paymentStatus": "Thanh toán",
+            "systemTotalCollationAmount": "Đối soát hệ thống",
+            "serviceProviderTotalCollationAmount": "Đối soát đối tác",
+            "serviceProviderCollatedOn": "Ngày đối soát thực tế",
+            "accountName": "Nhân viên tạo phiếu",
+            "countShipments":"Số lượng vận đơn",
+            "accountNameCollated": "Nhân viên đối soát",
+            "tags": "Tags",
+            "note": "Ghi chú",
+            "location": "Chi nhánh",
+            "createdOnDeliveryCollation": "Ngày tạo phiếu"
+        },
+        "tab": {
+            "all": "Tất cả phiếu đối soát",
+            "collated": "Phiếu Đã đối soát",
+            "collating": "Phiếu Đang đối soát",
+            "sapoExpress": "SapoExpress"
+          },
+        "exportFile": {
+            "allDeliveryCollation": "Tất cả phiếu đối soát",
+            "deliveryCollationInPage": "Phiếu đối soát trên trang này",
+            "deliveryCollationChoose": "Các phiếu đối soát được chọn",
+            "deliveryCollationSearch": "phiếu đối soát phù hợp với kếp quả tìm kiếm hiện tại"
+        },
+        "fieldsExport":{
+            "code": "Mã phiếu đối soát",
+            "locationName": "Chi nhánh",
+            "createdOn": "Ngày tạo phiếu",
+            "collatedOn": "Ngày đối soát",
+            "serviceProviderCollatedOn": "Ngày đối soát thực tế",
+            "modifiedOn": "Ngày cập nhật",
+            "cancelledOn": "Ngày hủy phiếu",
+            "deliveryServiceProviderName": "Đối tác vận chuyển",
+            "systemTotalCollationAmount": "Đối soát hệ thống",
+            "serviceProviderTotalCollationAmount": "Đối soát đối tác",
+            "collateByAccountName": "Nhân viên đối soát",
+            "note": "Ghi chú",
+            "tags": "tags",
+            "countShipments": "Số lượng vận đơn",
+            "fulfillmentCode": "Mã vận đơn",
+            "orderCode": "Mã đơn hàng",
+            "systemCodAmount": "COD hệ thống",
+            "externalCodAmount": "COD đối tác",
+            "systemShipFee": "Phí hệ thống",
+            "serviceProviderShipFee": "Phí đối tác",
+            "feeAmount": "Phí khác",
+            "freightPayer": "Người trả ship",
+            "accountName":"Nhân viên tạo phiếu",
+            "status":"Trạng thái"
+        },
+        "drillDown":{
+            "code":"Mã phiếu",
+            "titleInfoDeliveryCollation": "Thông tin phiếu đối soát",
+            "createdOn":"Ngày tạo phiếu",
+            "accountName":"Nhân viên tạo phiếu",
+            "countShipments":"Số lượng vận đơn",
+            "deliveryServiceProviderName":"Đối tác vận chuyển",
+            "serviceProviderCollatedOn":"Ngày đối soát thực tế",
+            "systemTotalCollationAmount": "Đối soát hệ thống",
+            "serviceProviderTotalCollationAmount": "Đối soát đối tác",
+            "note":"Ghi chú",
+            "tags":"Tags",
+            "nonNote": "Phiếu đối soát chưa có ghi chú",
+            "nonTags": "Phiếu đối soát chưa có tags"
+        }
+    },
+    "create":{
+        "title": "Tạo phiếu đối soát",
+        "boxInfoDeliveryCollation":{
+            "title": "Thông tin phiếu",
+            "deliveryServiceProviderName": "Đối tác vận chuyển",
+            "code":"Mã phiếu",
+            "locationName":"Chi nhánh",
+            "accountName":"Nhân viên",
+            "placeholderServiceProvider":"Chọn đối tác vận chuyển",
+            "placeholderSearchServiceProvider":"Tìm kiếm đối tác vận chuyển",
+            "placeholderLocation": "Chọn chi nhánh đối"
+        },
+        "boxInfoAdditional":{
+            "title": "Thông tin bổ sung",
+            "settingColumn":{
+                "note": "Ghi chú",
+                "tags":"Tags",
+                "serviceProviderCollatedOn":"Ngày đối soát thực tế"
+            }
+        },
+        "boxShipment":{
+            "title": "Danh sách vận đơn",
+            "placeholderSearchShipment": "Tìm theo mã vận đơn, hoặc quét mã Barcode...(F3)",
+            "column": {
+                "stt":"STT",
+                "shipmentCode": "Mã vận đơn",
+                "orderCode":"Mã đơn hàng",
+                "systemCodAmount": "COD hệ thống",
+                "externalCodAmount": "COD đối tác",
+                "systemShipmentFee": "Phí GH hệ thống",
+                "externalShipmentFee": "Phí GH đối tác",
+                "freightPayer": "Người trả ship",
+                "feeAmount": "Phí khác"
+            }
+        }
+    },
+    "detail": {
+        "title": "Chi tiết phiếu đối soát",
+        "boxInfomation": {
+            "deliveryServiceProviderName":"Đối tác vận chuyển",
+            "accountName": "Nhân viên tạo phiếu",
+            "collateByAccountName":"Nhân viên đối soát",
+            "locationName":"Chi nhánh đối soát",
+            "createdOn":"Ngày tạo phiếu",
+            "collatedOn":"Ngày đối soát"
+        },
+        "boxPayment": {
+            "title": "Thanh toán công nợ",
+            "systemTotalCollationAmount": "Tổng đối soát hệ thống",
+            "serviceProviderTotalCollationAmount":"Tổng đối tác đối soát",
+            "totalExchange": "Chênh lệch"
+        },
+        "boxInfoAdditional": {
+            "title": "Thông tin bổ sung",
+            "note":"Ghi chú",
+            "tags": "Tags"
+        },
+        "boxShipment":{
+            "tabShipment": "Danh sách vận đơn",
+            "tabshipmentExchange": "Vận đơn chênh lệch số liệu",
+            "tabShipmentNoExchange": "Vận đơn đúng số liệu",
+            "column":{
+                "stt":"STT",
+                "shipmentCode": "Mã vận đơn",
+                "orderCode":"Mã đơn hàng",
+                "systemCodAmount": "COD hệ thống",
+                "externalCodAmount": "COD đối tác",
+                "systemShipmentFee": "Phí GH hệ thống",
+                "externalShipmentFee": "Phí GH đối tác",
+                "freightPayer": "Người trả ship",
+                "feeAmount": "Phí khác"
+            }
+        }
+    },
+    "edit":{
+        "title": "Chỉnh sửa phiếu đối soát"
+    }
+}

@@ -1,0 +1,83 @@
+{
+  "pageTitle": {
+    "primary": "Trang chủ",
+    "secondary": "Hướng dẫn"
+  },
+  "trialText": "Bạn còn {{count}} ngày dùng thử miễn phí",
+  "expiresText": "Gói dịch vụ của bạn hết hạn vào ngày {{date}}",
+  "buttonUpgradePackage": "Kích hoạt gói dịch vụ ngay",
+  "buttonRegisterCredit":"Đăng ký thẻ tín dụng",
+  "buttonRegisterLoan":"Đăng ký vay ngay",
+  "buttonRegisterLoanTimeout":"Truy cập ngay!",
+  "saleInfo": {
+    "saleNameDefault": "CỔNG HỖ TRỢ SAPO",
+    "description": "Liên hệ tư vấn"
+  },
+  "bussinessResult": {
+    "title": "Kết quả kinh doanh trong ngày",
+    "revenueTotalTitle": "Doanh thu",
+    "totalNewOrderTitle": "Đơn hàng mới",
+    "totalOrderReturnTitle": "Đơn trả hàng",
+    "totalOrderCancelTitle": "Đơn hủy"
+  },
+  "infoInventory": {
+    "title": "Thông tin kho",
+    "descriptionLowRate": "Sản phẩm dưới định mức",
+    "tooltipErrorLowRate": "Các sản phẩm có tồn kho dưới mức quy định",
+    "descriptionOnhandAmount": "Số tồn kho chi nhánh",
+    "descriptionOnhandValue": "Giá trị tồn kho chi nhánh"
+  },
+  "revenueProportionSale": {
+    "nameSeries": "Tỷ lệ",
+    "otherRevenueType": "Khác",
+    "revenueSaleTabComponent": "Doanh thu bán hàng",
+    "rateSaletabComponent": "Tỷ trọng bán hàng",
+    "revenueByLocation": "Theo chi nhánh",
+    "revenueBySource": "Theo nguồn",
+    "totalRevenue": "Tổng doanh thu: "
+  },
+  "infoRightBlogList": {
+    "title": "Có thể bạn quan tâm",
+    "minutes": "phút đọc",
+    "throughtInfo": "Bỏ qua trang giới thiệu"
+  },
+  "infoRightNotificationAffiliate": {
+    "sapoUpdate": "Sapo Update",
+    "notiAffiliate": "Thông báo",
+    "promoAffiliate": "Khuyến mại"
+  },
+  "dashboardInfoLeft": {
+    "topSaleTitle": "Top sản phẩm",
+    "orderWaithandleTitle": "Đơn hàng chờ xử lý",
+    "nonProduct": "Chưa có sản phẩm"
+  },
+  "header": {
+    "feedBack": "Góp ý",
+    "helper": "Trợ giúp",
+    "title": "Tổng quan",
+    "bussinessLoan": "Vay vốn kinh doanh",
+    "accountText": "Tài khoản của tôi",
+    "infoPackage": "Thông tin gói dịch vụ",
+    "importExportHistories": "Lịch sử xuất nhập file",
+    "logOut": "Đăng xuất",
+    "notiText": "Thông báo",
+    "readAllNoti": "Đánh dấu đã đọc tất cả",
+    "allNotiText": "Xem tất cả thông báo",
+    "nonNoti": "Bạn hiện chưa có thông báo nào",
+    "notiSapoPromo": "Khuyến mại",
+    "notiSapoNews": "Tin tức",
+    "feedBackDescription": "Bạn vui lòng nhập ý kiến đóng góp!",
+    "feedBackTitle": "Góp ý",
+    "feedBackPlaceHolder": "Hãy gửi góp ý của bạn cho chúng tôi tại đây nhé.",
+    "feedBackErrorTitle": "Có lỗi xảy ra trong quá trình góp ý của bạn. Làm ơn hãy thử lại.",
+    "feedBackErrorThank": "Cám ơn bạn đã gửi ý kiến đóng góp cho chúng tôi.",
+    "feedBackErrorContent": "Ý kiến của bạn sẽ giúp chúng tôi tăng trải nghiệm sản phẩm để phục vụ bạn tốt hơn.",
+    "thanksText": "Xin cảm ơn",
+    "businessLoanTitle": "Bạn cần vốn để nắm bắt cơ hội kinh doanh?",
+    "businessLoanSubTitle": "Sapo Money hợp tác với các Tổ chức tín dụng hỗ trợ nhu cầu vay tín chấp đa dạng của nhà bán hàng.",
+    "businessLoanTitleTimeout": "Truy cập ứng dụng Sapo Money để tiếp cận các gói vay vốn siêu ưu đãi dành riêng cho khách hàng Sapo.",
+    "fastLoanContent":"Vay online siêu nhanh tới 100 triệu VNĐ",
+    "AddtitionalLoanContent":"Bổ sung vốn kinh doanh tới 1 tỷ VNĐ",
+    "limitLoanDefault": "50,000,000"
+  }
+}
