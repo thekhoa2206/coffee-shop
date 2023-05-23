@@ -16,13 +16,13 @@ public class BaseEntity {
     private Integer id;
 
     @Column(name = "created_on")
-    private Date createdOn;
+    private Long createdOn;
 
     @Column(name = "created_by")
     private Integer createdBy;
 
     @Column(name = "modified_on")
-    private Date modifiedOn;
+    private Long modifiedOn;
 
     @Column(name = "modified_by")
     private Integer modifiedBy;
