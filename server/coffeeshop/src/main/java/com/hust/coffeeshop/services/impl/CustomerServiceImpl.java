@@ -1,5 +1,6 @@
 package com.hust.coffeeshop.services.impl;
 
+import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.common.CommonStatus;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.customer.CustomerFilterRequest;
@@ -46,10 +47,9 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customer = mapper.map(request, Customer.class);
         customer.setStatus(CommonStatus.CustomerStatus.ACTIVE);
-        customer.setCreatedOn(new Date());
+        customer.setCreatedOn(CommonCode.getTimestamp());
         customer.setModifiedBy(1);
         customer.setCreatedBy(1);
-        customer.setModifiedOn(new Date());
         CustomerResponse customerResponse = null;
         try {
             var customerNew = customerRepository.save(customer);
@@ -69,7 +69,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (request.getName() != null) customer.get().setName(request.getName());
         if (request.getSex() != null) customer.get().setSex(request.getSex());
         if (request.getDob() != null) customer.get().setDob(request.getDob());
-        customer.get().setModifiedOn(new Date());
+        customer.get().setModifiedOn(CommonCode.getTimestamp());
         CustomerResponse customerResponse = null;
         try {
             var customerNew = customerRepository.save(customer.get());
@@ -87,7 +87,7 @@ public class CustomerServiceImpl implements CustomerService {
         val customer = customerRepository.findById(id);
         if (customer.get() == null) throw new ErrorException("Không tìm thấy người dùng");
         customer.get().setStatus(CommonStatus.CustomerStatus.DELETED);
-        customer.get().setModifiedOn(new Date());
+        customer.get().setModifiedOn(CommonCode.getTimestamp());
         try {
             customerRepository.save(customer.get());
         } catch (Exception e) {

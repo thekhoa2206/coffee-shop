@@ -12,7 +12,6 @@ public class CreateUserRequest {
     private String username;
     private String phoneNumber;
     private String name;
-    private Date dob;
     private String password;
     private String email;
     private Integer roleId;

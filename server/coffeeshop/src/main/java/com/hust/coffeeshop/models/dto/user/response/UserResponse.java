@@ -11,8 +11,6 @@ public class UserResponse {
     private String username;
     private String phoneNumber;
     private String name;
-    private Date dob;
-    private String password;
     private String email;
-    private List<Integer> roleId;
+    private String role;
 }
