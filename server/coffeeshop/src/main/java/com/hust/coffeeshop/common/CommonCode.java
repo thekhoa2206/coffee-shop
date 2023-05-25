@@ -2,6 +2,8 @@ package com.hust.coffeeshop.common;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -24,4 +26,12 @@ public class CommonCode {
         password = encoder.encode(password);
         return password;
     }
+    public static long getMilliSeconds( String myDate) throws ParseException {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = sdf.parse(myDate);
+        long millis = date.getTime();
+        return millis;
+    }
+
 }
