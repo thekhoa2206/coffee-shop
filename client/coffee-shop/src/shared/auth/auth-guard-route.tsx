@@ -102,9 +102,7 @@ const mapStateToProps = (
   sessionHasBeenFetched: true,
   user: user,
   isAuthorized: user
-    ? user.accountOwner
-      ? true
-      : hasAnyAuthority(user ? user.authorities : [], hasAnyAuthorities)
+    ? hasAnyAuthority(user ? user.authorities : [], hasAnyAuthorities)
     : false,
 });
 

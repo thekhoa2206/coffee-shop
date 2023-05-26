@@ -1,42 +1,34 @@
 import { BaseFilterFixedModel } from "components/FilterFixed/FilterFixed";
 import { BaseFilter, Metadata } from "../types";
 
-export type AccountResponse = {
+export type UserResponse = {
   id: number;
   username: string;
-  firstName: number;
-  lastName: string;
-  fullName?: string;
+  name?: string;
+  phoneNumber?: string;
+  password?: string;
   email?: string;
-  accountOwner?: boolean;
-  locationId?: number;
-  avatarUrl?: number;
-  phoneNo?: string;
-  mobile?: string;
-  description?: string;
-  dob?: Date;
-  website?: string;
-  sex?: string;
-  address?: string;
+  dob?: string;
   status?: string;
-  createdOn?: Date;
-  modifiedOn?: Date;
   roles?: RolesResponse[];
+  createdOn?: string;
+  createdBy?: string;
+  modifiedOn?: string;
+  modifiedBy?: string;
   authorities: string[];
-  typeAccount?: string;
-  totalDebt?: number;
 };
 export type RolesResponse = {
-  accountId: number;
+  id: number;
   code: string;
-  createdOn: Date;
-  locationId: number;
-  modifiedOn: Date;
+  createdOn?: string;
+  createdBy?: string;
+  modifiedOn?: string;
+  modifiedBy?: string;
   name: string;
-  roleId: number;
+  status: string;
 }
-export type ListAccountResponse = {
-  account_response: AccountResponse[];
+export type ListUserResponse = {
+  account_response: UserResponse[];
   metadata: Metadata;
 }
 export type FormLogin = {
@@ -46,7 +38,6 @@ export type FormLogin = {
 
 export type JwtResponse = {
   token?: string;
-  type?: string;
 }
 
 export interface AccountFilterRequest extends BaseFilter {
@@ -61,7 +52,7 @@ export class AccountsFilter implements AccountFilterRequest {
     public ids?: string,
     public status?: string,
     public created_on_predefined?: string,
-  ) {}
+  ) { }
 }
 export type AccountFilterModel = {
   status?: string;
@@ -70,7 +61,7 @@ export type AccountFilterModel = {
   created_on_predefined?: string;
 };
 export type AccountFilter = {
-  ids?:  number[];
+  ids?: number[];
   query?: string;
   page: number;
   limit: number;
@@ -78,11 +69,11 @@ export type AccountFilter = {
   location_ids?: number[];
   created_on_min?: string;
   created_on_max?: string;
-  typeAccount?:string;
+  typeAccount?: string;
 };
 
 
-export type AccountRequest ={
+export type AccountRequest = {
   username?: string;
   email?: string;
   fullName?: string;

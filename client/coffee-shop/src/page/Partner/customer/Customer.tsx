@@ -1,9 +1,6 @@
-import { Box, Grid, Typography, withStyles } from "@material-ui/core";
+import { Box, Typography, withStyles } from "@material-ui/core";
 import { AddCircleOutline } from "@material-ui/icons";
 import Button from "components/Button";
-import Dialog from "components/Dialog";
-import InputChoiceDistrict from "components/InputChoiceDistrict";
-import InputChoiceWard from "components/InputChoiceWard";
 import LoadingAuth from "components/Loading/LoadingAuth";
 import NoResultsComponent from "components/NoResults/NoResultsComponent";
 import { GridColumn } from "components/SapoGrid/GridColumn/GridColumn";
@@ -13,38 +10,29 @@ import { CellTemplateProps } from "components/SapoGridSticky";
 import SearchBox from "components/SearchBox/SearchBox";
 import ListTagFilterItem from "components/TagFilterItem";
 import { TagFilterItemType } from "components/TagFilterItem/TagFilterItem.types";
-import TextField from "components/TextField";
 import useQueryParams from "hocs/useQueryParams";
 import i18next from "i18next";
-import { cloneDeep, isNil } from "lodash";
-import { CustomerRequest } from "page/Order/create/CreateOrder.types";
-import React, { Fragment, useCallback, useEffect, useState } from "react";
-import { connect, ConnectedProps } from "react-redux";
+import { cloneDeep } from "lodash";
+import React, { useCallback, useEffect, useState } from "react";
+import { ConnectedProps, connect } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
-import { CustomerResponse } from "services/OrdersService";
 import PartnerService, { PartnerFilterRequest } from "services/PartnerService";
-import StoreService, { DistrictRequestFilter, DistrictResponse, WardResponse } from "services/StoreService";
 import { AppState } from "store/store";
 import {
   formatDateUTC,
-  formatDateUTCToLocalDateString,
-  getMessageError,
-  hasPermission
+  formatDateUTCToLocalDateString
 } from "utilities";
-import { AccountRole } from "utilities/AccountRole";
 import {
   convertPredefinedToDate,
   getNameAndDatePredefined
 } from "utilities/DateRangesPredefine";
 import QueryUtils from "utilities/QueryUtils";
-import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 import styles from "./Customer.styles";
 import {
   CustomerFilterRequest,
-  CustomerProps, DialogUpdateCustomerProps,
+  CustomerProps,
   ICustomerQuickFilter
 } from "./Customer.types";
-import { DialogAddCustomer } from "./DialogAddCustomer/DialogAddCustomer";
 import {
   CustomerQuickFilterOptions,
   getCustomerQuickFilterLabel
@@ -52,14 +40,13 @@ import {
 import CustomerQuickFilter from "./Filter/CustomerQuickFilter.component";
 
 const Customer = (props: CustomerProps & PropsFromRedux) => {
-  const { classes, storeContext, authState } = props;
+  const { classes, authState } = props;
   const location = useLocation();
   const queryParams = useQueryParams();
   const [loading, setLoading] = useState<boolean>(true);
   const [openDialogAddCustomer, setOpenDialogAddCustomer] = useState(false);
   const [openDialogUpdateCustomer, setOpenDialogUpdateCustomer] =
     useState(false);
-  const [customerChoose, setCustomerChoose] = useState<CustomerResponse>();
   const [tagsFilterItem, setTagsFilterItem] = useState<TagFilterItemType[]>([]);
   const [data, setData] = useState<DataResult>({
     data: [],
@@ -158,9 +145,6 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
     filter.created_on_max = filters.created_on_max;
     filter.status = filters.status || "active";
     filter.query = filters.query;
-    if (!hasPermission([AccountRole.ADMIN], authState.user) && storeContext.store) {
-      filter.store_id = storeContext.store.id;
-    }
     let res = await PartnerService.filter(filter);
     if (res) {
       setData({
@@ -177,7 +161,6 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
     changeQueryString(filter);
   };
   const onRowClick = useCallback((e, data) => {
-    setCustomerChoose(data);
     setOpenDialogUpdateCustomer(true);
   }, []);
 
@@ -395,24 +378,6 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
           )}
         </Box>
       </Box>
-      <DialogUpdateAccount
-        initData={() => {
-          initData(filters);
-        }}
-        onClose={() => setOpenDialogUpdateCustomer(false)}
-        open={openDialogUpdateCustomer}
-        customer={customerChoose}
-        id={String(customerChoose?.id)}
-        storeContext={storeContext}
-      />
-      <DialogAddCustomer
-        initData={() => {
-          initData(filters);
-        }}
-        onClose={() => setOpenDialogAddCustomer(false)}
-        open={openDialogAddCustomer}
-        storeContext={storeContext}
-      />
     </>
   );
 };
@@ -420,224 +385,8 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
 const mapStateToProps = (state: AppState) => ({
   menuState: state.menu,
   authState: state.auth,
-  storeContext: state.storeContext,
 });
 const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 export default connect(mapStateToProps, {})(withStyles(styles)(Customer));
 
-export const DialogUpdateAccount = (props: DialogUpdateCustomerProps) => {
-  const { open, onClose, id, customer, initData, storeContext } = props;
-  const history = useHistory();
-
-  const [district, setDistrict] = useState<
-    DistrictResponse | null | undefined
-  >();
-  const [ward, setWard] = useState<WardResponse | null | undefined>();
-  const [customerUpdate, setCustomerUpdate] = useState<CustomerRequest>();
-  useEffect(() => {
-    setCustomerUpdate({
-      address: customer?.address,
-      phone: customer?.phone,
-      code: customer?.code,
-      id: customer?.id,
-      name: customer?.name,
-      storeId: storeContext?.store?.id,
-    });
-    fetchData();
-  }, [customer]);
-  const fetchData = async () => {
-    let fil: DistrictRequestFilter = {
-      city_id: 1,
-    }
-    let districtRes = await StoreService.getDistricts(fil);
-    let district = districtRes.data.list_district.district.find((ci) => ci.id === customer?.cityId);
-    setDistrict(district);
-    if (district) {
-      const wardsRes = await StoreService.getWards(district.id);
-      let ward = wardsRes.data.list_ward.ward.find((wr) => wr.id === customer?.wardId);
-      if (ward)
-        setWard(ward);
-    }
-  }
-  const handleDelete = () => {
-    PartnerService.delete(id)
-      .then(async (res) => {
-        if (res) {
-          onClose();
-          SnackbarUtils.success("Xóa nhân viên thành công!");
-          initData();
-        }
-      })
-      .catch((err) => {
-        SnackbarUtils.error(getMessageError(err));
-      });
-  };
-  const handleUpdate = () => {
-    if (isNil(customerUpdate?.name)) {
-      SnackbarUtils.error("Tên không được để trống!");
-      return;
-    }
-    if (isNil(customerUpdate?.address)) {
-      SnackbarUtils.error("Đia chỉ không được để trống!");
-      return;
-    }
-    if (isNil(customerUpdate?.phone)) {
-      SnackbarUtils.error("SĐT không được để trống!");
-      return;
-    }
-    if (isNil(customerUpdate?.districtId)) {
-      SnackbarUtils.error("Quận/Huyện không được để trống!");
-      return;
-    }
-    if (isNil(customerUpdate?.wardId)) {
-      SnackbarUtils.error("Phường/Xã không được để trống!");
-      return;
-    }
-    if (customerUpdate) {
-      PartnerService.update(id, customerUpdate)
-        .then(async (res) => {
-          if (res) {
-            onClose();
-            if (res.data.CustomerResponse) {
-              initData();
-            }
-            SnackbarUtils.success("Cập nhật thông tin khách thành công!");
-          }
-        })
-        .catch((err) => {
-          SnackbarUtils.error(getMessageError(err));
-        });
-    }
-  };
-  return (
-    <Fragment>
-      <Dialog
-        open={open}
-        onClose={onClose}
-        title={"Cập nhật khách hàng"}
-        onOk={handleUpdate}
-        textOk={"Lưu"}
-        textDelete={"Xóa"}
-        onDelete={handleDelete}
-        minWidthPaper="790px"
-        DialogTitleProps={{
-          dividerBottom: true
-        }}
-        children={
-
-          <Box padding="16px">
-            <Box>
-              <Grid container xs={12} spacing={2}>
-                <Grid item xs={6}>
-                  <TextField
-                    name="code"
-                    type="text"
-                    label="Mã khách"
-                    fullWidth
-                    value={customerUpdate?.code}
-                    onChange={(event: any) => {
-                      setCustomerUpdate({
-                        ...customerUpdate,
-                        code: event.target.value,
-                      });
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    name="name"
-                    type="text"
-                    label="Tên khách hàng"
-                    required
-                    fullWidth
-                    value={customerUpdate?.name}
-                    onChange={(event: any) => {
-                      setCustomerUpdate({
-                        ...customerUpdate,
-                        name: event.target.value,
-                      });
-                    }}
-                  />
-                </Grid>
-              </Grid>
-
-              <Grid container xs={12} spacing={2}>
-                <Grid item xs={6}>
-                  <TextField
-                    name="phonenumber"
-                    type="text"
-                    label="SĐT khách"
-                    required
-                    fullWidth
-                    value={customerUpdate?.phone}
-                    onChange={(event: any) => {
-                      const re = /^[0-9\b]+$/;
-                      if (
-                        event.target.value === "" ||
-                        re.test(event.target.value)
-                      ) {
-                        setCustomerUpdate({
-                          ...customerUpdate,
-                          phone: event.target.value,
-                        });
-                      }
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    name="address"
-                    type="text"
-                    label="Địa chỉ"
-                    fullWidth
-                    value={customerUpdate?.address}
-                    onChange={(event: any) => {
-                      setCustomerUpdate({
-                        ...customerUpdate,
-                        address: event.target.value,
-                      });
-                    }}
-                  />
-                </Grid>
-              </Grid>
-
-              <Grid container xs={12} spacing={2}>
-                <Grid item xs={6}>
-                  <Typography style={{ marginBottom: "5px" }}>Quận/Huyện</Typography>
-                  <InputChoiceDistrict
-                    cityId={1}
-                    value={district}
-                    onChange={(value: DistrictResponse | null | undefined) => {
-                      debugger
-                      setDistrict(value);
-                      setCustomerUpdate({
-                        ...customerUpdate,
-                        districtId: value?.id,
-                        wardId: 0,
-                      });
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography style={{ marginBottom: "5px" }}>Phường/Xã</Typography>
-                  <InputChoiceWard
-                    value={ward}
-                    districtId={district?.id}
-                    onChange={(value: WardResponse | null | undefined) => {
-                      setWard(value);
-                      setCustomerUpdate({
-                        ...customerUpdate,
-                        wardId: value?.id,
-                      });
-                    }}
-                  />
-                </Grid>
-              </Grid>
-            </Box>
-          </Box>
-        }
-      />
-    </Fragment>
-  );
-};

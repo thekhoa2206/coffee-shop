@@ -14,10 +14,10 @@ function OptionUser(props: UserInfoProp) {
   let md5Email = md5(authState.user?.email || "");
   return (
     <Fragment>
-      <Avatar size="37" round="20px" name={authState.user?.fullName} md5Email={md5Email} maxInitials={1} />
+      <Avatar size="37" round="20px" name={authState.user?.name} md5Email={md5Email} maxInitials={1} />
       <Box className={classes.infoText}>
         <Typography variant="subtitle1" color="textPrimary">
-          {authState.user?.fullName}
+          {authState.user?.name}
         </Typography>
         <Typography variant="caption" color="secondary">
           Xem trang cá nhân

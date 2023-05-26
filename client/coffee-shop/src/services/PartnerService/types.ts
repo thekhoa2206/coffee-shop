@@ -1,4 +1,3 @@
-import { CustomerResponse } from "services/OrdersService/types";
 import { Metadata } from "services/types";
 
 export type PartnerFilterRequest ={
@@ -15,4 +14,12 @@ export type PartnerFilterRequest ={
 export type ListPartnerResponse = {
   partnerResponses: CustomerResponse[];
   metadata?: Metadata;
+}
+
+export type CustomerRequest = {
+  
+}
+
+export type CustomerResponse = {
+
 }

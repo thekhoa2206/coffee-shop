@@ -2,7 +2,7 @@ import i18n from "i18n";
 import _, { camelCase, isNil } from "lodash";
 import moment from "moment";
 import { OptionsObject, SnackbarKey, SnackbarMessage } from "notistack";
-import { AccountResponse } from "services/AccountService";
+import { UserResponse } from "services/AccountService";
 import { CityDistrict, CityResponse, DistrictResponse } from "services/AddressService";
 import { getNamePredefinedDate } from "./DateRangesPredefine";
 import SnackbarUtils from "./SnackbarUtilsConfigurator";
@@ -544,7 +544,7 @@ export function formatNumberEpsilon(num: number) {
 
 
 
-// export function hasPermission(permission: string, account?: AccountResponse | null) {
+// export function hasPermission(permission: string, account?: UserResponse | null) {
 //   if (account) {
 //     let roles = account.account_roles;
 //     if (permission === null || permission === undefined || permission.trim() === "" || account.account_owner) {
@@ -566,7 +566,7 @@ export function formatNumberEpsilon(num: number) {
 
 // export const getListLocationPermissions = (
 //   permissions: string[],
-//   account: AccountResponse,
+//   account: UserResponse,
 //   _locations: LocationResponse[]
 // ) => {
 //   let locations = _locations;
@@ -578,7 +578,7 @@ export function formatNumberEpsilon(num: number) {
 
 // export const getListLocationPermission = (
 //   permission: string,
-//   account: AccountResponse,
+//   account: UserResponse,
 //   locations: LocationResponse[]
 // ) => {
 //   let list: LocationResponse[] = [];
@@ -601,7 +601,7 @@ export function formatNumberEpsilon(num: number) {
 // };
 // export const getListLocationSomePermission = (
 //   permission: string[],
-//   account: AccountResponse,
+//   account: UserResponse,
 //   locations: LocationResponse[]
 // ) => {
 //   let list: LocationResponse[] = [];
@@ -624,7 +624,7 @@ export function formatNumberEpsilon(num: number) {
 // };
 
 
-// export function hasPermissionInLocation(id: number, permissions: string[], account: AccountResponse) {
+// export function hasPermissionInLocation(id: number, permissions: string[], account: UserResponse) {
 //   let isAllow = false;
 //   if (permissions === null || permissions === undefined || permissions.length === 0) {
 //     if (account.account_owner) isAllow = true;
@@ -704,7 +704,7 @@ export function formatNumberEpsilon(num: number) {
 
 // export function checkAuthorizedAndNoti(
 //   permission: string,
-//   account?: AccountResponse | null,
+//   account?: UserResponse | null,
 //   enqueueSnackbar?: (message: SnackbarMessage, options?: OptionsObject) => SnackbarKey
 // ) {
 //   if (!hasPermission(permission, account)) {
@@ -716,7 +716,7 @@ export function formatNumberEpsilon(num: number) {
 //   return true;
 // }
 
-// export function checkAuthorizedAndNotiV2(permission: string | string[], account?: AccountResponse | null) {
+// export function checkAuthorizedAndNotiV2(permission: string | string[], account?: UserResponse | null) {
 //   if (typeof permission === "string" ? !hasPermission(permission, account) : !hasPermissions(permission, account)) {
 //     SnackbarUtils.error(i18n.t(`error:error.notHaveAction`));
 //     return false;
@@ -724,7 +724,7 @@ export function formatNumberEpsilon(num: number) {
 //   return true;
 // }
 
-// export function checkAuthorizedV2(permission: string | string[], account?: AccountResponse | null) {
+// export function checkAuthorizedV2(permission: string | string[], account?: UserResponse | null) {
 //   if (typeof permission === "string" ? !hasPermission(permission, account) : !hasPermissions(permission, account)) {
 //     return false;
 //   }
@@ -946,7 +946,7 @@ export const isAsciiString = (str: string) => {
   }
   return true;
 };
-// export function hasPermissions(permissions: string[], account?: AccountResponse | null) {
+// export function hasPermissions(permissions: string[], account?: UserResponse | null) {
 //   if (account) {
 //     let roles = account.account_roles;
 //     if (account.account_owner) {
@@ -965,12 +965,9 @@ export const isAsciiString = (str: string) => {
 //   return false;
 // }
 
-export const hasPermission = (permissions: string[], account?: AccountResponse | null) => {
+export const hasPermission = (permissions: string[], account?: UserResponse | null) => {
   if (account) {
     let roles = account.roles?.map((item) => item.code);
-    if (account.accountOwner) {
-      return true;
-    }
     if (roles) {
       return roles.some((elem) => {
         if (permissions.includes(elem)) {

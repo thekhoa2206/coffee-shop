@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import i18n from "i18n";
 import { isNil } from "lodash";
 import AccountService from "services/AccountService";
-import { AccountResponse } from "services/types";
+import { UserResponse } from "services/types";
 import { getCookie, removeCookieByPrefix } from "utilities";
 import { CookieName } from "utilities/CookieNames";
 import { AuthState } from "./types";
@@ -11,13 +11,13 @@ const initialState: AuthState = {
     isAuthenticated: false,
     loadingAuth: true,
     sessionHasBeenFetched: false,
-    user: {} as AccountResponse,
+    user: {} as UserResponse,
   };
   export const login = createAsyncThunk("authenticate/login", async (params, thunkApi) => {
     try {
       if (getCookie("jwt") !== "") {
         let res = await AccountService.getProfiles();
-        let user: AccountResponse = res.data.account_response;
+        let user: UserResponse = res.data;
         if (user) {
           if (user.roles && user.roles.length) {
             const allPermissions = user.roles.map((role) => role.code).flat();
@@ -44,7 +44,7 @@ const initialState: AuthState = {
         state.sessionHasBeenFetched = true;
         window.location.href = `/login`;
       },
-      [`${login.fulfilled}`]: (state, actions: PayloadAction<AccountResponse>) => {
+      [`${login.fulfilled}`]: (state, actions: PayloadAction<UserResponse>) => {
         state.user = actions.payload;
         state.isAuthenticated = true;
         state.sessionHasBeenFetched = true;
