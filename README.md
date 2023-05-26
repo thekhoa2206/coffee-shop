@@ -1,5 +1,6 @@
 # coffee-shop
-
+Spring boot
+React - typescript
 tài liệu:
 
 - https://docs.google.com/spreadsheets/d/1mMHoPACFZhUdzSE7joeJCi6ArCkWH5i8JSKeRbepeUs/edit#gid=0
