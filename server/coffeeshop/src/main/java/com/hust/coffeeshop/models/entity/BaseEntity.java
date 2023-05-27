@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @MappedSuperclass
 @Getter
@@ -16,13 +15,13 @@ public class BaseEntity {
     private Integer id;
 
     @Column(name = "created_on")
-    private Long createdOn;
+    private long createdOn;
 
     @Column(name = "created_by")
     private Integer createdBy;
 
     @Column(name = "modified_on")
-    private Long modifiedOn;
+    private long modifiedOn;
 
     @Column(name = "modified_by")
     private Integer modifiedBy;

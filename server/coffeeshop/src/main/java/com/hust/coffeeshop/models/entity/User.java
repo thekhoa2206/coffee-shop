@@ -28,7 +28,7 @@ public class User extends BaseEntity{
     private String email;
 
     @Column(name = "dob")
-    private Date dob;
+    private long dob;
 
     @Column(name = "status")
     private String status;

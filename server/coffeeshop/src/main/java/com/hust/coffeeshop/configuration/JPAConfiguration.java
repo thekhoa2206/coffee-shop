@@ -22,10 +22,10 @@ public class JPAConfiguration {
     @Value("${spring.datasource.url}")
     private String url;
 
-    @Value("root")
+    @Value("${spring.datasource.username}")
     private String username;
 
-    @Value("admin")
+    @Value("${spring.datasource.password}")
     private String password;
 
     @Value("${spring.datasource.driver-class-name}")

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -75,9 +76,9 @@ public class AuthController extends BaseController {
             roleResponse.setName(role.getName());
             roleResponse.setStatus(role.getStatus());
             roleResponse.setCreatedBy(role.getCreatedBy());
-            roleResponse.setCreatedOn(role.getCreatedOn());
+            roleResponse.setCreatedOn(new Date(role.getCreatedOn()));
             roleResponse.setModifiedBy(role.getModifiedBy());
-            roleResponse.setModifiedOn(role.getModifiedOn());
+            roleResponse.setModifiedOn(new Date(role.getModifiedOn()));
             roleResponse.setId(role.getId());
             roleResponses.add(roleResponse);
         }
