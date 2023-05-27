@@ -76,10 +76,11 @@ public class AuthController extends BaseController {
             roleResponse.setName(role.getName());
             roleResponse.setStatus(role.getStatus());
             roleResponse.setCreatedBy(role.getCreatedBy());
-            roleResponse.setCreatedOn(new Date(role.getCreatedOn()));
+            roleResponse.setCreatedOn(role.getCreatedOn());
             roleResponse.setModifiedBy(role.getModifiedBy());
-            roleResponse.setModifiedOn(new Date(role.getModifiedOn()));
+            roleResponse.setModifiedOn(role.getModifiedOn());
             roleResponse.setId(role.getId());
+            roleResponse.set();
             roleResponses.add(roleResponse);
         }
         userResponse.setRoleResponses(roleResponses);

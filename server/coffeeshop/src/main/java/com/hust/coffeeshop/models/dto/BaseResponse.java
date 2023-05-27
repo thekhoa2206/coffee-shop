@@ -13,8 +13,15 @@ import java.util.Date;
 @Setter
 public class BaseResponse {
     private Integer id;
-    private Date createdOn;
+    private long createdOn;
     private Integer createdBy;
-    private Date modifiedOn;
+    private long modifiedOn;
     private Integer modifiedBy;
+    private Date createdDate;
+    private Date modifiedDate;
+    public void set() {
+        this.createdDate = new Date(this.createdOn);
+        this.createdDate = new Date(this.modifiedOn);
+    }
+
 }

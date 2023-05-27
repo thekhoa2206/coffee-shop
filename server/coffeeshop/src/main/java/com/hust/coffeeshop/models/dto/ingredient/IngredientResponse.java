@@ -1,6 +1,7 @@
 package com.hust.coffeeshop.models.dto.ingredient;
 
 import com.hust.coffeeshop.models.dto.BaseResponse;
+import com.hust.coffeeshop.models.dto.stockunit.StockUnitResponse;
 import com.hust.coffeeshop.models.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,11 +20,4 @@ public class IngredientResponse extends BaseResponse {
     private BigDecimal exportPrice;
 
     private StockUnitResponse stockUnitResponse;
-
-    @Getter
-    @Setter
-    public static class StockUnitResponse extends BaseResponse {
-        private String name;
-        private int status;
-    }
 }

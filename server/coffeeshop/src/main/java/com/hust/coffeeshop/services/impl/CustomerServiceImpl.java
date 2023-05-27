@@ -136,7 +136,6 @@ public class CustomerServiceImpl implements CustomerService {
         }
         //status
         if (filter.getStatuses() != null && !filter.getStatuses().isEmpty()) {
-            var x = Arrays.asList(filter.getStatuses().split(","));
             Filter statuses = Filter.builder()
                     .field("status")
                     .operator(QueryOperator.IN)

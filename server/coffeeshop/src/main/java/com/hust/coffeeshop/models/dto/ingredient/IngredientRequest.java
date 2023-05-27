@@ -1,5 +1,6 @@
 package com.hust.coffeeshop.models.dto.ingredient;
 
+import com.hust.coffeeshop.models.dto.stockunit.StockUnitRequest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,11 +12,6 @@ public class IngredientRequest {
     private int quantity;
     private BigDecimal exportPrice;
 
-    private StockUnitRequest stockUnit;
+    private int stockUnitId;
 
-    @Getter
-    @Setter
-    public static class StockUnitRequest {
-        private String name;
-    }
 }
