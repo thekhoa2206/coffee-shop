@@ -10,7 +10,7 @@ export type UserResponse = {
   email?: string;
   dob?: string;
   status?: string;
-  roles?: RolesResponse[];
+  roleResponses?: RolesResponse[];
   createdOn?: string;
   createdBy?: string;
   modifiedOn?: string;

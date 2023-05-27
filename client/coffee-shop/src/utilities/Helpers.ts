@@ -967,7 +967,7 @@ export const isAsciiString = (str: string) => {
 
 export const hasPermission = (permissions: string[], account?: UserResponse | null) => {
   if (account) {
-    let roles = account.roles?.map((item) => item.code);
+    let roles = account.roleResponses?.map((item) => item.code);
     if (roles) {
       return roles.some((elem) => {
         if (permissions.includes(elem)) {

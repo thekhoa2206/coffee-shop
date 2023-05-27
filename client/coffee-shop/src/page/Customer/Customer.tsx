@@ -29,7 +29,6 @@ import {
 import QueryUtils from "utilities/QueryUtils";
 import styles from "./Customer.styles";
 import {
-  CustomerFilterRequest,
   CustomerProps,
   ICustomerQuickFilter
 } from "./Customer.types";
@@ -38,6 +37,9 @@ import {
   getCustomerQuickFilterLabel
 } from "./Filter/CustomerFilter.constant";
 import CustomerQuickFilter from "./Filter/CustomerQuickFilter.component";
+import { CustomerFilterRequest } from "services/CustomerService";
+import CustomerService from "services/CustomerService/CustomerService";
+import Chip from "components/Chip/Chip.component";
 
 const Customer = (props: CustomerProps & PropsFromRedux) => {
   const { classes, authState } = props;
@@ -53,14 +55,6 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
     total: 0,
   });
   const history = useHistory();
-  const t = i18next.getFixedT(null, [
-    "customer",
-    "error",
-    "component",
-    "utilities",
-    "order",
-    "common",
-  ]);
   const getDefaultQuery = () => {
     // Không hiểu tại sao useQueryParams không dùng đk
     const currentFilter = props.history.location.search as string;
@@ -72,10 +66,6 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
     const initFilter: CustomerFilterRequest = {
       page: Number(dataFromQuery["page"]) || 1,
       limit: Number(dataFromQuery["limit"]) || undefined,
-      created_on_predefined:
-        dataFromQuery["created_on_predefined"] || undefined,
-      created_on_min: dataFromQuery["created_on_min"] || undefined,
-      created_on_max: dataFromQuery["created_on_max"] || undefined,
       query: dataFromQuery["query"] || undefined,
     };
     return initFilter;
@@ -102,10 +92,10 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
       if (filters.created_on_max || filters.created_on_min) {
         let label = `Từ ${filters.created_on_min
           ? formatDateUTCToLocalDateString(filters.created_on_min, false)
-          : `${t("trước ")}`
+          : "trước "
           } đến ${filters.created_on_max
             ? formatDateUTCToLocalDateString(filters.created_on_max, true)
-            : `${t("hiện tại")}`
+            : `hiện tại`
           }`;
         tagFilter.push({
           filterType: "created_on_max,created_on_min",
@@ -129,40 +119,33 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
     setTagsFilterItem(tagFilter);
   }
   const initData = async (filters: CustomerFilterRequest) => {
-    if (filters.created_on_predefined) {
-      const newDateCreatedOn = convertPredefinedToDate(
-        filters.created_on_predefined
-      );
-      filters.created_on_min = formatDateUTC(newDateCreatedOn.startDate, false);
-      filters.created_on_max = formatDateUTC(newDateCreatedOn.endDate, true);
-    }
-    fetchDataFilterItems(filters).then();
-    const filter: PartnerFilterRequest = {
-      limit: filters.limit || 20,
-      page: filters.page || 1,
-    };
-    filter.created_on_min = filters.created_on_min;
-    filter.created_on_max = filters.created_on_max;
-    filter.status = filters.status || "active";
-    filter.query = filters.query;
-    let res = await PartnerService.filter(filter);
-    if (res) {
-      setData({
-        data: res.data.list_partner.partnerResponses.map((item, index) => ({index: index + 1, ...item})),
-        total: res.data.list_partner.metadata?.total || 0,
-      });
-      setLoading(false);
-    }
+    let res = await CustomerService.filter(filters);
+    if(res.data)setData({data: res.data.data?.map((item, index) => {
+      return {
+        stt: index + 1,
+        createdBy: item.createdBy,
+        createdOn: item.createdOn,
+        dob: item.dob,
+        id: item.id,
+        modifiedBy: item.modifiedBy,
+        modifiedOn: item.modifiedOn,
+        name: item.name,
+        phoneNumber: item.phoneNumber,
+        sex: item.sex,
+        status: item.status,
+      }
+    }) || [], total: res.data.metadata?.total || 0 })
+    setLoading(false)
   };
-
-  const onSubmitFilter = (filter: ICustomerQuickFilter) => {
-    filter.page = 1;
-    setFilters(filter);
-    changeQueryString(filter);
-  };
-  const onRowClick = useCallback((e, data) => {
-    setOpenDialogUpdateCustomer(true);
-  }, []);
+  
+  // const onSubmitFilter = (filter: ICustomerQuickFilter) => {
+  //   filter.page = 1;
+  //   setFilters(filter);
+  //   changeQueryString(filter);
+  // };
+  // const onRowClick = useCallback((e, data) => {
+  //   setOpenDialogUpdateCustomer(true);
+  // }, []);
 
   const handlePageChange = (e: GridPageChangeEvent) => {
     setLoading(true)
@@ -217,32 +200,6 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
                 }}
                 className={classes.searchbox}
               />
-              <CustomerQuickFilter
-                filters={filters}
-                onSubmit={onSubmitFilter}
-              />
-            </Box>
-            <Box>
-              <ListTagFilterItem
-                data={tagsFilterItem}
-                handleClickTagFilter={(filterName) => {
-                  setTimeout(() => {
-                    document
-                      .querySelector(`[filter-name=${filterName}]`)
-                      ?.scrollIntoView();
-                  }, 300);
-                }}
-                handleDeleteTagFilter={(filterType) => {
-                  let newFilterQuery = cloneDeep(
-                    filters
-                  ) as CustomerFilterRequest;
-                  filterType.split(",").forEach((item) => {
-                    (newFilterQuery as any)[`${item}`] = undefined;
-                  });
-                  setFilters(newFilterQuery);
-                  changeQueryString(newFilterQuery);
-                }}
-              />
             </Box>
           </Box>
           {loading ? (
@@ -258,11 +215,11 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
                   stickyHeader
                   tableDrillDown
                   stickyHeaderTop={52}
-                  onRowClick={onRowClick}
+                  onRowClick={() => {}}
                   disablePaging={false}
                 >
                   <GridColumn
-                    field="index"
+                    field="stt"
                     title={"STT"}
                     width={80}
                     align="center"
@@ -274,7 +231,17 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
                     )}
                     width={150}
                     align="left"
-                  />
+                  >
+                    {({ dataItem }: CellTemplateProps) => {
+                      return (
+                        <>
+                          <Typography>
+                            {"KH" +dataItem.stt}
+                          </Typography>
+                        </>
+                      );
+                    }}
+                  </GridColumn>
                   <GridColumn
                     field="name"
                     title={getCustomerQuickFilterLabel(
@@ -284,7 +251,7 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
                     align="left"
                   />
                   <GridColumn
-                    field="phone"
+                    field="phoneNumber"
                     title={getCustomerQuickFilterLabel(
                       CustomerQuickFilterOptions.PHONE_NUMBER
                     )}
@@ -336,37 +303,21 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
                     }}
                   </GridColumn>
                   <GridColumn
-                    field="address"
+                    field="createdOn"
                     title={getCustomerQuickFilterLabel(
-                      CustomerQuickFilterOptions.ADDRESS
+                      CustomerQuickFilterOptions.MODIFIED_ON
                     )}
-                    width={150}
+                    width={100}
                     align="left"
-                  />
-                  <GridColumn
-                    field="cityName"
-                    title={getCustomerQuickFilterLabel(
-                      CustomerQuickFilterOptions.CITY
-                    )}
-                    width={150}
-                    align="left"
-                  />
-                  <GridColumn
-                    field="districtName"
-                    title={getCustomerQuickFilterLabel(
-                      CustomerQuickFilterOptions.DISTRICT
-                    )}
-                    width={150}
-                    align="left"
-                  />
-                  <GridColumn
-                    field="wardName"
-                    title={getCustomerQuickFilterLabel(
-                      CustomerQuickFilterOptions.WARD
-                    )}
-                    width={150}
-                    align="left"
-                  />
+                  >
+                    {({ dataItem }: CellTemplateProps) => {
+                      return (
+                        <>
+                          <Chip variant="outlined" size="small" label="Đang hoạt động" className="success" />
+                        </>
+                      );
+                    }}
+                  </GridColumn>
                 </SapoGrid>
               ) : (
                 <NoResultsComponent
