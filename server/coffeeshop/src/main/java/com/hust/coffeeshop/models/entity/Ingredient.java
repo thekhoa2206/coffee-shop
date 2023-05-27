@@ -17,13 +17,13 @@ public class Ingredient extends BaseEntity{
     private String name ;
 
     @Column(name = "quantity")
-    private String quantity;
+    private int quantity;
 
     @Column(name = "status")
     private int status;
 
     @Column(name = "stock_unit_id")
-    private String stockUnitId;
+    private Integer stockUnitId;
 
     @Column(name = "export_price")
     private BigDecimal exportPrice;

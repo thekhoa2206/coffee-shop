@@ -1,5 +1,6 @@
 package com.hust.coffeeshop.models.entity;
 
+import com.hust.coffeeshop.common.CommonCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,4 +26,11 @@ public class BaseEntity {
 
     @Column(name = "modified_by")
     private Integer modifiedBy;
+
+    public void setCreatedOn(){
+        this.createdOn = CommonCode.getTimestamp();
+    }
+    public void setModifiedOn(){
+        this.modifiedOn = CommonCode.getTimestamp();
+    }
 }
