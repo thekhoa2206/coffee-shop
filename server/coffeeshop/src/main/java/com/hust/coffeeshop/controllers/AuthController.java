@@ -71,14 +71,14 @@ public class AuthController extends BaseController {
         List<UserResponse.RoleResponse> roleResponses = new ArrayList<>();
         for (var role : user.getRoles()) {
             UserResponse.RoleResponse roleResponse = new UserResponse.RoleResponse();
-            role.setCode(role.getCode());
-            role.setName(role.getName());
-            role.setStatus(role.getStatus());
-            role.setCreatedBy(role.getCreatedBy());
-            role.setCreatedOn(role.getCreatedOn());
-            role.setModifiedBy(role.getModifiedBy());
-            role.setModifiedOn(role.getModifiedOn());
-            role.setId(role.getId());
+            roleResponse.setCode(role.getCode());
+            roleResponse.setName(role.getName());
+            roleResponse.setStatus(role.getStatus());
+            roleResponse.setCreatedBy(role.getCreatedBy());
+            roleResponse.setCreatedOn(role.getCreatedOn());
+            roleResponse.setModifiedBy(role.getModifiedBy());
+            roleResponse.setModifiedOn(role.getModifiedOn());
+            roleResponse.setId(role.getId());
             roleResponses.add(roleResponse);
         }
         userResponse.setRoleResponses(roleResponses);

@@ -3,7 +3,7 @@ import Route from "./shared/model/routing/route.model";
 import MainLayoutComponent from "layout/main/MainLayout";
 import { AccountRole } from "utilities/AccountRole";
 
-const PartnersList = React.lazy(() => import("./page/Partner/customer"));
+const CustomerList = React.lazy(() => import("./page/Customer"));
 
 export const LAYOUT_ROUTES: Route[] = [
   {
@@ -47,16 +47,16 @@ let MAIN_ROUTES = (): Route[] => [
   //   },
   // },
   {
-    path: "/customer",
-    component: PartnersList,
+    path: "/customers",
+    component: CustomerList,
     extract: true,
     header: {
       title: "Khách hàng",
-      linkTo: "/admin/partners",
+      linkTo: "/admin/customers",
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN, AccountRole.STAFF],
+    authorities: [AccountRole.ADMIN],
   },
   
 ];

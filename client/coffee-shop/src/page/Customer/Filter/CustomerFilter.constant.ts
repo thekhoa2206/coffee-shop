@@ -7,10 +7,7 @@ export const CustomerQuickFilterOptions = {
   PHONE_NUMBER: "phoneNumber",
   CREATED_ON: "createdOn",
   MODIFIED_ON: "modifieldOn",
-  ADDRESS: "address",
-  CITY: "city",
-  DISTRICT: "district",
-  WARD: "ward",
+  SEX: "sex",
 };
 
 export const getCustomerQuickFilterLabel = (key: string) => {
@@ -25,14 +22,8 @@ export const getCustomerQuickFilterLabel = (key: string) => {
       return `Ngày tạo`;
     case CustomerQuickFilterOptions.MODIFIED_ON:
         return `Ngày sửa`;
-    case CustomerQuickFilterOptions.CITY:
-      return `Tỉnh/Thành phố`;
-    case CustomerQuickFilterOptions.ADDRESS:
-      return `Địa chỉ`;
-    case CustomerQuickFilterOptions.DISTRICT:
-        return `Quận/Huyện`;
-    case CustomerQuickFilterOptions.WARD:
-        return `Phường/Xã`;
+    case CustomerQuickFilterOptions.SEX:
+      return `Giới tính`;
     default:
       return "";
   }

@@ -19,8 +19,8 @@ const initialState: AuthState = {
         let res = await AccountService.getProfiles();
         let user: UserResponse = res.data;
         if (user) {
-          if (user.roles && user.roles.length) {
-            const allPermissions = user.roles.map((role) => role.code).flat();
+          if (user.roleResponses && user.roleResponses.length) {
+            const allPermissions = user.roleResponses.map((role) => role.code).flat();
             user.authorities = Array.from(new Set(allPermissions));
           }
           return user;

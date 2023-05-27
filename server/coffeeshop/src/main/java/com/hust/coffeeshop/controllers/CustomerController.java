@@ -10,7 +10,8 @@ import com.hust.coffeeshop.services.CustomerService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/api/customer")
+@RequestMapping(value = "/api/customers")
+@CrossOrigin
 public class CustomerController extends BaseController{
     private final CustomerService customerService;
     private final UserRepository userRepository;
