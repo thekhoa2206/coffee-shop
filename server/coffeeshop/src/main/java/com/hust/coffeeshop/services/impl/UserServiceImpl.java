@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(CommonCode.GeneratePassword(request.getPassword()));
         user.setRoles(role);
         user.setStatus(CommonStatus.CustomerStatus.ACTIVE);
-        user.setCreatedOn(CommonCode.getTimestamp());
+        user.setCreatedOn();
 
         UserResponse userResponse = null;
         try {

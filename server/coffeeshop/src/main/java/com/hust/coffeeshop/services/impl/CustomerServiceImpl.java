@@ -68,7 +68,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (request.getPhoneNumber() != null) customer.get().setPhoneNumber(request.getPhoneNumber());
         if (request.getName() != null) customer.get().setName(request.getName());
         if (request.getSex() != null) customer.get().setSex(request.getSex());
-        if (request.getDob() != null) customer.get().setDob(request.getDob());
+        if (request.getDob() != null) customer.get().setDob(request.getDob().getTime());
         customer.get().setModifiedOn(CommonCode.getTimestamp());
         CustomerResponse customerResponse = null;
         try {

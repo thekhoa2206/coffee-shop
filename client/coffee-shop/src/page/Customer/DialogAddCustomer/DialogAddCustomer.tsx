@@ -1,10 +1,10 @@
 import { Box } from "@material-ui/core";
 import Dialog from "components/Dialog";
 import React, { Fragment, useState } from "react";
-import PartnerService, { CustomerRequest } from "services/PartnerService";
 import { getMessageError } from "utilities";
 import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 import { DialogAddCustomerProps } from "./DialogAddCustomer.types";
+import { CustomerRequest } from "services/CustomerService";
 
 export const DialogAddCustomer = (props: DialogAddCustomerProps) => {
   const { open, onClose, initData } = props;
@@ -14,21 +14,21 @@ export const DialogAddCustomer = (props: DialogAddCustomerProps) => {
     // let customerAdd: CustomerRequest = {
     //   ...customer,
     // };
-    if (customer) {
-      PartnerService.create()
-        .then(async (res) => {
-          if (res) {
-            onClose();
-            if (res.data.CustomerResponse) {
-              if (initData) initData(res.data.CustomerResponse);
-              SnackbarUtils.success("Tạo mới khách hàng thành công!");
-            }
-          }
-        })
-        .catch((err) => {
-          SnackbarUtils.error(getMessageError(err));
-        });
-    }
+    // if (customer) {
+    //   PartnerService.create()
+    //     .then(async (res) => {
+    //       if (res) {
+    //         onClose();
+    //         if (res.data.CustomerResponse) {
+    //           if (initData) initData(res.data.CustomerResponse);
+    //           SnackbarUtils.success("Tạo mới khách hàng thành công!");
+    //         }
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       SnackbarUtils.error(getMessageError(err));
+    //     });
+    // }
   };
   return (
     <Fragment>

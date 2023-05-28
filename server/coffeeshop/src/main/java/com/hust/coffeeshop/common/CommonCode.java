@@ -33,5 +33,4 @@ public class CommonCode {
         long millis = date.getTime();
         return millis;
     }
-
 }

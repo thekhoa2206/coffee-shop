@@ -14,7 +14,10 @@ export type ListCustomerResponse = {
 }
 
 export type CustomerRequest = {
-  
+  name?: string;
+  phoneNumber?: string;
+  dob?: string;
+  sex?: string;
 }
 
 export type CustomerResponse = {

@@ -20,7 +20,7 @@ public class Customer extends BaseEntity{
     private String phoneNumber;
 
     @Column(name = "dob")
-    private Date dob;
+    private long dob;
 
     @Column(name = "sex")
     private String sex;

@@ -18,11 +18,12 @@ public class BaseEntity {
     @Column(name = "created_on")
     private long createdOn;
 
+    @Column(name = "modified_on")
+    private long modifiedOn;
+
     @Column(name = "created_by")
     private Integer createdBy;
 
-    @Column(name = "modified_on")
-    private long modifiedOn;
 
     @Column(name = "modified_by")
     private Integer modifiedBy;

@@ -1,4 +1,5 @@
-import { CustomerResponse } from "services/PartnerService";
+import { CustomerResponse } from "services/CustomerService";
+
 
 
 export type DialogAddCustomerProps = {

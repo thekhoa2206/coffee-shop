@@ -1,6 +1,7 @@
 import { Box, Typography, withStyles } from "@material-ui/core";
 import { AddCircleOutline } from "@material-ui/icons";
 import Button from "components/Button";
+import Chip from "components/Chip/Chip.component";
 import LoadingAuth from "components/Loading/LoadingAuth";
 import NoResultsComponent from "components/NoResults/NoResultsComponent";
 import { GridColumn } from "components/SapoGrid/GridColumn/GridColumn";
@@ -8,22 +9,18 @@ import SapoGrid from "components/SapoGrid/SapoGrid";
 import { DataResult, GridPageChangeEvent } from "components/SapoGrid/SapoGrid.type";
 import { CellTemplateProps } from "components/SapoGridSticky";
 import SearchBox from "components/SearchBox/SearchBox";
-import ListTagFilterItem from "components/TagFilterItem";
 import { TagFilterItemType } from "components/TagFilterItem/TagFilterItem.types";
 import useQueryParams from "hocs/useQueryParams";
-import i18next from "i18next";
-import { cloneDeep } from "lodash";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
-import PartnerService, { PartnerFilterRequest } from "services/PartnerService";
+import { CustomerFilterRequest } from "services/CustomerService";
+import CustomerService from "services/CustomerService/CustomerService";
 import { AppState } from "store/store";
 import {
-  formatDateUTC,
   formatDateUTCToLocalDateString
 } from "utilities";
 import {
-  convertPredefinedToDate,
   getNameAndDatePredefined
 } from "utilities/DateRangesPredefine";
 import QueryUtils from "utilities/QueryUtils";
@@ -36,10 +33,7 @@ import {
   CustomerQuickFilterOptions,
   getCustomerQuickFilterLabel
 } from "./Filter/CustomerFilter.constant";
-import CustomerQuickFilter from "./Filter/CustomerQuickFilter.component";
-import { CustomerFilterRequest } from "services/CustomerService";
-import CustomerService from "services/CustomerService/CustomerService";
-import Chip from "components/Chip/Chip.component";
+import { DialogAddCustomer } from "./DialogAddCustomer/DialogAddCustomer";
 
 const Customer = (props: CustomerProps & PropsFromRedux) => {
   const { classes, authState } = props;
@@ -329,6 +323,7 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
           )}
         </Box>
       </Box>
+      <DialogAddCustomer open={openDialogAddCustomer} onClose={() => setOpenDialogAddCustomer(false)} />
     </>
   );
 };
