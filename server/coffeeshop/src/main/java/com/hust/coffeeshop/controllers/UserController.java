@@ -3,20 +3,8 @@ package com.hust.coffeeshop.controllers;
 import com.hust.coffeeshop.models.dto.user.request.CreateUserRequest;
 import com.hust.coffeeshop.models.dto.user.response.UserResponse;
 import com.hust.coffeeshop.models.exception.BaseException;
-import com.hust.coffeeshop.models.exception.ErrorException;
-<<<<<<< .mine
-
-=======
-
->>>>>>> .theirs
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-<<<<<<< .mine
-
-=======
-
->>>>>>> .theirs
 import com.hust.coffeeshop.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
