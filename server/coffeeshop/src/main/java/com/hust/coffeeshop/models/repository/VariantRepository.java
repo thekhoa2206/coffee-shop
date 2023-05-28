@@ -12,6 +12,6 @@ import java.util.List;
 
 @Repository
 public interface VariantRepository extends JpaRepository<Variant, Integer>, JpaSpecificationExecutor<Variant> {
-    @Query(value = "SELECT variant.* FROM user WHERE item_id = ?1", nativeQuery = true)
+    @Query(value = "SELECT variant.* FROM variant WHERE item_id = ?1", nativeQuery = true)
     List<Variant> findUserByItemId(int itemId);
 }
