@@ -57,7 +57,6 @@ public class IngredientServiceImpl implements IngredientService {
             stockUnit = stockUnitRepository.findById(request.getStockUnitId()).get();
         }
 
-        ingredient.setStockUnitId(stockUnit.getId());
         ingredient = ingredientRepository.save(ingredient);
 
         var stockUnitResponse = mapper.map(stockUnit, StockUnitResponse.class);
@@ -149,9 +148,12 @@ public class IngredientServiceImpl implements IngredientService {
             results = ingredientRepository.findAll(filterRepository.getSpecificationFromFilters(filters), pageable);
         else results = ingredientRepository.findAll(pageable);
         List<IngredientResponse> ingredientResponses = new ArrayList<>();
-        for (val customer : results.getContent()
+        for (val ingredient : results.getContent()
         ) {
-            val ingredientResponse = mapper.map(customer, IngredientResponse.class);
+            val ingredientResponse = mapper.map(ingredient, IngredientResponse.class);
+            var stockUnit = stockUnitRepository.findById(ingredient.getStockUnitId()).get();
+            var stockUnitResponse = mapper.map(stockUnit, StockUnitResponse.class);
+            ingredientResponse.setStockUnitResponse(stockUnitResponse);
             ingredientResponses.add(ingredientResponse);
         }
 

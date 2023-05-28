@@ -16,7 +16,7 @@ export type ListCustomerResponse = {
 export type CustomerRequest = {
   name?: string;
   phoneNumber?: string;
-  dob?: string;
+  dob?: Date;
   sex?: string;
 }
 

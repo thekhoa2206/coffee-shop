@@ -9,7 +9,7 @@ class CustomerService {
     static async create(request: CustomerRequest): Promise<AxiosResponse<CustomerResponse>> {
         return axios.post(`/customers`,request , { ...getAxiosConfig()});
     }
-    static async update(request: CustomerRequest, id: string): Promise<AxiosResponse<CustomerResponse>> {
+    static async update(request: CustomerRequest, id: number): Promise<AxiosResponse<CustomerResponse>> {
         return axios.put(`/customers/${id}`,request, { ...getAxiosConfig()});
     }
     static async getById(id: string): Promise<AxiosResponse<CustomerResponse>> {

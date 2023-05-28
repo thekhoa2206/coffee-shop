@@ -14,7 +14,7 @@ import useQueryParams from "hocs/useQueryParams";
 import React, { useEffect, useState } from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
-import { CustomerFilterRequest } from "services/CustomerService";
+import { CustomerFilterRequest, CustomerResponse } from "services/CustomerService";
 import CustomerService from "services/CustomerService/CustomerService";
 import { AppState } from "store/store";
 import {
@@ -41,8 +41,7 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
   const queryParams = useQueryParams();
   const [loading, setLoading] = useState<boolean>(true);
   const [openDialogAddCustomer, setOpenDialogAddCustomer] = useState(false);
-  const [openDialogUpdateCustomer, setOpenDialogUpdateCustomer] =
-    useState(false);
+  const [selected, setSelected] = useState<CustomerResponse>();
   const [tagsFilterItem, setTagsFilterItem] = useState<TagFilterItemType[]>([]);
   const [data, setData] = useState<DataResult>({
     data: [],
@@ -160,6 +159,7 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
       page: 1,
       query: value?.trim(),
     };
+    setFilters((prev) => ({ ...prev, query: value?.trim() }))
     changeQueryString(newFilters);
   };
   return (
@@ -209,7 +209,7 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
                   stickyHeader
                   tableDrillDown
                   stickyHeaderTop={52}
-                  onRowClick={() => {}}
+                  onRowClick={(e, data) => {setSelected(data); setOpenDialogAddCustomer(true)}}
                   disablePaging={false}
                 >
                   <GridColumn
@@ -323,7 +323,11 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
           )}
         </Box>
       </Box>
-      <DialogAddCustomer open={openDialogAddCustomer} onClose={() => setOpenDialogAddCustomer(false)} />
+      <DialogAddCustomer open={openDialogAddCustomer} onClose={() => setOpenDialogAddCustomer(false)} initData={() => {
+          initData(filters);
+        }}
+        customer={selected}
+ />
     </>
   );
 };
