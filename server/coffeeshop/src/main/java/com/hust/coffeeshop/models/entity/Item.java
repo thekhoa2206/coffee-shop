@@ -3,9 +3,8 @@ package com.hust.coffeeshop.models.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "item")
@@ -26,6 +25,14 @@ public class Item  extends BaseEntity{
     private String status;
     @Column(name = "category_id")
     private int categoryId;
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "item_ingredient",
+            joinColumns = @JoinColumn(name = "item_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
+    )
+    private List<Ingredient> ingredients;
 
 
 }

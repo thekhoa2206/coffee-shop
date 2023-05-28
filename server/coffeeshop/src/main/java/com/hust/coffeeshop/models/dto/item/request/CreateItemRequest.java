@@ -17,5 +17,6 @@ public class CreateItemRequest {
     private int stockUnitId;
     private String status;
     private int categoryId;
+    private  List<Integer> ingredientId;
     private List<CreateVariantRequest> variantRequest;
 }

@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/api/item")
 @CrossOrigin("http://localhost:3000")
-public class ItemCOntroller extends BaseException {
+public class ItemController extends BaseException {
     private final ItemService itemService;
 
-    public ItemCOntroller(ItemService itemService) {
+    public ItemController(ItemService itemService) {
         this.itemService = itemService;
     }
 
