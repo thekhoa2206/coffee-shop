@@ -28,8 +28,8 @@ export type RolesResponse = {
   status: string;
 }
 export type ListUserResponse = {
-  account_response: UserResponse[];
-  metadata: Metadata;
+  data?: UserResponse[];
+  metadata?: Metadata;
 }
 export type FormLogin = {
   username?: string;

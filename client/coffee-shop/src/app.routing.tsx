@@ -4,6 +4,7 @@ import MainLayoutComponent from "layout/main/MainLayout";
 import { AccountRole } from "utilities/AccountRole";
 
 const CustomerList = React.lazy(() => import("./page/Customer"));
+const IngredientList = React.lazy(() => import("./page/Ingredients"));
 
 export const LAYOUT_ROUTES: Route[] = [
   {
@@ -53,6 +54,18 @@ let MAIN_ROUTES = (): Route[] => [
     header: {
       title: "Khách hàng",
       linkTo: "/admin/customers",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/ingredients",
+    component: IngredientList,
+    extract: true,
+    header: {
+      title: "Nguyên liệu",
+      linkTo: "/admin/ingredients",
       showNoti: false,
       withSubtitle: false,
     },
