@@ -51,7 +51,7 @@ public class IngredientServiceImpl implements IngredientService {
         ingredient.setCreatedOn();
         ingredient.setModifiedOn();
         ingredient.setQuantity(request.getQuantity());
-
+        ingredient.setStockUnitId(request.getStockUnitId());
         StockUnit stockUnit = new StockUnit();
         if (request.getStockUnitId() == 0) {
             stockUnit = stockUnitRepository.findById(request.getStockUnitId()).get();

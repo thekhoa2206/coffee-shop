@@ -50,14 +50,14 @@ const useGenMenuData = () => {
     let menu: MenuItem = {
       id: "product",
       icon: AccountSettingIcon,
-      title: "Sản phẩm",
+      title: "Mặt hàng",
       subMenus: [],
-      path: "/admin/products",
+      path: "/admin/items",
     };
     menu.subMenus = [
       {
-        title: "Sản phẩm",
-        path: "/admin/products",
+        title: "Mặt hàng",
+        path: "/admin/items",
         typeRoute: "default",
       },
       {
