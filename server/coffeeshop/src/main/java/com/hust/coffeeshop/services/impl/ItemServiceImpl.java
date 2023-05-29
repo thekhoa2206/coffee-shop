@@ -6,6 +6,7 @@ import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientResponse;
 import com.hust.coffeeshop.models.dto.item.request.CreateItemRequest;
 import com.hust.coffeeshop.models.dto.item.request.ItemRequest;
+import com.hust.coffeeshop.models.dto.item.response.IngredientItemResponse;
 import com.hust.coffeeshop.models.dto.item.response.ItemRepsone;
 import com.hust.coffeeshop.models.dto.stockunit.StockUnitResponse;
 import com.hust.coffeeshop.models.dto.variant.response.VariantRepsone;
@@ -58,7 +59,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = mapper.map(request, Item.class);
         item.setStatus(CommonStatus.CustomerStatus.ACTIVE);
         item.setCreatedOn(CommonCode.getTimestamp());
-        List<IngredientResponse> ingredients = new ArrayList<>();
+        List<IngredientItemResponse> ingredients = new ArrayList<>();
         StockUnit stockUnit = new StockUnit();
         if (request.getStockUnitId() != 0) {
             stockUnit = stockUnitRepository.findById(request.getStockUnitId()).get();
@@ -71,14 +72,15 @@ public class ItemServiceImpl implements ItemService {
             var ItemNew = itemRepository.save(item);
             if(request.getIngredient().size()>0) {
                 for (var i : request.getIngredient()) {
-                    var ingredient = ingredientService.getById(i.getId());
+                    var ingredient = ingredientService.getById(i.getIngredientId());
                     if(ingredient == null) throw new ErrorException("khônh tìm thấy nguyên liệu");
                     ItemIngredient itemIngredient = new ItemIngredient();
                     itemIngredient.setItemId(ItemNew.getId());
-                    itemIngredient.setIngredientId(i.getId());
+                    itemIngredient.setIngredientId(i.getIngredientId());
                     itemIngredient.setAmountConsume(i.getAmountConsume());
-                    itemIngredientRepository.save(itemIngredient);
-                    ingredients.add(ingredient);
+                    itemIngredient = itemIngredientRepository.save(itemIngredient);
+                    IngredientItemResponse ingredientItemResponse = mapper.map(itemIngredient, IngredientItemResponse.class);
+                    ingredients.add(ingredientItemResponse);
                 }
             }
             if(request.getVariantRequest() != null)
@@ -154,21 +156,21 @@ public class ItemServiceImpl implements ItemService {
                 if(i.getType().contains("add")){
                     ItemIngredient itemIngredient = new ItemIngredient();
                     itemIngredient.setItemId(id);
-                    itemIngredient.setIngredientId(i.getId());
+                    itemIngredient.setIngredientId(i.getIngredientId());
                     itemIngredient.setAmountConsume(i.getAmountConsume());
                     itemIngredient.setCreatedOn(CommonCode.getTimestamp());
                     itemIngredientRepository.save(itemIngredient);
                 }
                 if(i.getType().contains("update"))
                 {
-                    var itemIngredient = itemIngredientRepository.findUserByItemId(id,i.getId());
+                    var itemIngredient = itemIngredientRepository.findUserByItemId(id,i.getIngredientId());
                     if(itemIngredient == null) throw new ErrorException("Không cập nhật được nguyên liệu");
                     itemIngredient.setAmountConsume(i.getAmountConsume());
                     itemIngredientRepository.save(itemIngredient);
                 }
                 if(i.getType().contains("delete")){
                     try {
-                        itemIngredientRepository.deleteItemIngredient(id,i.getId());
+                        itemIngredientRepository.deleteItemIngredient(id,i.getIngredientId());
                     }
                      catch (Exception e) {
                          throw new ErrorException("xoá nguyên liệu thất bại");

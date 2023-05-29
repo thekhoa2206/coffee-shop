@@ -19,11 +19,14 @@ import {
     formatDateUTCToLocalDateString, formatMoney
 } from "utilities";
 import QueryUtils from "utilities/QueryUtils";
-import { IngredientsQuickFilterOptions, getIngredientsQuickFilterLabel } from "./ItemFilter.constant";
+import { ItemsQuickFilterOptions, getItemsQuickFilterLabel } from "./ItemFilter.constant";
 import styles from "./Items.styles";
 import {
     ItemsProps
 } from "./Items.types";
+import { ItemFilterRequest } from "services/ItemsService";
+import ItemsService from "services/ItemsService/ItemsService";
+import Image from "components/Image";
 
 const Items = (props: ItemsProps & PropsFromRedux) => {
     const { classes, authState } = props;
@@ -43,14 +46,14 @@ const Items = (props: ItemsProps & PropsFromRedux) => {
             const data = searchFilter.split("=");
             dataFromQuery[data[0]] = decodeURIComponent(data[1]);
         }
-        const initFilter: IngredientFilterRequest = {
+        const initFilter: ItemFilterRequest = {
             page: Number(dataFromQuery["page"]) || 1,
             limit: Number(dataFromQuery["limit"]) || undefined,
             query: dataFromQuery["query"] || undefined,
         };
         return initFilter;
     };
-    const [filters, setFilters] = useState<IngredientFilterRequest>({
+    const [filters, setFilters] = useState<ItemFilterRequest>({
         ...getDefaultQuery(),
     });
     useEffect(() => {
@@ -67,22 +70,23 @@ const Items = (props: ItemsProps & PropsFromRedux) => {
         document.title = "Danh sách nguyên liệu";
     }, []);
 
-    const initData = async (filters: IngredientFilterRequest) => {
-        let res = await IngredientsService.filter(filters);
+    const initData = async (filters: ItemFilterRequest) => {
+        let res = await ItemsService.filter(filters);
         if (res.data) setData({
             data: res.data.data?.map((item, index) => {
                 return {
                     stt: index + 1,
                     createdBy: item.createdBy,
                     createdOn: item.createdOn,
-                    exportPrice: item.exportPrice,
                     id: item.id,
                     modifiedBy: item.modifiedBy,
                     modifiedOn: item.modifiedOn,
                     name: item.name,
-                    quantity: item.quantity,
                     status: item.status,
                     stockUnitResponse: item.stockUnitResponse,
+                    discount: item.discountPercentage,
+                    imageUrl: item.imageUrl,
+                    description: item.description
                 }
             }) || [], total: res.data.metadata?.total || 0
         })
@@ -169,9 +173,29 @@ const Items = (props: ItemsProps & PropsFromRedux) => {
                                         align="center"
                                     />
                                     <GridColumn
+                                        field="image"
+                                        title={getItemsQuickFilterLabel(
+                                            ItemsQuickFilterOptions.IMAGE_URL
+                                        )}
+                                        width={150}
+                                        align="left"
+                                    >
+                                        {({ dataItem }: CellTemplateProps) => {
+                                            return (
+                                                <>
+                                                    {dataItem.imageUrl ?
+                                                        <Image src={dataItem.imageUrl} /> :
+                                                        <Box style={{ width: "40px", height: "40px", background: "#E8EAEB", borderRadius: "6px" }}>
+                                                        </Box>
+                                                    }
+                                                </>
+                                            );
+                                        }}
+                                    </GridColumn>
+                                    <GridColumn
                                         field="code"
-                                        title={getIngredientsQuickFilterLabel(
-                                            IngredientsQuickFilterOptions.CODE
+                                        title={getItemsQuickFilterLabel(
+                                            ItemsQuickFilterOptions.CODE
                                         )}
                                         width={150}
                                         align="left"
@@ -180,7 +204,7 @@ const Items = (props: ItemsProps & PropsFromRedux) => {
                                             return (
                                                 <>
                                                     <Typography>
-                                                        {"IG" + dataItem.stt}
+                                                        {"IT" + dataItem.stt}
                                                     </Typography>
                                                 </>
                                             );
@@ -188,25 +212,16 @@ const Items = (props: ItemsProps & PropsFromRedux) => {
                                     </GridColumn>
                                     <GridColumn
                                         field="name"
-                                        title={getIngredientsQuickFilterLabel(
-                                            IngredientsQuickFilterOptions.NAME
+                                        title={getItemsQuickFilterLabel(
+                                            ItemsQuickFilterOptions.NAME
                                         )}
                                         width={150}
                                         align="left"
                                     />
-
-                                    <GridColumn
-                                        field="quantity"
-                                        title={getIngredientsQuickFilterLabel(
-                                            IngredientsQuickFilterOptions.QUANTITY
-                                        )}
-                                        width={150}
-                                        align="left"
-                                    />
-                                    <GridColumn
+                                    {/* <GridColumn
                                         field="unit"
-                                        title={getIngredientsQuickFilterLabel(
-                                            IngredientsQuickFilterOptions.UNIT
+                                        title={getItemsQuickFilterLabel(
+                                            ItemsQuickFilterOptions.UNIT
                                         )}
                                         width={150}
                                         align="left"
@@ -220,29 +235,19 @@ const Items = (props: ItemsProps & PropsFromRedux) => {
                                                 </>
                                             );
                                         }}
-                                    </GridColumn>
+                                    </GridColumn> */}
                                     <GridColumn
-                                        field="exportPrice"
-                                        title={getIngredientsQuickFilterLabel(
-                                            IngredientsQuickFilterOptions.PRICE
+                                        field="description"
+                                        title={getItemsQuickFilterLabel(
+                                            ItemsQuickFilterOptions.DESCRIPTION
                                         )}
                                         width={100}
                                         align="left"
-                                    >
-                                        {({ dataItem }: CellTemplateProps) => {
-                                            return (
-                                                <>
-                                                    <Typography>
-                                                        {formatMoney(dataItem.exportPrice || 0)}
-                                                    </Typography>
-                                                </>
-                                            );
-                                        }}
-                                    </GridColumn>
+                                    />
                                     <GridColumn
                                         field="createdOn"
-                                        title={getIngredientsQuickFilterLabel(
-                                            IngredientsQuickFilterOptions.CREATED_ON
+                                        title={getItemsQuickFilterLabel(
+                                            ItemsQuickFilterOptions.CREATED_ON
                                         )}
                                         width={100}
                                         align="left"
@@ -263,8 +268,8 @@ const Items = (props: ItemsProps & PropsFromRedux) => {
                                     </GridColumn>
                                     <GridColumn
                                         field="createdOn"
-                                        title={getIngredientsQuickFilterLabel(
-                                            IngredientsQuickFilterOptions.MODIFIED_ON
+                                        title={getItemsQuickFilterLabel(
+                                            ItemsQuickFilterOptions.MODIFIED_ON
                                         )}
                                         width={100}
                                         align="left"

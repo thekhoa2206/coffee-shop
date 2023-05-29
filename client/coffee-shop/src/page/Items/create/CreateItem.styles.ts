@@ -14,8 +14,16 @@ const styles = (theme: Theme) =>
         },
         boxContentPaper: {
             padding: "24px",
-            borderTop: "1px solid #E8EAEB"
-        }
+            borderTop: "1px solid #E8EAEB",
+        },
+        inputCategory: {
+            marginTop: "16px", width: "293px",
+        },
+        infiniteList: {
+          "&>.InfiniteScroll-BoxCreate": {
+            padding: "0 42px",
+          },
+        },
     });
 
 export default styles;

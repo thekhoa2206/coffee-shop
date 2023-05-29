@@ -9,5 +9,7 @@ import java.util.List;
 public class IngredientCreateItemRequest {
     private int id;
     private int amountConsume;
+    private int ingredientId;
+    private String name;
     private String type;
 }

@@ -45,9 +45,7 @@ const NoResultsComponent = (props: NoResultsComponent) => {
       {searchIcon ? <SearchIcon className={classes.searchIcon}></SearchIcon> : null}
       <p className={classes.message}>
         {message ||
-          `${t("component:noResults.notFound")} ${nameObject || t("component:noResults.data")} ${t(
-            "component:noResults.searchResult"
-          )}`}
+          `Không tìm thấy ${nameObject } `}
       </p>
       <span className={classes.helpText}>{helpText || t("component:noResults.helpText")}</span>
     </Paper>

@@ -1,35 +1,38 @@
 import i18next from "i18next";
 
 const t = i18next.getFixedT(null, ["component", "accounts"]);
-export const IngredientsQuickFilterOptions = {
+export const ItemsQuickFilterOptions = {
     CODE: "code",
     NAME: "name",
-    QUANTITY: "quantity",
     STATUS: "status",
-    PRICE: "price",
-    UNIT: "đơn vị",
+    UNIT: "unit",
+    DISCOUNT: "discount",
+    DESCRIPTION: "description",
+    IMAGE_URL: "image_url",
     CREATED_ON: "createdOn",
     MODIFIED_ON: "modifieldOn",
 };
 
-export const getIngredientsQuickFilterLabel = (key: string) => {
+export const getItemsQuickFilterLabel = (key: string) => {
     switch (key) {
-        case IngredientsQuickFilterOptions.CODE:
+        case ItemsQuickFilterOptions.CODE:
             return `Mã nguyên liệu`;
-        case IngredientsQuickFilterOptions.NAME:
+        case ItemsQuickFilterOptions.NAME:
             return `Tên nguyên liệu`;
-        case IngredientsQuickFilterOptions.QUANTITY:
-            return `Số lượng`;
-        case IngredientsQuickFilterOptions.STATUS:
+        case ItemsQuickFilterOptions.DISCOUNT:
+            return `Chiết khấu`;
+        case ItemsQuickFilterOptions.STATUS:
             return `Trạng thái`;
-        case IngredientsQuickFilterOptions.PRICE:
-            return `Giá`;
-        case IngredientsQuickFilterOptions.UNIT:
+        case ItemsQuickFilterOptions.DESCRIPTION:
+            return `Mô tả`;
+        case ItemsQuickFilterOptions.UNIT:
             return `Đơn vị`;
-        case IngredientsQuickFilterOptions.CREATED_ON:
+        case ItemsQuickFilterOptions.CREATED_ON:
             return `Ngày tạo`;
-        case IngredientsQuickFilterOptions.MODIFIED_ON:
+        case ItemsQuickFilterOptions.MODIFIED_ON:
             return `Ngày sửa`;
+        case ItemsQuickFilterOptions.IMAGE_URL:
+            return `Ảnh mặt hàng`;
         default:
             return "";
     }

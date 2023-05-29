@@ -7,6 +7,7 @@ const useStyles = (props: SearchSuggestProps<any>) =>
     root: {},
     input: {
       display: "flex",
+      
       alignItems: "center",
       borderTopRightRadius: 3,
       borderTopLeftRadius: 3,
@@ -145,7 +146,7 @@ const useStyles = (props: SearchSuggestProps<any>) =>
     },
     fakeSelectButton: {
       height: props.style?.height || 40,
-      width: "100%",
+      width: "270px",
       padding: "0 12px",
       display: "flex",
       alignItems: "center",
