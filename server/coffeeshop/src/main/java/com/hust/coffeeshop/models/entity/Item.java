@@ -3,9 +3,8 @@ package com.hust.coffeeshop.models.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "item")
@@ -26,6 +25,7 @@ public class Item  extends BaseEntity{
     private String status;
     @Column(name = "category_id")
     private int categoryId;
+
 
 
 }

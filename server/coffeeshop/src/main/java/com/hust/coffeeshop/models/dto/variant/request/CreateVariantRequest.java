@@ -12,4 +12,6 @@ public class CreateVariantRequest {
     private String status;
     private BigDecimal price;
     private  int variantId;
+    private String type;
+
 }

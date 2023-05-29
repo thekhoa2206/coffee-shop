@@ -3,16 +3,19 @@ package com.hust.coffeeshop.services.impl;
 import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.common.CommonStatus;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
-import com.hust.coffeeshop.models.dto.customer.CustomerFilterRequest;
-import com.hust.coffeeshop.models.dto.customer.CustomerResponse;
+import com.hust.coffeeshop.models.dto.ingredient.IngredientResponse;
 import com.hust.coffeeshop.models.dto.item.request.CreateItemRequest;
 import com.hust.coffeeshop.models.dto.item.request.ItemRequest;
 import com.hust.coffeeshop.models.dto.item.response.ItemRepsone;
+import com.hust.coffeeshop.models.dto.stockunit.StockUnitResponse;
 import com.hust.coffeeshop.models.dto.variant.response.VariantRepsone;
 import com.hust.coffeeshop.models.entity.Item;
+import com.hust.coffeeshop.models.entity.ItemIngredient;
+import com.hust.coffeeshop.models.entity.StockUnit;
 import com.hust.coffeeshop.models.entity.Variant;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
+import com.hust.coffeeshop.services.IngredientService;
 import com.hust.coffeeshop.services.ItemService;
 import lombok.val;
 import org.modelmapper.ModelMapper;
@@ -34,42 +37,72 @@ public class ItemServiceImpl implements ItemService {
     private final ModelMapper mapper;
     private final VariantRepository variantRepository;
     private  final FilterRepository filterRepository;
+    private  final IngredientService ingredientService;
+    private final StockUnitRepository stockUnitRepository;
+    private final ItemIngredientRepository itemIngredientRepository;
 
-    public ItemServiceImpl(ItemRepository itemRepository, ModelMapper mapper, VariantRepository variantRepository, FilterRepository filterRepository) {
+    public ItemServiceImpl(ItemRepository itemRepository, ModelMapper mapper, VariantRepository variantRepository, FilterRepository filterRepository, IngredientService ingredientService, StockUnitRepository stockUnitRepository, ItemIngredientRepository itemIngredientRepository) {
         this.itemRepository = itemRepository;
         this.mapper = mapper;
         this.variantRepository = variantRepository;
         this.filterRepository = filterRepository;
+        this.ingredientService = ingredientService;
+        this.stockUnitRepository = stockUnitRepository;
+        this.itemIngredientRepository = itemIngredientRepository;
     }
 
     //api tạo
     @Override
     public ItemRepsone create(CreateItemRequest request) {
         if (request.getName() == null) throw new ErrorException("Tên khách hàng không được để trống");
-
         Item item = mapper.map(request, Item.class);
         item.setStatus(CommonStatus.CustomerStatus.ACTIVE);
         item.setCreatedOn(CommonCode.getTimestamp());
+        List<IngredientResponse> ingredients = new ArrayList<>();
+        StockUnit stockUnit = new StockUnit();
+        if (request.getStockUnitId() != 0) {
+            stockUnit = stockUnitRepository.findById(request.getStockUnitId()).get();
+        }
+        var stockUnitResponse = mapper.map(stockUnit, StockUnitResponse.class);
+        stockUnitResponse.set();
         ItemRepsone itemRepsone = null;
+        List<VariantRepsone> variantRepsones = new ArrayList<>();
         try {
             var ItemNew = itemRepository.save(item);
+            if(request.getIngredient().size()>0) {
+                for (var i : request.getIngredient()) {
+                    var ingredient = ingredientService.getById(i.getId());
+                    if(ingredient == null) throw new ErrorException("khônh tìm thấy nguyên liệu");
+                    ItemIngredient itemIngredient = new ItemIngredient();
+                    itemIngredient.setItemId(ItemNew.getId());
+                    itemIngredient.setIngredientId(i.getId());
+                    itemIngredient.setAmountConsume(i.getAmountConsume());
+                    itemIngredientRepository.save(itemIngredient);
+                    ingredients.add(ingredient);
+                }
+            }
             if(request.getVariantRequest() != null)
             {
                 for( var i : request.getVariantRequest())
-                {
-                    Variant variant = mapper.map(request.getVariantRequest(),Variant.class);
+                {Variant variant = new Variant();
                     variant.setStatus(CommonStatus.CustomerStatus.ACTIVE);
                     variant.setCreatedOn(CommonCode.getTimestamp());
                     variant.setName(i.getName());
                     variant.setItemId(ItemNew.getId());
+                    VariantRepsone variantRepsone = mapper.map(request.getVariantRequest(),VariantRepsone.class);
+                    variantRepsones.add(variantRepsone);
                     try {
-                    var variantNew = variantRepository.save(variant);
+                     variantRepository.save(variant);
+
                 } catch (Exception e) {
                     throw new ErrorException("Tạo giá hàng thất bại");
                     }
                 }
             }
             itemRepsone = mapper.map(ItemNew, ItemRepsone.class);
+            itemRepsone.setIngredient(ingredients);
+            itemRepsone.setStockUnitResponse(stockUnitResponse);
+            itemRepsone.setVariant(variantRepsones);
         } catch (Exception e) {
             throw new ErrorException("Tạo mặt hàng thất bại");
         }
@@ -84,12 +117,64 @@ public class ItemServiceImpl implements ItemService {
         if (request.getName() != null) item.get().setName(request.getName());
         if (request.getDescription()!= null) item.get().setDescription(request.getDescription());
         if (request.getDiscountPercentage() != null) item.get().setDiscountPercentage(request.getDiscountPercentage());
-        if(request.getVariantRequest() != null){
-            for(var i : request.getVariantRequest()){
-                val variant = variantRepository.findById(i.getVariantId());
-                if(variant.get() == null) throw new ErrorException("Không tìm thấy giá bán");
-                if(i.getPrice()!= null)   variant.get().setPrice(i.getPrice());
-                if(i.getName()!= null) variant.get().setName(i.getName());
+        if(request.getVariantRequest().size()>0)
+        {
+            for(var i : request.getVariantRequest())
+            {
+                if(i.getType().contains("add")){
+                Variant variant = new Variant();
+                variant.setItemId(id);
+                variant.setPrice(i.getPrice());
+                variant.setName(i.getName());
+                variant.setCreatedOn(CommonCode.getTimestamp());
+                variantRepository.save(variant);
+                }
+                if(i.getType().contains("update")){
+                    var variant = variantRepository.findById(i.getVariantId());
+                    if(variant == null) throw new ErrorException("Không tìm thấy giá bán");
+                    if(i.getPrice()!= null)   variant.get().setPrice(i.getPrice());
+                    if(i.getName()!= null) variant.get().setName(i.getName());
+                    variant.get().setModifiedOn(CommonCode.getTimestamp());
+                    variantRepository.save(variant.get());
+                }
+                if(i.getType().contains("delete")){
+                    var variant = variantRepository.findById(i.getVariantId());
+                    if(variant == null) throw new ErrorException("Không tìm thấy giá bán");
+                    variant.get().setStatus(CommonStatus.CustomerStatus.DELETED);
+                    variant.get().setModifiedOn(CommonCode.getTimestamp());
+                    variantRepository.save(variant.get());
+                }
+
+            }
+        }
+        if(request.getIngredient().size()>0)
+        {
+            for (var i : request.getIngredient()){
+
+                if(i.getType().contains("add")){
+                    ItemIngredient itemIngredient = new ItemIngredient();
+                    itemIngredient.setItemId(id);
+                    itemIngredient.setIngredientId(i.getId());
+                    itemIngredient.setAmountConsume(i.getAmountConsume());
+                    itemIngredient.setCreatedOn(CommonCode.getTimestamp());
+                    itemIngredientRepository.save(itemIngredient);
+                }
+                if(i.getType().contains("update"))
+                {
+                    var itemIngredient = itemIngredientRepository.findUserByItemId(id,i.getId());
+                    if(itemIngredient == null) throw new ErrorException("Không cập nhật được nguyên liệu");
+                    itemIngredient.setAmountConsume(i.getAmountConsume());
+                    itemIngredientRepository.save(itemIngredient);
+                }
+                if(i.getType().contains("delete")){
+                    try {
+                        itemIngredientRepository.deleteItemIngredient(id,i.getId());
+                    }
+                     catch (Exception e) {
+                         throw new ErrorException("xoá nguyên liệu thất bại");
+                     }
+                }
+
             }
         }
         item.get().setModifiedOn(CommonCode.getTimestamp());
@@ -121,6 +206,7 @@ public class ItemServiceImpl implements ItemService {
             }
             itemResponse.setVariant(variants);
         }
+
         return itemResponse;
     }
     //api xóa

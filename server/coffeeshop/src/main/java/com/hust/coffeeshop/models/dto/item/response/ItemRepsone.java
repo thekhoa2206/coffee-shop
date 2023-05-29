@@ -1,5 +1,7 @@
 package com.hust.coffeeshop.models.dto.item.response;
 
+import com.hust.coffeeshop.models.dto.ingredient.IngredientResponse;
+import com.hust.coffeeshop.models.dto.stockunit.StockUnitResponse;
 import com.hust.coffeeshop.models.dto.variant.response.VariantRepsone;
 import com.hust.coffeeshop.models.entity.Variant;
 import lombok.Getter;
@@ -15,8 +17,10 @@ public class ItemRepsone {
     private String imageUrl;
     private String description;
     private String discountPercentage;
-    private Object stockUnit;
+
     private String status;
     private Object category;
+    private StockUnitResponse stockUnitResponse;
     private List<VariantRepsone> variant;
+    private List<IngredientResponse> ingredient;
 }
