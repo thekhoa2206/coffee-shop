@@ -8,14 +8,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "stock_unit")
 @Getter
 @Setter
+@Table(name = "stock_unit")
+@Entity
 public class StockUnit extends BaseEntity{
     @Column(name = "name")
     private String name;
+
     @Column(name = "status")
     private int status;
-
 }
