@@ -8,10 +8,8 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class CreateVariantRequest {
+    private int id;
     private String name;
-    private String status;
     private BigDecimal price;
-    private  int variantId;
-    private String type;
 
 }

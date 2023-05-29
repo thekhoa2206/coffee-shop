@@ -22,6 +22,6 @@ public class ItemRepsone extends BaseResponse {
     private String status;
     private CategoryResponse category;
     private StockUnitResponse stockUnitResponse;
-    private List<VariantRepsone> variant;
-    private List<IngredientItemResponse> ingredient;
+    private List<VariantRepsone> variants;
+    private List<IngredientItemResponse> ingredients;
 }

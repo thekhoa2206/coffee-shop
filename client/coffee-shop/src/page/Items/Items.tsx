@@ -163,7 +163,7 @@ const Items = (props: ItemsProps & PropsFromRedux) => {
                                     stickyHeader
                                     tableDrillDown
                                     stickyHeaderTop={52}
-                                    onRowClick={(e, data) => { }}
+                                    onRowClick={(e, data) => { history.push(`/admin/items/${data.id}`)}}
                                     disablePaging={false}
                                 >
                                     <GridColumn
@@ -204,7 +204,7 @@ const Items = (props: ItemsProps & PropsFromRedux) => {
                                             return (
                                                 <>
                                                     <Typography>
-                                                        {"IT" + dataItem.stt}
+                                                        {"IT" + dataItem.id}
                                                     </Typography>
                                                 </>
                                             );

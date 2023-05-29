@@ -16,9 +16,9 @@ export const ItemsQuickFilterOptions = {
 export const getItemsQuickFilterLabel = (key: string) => {
     switch (key) {
         case ItemsQuickFilterOptions.CODE:
-            return `Mã nguyên liệu`;
+            return `Mã mặt hàng`;
         case ItemsQuickFilterOptions.NAME:
-            return `Tên nguyên liệu`;
+            return `Tên mặt hàng`;
         case ItemsQuickFilterOptions.DISCOUNT:
             return `Chiết khấu`;
         case ItemsQuickFilterOptions.STATUS:

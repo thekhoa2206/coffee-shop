@@ -11,5 +11,4 @@ public class IngredientCreateItemRequest {
     private int amountConsume;
     private int ingredientId;
     private String name;
-    private String type;
 }

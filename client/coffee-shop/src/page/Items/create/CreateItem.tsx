@@ -5,10 +5,12 @@ import SearchSuggest from "components/Filter/SearchSuggest";
 import NoResultsComponent from "components/NoResults/NoResultsComponent";
 import NumberInputTextField from "components/NumberInput/NumberInputTextField";
 import Paper from "components/Paper/Paper";
-import { BillPlusIcon, CloseIcon, PlusIcon } from "components/SVG";
+import { CloseIcon, PlusIcon } from "components/SVG";
 import SelectInfinite from "components/Select/SelectInfinite/SelectInfinite";
 import { DataSource } from "components/Select/types";
 import TextField from "components/TextField";
+import TextareaAutosize from "components/TextField/TextareaAutosize/TextareaAutosize";
+import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { CategoryResponse } from "services/CategoryService";
@@ -18,8 +20,10 @@ import IngredientsService from "services/IngredientsService/IngredientsService";
 import { IngredientItemRequest, ItemRequest, VariantRequest } from "services/ItemsService";
 import { AppState } from "store/store";
 import styles from "./CreateItem.styles";
-import _ from "lodash";
-import TextareaAutosize from "components/TextField/TextareaAutosize/TextareaAutosize";
+import ItemsService from "services/ItemsService/ItemsService";
+import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
+import { getMessageError } from "utilities";
+import { useHistory } from "react-router-dom";
 export interface CreateItemProps extends WithStyles<typeof styles> {
 
 }
@@ -29,8 +33,8 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
     const [category, setCategory] = useState<CategoryResponse | undefined | null>();
     const [itemRequest, setItemRequest] = useState<ItemRequest>();
     const [ingredients, setIngredients] = useState<IngredientItemRequest[]>([]);
-    const [variants, setVariants] = useState<VariantRequest[]>([{ id: 1, name: "", price: 0, type: "add" }]);
-
+    const [variants, setVariants] = useState<VariantRequest[]>([{ id: 1, name: "", price: 0 }]);
+    const history = useHistory();
     useEffect(() => {
         initCategory();
     }, [])
@@ -80,7 +84,7 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
 
     const addVariants = () => {
         let idMax = Math.max.apply(null, variants.map((item) => item.id));
-        setVariants([...variants, { id: idMax + 1, name: "", price: 0, type: "add" }])
+        setVariants([...variants, { id: idMax + 1, name: "", price: 0 }])
     }
 
     const deleVariants = (variant: VariantRequest) => {
@@ -95,6 +99,26 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
                 return variant;
             }
         })])
+    }
+
+    const handleCreateItem = async () => {
+        let requet: ItemRequest = {
+            ...itemRequest,
+            categoryId: category?.id || 0,
+            stockUnitId: 1,
+            variantRequest: variants.filter((item) => item.name !== ""),
+            ingredients: ingredients,
+        }
+
+        try {
+            let res = await ItemsService.create(requet);
+            if (res.data) {
+                SnackbarUtils.success("Tạo mặt hàng thành công");
+                history.push(`/admin/items/${res.data.id}`)
+            }
+        } catch (error) {
+            SnackbarUtils.error(getMessageError(error));
+        }
     }
     return (
         <>
@@ -138,7 +162,6 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
                                         onChange={(ingredient: IngredientResponse) => {
                                             addIngredients({
                                                 amountConsume: 1,
-                                                type: "add",
                                                 name: ingredient.name,
                                                 ingredientId: ingredient.id,
                                             })
@@ -233,9 +256,15 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
                             <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                                 Thông tin mặt hàng
                             </Typography>
-                            <Box className={classes.boxContentPaper} style={{height: "350px"}}>
+                            <Box className={classes.boxContentPaper} style={{ height: "350px" }}>
                                 <Grid xs={12}>
-                                    <TextField label="Tên mặt hàng" placeholder="Nhập tên mặt hàng" required fullWidth />
+                                    <TextField
+                                        label="Tên mặt hàng"
+                                        placeholder="Nhập tên mặt hàng"
+                                        required
+                                        fullWidth
+                                        value={itemRequest?.name}
+                                        onChange={(e: any) => { setItemRequest({ ...itemRequest, name: e.target.value }) }} />
                                     <NumberInputTextField
                                         label="Giảm giá mặt hàng"
                                         placeholder="Nhập giá trị giảm giá"
@@ -264,12 +293,12 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
                                             inputSearchClassRoot={classes.inputCategory}
                                         />
                                     </Box>
-                                    <Box style={{width: 270, height: 60, marginTop: 16}}>
+                                    <Box style={{ width: 270, height: 60, marginTop: 16 }}>
                                         <TextareaAutosize
                                             label="Mô tả"
                                             height={60}
                                             value={itemRequest?.description}
-                                            onChange={(e) =>{
+                                            onChange={(e: any) => {
                                                 setItemRequest({
                                                     ...itemRequest,
                                                     description: e.target.value,
@@ -285,7 +314,7 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
             </Box>
             <Box style={{ display: "flex", marginBottom: "100px", marginLeft: "1150px", marginTop: "16px" }}>
                 <Button variant="outlined" color="primary">Hủy</Button>
-                <Button variant="contained" color="primary" style={{ marginLeft: "16px" }}>Lưu</Button>
+                <Button variant="contained" color="primary" style={{ marginLeft: "16px" }} onClick={() => { handleCreateItem(); }}>Lưu</Button>
             </Box>
         </>
     );
