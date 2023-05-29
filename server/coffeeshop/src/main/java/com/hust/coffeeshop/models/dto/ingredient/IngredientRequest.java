@@ -11,7 +11,6 @@ public class IngredientRequest {
     private String name;
     private int quantity;
     private BigDecimal exportPrice;
-
     private int stockUnitId;
 
 }

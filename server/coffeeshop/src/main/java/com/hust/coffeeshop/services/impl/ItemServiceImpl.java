@@ -10,6 +10,7 @@ import com.hust.coffeeshop.models.dto.item.response.ItemRepsone;
 import com.hust.coffeeshop.models.dto.stockunit.StockUnitResponse;
 import com.hust.coffeeshop.models.dto.variant.response.VariantRepsone;
 import com.hust.coffeeshop.models.entity.Item;
+import com.hust.coffeeshop.models.entity.ItemIngredient;
 import com.hust.coffeeshop.models.entity.StockUnit;
 import com.hust.coffeeshop.models.entity.Variant;
 import com.hust.coffeeshop.models.exception.ErrorException;
@@ -38,14 +39,16 @@ public class ItemServiceImpl implements ItemService {
     private  final FilterRepository filterRepository;
     private  final IngredientService ingredientService;
     private final StockUnitRepository stockUnitRepository;
+    private final ItemIngredientRepository itemIngredientRepository;
 
-    public ItemServiceImpl(ItemRepository itemRepository, ModelMapper mapper, VariantRepository variantRepository, FilterRepository filterRepository, IngredientService ingredientService, StockUnitRepository stockUnitRepository) {
+    public ItemServiceImpl(ItemRepository itemRepository, ModelMapper mapper, VariantRepository variantRepository, FilterRepository filterRepository, IngredientService ingredientService, StockUnitRepository stockUnitRepository, ItemIngredientRepository itemIngredientRepository) {
         this.itemRepository = itemRepository;
         this.mapper = mapper;
         this.variantRepository = variantRepository;
         this.filterRepository = filterRepository;
         this.ingredientService = ingredientService;
         this.stockUnitRepository = stockUnitRepository;
+        this.itemIngredientRepository = itemIngredientRepository;
     }
 
     //api tạo
@@ -56,29 +59,32 @@ public class ItemServiceImpl implements ItemService {
         item.setStatus(CommonStatus.CustomerStatus.ACTIVE);
         item.setCreatedOn(CommonCode.getTimestamp());
         List<IngredientResponse> ingredients = new ArrayList<>();
-        if(request.getIngredientId().size()>0) {
-            for (var i : request.getIngredientId()) {
-                var ingredient = ingredientService.getById(i);
-                ingredients.add(ingredient);
-            }
-        }
-            StockUnit stockUnit = new StockUnit();
+        StockUnit stockUnit = new StockUnit();
         if (request.getStockUnitId() != 0) {
             stockUnit = stockUnitRepository.findById(request.getStockUnitId()).get();
         }
         var stockUnitResponse = mapper.map(stockUnit, StockUnitResponse.class);
         stockUnitResponse.set();
-
         ItemRepsone itemRepsone = null;
         List<VariantRepsone> variantRepsones = new ArrayList<>();
         try {
             var ItemNew = itemRepository.save(item);
+            if(request.getIngredient().size()>0) {
+                for (var i : request.getIngredient()) {
+                    var ingredient = ingredientService.getById(i.getId());
+                    if(ingredient == null) throw new ErrorException("khônh tìm thấy nguyên liệu");
+                    ItemIngredient itemIngredient = new ItemIngredient();
+                    itemIngredient.setItemId(ItemNew.getId());
+                    itemIngredient.setIngredientId(i.getId());
+                    itemIngredient.setAmountConsume(i.getAmountConsume());
+                    itemIngredientRepository.save(itemIngredient);
+                    ingredients.add(ingredient);
+                }
+            }
             if(request.getVariantRequest() != null)
             {
-
                 for( var i : request.getVariantRequest())
                 {Variant variant = new Variant();
-
                     variant.setStatus(CommonStatus.CustomerStatus.ACTIVE);
                     variant.setCreatedOn(CommonCode.getTimestamp());
                     variant.setName(i.getName());
@@ -115,16 +121,59 @@ public class ItemServiceImpl implements ItemService {
         {
             for(var i : request.getVariantRequest())
             {
-                val variant = variantRepository.findById(i.getVariantId());
-                if(variant.get() == null) throw new ErrorException("Không tìm thấy giá bán");
-                if(i.getPrice()!= null)   variant.get().setPrice(i.getPrice());
-                if(i.getName()!= null) variant.get().setName(i.getName());
+                if(i.getType().contains("add")){
+                Variant variant = new Variant();
+                variant.setItemId(id);
+                variant.setPrice(i.getPrice());
+                variant.setName(i.getName());
+                variant.setCreatedOn(CommonCode.getTimestamp());
+                variantRepository.save(variant);
+                }
+                if(i.getType().contains("update")){
+                    var variant = variantRepository.findById(i.getVariantId());
+                    if(variant == null) throw new ErrorException("Không tìm thấy giá bán");
+                    if(i.getPrice()!= null)   variant.get().setPrice(i.getPrice());
+                    if(i.getName()!= null) variant.get().setName(i.getName());
+                    variant.get().setModifiedOn(CommonCode.getTimestamp());
+                    variantRepository.save(variant.get());
+                }
+                if(i.getType().contains("delete")){
+                    var variant = variantRepository.findById(i.getVariantId());
+                    if(variant == null) throw new ErrorException("Không tìm thấy giá bán");
+                    variant.get().setStatus(CommonStatus.CustomerStatus.DELETED);
+                    variant.get().setModifiedOn(CommonCode.getTimestamp());
+                    variantRepository.save(variant.get());
+                }
+
             }
         }
-        if(request.getIngredientId().size()>0)
+        if(request.getIngredient().size()>0)
         {
-            for (var i : request.getIngredientId()){
-                val ingredient = ingredientService.getById(i);
+            for (var i : request.getIngredient()){
+
+                if(i.getType().contains("add")){
+                    ItemIngredient itemIngredient = new ItemIngredient();
+                    itemIngredient.setItemId(id);
+                    itemIngredient.setIngredientId(i.getId());
+                    itemIngredient.setAmountConsume(i.getAmountConsume());
+                    itemIngredient.setCreatedOn(CommonCode.getTimestamp());
+                    itemIngredientRepository.save(itemIngredient);
+                }
+                if(i.getType().contains("update"))
+                {
+                    var itemIngredient = itemIngredientRepository.findUserByItemId(id,i.getId());
+                    if(itemIngredient == null) throw new ErrorException("Không cập nhật được nguyên liệu");
+                    itemIngredient.setAmountConsume(i.getAmountConsume());
+                    itemIngredientRepository.save(itemIngredient);
+                }
+                if(i.getType().contains("delete")){
+                    try {
+                        itemIngredientRepository.deleteItemIngredient(id,i.getId());
+                    }
+                     catch (Exception e) {
+                         throw new ErrorException("xoá nguyên liệu thất bại");
+                     }
+                }
 
             }
         }

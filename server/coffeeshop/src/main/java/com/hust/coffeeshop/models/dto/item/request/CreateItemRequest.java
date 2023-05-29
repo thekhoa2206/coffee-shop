@@ -1,5 +1,6 @@
 package com.hust.coffeeshop.models.dto.item.request;
 
+import com.hust.coffeeshop.models.dto.ingredient.IngredientCreateItemRequest;
 import com.hust.coffeeshop.models.dto.variant.request.CreateVariantRequest;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,6 @@ public class CreateItemRequest {
     private int stockUnitId;
     private String status;
     private int categoryId;
-    private  List<Integer> ingredientId;
+    private  List<IngredientCreateItemRequest> ingredient;
     private List<CreateVariantRequest> variantRequest;
 }

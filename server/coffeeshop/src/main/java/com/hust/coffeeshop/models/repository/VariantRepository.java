@@ -1,7 +1,7 @@
 package com.hust.coffeeshop.models.repository;
 
 
-import com.hust.coffeeshop.models.entity.User;
+
 import com.hust.coffeeshop.models.entity.Variant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
