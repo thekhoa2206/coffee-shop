@@ -1,6 +1,7 @@
 package com.hust.coffeeshop.models.dto.combo.response;
 
 import com.hust.coffeeshop.models.dto.BaseResponse;
+import com.hust.coffeeshop.models.dto.item.response.ItemRepsone;
 import com.hust.coffeeshop.models.entity.Category;
 import com.hust.coffeeshop.models.entity.Item;
 import lombok.Getter;
@@ -17,5 +18,5 @@ public class ComboRespone extends BaseResponse {
     private String discountPercentage;
     private String status;
     private Category category;
-    private List<Item> items;
+    private List<ItemRepsone> items;
 }

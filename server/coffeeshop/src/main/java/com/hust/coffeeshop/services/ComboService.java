@@ -5,4 +5,5 @@ import com.hust.coffeeshop.models.dto.combo.response.ComboRespone;
 
 public interface ComboService {
     ComboRespone create(CreateComboRequest request);
+    ComboRespone update(CreateComboRequest request,int id);
 }
