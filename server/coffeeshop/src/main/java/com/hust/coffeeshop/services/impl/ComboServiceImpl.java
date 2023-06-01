@@ -1,4 +1,4 @@
-package com.hust.coffeeshop.services.impl;
+package  com.hust.coffeeshop.services.impl;
 
 import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.common.CommonStatus;
@@ -52,7 +52,8 @@ public class ComboServiceImpl implements ComboService {
         combo.setCreatedOn(CommonCode.getTimestamp());
         combo.setDescription(request.getDescription() );
         combo.setDiscountPercentage(request.getDiscountPercentage());
-        combo.setCategoryId(request.getCategoryId());
+        if(request.getCategoryId()!= 0) combo.setCategoryId(request.getCategoryId());
+        combo.setModifiedOn(0);
         try {
             var comboNew=  comboRepository.save(combo);
             Category category = new Category();
@@ -67,6 +68,7 @@ public class ComboServiceImpl implements ComboService {
             for(var i : request.getVarianIds())
             {
               var variant = variantRepository.findById(i);
+              if(variant.get()==null) throw new ErrorException("không có item" );
                 ComboItem comboItem = new ComboItem();
                 comboItem.setComboId(comboNew.getId());
                 comboItem.setItemId(variant.get().getItemId());
@@ -90,7 +92,7 @@ public class ComboServiceImpl implements ComboService {
         return comboRespone;
         }
         catch (Exception e) {
-            throw new ErrorException("tạo combomapping thất bại");
+            throw new ErrorException("tạo combothất bại");
         }
 
     }
@@ -122,13 +124,20 @@ public class ComboServiceImpl implements ComboService {
                         .filter((p) -> i.equals(p.getVariantId()))
                         .findAny()
                         .orElse(null);
-                if(comboItemFilter != null){
+                if(comboItemFilter == null){
                     var variant = variantRepository.findById(i);
                     ComboItem comboItem = new ComboItem();
                     comboItem.setComboId(comboNew.getId());
                     comboItem.setItemId(variant.get().getItemId());
                     comboItem.setVariantId(variant.get().getId());
                     comboItem.setCreatedOn(CommonCode.getTimestamp());
+                    //lưu combo_id và item id vào bảng mapping
+                    try {
+                        comboItemRepository.save(comboItem);
+                    }
+                    catch (Exception e) {
+                        throw new ErrorException("tạo combomapping thất bại");
+                    }
                     var itemResponse =   itemService.getById(variant.get().getItemId());
                     itemRepsones.add(itemResponse);
                 }

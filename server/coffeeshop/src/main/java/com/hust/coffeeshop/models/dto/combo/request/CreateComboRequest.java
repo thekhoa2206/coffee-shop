@@ -13,7 +13,7 @@ public class CreateComboRequest {
     private String name;
     private String imageUrl;
     private String description;
-    private String discountPercentage;
+    private BigDecimal discountPercentage;
     private BigDecimal price;
     private List<Integer> varianIds;
     private String status;

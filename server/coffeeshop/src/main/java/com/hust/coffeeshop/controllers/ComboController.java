@@ -20,5 +20,9 @@ public class ComboController {
     public ComboRespone create(@RequestBody CreateComboRequest request){
         return comboService.create(request);
     }
+    @PutMapping("/{id}")
+    public ComboRespone update(@RequestBody CreateComboRequest request, @PathVariable("id") int id){
+        return comboService.update(request,id);
+    }
 
 }
