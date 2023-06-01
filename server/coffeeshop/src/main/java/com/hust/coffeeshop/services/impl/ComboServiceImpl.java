@@ -53,8 +53,9 @@ public class ComboServiceImpl implements ComboService {
         combo.setDescription(request.getDescription() );
         combo.setDiscountPercentage(request.getDiscountPercentage());
         combo.setCategoryId(request.getCategoryId());
-       var comboNew=  comboRepository.save(combo);
-        Category category = new Category();
+        try {
+            var comboNew=  comboRepository.save(combo);
+            Category category = new Category();
         if (request.getCategoryId() != 0)
         {
             category = categoryRepository.findById(request.getCategoryId()).get();
@@ -71,6 +72,13 @@ public class ComboServiceImpl implements ComboService {
                 comboItem.setItemId(variant.get().getItemId());
                 comboItem.setVariantId(variant.get().getId());
                 comboItem.setCreatedOn(CommonCode.getTimestamp());
+                //lưu combo_id và item id vào bảng mapping
+                try {
+                    comboItemRepository.save(comboItem);
+                }
+                catch (Exception e) {
+                    throw new ErrorException("tạo combomapping thất bại");
+                }
                 var itemResponse =   itemService.getById(variant.get().getItemId());
                 itemRepsones.add(itemResponse);
             }
@@ -80,6 +88,11 @@ public class ComboServiceImpl implements ComboService {
         comboRespone.setCategory(category);
         comboRespone.setItems(itemRepsones);
         return comboRespone;
+        }
+        catch (Exception e) {
+            throw new ErrorException("tạo combomapping thất bại");
+        }
+
     }
     @Override
     public ComboRespone update(CreateComboRequest request,int id) {
@@ -98,7 +111,6 @@ public class ComboServiceImpl implements ComboService {
         {
             category = categoryRepository.findById(request.getCategoryId()).get();
         }
-
         var comboRespone = mapper.map(combo,ComboRespone.class);
         List<ItemRepsone> itemRepsones = new ArrayList<>();
         if(request.getVarianIds().size()>0 )
@@ -111,19 +123,19 @@ public class ComboServiceImpl implements ComboService {
                         .findAny()
                         .orElse(null);
                 if(comboItemFilter != null){
-
+                    var variant = variantRepository.findById(i);
+                    ComboItem comboItem = new ComboItem();
+                    comboItem.setComboId(comboNew.getId());
+                    comboItem.setItemId(variant.get().getItemId());
+                    comboItem.setVariantId(variant.get().getId());
+                    comboItem.setCreatedOn(CommonCode.getTimestamp());
+                    var itemResponse =   itemService.getById(variant.get().getItemId());
+                    itemRepsones.add(itemResponse);
                 }
-                var variant = variantRepository.findById(i);
-                ComboItem comboItem = new ComboItem();
-                comboItem.setComboId(comboNew.getId());
-                comboItem.setItemId(variant.get().getItemId());
-                comboItem.setVariantId(variant.get().getId());
-                comboItem.setCreatedOn(CommonCode.getTimestamp());
-                var itemResponse =   itemService.getById(variant.get().getItemId());
-                itemRepsones.add(itemResponse);
             }
         }
         var categoryResponse = mapper.map(category, CategoryResponse.class);
+
         categoryResponse.set();
         comboRespone.setCategory(category);
         comboRespone.setItems(itemRepsones);
