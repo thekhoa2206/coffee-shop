@@ -1,5 +1,6 @@
 package com.hust.coffeeshop.models.dto.combo.request;
 
+import com.hust.coffeeshop.models.dto.variant.request.VariantComboRequest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +16,6 @@ public class CreateComboRequest {
     private String description;
     private BigDecimal discountPercentage;
     private BigDecimal price;
-    private List<Integer> varianIds;
-    private String status;
+    private List<VariantComboRequest> varianIds;
     private int categoryId;
 }

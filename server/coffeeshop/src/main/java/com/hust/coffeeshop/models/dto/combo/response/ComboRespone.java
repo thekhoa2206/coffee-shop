@@ -18,5 +18,6 @@ public class ComboRespone extends BaseResponse {
     private String discountPercentage;
     private String status;
     private Category category;
-    private List<ItemRepsone> items;
+    private List<ComboItemResponse> items;
+
 }
