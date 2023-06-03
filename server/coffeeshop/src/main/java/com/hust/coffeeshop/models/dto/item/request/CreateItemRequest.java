@@ -17,6 +17,5 @@ public class CreateItemRequest {
     private String discountPercentage;
     private int stockUnitId;
     private int categoryId;
-    private  List<IngredientCreateItemRequest> ingredients;
     private List<CreateVariantRequest> variantRequest;
 }

@@ -24,7 +24,7 @@ public class Combo  extends BaseEntity{
     @Column(name = "discount_percentage")
     private String discountPercentage;
     @Column(name = "status")
-    private String status;
+    private int status;
     @Column(name = "category_id")
     private int categoryId;
 

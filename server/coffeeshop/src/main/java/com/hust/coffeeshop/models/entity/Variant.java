@@ -16,7 +16,7 @@ public class Variant extends BaseEntity {
     @Column(name = "name")
     private String name;
     @Column(name = "status")
-    private String status;
+    private int status;
     @Column(name= "price")
     private BigDecimal price;
     @Column(name= "item_id")

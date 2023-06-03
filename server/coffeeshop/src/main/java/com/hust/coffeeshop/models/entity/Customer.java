@@ -26,5 +26,5 @@ public class Customer extends BaseEntity{
     private String sex;
 
     @Column(name = "status")
-    private String status;
+    private int status;
 }

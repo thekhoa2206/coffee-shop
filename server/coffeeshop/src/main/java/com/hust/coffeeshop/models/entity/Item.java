@@ -22,7 +22,7 @@ public class Item  extends BaseEntity{
     @Column(name = "stock_unit_id")
     private int stockUnitId;
     @Column(name = "status")
-    private String status;
+    private int status;
     @Column(name = "category_id")
     private int categoryId;
 
