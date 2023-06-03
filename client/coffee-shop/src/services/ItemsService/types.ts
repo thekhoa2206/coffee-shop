@@ -13,7 +13,6 @@ export type ItemResponse = {
     category: CategoryResponse;
     stockUnitResponse: StockUnitResponse
     variants: VariantResponse[];
-    ingredients: IngredientItemResponse[];
     createdOn?: string;
     createdBy?: string;
     modifiedOn?: string;
@@ -41,13 +40,13 @@ export type ItemRequest = {
     stockUnitId?: number;
     categoryId?: number;
     variantRequest?: VariantRequest[];
-    ingredients?: IngredientItemRequest[];
 }
 
 export type VariantRequest = {
     id: number;
     name?: string;
     price?: number;
+    ingredients?: IngredientItemRequest[];
 }
 
 export type IngredientItemRequest = {
@@ -55,13 +54,20 @@ export type IngredientItemRequest = {
     name?: string;
     ingredientId?: number; 
     amountConsume: number;
+    stockUnitId?: number;
 }
 
 export type VariantResponse = {
+    id: number;
     name: string;
     status: string;
     price: number;
    itemId?: number;
+   ingredients: IngredientItemResponse[];
+   createdOn?: string;
+   createdBy?: string;
+   modifiedOn?: string;
+   modifiedBy?: string;
 }
 
 export type IngredientItemResponse = {
@@ -73,4 +79,5 @@ export type IngredientItemResponse = {
     createdBy?: string;
     modifiedOn?: string;
     modifiedBy?: string;
+    stockUnitResponse?: StockUnitResponse;
 }

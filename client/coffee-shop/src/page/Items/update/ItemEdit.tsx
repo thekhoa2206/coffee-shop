@@ -19,18 +19,18 @@ import { IngredientFilterRequest, IngredientResponse } from "services/Ingredient
 import IngredientsService from "services/IngredientsService/IngredientsService";
 import { IngredientItemRequest, ItemRequest, VariantRequest } from "services/ItemsService";
 import { AppState } from "store/store";
-import styles from "./CreateItem.styles";
+import styles from "./ItemEdit.styles";
 import ItemsService from "services/ItemsService/ItemsService";
 import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 import { getMessageError } from "utilities";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Select from "components/Select/Index";
 import StockUnitService from "services/StockUnitService/StockUnitService";
 import { StockUnitResponse } from "services/StockUnitService";
-export interface CreateItemProps extends WithStyles<typeof styles> {
+export interface ItemEditProps extends WithStyles<typeof styles> {
 
 }
-const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
+const ItemEdit = (props: ItemEditProps & PropsFromRedux) => {
     const { classes, authState } = props;
     const [categories, setCategories] = useState<CategoryResponse[]>();
     const [category, setCategory] = useState<CategoryResponse | undefined | null>();
@@ -38,6 +38,7 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
     const [variants, setVariants] = useState<VariantRequest[]>([{ id: 1, name: "", price: 0 }]);
     const [stockUnits, setStockUnits] = useState<StockUnitResponse[]>();
     const history = useHistory();
+    const { id } = useParams<{ id: string }>();
     useEffect(() => {
         initCategory();
     }, [])
@@ -47,7 +48,49 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
             setCategories(res.data.data)
         }
     }
+    useEffect(() => {
+        initItem();
+    }, [])
+    const initItem = async () => {
+        let res = await ItemsService.getById(id);
+        if (res.data) {
+            let item = res.data
+            let itemRq: ItemRequest ={
+                categoryId: item.category.id,
+                description: item.description,
+                discountPercentage: item.discountPercentage,
+                imageUrl: item.imageUrl,
+                name: item.name,
+                stockUnitId: item.stockUnitResponse?.id || 0,
+                variantRequest: [],
+            }
 
+            let variantRequests: VariantRequest[] = item.variants.map((v) => {
+                let ingredients = v.ingredients.map((ig) => {
+                    let igrq: IngredientItemRequest = {
+                        amountConsume: ig.amountConsume || 0,
+                        id: ig.id,
+                        ingredientId: ig.ingredientId,
+                        name: ig.name,
+                        stockUnitId: ig.stockUnitResponse?.id
+                    }
+                    return igrq;
+                })
+                let vq: VariantRequest = {
+                    id: v.id || 0,
+                    ingredients: ingredients,
+                    name: v.name,
+                    price: v.price,
+                }
+                return vq;
+            })
+            itemRq.variantRequest = variantRequests;
+            setVariants(variantRequests)
+            setCategory(item.category);
+            setItemRequest(itemRq);
+        }
+    }
+    
     const updateIngredients = (item: IngredientItemRequest, variant: VariantRequest) => {
         let variantNews = variants.map((v) => {
             if (v.id === variant.id) {
@@ -130,8 +173,11 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
             setStockUnits(res.data.data)
         }
     }
-    const handleCreateItem = async () => {
+    const handleUpdateItem = async () => {
         variants.forEach((item) => {
+            if(!itemRequest?.variantRequest?.find((vq) => vq.id == item.id)){
+                item.id = 0;
+            }
             if(!item.name){
                 SnackbarUtils.error(`Tên phiên bản ${item.id} không được để trống!`);
                 return;
@@ -145,9 +191,9 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
         }
 
         try {
-            let res = await ItemsService.create(requet);
+            let res = await ItemsService.update(requet, id);
             if (res.data) {
-                SnackbarUtils.success("Tạo mặt hàng thành công");
+                SnackbarUtils.success("Cập nhật mặt hàng thành công");
                 history.push(`/admin/items/${res.data.id}`)
             }
         } catch (error) {
@@ -370,7 +416,7 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
             </Box>
             <Box style={{ display: "flex", marginBottom: "100px", marginLeft: "1150px", marginTop: "16px" }}>
                 <Button variant="outlined" color="primary">Hủy</Button>
-                <Button variant="contained" color="primary" style={{ marginLeft: "16px" }} onClick={() => { handleCreateItem(); }}>Lưu</Button>
+                <Button variant="contained" color="primary" style={{ marginLeft: "16px" }} onClick={() => { handleUpdateItem(); }}>Lưu</Button>
             </Box>
         </>
     );
@@ -382,5 +428,5 @@ const mapStateToProps = (state: AppState) => ({
 });
 const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
-export default connect(mapStateToProps, {})(withStyles(styles)(CreateItem));
+export default connect(mapStateToProps, {})(withStyles(styles)(ItemEdit));
 

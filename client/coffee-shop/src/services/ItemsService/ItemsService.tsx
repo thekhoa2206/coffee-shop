@@ -14,5 +14,8 @@ class ItemsService {
     static async create(request: ItemRequest): Promise<AxiosResponse<ItemResponse>> {
         return axios.post(`/item`,request, { ...getAxiosConfig()});
     }
+    static async update(request: ItemRequest, id: string): Promise<AxiosResponse<ItemResponse>> {
+        return axios.put(`/item/${id}`,request, { ...getAxiosConfig()});
+    }
 }
 export default ItemsService;

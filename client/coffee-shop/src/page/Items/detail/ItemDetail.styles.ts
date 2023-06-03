@@ -5,7 +5,7 @@ const styles = (theme: Theme) =>
         container: {
             width: "1072px",
             margin: "auto",
-            marginTop: "32px"
+            marginTop: "1px",
         },
         wrapperBoxInfo: {
             width: "100%",

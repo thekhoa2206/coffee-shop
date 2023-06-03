@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
         User user = mapper.map(request, User.class);
         user.setPassword(CommonCode.GeneratePassword(request.getPassword()));
         user.setRoles(role);
-        user.setStatus(CommonStatus.CustomerStatus.ACTIVE);
+        user.setStatus("active");
         user.setCreatedOn();
 
         UserResponse userResponse = null;

@@ -8,6 +8,7 @@ const IngredientList = React.lazy(() => import("./page/Ingredients"));
 const ItemList = React.lazy(() => import("./page/Items"));
 const CreateItem = React.lazy(() => import("./page/Items/create"));
 const DetailItem = React.lazy(() => import("./page/Items/detail"));
+const EditItem = React.lazy(() => import("./page/Items/update"));
 
 export const LAYOUT_ROUTES: Route[] = [
   {
@@ -104,6 +105,18 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: "Chi tiết mặt hàng",
+      linkTo: "/admin/items",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/items/:id/edit",
+    component: EditItem,
+    extract: true,
+    header: {
+      title: "Sửa mặt hàng",
       linkTo: "/admin/items",
       showNoti: false,
       withSubtitle: false,
