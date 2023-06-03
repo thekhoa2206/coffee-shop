@@ -9,7 +9,8 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Random;
 
-public class CommonCode {
+public class CommonCode
+{
     public  static String GenerateCodeRole(){
         String code = "R";
         Random rand = new Random();

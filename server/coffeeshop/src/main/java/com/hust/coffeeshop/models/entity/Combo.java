@@ -22,7 +22,7 @@ public class Combo  extends BaseEntity{
     @Column(name= "price")
     private BigDecimal price;
     @Column(name = "discount_percentage")
-    private String discountPercentage;
+    private BigDecimal discountPercentage;
     @Column(name = "status")
     private String status;
     @Column(name = "category_id")
