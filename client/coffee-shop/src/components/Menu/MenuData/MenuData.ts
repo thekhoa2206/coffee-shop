@@ -6,7 +6,7 @@ import { AppState } from "store/store";
 import { hasPermission } from "utilities";
 import { AccountRole } from "utilities/AccountRole";
 import {
-  MenuDashboardIcon, MenuOrderIcon, AccountSettingIcon
+  MenuDashboardIcon, MenuOrderIcon, AccountSettingIcon, MenuProductIcon
 } from "../../SVG";
 import { MenuItem } from "./MenuData.types";
 const useGenMenuData = () => {
@@ -49,7 +49,7 @@ const useGenMenuData = () => {
   const genMenuProduct = () => {
     let menu: MenuItem = {
       id: "product",
-      icon: AccountSettingIcon,
+      icon: MenuProductIcon,
       title: "Mặt hàng",
       subMenus: [],
       path: "/admin/items",
@@ -74,9 +74,28 @@ const useGenMenuData = () => {
     return menu;
   };
 
+  const genMenuOrder = () => {
+    let menu: MenuItem = {
+      id: "order",
+      icon: MenuOrderIcon,
+      title: "Đơn hàng",
+      subMenus: [],
+      path: "/admin/orders",
+    };
+    menu.subMenus = [
+      {
+        title: "Đơn hàng",
+        path: "/admin/orders",
+        typeRoute: "default",
+      },
+    ];
+    return menu;
+  };
+
   const genMenuData = () => {
     let listMenu: MenuItem[] = [];
     listMenu.push(genMenuDashboard());
+    listMenu.push(genMenuOrder());
     listMenu.push(genMenuCustomer());
     listMenu.push(genMenuProduct())
     return listMenu;

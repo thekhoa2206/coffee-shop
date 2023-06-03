@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@Table(name = "order")
+@Table(name = "orders")
 @Entity
 public class Order extends BaseEntity{
     @Column(name = "customer_id")
@@ -30,4 +30,10 @@ public class Order extends BaseEntity{
 
     @Column(name = "note")
     private String note;
+
+    @Column(name = "code")
+    private String code;
+
+    @Column(name = "payment_status")
+    private int paymentStatus ;
 }
