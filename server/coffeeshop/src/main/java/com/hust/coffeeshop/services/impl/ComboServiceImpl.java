@@ -261,7 +261,7 @@ public class ComboServiceImpl implements ComboService {
         var variantRepsone = mapper.map(variant.get(), VariantRepsone.class);
         List<VariantRepsone> variantRepsones = new ArrayList<>();
         variantRepsones.add(variantRepsone);
-        itemRepsone.setVariant(variantRepsones);
+        itemRepsone.setVariants(variantRepsones);
         return itemRepsone;
     }
     //api xóa
