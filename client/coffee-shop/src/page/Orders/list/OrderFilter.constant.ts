@@ -19,9 +19,9 @@ export const getOrdersQuickFilterLabel = (key: string) => {
         case OrdersQuickFilterOptions.CODE:
             return `Mã đơn hàng`;
         case OrdersQuickFilterOptions.NAME:
-            return `Tên khách hàng`;
+            return `Tên KH`;
         case OrdersQuickFilterOptions.PHONE:
-            return `Sđt khách hàng`;
+            return `Sđt KH`;
         case OrdersQuickFilterOptions.DISCOUNT:
             return `Chiết khấu`;
         case OrdersQuickFilterOptions.STATUS:

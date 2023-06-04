@@ -130,10 +130,10 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                             color="primary"
                             startIcon={<AddCircleOutline />}
                             onClick={() => {
-                                history.push("/admin/items/create");
+                                history.push("/admin/orders/create");
                             }}
                         >
-                            {"Thêm mặt hàng khác"}
+                            {"Thêm đơn hàng khác"}
                         </Button>
                     </Box>
                 </Box>
@@ -141,7 +141,7 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                     <Box className={classes.utilities}>
                         <Box className={classes.filterAndSearchBox}>
                             <SearchBox
-                                placeholder={"Tìm kiếm nguyên liệu ..."}
+                                placeholder={"Tìm kiếm mã đơn, tên, số điện thoại khách hàng, tên sản phẩm ..."}
                                 onSubmit={(e, value) => { handleSearch(value) }}
                                 value={null}
                                 onBlur={(value: any) => {
