@@ -5,9 +5,9 @@ import { MenuState } from "store/Menu/types";
 import styles from "./Items.styles";
 
 export interface ItemsProps extends WithStyles<typeof styles> {
-    menuState: MenuState;
-    authState: AuthState;
-    history: any;
+  menuState: MenuState;
+  authState: AuthState;
+  history: any;
 }
 
 export interface ItemFilterRequest extends BaseFilter {
@@ -16,9 +16,8 @@ export interface ItemFilterRequest extends BaseFilter {
 }
 
 export interface IItemQuickFilter extends BaseFilter {
-    status?: string;
-    created_on_predefined?: string;
-    occurAtMax?: string;
-    occurAtMin?: string;
-  }
-  
+  status?: string;
+  created_on_predefined?: string;
+  occurAtMax?: string;
+  occurAtMin?: string;
+}
