@@ -12,6 +12,7 @@ import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
 import com.hust.coffeeshop.services.CustomerService;
 import com.hust.coffeeshop.services.OrderService;
+import com.hust.coffeeshop.services.ProductService;
 import lombok.val;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -33,13 +34,15 @@ public class OrderServiceImpl implements OrderService {
     private final ModelMapper mapper;
     private final OrderItemRepository orderItemRepository;
     private final CustomerService customerService;
+    private final ProductService productService;
 
-    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService) {
+    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService) {
         this.orderRepository = orderRepository;
         this.filterRepository = filterRepository;
         this.mapper = mapper;
         this.orderItemRepository = orderItemRepository;
         this.customerService = customerService;
+        this.productService = productService;
     }
 
     @Override
@@ -154,6 +157,15 @@ public class OrderServiceImpl implements OrderService {
         }
         var orderResponse = mapperOrderResponse(order);
         return orderResponse;
+    }
+
+    //Hàm check có thể bán
+    private void checkAvailable(){
+
+    }
+    //Hàm check trừ kho
+    private void setAvailable(){
+
     }
 }
 
