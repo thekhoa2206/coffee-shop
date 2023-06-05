@@ -20,5 +20,7 @@ public class ComboItem  extends BaseEntity{
     private int variantId;
     @Column(name = "quantity")
     private int quantity;
+    @Column(name = "status")
+    private String status;
 
 }
