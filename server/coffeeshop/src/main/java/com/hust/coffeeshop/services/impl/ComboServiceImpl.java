@@ -85,7 +85,7 @@ public class ComboServiceImpl implements ComboService {
                     comboItem.setItemId(variant.get().getItemId());
                     comboItem.setVariantId(variant.get().getId());
                     comboItem.setCreatedOn(CommonCode.getTimestamp());
-                    comboItem.setQuannity(i.getQuannity());
+                    comboItem.setQuantity(i.getQuannity());
                     comboItem.setModifiedOn(0);
                     //lưu combo_id và item id vào bảng mapping
                     try {
@@ -169,7 +169,7 @@ public class ComboServiceImpl implements ComboService {
                     }
                     if (i.getVariantId() == combos.getVariantId()) {
                         var comboItem = comboItemRepository.findUserByComboIdVAndVariantId(id, i.getVariantId());
-                        comboItem.setQuannity(i.getQuannity());
+                        comboItem.setQuantity(i.getQuannity());
                         try {
                             comboItemRepository.save(comboItem);
                         } catch (Exception e) {
@@ -246,7 +246,7 @@ public class ComboServiceImpl implements ComboService {
                var itemRepsone = getbyItemId(i.getItemId(),i.getVariantId());
                ComboItemResponse comboItemResponse = new ComboItemResponse();
                comboItemResponse.setItem(itemRepsone);
-               comboItemResponse.setQuanntity(i.getQuannity());
+               comboItemResponse.setQuanntity(i.getQuantity());
                itemRepsones.add(comboItemResponse);
             }
             comboRespone.setItems(itemRepsones);

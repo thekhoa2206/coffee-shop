@@ -18,7 +18,7 @@ public class ComboItem  extends BaseEntity{
     private int itemId;
     @Column(name = "variant_id")
     private int variantId;
-    @Column(name = "quannity")
-    private int quannity;
+    @Column(name = "quantity")
+    private int quantity;
 
 }
