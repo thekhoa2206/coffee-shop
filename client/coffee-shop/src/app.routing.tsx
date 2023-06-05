@@ -7,6 +7,7 @@ const CustomerList = React.lazy(() => import("./page/Customer"));
 const IngredientList = React.lazy(() => import("./page/Ingredients"));
 const ItemList = React.lazy(() => import("./page/Items"));
 const CreateItem = React.lazy(() => import("./page/Items/create"));
+const ComboList = React.lazy(() => import("./page/Combos"));
 
 export const LAYOUT_ROUTES: Route[] = [
   {
@@ -92,6 +93,18 @@ let MAIN_ROUTES = (): Route[] => [
     header: {
       title: "Tạo mặt hàng",
       linkTo: "/admin/items/create",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/combos",
+    component: ComboList,
+    extract: true,
+    header: {
+      title: "Combo",
+      linkTo: "/admin/combos",
       showNoti: false,
       withSubtitle: false,
     },
