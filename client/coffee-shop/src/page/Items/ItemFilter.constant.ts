@@ -14,6 +14,7 @@ export const ItemsQuickFilterOptions = {
 };
 
 export const getItemsQuickFilterLabel = (key: string) => {
+<<<<<<< .mine
   switch (key) {
     case ItemsQuickFilterOptions.CODE:
       return `Mã nguyên liệu`;
@@ -36,4 +37,28 @@ export const getItemsQuickFilterLabel = (key: string) => {
     default:
       return "";
   }
+=======
+    switch (key) {
+        case ItemsQuickFilterOptions.CODE:
+            return `Mã mặt hàng`;
+        case ItemsQuickFilterOptions.NAME:
+            return `Tên mặt hàng`;
+        case ItemsQuickFilterOptions.DISCOUNT:
+            return `Chiết khấu`;
+        case ItemsQuickFilterOptions.STATUS:
+            return `Trạng thái`;
+        case ItemsQuickFilterOptions.DESCRIPTION:
+            return `Mô tả`;
+        case ItemsQuickFilterOptions.UNIT:
+            return `Đơn vị`;
+        case ItemsQuickFilterOptions.CREATED_ON:
+            return `Ngày tạo`;
+        case ItemsQuickFilterOptions.MODIFIED_ON:
+            return `Ngày sửa`;
+        case ItemsQuickFilterOptions.IMAGE_URL:
+            return `Ảnh mặt hàng`;
+        default:
+            return "";
+    }
+>>>>>>> .theirs
 };

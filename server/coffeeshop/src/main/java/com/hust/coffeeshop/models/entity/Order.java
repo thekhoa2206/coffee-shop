@@ -4,12 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 
 @Getter
 @Setter
-@Table(name = "order")
+@Table(name = "orders")
+@Entity
 public class Order extends BaseEntity{
     @Column(name = "customer_id")
     private int customerId;
@@ -28,4 +30,10 @@ public class Order extends BaseEntity{
 
     @Column(name = "note")
     private String note;
+
+    @Column(name = "code")
+    private String code;
+
+    @Column(name = "payment_status")
+    private int paymentStatus ;
 }

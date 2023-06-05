@@ -7,7 +7,18 @@ const CustomerList = React.lazy(() => import("./page/Customer"));
 const IngredientList = React.lazy(() => import("./page/Ingredients"));
 const ItemList = React.lazy(() => import("./page/Items"));
 const CreateItem = React.lazy(() => import("./page/Items/create"));
+<<<<<<< .mine
 const ComboList = React.lazy(() => import("./page/Combos"));
+
+
+
+=======
+const DetailItem = React.lazy(() => import("./page/Items/detail"));
+const EditItem = React.lazy(() => import("./page/Items/update"));
+const Orders = React.lazy(() => import("./page/Orders/list"));
+const CreateOrder = React.lazy(() => import("./page/Orders/create"));
+>>>>>>> .theirs
+
 
 export const LAYOUT_ROUTES: Route[] = [
   {
@@ -92,12 +103,13 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: "Tạo mặt hàng",
-      linkTo: "/admin/items/create",
+      linkTo: "/admin/items",
       showNoti: false,
       withSubtitle: false,
     },
     authorities: [AccountRole.ADMIN],
   },
+<<<<<<< .mine
   {
     path: "/combos",
     component: ComboList,
@@ -110,5 +122,91 @@ let MAIN_ROUTES = (): Route[] => [
     },
     authorities: [AccountRole.ADMIN],
   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=======
+  {
+    path: "/items/:id",
+    component: DetailItem,
+    extract: true,
+    header: {
+      title: "Chi tiết mặt hàng",
+      linkTo: "/admin/items",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/items/:id/edit",
+    component: EditItem,
+    extract: true,
+    header: {
+      title: "Sửa mặt hàng",
+      linkTo: "/admin/items",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/orders",
+    component: Orders,
+    extract: true,
+    header: {
+      title: "Đơn hàng",
+      linkTo: "/admin/orders",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/orders/create",
+    component: CreateOrder,
+    extract: true,
+    header: {
+      title: "Tạo đơn hàng",
+      linkTo: "/admin/orders",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+>>>>>>> .theirs
 ];
 export default MAIN_ROUTES;

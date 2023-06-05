@@ -18,4 +18,11 @@ public class ItemIngredient extends BaseEntity{
     private int ingredientId;
     @Column(name = "amount_consume")
     private int amountConsume;
+    @Column(name = "variant_id")
+    private int variantId;
+    @Column(name = "stock_unit_id")
+    private int stockUnitId;
+
+    @Column(name = "status")
+    private int status;
 }

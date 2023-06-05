@@ -3,7 +3,7 @@ import { getAxiosConfig } from "../config";
 import { CustomerFilterRequest, CustomerRequest, CustomerResponse, ListCustomerResponse } from "./types";
 
 class CustomerService {
-    static async filter(filter: CustomerFilterRequest): Promise<AxiosResponse<ListCustomerResponse>> {
+    static async filter(filter?: CustomerFilterRequest): Promise<AxiosResponse<ListCustomerResponse>> {
         return axios.get(`/customers`, { ...getAxiosConfig(), params: filter});
     }
     static async create(request: CustomerRequest): Promise<AxiosResponse<CustomerResponse>> {

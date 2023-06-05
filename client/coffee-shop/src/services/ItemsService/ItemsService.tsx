@@ -5,7 +5,7 @@ class ItemsService {
     static async filter(filter?: ItemFilterRequest): Promise<AxiosResponse<ListItemResponse>> {
         return axios.get(`/item`, { ...getAxiosConfig(), params: filter});
     }
-    static async getById(id: string): Promise<AxiosResponse<ItemResponse>> {
+    static async getById(id?: string): Promise<AxiosResponse<ItemResponse>> {
         return axios.get(`/item/${id}`, { ...getAxiosConfig()});
     }
     static async delete(id: string): Promise<AxiosResponse<ItemResponse>> {
@@ -13,6 +13,9 @@ class ItemsService {
     }
     static async create(request: ItemRequest): Promise<AxiosResponse<ItemResponse>> {
         return axios.post(`/item`,request, { ...getAxiosConfig()});
+    }
+    static async update(request: ItemRequest, id: string): Promise<AxiosResponse<ItemResponse>> {
+        return axios.put(`/item/${id}`,request, { ...getAxiosConfig()});
     }
 }
 export default ItemsService;

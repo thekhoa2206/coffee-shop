@@ -49,5 +49,12 @@ export type Metadata = {
     variant_id?: number;
   }
   
+export interface BaseResponse {
+  id: number;
+  createdOn?: Date;
+  createdBy?: number;
+  modifiedOn?: Date;
+  modifiedBy?: number;
+}
 export * from "./AccountService/types";
   

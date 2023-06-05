@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 public class CategoryResponse extends BaseResponse {
     private String name;
-    private String status;
+    private int status;
 }
