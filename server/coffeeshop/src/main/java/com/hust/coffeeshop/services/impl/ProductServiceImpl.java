@@ -47,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
         this.itemIngredientRepository = itemIngredientRepository;
     }
 
-    //hàm filter danh sách sản phẩm (combo, mặt hàng) ở trạng thái active có thể bán
+    //hàm filter danh sách sản phẩm (combo, mặt hàng)
     @Override
     public PagingListResponse<ProductResponse> filter(ProductFilterRequest filter) {
         List<ProductResponse> productResponses = new ArrayList<>();
@@ -63,12 +63,16 @@ public class ProductServiceImpl implements ProductService {
                     if (status.equals("2"))
                         statuses.add(2);
                 }
+            }else{
+                statuses.add(1);
             }
-            var combos = comboRepository.findComboByQuery(query, statuses);
-            if (combos != null && combos.size() > 0) {
-                for (var combo : combos) {
-                    ProductResponse productResponse = mapperProductByCombo(combo);
-                    productResponses.add(productResponse);
+            if(filter.isCombo()){
+                var combos = comboRepository.findComboByQuery(query, statuses);
+                if (combos != null && combos.size() > 0) {
+                    for (var combo : combos) {
+                        ProductResponse productResponse = mapperProductByCombo(combo);
+                        productResponses.add(productResponse);
+                    }
                 }
             }
             var items = itemRepository.findItemByQuery(query, statuses);
@@ -96,7 +100,7 @@ public class ProductServiceImpl implements ProductService {
                 products,
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), productResponses != null ? productResponses.size() : 0));
     }
-
+    //Hàm map sản phẩm là combo
     private ProductResponse mapperProductByCombo(Combo combo) {
         var variantResponse = mapperProductVariants(combo.getId(), true);
         var category = categoryService.getById(combo.getCategoryId());
@@ -139,7 +143,37 @@ public class ProductServiceImpl implements ProductService {
                     productVariant.setModifiedOn(variant.getModifiedOn());
                     productVariant.setModifiedBy(variant.getModifiedBy());
                     productVariant.setCreatedBy(variant.getCreatedBy());
-                    var productIngredients = mapperProductIngredients(variantIds);
+                    List<Integer> ids = new ArrayList<>();
+                    ids.add(variant.getId());
+                    var productIngredients = mapperProductIngredients(ids);
+
+                    //Số lượng có thể bán của variant
+                    var variantAvailable = variantAvailables.stream().filter(v -> v.getVariantId() == variant.getId()).collect(Collectors.toList()).stream().findFirst().orElse(null);
+                    productVariant.setAvailable(variantAvailable.getAvailable());
+                    productVariant.setIngredients(productIngredients);
+                    productVariants.add(productVariant);
+                }
+            }
+        }else {
+            //với mặt hàng
+            var variants = variantRepository.findVariantByItemId(productId);
+            if(variants != null && variants.size() > 0) {
+                var variantIds = variants.stream().map(Variant::getId).collect(Collectors.toList());
+                var variantAvailables = getQuantityAvailableVariant(variantIds);
+                for (var variant : variants) {
+                    ProductResponse.ProductVariantResponse productVariant = new ProductResponse.ProductVariantResponse();
+                    productVariant.setName(variant.getName());
+                    productVariant.setPrice(variant.getPrice());
+                    productVariant.setStatus(variant.getStatus());
+                    productVariant.setProductItemId(productId);
+                    productVariant.setCreatedOn(variant.getCreatedOn());
+                    productVariant.setModifiedOn(variant.getModifiedOn());
+                    productVariant.setModifiedBy(variant.getModifiedBy());
+                    productVariant.setCreatedBy(variant.getCreatedBy());
+                    productVariant.setId(variant.getId());
+                    List<Integer> ids = new ArrayList<>();
+                    ids.add(variant.getId());
+                    var productIngredients = mapperProductIngredients(ids);
 
                     //Số lượng có thể bán của variant
                     var variantAvailable = variantAvailables.stream().filter(v -> v.getVariantId() == variant.getId()).collect(Collectors.toList()).stream().findFirst().orElse(null);
