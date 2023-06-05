@@ -22,7 +22,7 @@ import { AppState } from "store/store";
 import styles from "./CreateOrder.styles";
 import ItemsService from "services/ItemsService/ItemsService";
 import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
-import { getMessageError } from "utilities";
+import { formatMoney, getMessageError } from "utilities";
 import { useHistory } from "react-router-dom";
 import Select from "components/Select/Index";
 import StockUnitService from "services/StockUnitService/StockUnitService";
@@ -31,6 +31,9 @@ import { CustomerResponse } from "services/CustomerService";
 import CustomerService from "services/CustomerService/CustomerService";
 import { AccountCircleRounded } from "@material-ui/icons";
 import Link from "components/Link";
+import { ProductFilterRequest, ProductResponse } from "services/ProductService";
+import ProductService from "services/ProductService/ProductService";
+import Image from "components/Image";
 export interface CreateOrderProps extends WithStyles<typeof styles> {
 
 }
@@ -64,8 +67,8 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                             <Box className={classes.boxContentPaper}>
                                 <SelectInfinite
                                     getOptionLabel={(item) => item?.name || ""}
-                                    fetchDataSource={async (filter: ItemFilterRequest) => {
-                                        let res = await ItemsService.filter(filter);
+                                    fetchDataSource={async (filter: ProductFilterRequest) => {
+                                        let res = await ProductService.filter(filter);
                                         const dataSource = {} as DataSource;
                                         if (res.data.data) {
                                             dataSource.data = res.data.data;
@@ -77,21 +80,53 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                                         return Promise.resolve(dataSource);
                                     }}
                                     onQueryChange={(filter: any) => {
-                                        let dataSourceFilter: ItemFilterRequest = {
+                                        let dataSourceFilter: ProductFilterRequest = {
                                             limit: 10,
                                             query: filter.query,
                                             page: filter.page || 1,
+                                            combo: true,
                                         };
                                         return dataSourceFilter;
                                     }}
-                                    renderOption={(option: ItemResponse) => (
-                                        <Box style={{ width: "100%", lineHeight: "40px", padding: "16px 0px", cursor: "pointer" }}>
-                                            <Typography style={{ marginLeft: "16px" }}>{option.name} - Tồn kho: {0}</Typography>
+                                    renderOption={(option: ProductResponse) => (
+                                        <Box>
+                                            <Box style={{ width: "100%", lineHeight: "40px", padding: "16px 0px", cursor: "pointer", borderBottom: "1px solid #E8EAEB", display: "flex" }}>
+                                                <Box style={{ width: "10%" }}>
+                                                    <Box style={{ marginLeft: 10 }}>
+                                                        {option.imageUrl ?
+                                                            <Image src={option.imageUrl} /> :
+                                                            <Box style={{ width: "40px", height: "40px", background: "#E8EAEB", borderRadius: "6px" }}>
+                                                            </Box>
+                                                        }
+                                                    </Box>
+                                                </Box>
+                                                <Box style={{ width: "55%" }}>
+                                                    <Typography>{option.name} - {formatMoney(option.price || 0) + "đ"}</Typography>
+                                                </Box>
+                                                <Box style={{ width: "30%" }}></Box>
+                                            </Box>
+                                            {option.variants && option.variants.length > 0 && option.variants.map((variant, index) => (
+                                                <Box style={{ width: "100%", lineHeight: "40px", padding: "16px 0px", cursor: "pointer", borderBottom: "1px solid #E8EAEB", display: "flex" }}>
+                                                    <Box style={{ width: "10%" }}>
+                                                        <Box style={{ marginLeft: 10 }}>
+                                                            {option.imageUrl ?
+                                                                <Image src={option.imageUrl} /> :
+                                                                <Box style={{ width: "40px", height: "40px", background: "#E8EAEB", borderRadius: "6px" }}>
+                                                                </Box>
+                                                            }
+                                                        </Box>
+                                                    </Box>
+                                                    <Box style={{ width: "55%" }}>
+                                                        <Typography>{variant.name} - {formatMoney(variant.price || 0) + "đ"}</Typography>
+                                                    </Box>
+                                                    <Box style={{ width: "30%" }}></Box>
+                                                </Box>
+                                            ))}
                                         </Box>
                                     )}
                                     placeholder="Tìm kiếm nguyên liệu"
                                     onChange={(ingredient: ItemResponse) => {
-                                        
+
                                     }}
                                     value={null}
                                     className={classes.infiniteList}
@@ -121,17 +156,17 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                             <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                                 Thông tin khách hàng
                             </Typography>
-                            <Box className={classes.boxContentPaper} style={{padding: "8px 16px"}}>
+                            <Box className={classes.boxContentPaper} style={{ padding: "8px 16px" }}>
                                 <Grid xs={12} style={{ padding: 0 }}>
                                     {customer ? (
-                                        <Box style={{width: 330}}>
+                                        <Box style={{ width: 330 }}>
                                             <Grid xs={12} container>
                                                 <Grid xs={5} item>Tên khách hàng</Grid>
                                                 <Grid xs={1} item>:</Grid>
                                                 <Grid xs={6} item>
-                                                    <Link to={`/admin/customers`} target="_blank" style={{fontWeight: 500}}>
-                                                    {customer.name}
-                                                </Link>
+                                                    <Link to={`/admin/customers`} target="_blank" style={{ fontWeight: 500 }}>
+                                                        {customer.name}
+                                                    </Link>
                                                 </Grid>
                                             </Grid>
                                             <Grid xs={12} container>

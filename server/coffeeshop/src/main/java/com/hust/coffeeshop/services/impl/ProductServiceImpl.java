@@ -127,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductResponse.ProductVariantResponse> productVariants = new ArrayList<>();
         //với sp combo
         if (isCombo) {
-            var comboItems = comboItemRepository.findUserByComboId(productId);
+            var comboItems = comboItemRepository.findComboItemByComboId(productId);
             if (comboItems != null && comboItems.size() > 0) {
                 List<Integer> variantIds = comboItems.stream().map(ComboItem::getVariantId).collect(Collectors.toList());
                 var variants = variantRepository.findVariantByIds(variantIds);

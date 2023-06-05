@@ -88,6 +88,7 @@ public class ItemServiceImpl implements ItemService {
                     variant.setModifiedOn();
                     variant.setPrice(i.getPrice());
                     variant.setName(i.getName());
+                    variant.setDefault(i.isDefault());
                     variant.setItemId(ItemNew.getId());
                     VariantRepsone variantRepsone = mapper.map(request.getVariantRequest(), VariantRepsone.class);
 
@@ -293,6 +294,7 @@ public class ItemServiceImpl implements ItemService {
                         variant.setModifiedOn();
                         variant.setItemId(itemId);
                         variant.setStatus(CommonStatus.VariantStatus.ACTIVE);
+                        variant.setDefault(variantRq.isDefault());
                         var variantAdd = variantRepository.save(variant);
                         updateIngredients(variantRq.getIngredients(), null, itemId, variantAdd.getId());
                     } else {
@@ -302,6 +304,7 @@ public class ItemServiceImpl implements ItemService {
                             variantOld.setModifiedOn();
                             variantOld.setName(variant.getName());
                             variantOld.setPrice(variant.getPrice());
+                            variantOld.setDefault(variantRq.isDefault());
                             variantNews.add(variantOld);
                             var itemIngredients = itemIngredientRepository.findItemIngredientByVariantIdAndItemId(variantOld.getId(), itemId);
                             updateIngredients(variantRq.getIngredients(), itemIngredients, itemId, variantOld.getId());

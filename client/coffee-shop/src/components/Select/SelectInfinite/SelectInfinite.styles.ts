@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     "& .InfiniteScroll-ListItem": {
       "&>.InfiniteScroll-MenuItem": {
         borderRadius: 0,
-        "&.focus-key-event": {
+        "&:hover": {
           backgroundColor: "#F2F9FF",
         },
         "&.MuiMenuItem-root": {
