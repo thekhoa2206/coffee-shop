@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Setter
@@ -14,7 +15,7 @@ public class CreateItemRequest {
     private String name;
     private String imageUrl;
     private String description;
-    private String discountPercentage;
+    private BigDecimal discountPercentage;
     private int stockUnitId;
     private int categoryId;
     private List<CreateVariantRequest> variantRequest;

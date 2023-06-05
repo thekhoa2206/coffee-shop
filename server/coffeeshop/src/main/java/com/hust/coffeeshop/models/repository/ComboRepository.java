@@ -7,20 +7,27 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ComboRepository  extends JpaRepository<Combo, Integer>, JpaSpecificationExecutor<Combo> {
+    //filter combo theo query(tên variant, tên sản phẩm, tên combo)
     @Query(value = "Select * from combo as o " +
-            "where o.status = 1 and (concat(o.name, '', o.description) like ?1 " +
-            "or EXISTS ( " +
-            "Select * from combo_item as ci " +
-            "where " +
+            "where o.status in (?2) and (concat(o.name, '', o.description) like ?1 " +
+            "or EXISTS ( Select * from combo_item as ci where " +
             "ci.combo_id = o.id " +
-            "and ci.status = 1 and " +
-            "EXISTS(" +
+            "and ci.status in (?2) and " +
+            "(EXISTS(" +
             "Select * FROM variant as v " +
             "where " +
-            "v.id = ci.variant_id and v.status = 1 and " +
-            "and v.status = 1 and " +
-            "concat(v.name, '') like ?1 )));", nativeQuery = true)
-    ComboItem findComboByQuery(int comboId, int status);
+            "v.id = ci.variant_id " +
+            "and v.status in (?2) and " +
+            "concat(v.name, '') like ?1 )) " +
+            "or EXISTS( " +
+            "Select * FROM item as i " +
+            "where " +
+            "i.id = ci.item_id " +
+            "and i.status in (?2)  and " +
+            "concat(i.name, '', i.description) like ?1))); ", nativeQuery = true)
+    List<Combo> findComboByQuery(String query, List<Integer> statuses);
 }

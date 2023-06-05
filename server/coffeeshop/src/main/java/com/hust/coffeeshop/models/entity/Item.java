@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -18,7 +19,7 @@ public class Item  extends BaseEntity{
     @Column(name = "description")
     private String description;
     @Column(name = "discount_percentage")
-    private String discountPercentage;
+    private BigDecimal discountPercentage;
     @Column(name = "stock_unit_id")
     private int stockUnitId;
     @Column(name = "status")

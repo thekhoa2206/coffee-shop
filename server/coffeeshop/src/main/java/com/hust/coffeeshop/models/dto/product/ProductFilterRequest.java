@@ -11,4 +11,5 @@ public class ProductFilterRequest extends PagingFilterRequest {
     private List<Integer> ids;
     private String query;
     private String statuses;
+    private boolean combo;
 }
