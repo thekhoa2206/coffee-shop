@@ -131,7 +131,7 @@ public class ComboServiceImpl implements ComboService {
         List<ItemRepsone> itemRepsones = new ArrayList<>();
         var categoryResponse = mapper.map(category, CategoryResponse.class);
         List<ComboItem> comboItems = comboItemRepository.findUserByComboId(id);
-        updateVariant(request.getVarianIds(),comboItems);
+//        updateVariant(request.getVarianIds(),comboItems);
 
 //        if (request.getVarianIds().size() > 0) {
 //            List<ComboItem> comboItems = comboItemRepository.findUserByComboId(id);
@@ -339,50 +339,50 @@ public class ComboServiceImpl implements ComboService {
                 comboRespones,
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results.getTotalElements()));
     }
-    @Transactional(rollbackOn = Exception.class)
-    void updateVariant(List<VariantComboRequest> variantRequests, List<ComboItem> comboItems) {
-        List<Variant> variantNews = new ArrayList<>();
-
-        if (comboItems != null) {
-            if (variantRequests != null) {
-                for (val variantRq : variantRequests) {
-                    var variant = mapper.map(variantRq, Variant.class);
-                    //variant add
-                    if (variantRq.getVariantId() == 0) {
-                        variant.setCreatedOn(CommonCode.getTimestamp());
-                        variant.setModifiedOn(0);
-                        variant.setItemId(itemId);
-                        variant.setStatus(CommonStatus.VariantStatus.ACTIVE);
-                        var variantAdd = variantRepository.save(variant);
-                        updateIngredients(variantRq.getIngredients(), null, itemId, variantAdd.getId());
-                    } else {
-                        //variant update
-                        var variantOld = variants.stream().filter(v -> v.getId().equals(variant.getId())).collect(Collectors.toList()).stream().findFirst().orElse(null);
-                        if (variantOld != null) {
-                            variantOld.setModifiedOn();
-                            variantOld.setName(variant.getName());
-                            variantOld.setPrice(variant.getPrice());
-                            variantNews.add(variantOld);
-                            var itemIngredients = itemIngredientRepository.findItemIngredientByVariantIdAndItemId(variantOld.getId(), itemId);
-                            updateIngredients(variantRq.getIngredients(), itemIngredients, itemId, variantOld.getId());
-                        }
-                    }
-                }
-                //Variant deleted
-                for (var variant : variants) {
-                    var variantDeleted = variantRequests.stream().filter(vq -> vq.getId() == variant.getId()).collect(Collectors.toList()).stream().findFirst();
-                    if (!variantDeleted.isPresent() || variantDeleted.get() == null) {
-                        var itemIngredients = itemIngredientRepository.findItemIngredientByVariantIdAndItemId(variant.getId(), itemId);
-                        updateIngredients(null, itemIngredients, itemId, variant.getId());
-                        variant.setModifiedOn();
-                        variant.setStatus(CommonStatus.VariantStatus.DELETED);
-                        variantNews.add(variant);
-                    }
-                }
-            }
-            if(variantNews != null && variantNews.size() != 0){
-                variantRepository.saveAll(variantNews);
-            }
-        }
-    }
+//    @Transactional(rollbackOn = Exception.class)
+//    void updateVariant(List<VariantComboRequest> variantRequests, List<ComboItem> comboItems) {
+//        List<Variant> variantNews = new ArrayList<>();
+//
+//        if (comboItems != null) {
+//            if (variantRequests != null) {
+//                for (val variantRq : variantRequests) {
+//                    var variant = mapper.map(variantRq, Variant.class);
+//                    //variant add
+//                    if (variantRq.getVariantId() == 0) {
+//                        variant.setCreatedOn(CommonCode.getTimestamp());
+//                        variant.setModifiedOn(0);
+//                        variant.setItemId(itemId);
+//                        variant.setStatus(CommonStatus.VariantStatus.ACTIVE);
+//                        var variantAdd = variantRepository.save(variant);
+//                        updateIngredients(variantRq.getIngredients(), null, itemId, variantAdd.getId());
+//                    } else {
+//                        //variant update
+//                        var variantOld = variants.stream().filter(v -> v.getId().equals(variant.getId())).collect(Collectors.toList()).stream().findFirst().orElse(null);
+//                        if (variantOld != null) {
+//                            variantOld.setModifiedOn();
+//                            variantOld.setName(variant.getName());
+//                            variantOld.setPrice(variant.getPrice());
+//                            variantNews.add(variantOld);
+//                            var itemIngredients = itemIngredientRepository.findItemIngredientByVariantIdAndItemId(variantOld.getId(), itemId);
+//                            updateIngredients(variantRq.getIngredients(), itemIngredients, itemId, variantOld.getId());
+//                        }
+//                    }
+//                }
+//                //Variant deleted
+//                for (var variant : variants) {
+//                    var variantDeleted = variantRequests.stream().filter(vq -> vq.getId() == variant.getId()).collect(Collectors.toList()).stream().findFirst();
+//                    if (!variantDeleted.isPresent() || variantDeleted.get() == null) {
+//                        var itemIngredients = itemIngredientRepository.findItemIngredientByVariantIdAndItemId(variant.getId(), itemId);
+//                        updateIngredients(null, itemIngredients, itemId, variant.getId());
+//                        variant.setModifiedOn();
+//                        variant.setStatus(CommonStatus.VariantStatus.DELETED);
+//                        variantNews.add(variant);
+//                    }
+//                }
+//            }
+//            if(variantNews != null && variantNews.size() != 0){
+//                variantRepository.saveAll(variantNews);
+//            }
+//        }
+//    }
 }

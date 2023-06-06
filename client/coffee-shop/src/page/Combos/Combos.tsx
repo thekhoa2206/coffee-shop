@@ -133,10 +133,10 @@ const Combos = (props: CombosProps & PropsFromRedux) => {
             color="primary"
             startIcon={<AddCircleOutline />}
             onClick={() => {
-              history.push("/admin/items/create");
+              history.push("/admin/combos/create");
             }}
           >
-            {"Thêm mặt hàng khác"}
+            {"Thêm combo khác"}
           </Button>
         </Box>
       </Box>
