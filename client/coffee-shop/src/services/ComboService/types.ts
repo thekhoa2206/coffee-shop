@@ -21,7 +21,9 @@ export type CreateComboRequest = {
 };
 export type VariantComboRequest = {
   variantId?: number;
-  quannity?: number;
+  quantity: number;
+  price: number;
+  name?: string;
 };
 export type ComboRespone = {
   name?: string;

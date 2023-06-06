@@ -5,7 +5,7 @@ export const CombosQuickFilterOptions = {
   CODE: "code",
   NAME: "name",
   STATUS: "status",
-  UNIT: "unit",
+  PRICE: "price",
   DISCOUNT: "discount",
   DESCRIPTION: "description",
   IMAGE_URL: "image_url",
@@ -18,11 +18,13 @@ export const getCombosQuickFilterLabel = (key: string) => {
     case CombosQuickFilterOptions.CODE:
       return `Mã nguyên liệu`;
     case CombosQuickFilterOptions.NAME:
-      return `Tên nguyên liệu`;
+      return `Tên combo`;
     case CombosQuickFilterOptions.DISCOUNT:
       return `Chiết khấu`;
     case CombosQuickFilterOptions.STATUS:
       return `Trạng thái`;
+      case CombosQuickFilterOptions.PRICE:
+        return `Giá bán`;
     case CombosQuickFilterOptions.DESCRIPTION:
       return `Mô tả`;
     case CombosQuickFilterOptions.CREATED_ON:

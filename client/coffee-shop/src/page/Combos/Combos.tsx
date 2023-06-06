@@ -91,6 +91,7 @@ const Combos = (props: CombosProps & PropsFromRedux) => {
               discount: combo.discountPercentage,
               imageUrl: combo.imageUrl,
               description: combo.description,
+              price:combo.price,
             };
           }) || [],
         total: res.data.metadata?.total || 0,
@@ -205,7 +206,7 @@ const Combos = (props: CombosProps & PropsFromRedux) => {
                     );
                   }}
                 </GridColumn>
-                <GridColumn
+                {/* <GridColumn
                   field="code"
                   title={getCombosQuickFilterLabel(
                     CombosQuickFilterOptions.CODE
@@ -220,7 +221,7 @@ const Combos = (props: CombosProps & PropsFromRedux) => {
                       </>
                     );
                   }}
-                </GridColumn>
+                </GridColumn> */}
                 <GridColumn
                   field="name"
                   title={getCombosQuickFilterLabel(
@@ -229,24 +230,14 @@ const Combos = (props: CombosProps & PropsFromRedux) => {
                   width={150}
                   align="left"
                 />
-                {/* <GridColumn
-                                        field="unit"
-                                        title={getItemsQuickFilterLabel(
-                                            ItemsQuickFilterOptions.UNIT
-                                        )}
-                                        width={150}
-                                        align="left"
-                                    >
-                                        {({ dataItem }: CellTemplateProps) => {
-                                            return (
-                                                <>
-                                                    <Typography>
-                                                        {dataItem.stockUnitResponse?.name}
-                                                    </Typography>
-                                                </>
-                                            );
-                                        }}
-                                    </GridColumn> */}
+                <GridColumn
+                  field="price"
+                  title={getCombosQuickFilterLabel(
+                    CombosQuickFilterOptions.PRICE
+                  )}
+                  width={100}
+                  align="left"
+                />
                 <GridColumn
                   field="description"
                   title={getCombosQuickFilterLabel(
