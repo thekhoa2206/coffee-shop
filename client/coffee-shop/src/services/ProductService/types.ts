@@ -11,7 +11,7 @@ export interface ProductResponse extends BaseResponse {
     imageUrl?: string;
     combo?: boolean;
     categoryResponse?: CategoryResponse;
-    variants?: ProductVariantResponse[];
+    variants: ProductVariantResponse[];
 }
 
 export interface ProductVariantResponse extends BaseResponse {

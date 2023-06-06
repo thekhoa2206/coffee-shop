@@ -13,6 +13,5 @@ public class CreateVariantRequest {
     private int id;
     private String name;
     private BigDecimal price;
-    private boolean isDefault;
     private List<IngredientCreateItemRequest> ingredients;
 }

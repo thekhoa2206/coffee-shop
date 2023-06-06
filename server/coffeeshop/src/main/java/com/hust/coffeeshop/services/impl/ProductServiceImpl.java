@@ -79,7 +79,10 @@ public class ProductServiceImpl implements ProductService {
             if(items != null && items.size() > 0){
                 for (var item: items) {
                     ProductResponse productResponse = mapperProductByItem(item);
-                    productResponses.add(productResponse);
+                    productResponse.setCombo(false);
+                   if(productResponse.getVariants() != null && productResponse.getVariants().size() > 0){
+                       productResponses.add(productResponse);
+                   }
                 }
             }
         }

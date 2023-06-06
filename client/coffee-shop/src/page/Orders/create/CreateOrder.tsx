@@ -34,12 +34,14 @@ import Link from "components/Link";
 import { ProductFilterRequest, ProductResponse } from "services/ProductService";
 import ProductService from "services/ProductService/ProductService";
 import Image from "components/Image";
+import { useOrderStore } from "../store/store";
+import { TableLineItem } from "./components/TableLineItem";
 export interface CreateOrderProps extends WithStyles<typeof styles> {
 
 }
 const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
     const { classes, authState } = props;
-    const [customer, setCustomer] = useState<CustomerResponse | null>();
+    const {addLineItem, updateLineItem, deleteLineItem, lineItems, set, customer} = useOrderStore();
     const [itemRequest, setItemRequest] = useState<ItemRequest>();
     const history = useHistory();
     const [querySearchCustomer, setQuerySearchCustomer] = useState("");
@@ -49,12 +51,13 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
     }
 
     const handleChangeCustomer = useCallback((customer: CustomerResponse | null) => {
-        setCustomer(customer);
+        set((prev) => ({...prev, customer: customer}));
     }, [])
 
     const handleOpenDialogCustomer = useCallback(() => {
-
+            
     }, [])
+    
     return (
         <>
             <Box className={classes.container}>
@@ -71,7 +74,26 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                                         let res = await ProductService.filter(filter);
                                         const dataSource = {} as DataSource;
                                         if (res.data.data) {
-                                            dataSource.data = res.data.data;
+                                            let products: ProductResponse[] = [];
+                                            res.data.data.map((item) => {
+                                                if (!item.combo) {
+                                                    if (item.variants != null && item.variants.length > 0) {
+                                                        item.variants?.map((v) => {
+                                                            let product: ProductResponse = {
+                                                                ...item,
+                                                                variants: [v],
+                                                                name: `${item.name} - ${v.name}`
+                                                            }
+                                                            products.push(product);
+                                                        })
+                                                    }
+                                                } else {
+                                                    products.push({
+                                                        ...item,
+                                                    })
+                                                }
+                                            });
+                                            dataSource.data = products;
                                             dataSource.metaData = {
                                                 totalPage: Math.ceil((res.data.metadata?.total || 0) / (filter.limit || 10)),
                                                 totalItems: (res.data.metadata?.total || 0),
@@ -89,57 +111,39 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                                         return dataSourceFilter;
                                     }}
                                     renderOption={(option: ProductResponse) => (
-                                        <Box>
-                                            <Box style={{ width: "100%", lineHeight: "40px", padding: "16px 0px", cursor: "pointer", borderBottom: "1px solid #E8EAEB", display: "flex" }}>
-                                                <Box style={{ width: "10%" }}>
-                                                    <Box style={{ marginLeft: 10 }}>
-                                                        {option.imageUrl ?
-                                                            <Image src={option.imageUrl} /> :
-                                                            <Box style={{ width: "40px", height: "40px", background: "#E8EAEB", borderRadius: "6px" }}>
-                                                            </Box>
-                                                        }
-                                                    </Box>
-                                                </Box>
-                                                <Box style={{ width: "55%" }}>
-                                                    <Typography>{option.name} - {formatMoney(option.price || 0) + "đ"}</Typography>
-                                                </Box>
-                                                <Box style={{ width: "30%" }}></Box>
-                                            </Box>
-                                            {option.variants && option.variants.length > 0 && option.variants.map((variant, index) => (
-                                                <Box style={{ width: "100%", lineHeight: "40px", padding: "16px 0px", cursor: "pointer", borderBottom: "1px solid #E8EAEB", display: "flex" }}>
-                                                    <Box style={{ width: "10%" }}>
-                                                        <Box style={{ marginLeft: 10 }}>
-                                                            {option.imageUrl ?
-                                                                <Image src={option.imageUrl} /> :
-                                                                <Box style={{ width: "40px", height: "40px", background: "#E8EAEB", borderRadius: "6px" }}>
-                                                                </Box>
-                                                            }
+                                        <Box style={{ width: "100%", lineHeight: "40px", padding: "16px 0px", cursor: "pointer", borderBottom: "1px solid #E8EAEB", display: "flex" }}>
+                                            <Box style={{ width: "10%" }}>
+                                                <Box style={{ marginLeft: 10 }}>
+                                                    {option.imageUrl ?
+                                                        <Image src={option.imageUrl} /> :
+                                                        <Box style={{ width: "40px", height: "40px", background: "#E8EAEB", borderRadius: "6px" }}>
                                                         </Box>
-                                                    </Box>
-                                                    <Box style={{ width: "55%" }}>
-                                                        <Typography>{variant.name} - {formatMoney(variant.price || 0) + "đ"}</Typography>
-                                                    </Box>
-                                                    <Box style={{ width: "30%" }}></Box>
+                                                    }
                                                 </Box>
-                                            ))}
+                                            </Box>
+                                            <Box style={{ width: "55%" }}>
+                                                <Typography>{option.name} - {formatMoney(option.price || 0) + "đ"}</Typography>
+                                                {!option.combo && <Typography>Tồn kho: {option.variants ? option.variants[0]?.available : 0}</Typography>}
+                                            </Box>
+                                            <Box style={{ width: "30%" }}></Box>
                                         </Box>
                                     )}
-                                    placeholder="Tìm kiếm nguyên liệu"
-                                    onChange={(ingredient: ItemResponse) => {
-
+                                    placeholder="Tìm kiếm mặt hàng"
+                                    onChange={(product: ProductResponse) => {
+                                        addLineItem(product);
                                     }}
                                     value={null}
                                     className={classes.infiniteList}
                                     NoResultsComponent={() => (
                                         <NoResultsComponent
-                                            nameObject="nguyên liệu"
+                                            nameObject="mặt hàng"
                                             helpText={"Thử thay đổi từ khóa tìm kiếm hoặc thêm mới"}
                                             style={{ padding: "48px 0 84px" }}
                                         />
                                     )}
                                 />
                             </Box>
-
+                        <TableLineItem/>                  
                         </Paper>
                         <Paper className={classes.wrapperBoxInfo}>
                             <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>

@@ -21,6 +21,4 @@ public class Variant extends BaseEntity {
     private BigDecimal price;
     @Column(name= "item_id")
     private int itemId;
-    @Column(name= "is_default")
-    private boolean isDefault;
 }
