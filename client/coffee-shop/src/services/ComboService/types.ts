@@ -20,10 +20,10 @@ export type CreateComboRequest = {
   varianIds?: VariantComboRequest[];
 };
 export type VariantComboRequest = {
-  variantId?: number;
+  variantId: number;
   quantity: number;
   price: number;
-  name?: string;
+  name: string;
 };
 export type ComboRespone = {
   name?: string;
