@@ -86,6 +86,7 @@ public class ComboServiceImpl implements ComboService {
                     comboItem.setVariantId(variant.get().getId());
                     comboItem.setCreatedOn(CommonCode.getTimestamp());
                     comboItem.setQuantity(i.getQuannity());
+                    comboItem.setStatus(1);
                     comboItem.setModifiedOn(0);
                     //lưu combo_id và item id vào bảng mapping
                     try {

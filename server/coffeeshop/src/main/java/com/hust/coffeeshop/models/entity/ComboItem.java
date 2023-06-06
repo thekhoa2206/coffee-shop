@@ -21,6 +21,6 @@ public class ComboItem  extends BaseEntity{
     @Column(name = "quantity")
     private int quantity;
     @Column(name = "status")
-    private String status;
+    private int status;
 
 }
