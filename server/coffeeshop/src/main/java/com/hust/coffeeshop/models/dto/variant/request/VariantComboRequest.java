@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class VariantComboRequest {
     private  int variantId;
-    private  int quannity;
+    private  int quantity;
+    private  int comboitemId;
 }

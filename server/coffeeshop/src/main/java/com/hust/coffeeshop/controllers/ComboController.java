@@ -7,6 +7,9 @@ import com.hust.coffeeshop.models.dto.item.request.ItemRequest;
 import com.hust.coffeeshop.models.dto.item.response.ItemRepsone;
 import com.hust.coffeeshop.services.ComboService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/api/combo")
@@ -29,8 +32,8 @@ public class ComboController {
         return comboService.filter(filter);
     }
     @PostMapping
-    public ComboRespone create(@RequestBody CreateComboRequest request){
-        return comboService.create(request);
+    public ComboRespone create(@RequestBody CreateComboRequest request,@RequestParam MultipartFile image) throws IOException {
+        return comboService.create(request ,image);
     }
     @PutMapping("/{id}")
     public ComboRespone update(@RequestBody CreateComboRequest request, @PathVariable("id") int id){

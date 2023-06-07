@@ -24,9 +24,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +48,7 @@ public class ComboServiceImpl implements ComboService {
     private final ItemService itemService;
     private final ComboItemRepository comboItemRepository;
     private final FilterRepository filterRepository;
+    private static final Path CURRENT_FOLDER = Paths.get(System.getProperty("user.dir"));
 
     public ComboServiceImpl(ComboRepository comboRepository, ModelMapper mapper, CategoryRepository categoryRepository, VariantRepository variantRepository, ItemRepository itemRepository, ItemService itemService, ComboItemRepository comboItemRepository, FilterRepository filterRepository) {
         this.comboRepository = comboRepository;
@@ -55,7 +62,7 @@ public class ComboServiceImpl implements ComboService {
     }
 
     @Override
-    public ComboRespone create(CreateComboRequest request) {
+    public ComboRespone create(CreateComboRequest request, MultipartFile image) throws IOException {
         if (request.getName() == null) throw new ErrorException("Tên combo không được để trống");
         Combo combo = new Combo();
         combo.setName(request.getName());
@@ -64,6 +71,17 @@ public class ComboServiceImpl implements ComboService {
         combo.setCreatedOn(CommonCode.getTimestamp());
         combo.setDescription(request.getDescription());
         combo.setDiscountPercentage(request.getDiscountPercentage());
+        Path staticPath = Paths.get("static");
+        Path imagePath = Paths.get("images");
+        if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
+            Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
+        }
+        Path file = CURRENT_FOLDER.resolve(staticPath)
+                .resolve(imagePath).resolve(image.getOriginalFilename());
+        try (OutputStream os = Files.newOutputStream(file)) {
+            os.write(image.getBytes());
+        }
+        combo.setImageUrl(imagePath.resolve(image.getOriginalFilename()).toString());
         if (request.getCategoryId() != 0)
             combo.setCategoryId(request.getCategoryId());
         combo.setModifiedOn(0);
@@ -85,7 +103,7 @@ public class ComboServiceImpl implements ComboService {
                     comboItem.setItemId(variant.get().getItemId());
                     comboItem.setVariantId(variant.get().getId());
                     comboItem.setCreatedOn(CommonCode.getTimestamp());
-                    comboItem.setQuantity(i.getQuannity());
+                    comboItem.setQuantity(i.getQuantity());
                     comboItem.setStatus(1);
                     comboItem.setModifiedOn(0);
                     //lưu combo_id và item id vào bảng mapping
@@ -97,7 +115,7 @@ public class ComboServiceImpl implements ComboService {
                     var itemResponse = getbyItemId(variant.get().getItemId(),i.getVariantId());
                     ComboItemResponse comboItemResponse = new ComboItemResponse();
                     comboItemResponse.setItem(itemResponse);
-                    comboItemResponse.setQuanntity(i.getQuannity());
+                    comboItemResponse.setQuantity(i.getQuantity());
                     itemRepsones.add(comboItemResponse);
                 }
             }
@@ -120,7 +138,7 @@ public class ComboServiceImpl implements ComboService {
         if (request.getDescription() != null) combo.get().setDescription(request.getDescription());
         if (request.getDiscountPercentage() != null) combo.get().setDiscountPercentage(request.getDiscountPercentage());
         combo.get().setPrice(request.getPrice() != null ? request.getPrice() : BigDecimal.ZERO);
-        if (request.getImageUrl() != null) combo.get().setImageUrl(request.getImageUrl());
+//        if (request.getImageUrl() != null) combo.get().setImageUrl(request.getImageUrl());
         combo.get().setModifiedOn(CommonCode.getTimestamp());
         combo.get().setCategoryId(request.getCategoryId());
         var comboNew = comboRepository.save(combo.get());
@@ -128,105 +146,11 @@ public class ComboServiceImpl implements ComboService {
         if (request.getCategoryId() != 0) {
             category = categoryRepository.findById(request.getCategoryId()).get();
         }
-        var comboRespone = mapper.map(combo, ComboRespone.class);
+        var comboRespone = mapper.map(comboNew, ComboRespone.class);
         List<ItemRepsone> itemRepsones = new ArrayList<>();
         var categoryResponse = mapper.map(category, CategoryResponse.class);
         List<ComboItem> comboItems = comboItemRepository.findUserByComboId(id);
-//        updateVariant(request.getVarianIds(),comboItems);
-
-//        if (request.getVarianIds().size() > 0) {
-//            List<ComboItem> comboItems = comboItemRepository.findUserByComboId(id);
-//
-//            List<Integer> idDelete = new ArrayList<>();
-//            List<Integer> idAdd = new ArrayList<>();
-//            List<Integer> idUpdate = new ArrayList<>();
-//            for (var combos : comboItems) {
-//                for (var i : request.getVarianIds()) {
-//                    if (combos.getVariantId() != i.getVariantId())
-//                    {
-//                        var test1 = comboItemRepository.findUserByComboIdVAndVariantId(id, i.getVariantId());
-//                        if (test1 == null)
-//                        {
-//                            if (!idAdd.contains(i.getVariantId()))
-//                            {
-//                                var variant = variantRepository.findById(i.getVariantId());
-//                                ComboItem comboItem = new ComboItem();
-//                                comboItem.setComboId(id);
-//                                comboItem.setItemId(variant.get().getItemId());
-//                                comboItem.setVariantId(variant.get().getId());
-//                                comboItem.setCreatedOn(CommonCode.getTimestamp());
-//                                comboItem.setModifiedOn(0);
-//                                //lưu combo_id và item id vào bảng mapping
-//                                try {
-//                                    comboItemRepository.save(comboItem);
-//                                } catch (Exception e) {
-//                                    throw new ErrorException("tạo combomapping thất bại");
-//                                }
-//                                idAdd.add(i.getVariantId());
-//                            }
-//                        } else
-//                        {
-//                            var comboItem = comboItemRepository.findUserByComboIdVAndVariantId(id, i.getVariantId());
-//                            comboItemRepository.deleteById(comboItem.getId());
-//                            idDelete.add(combos.getVariantId());
-//                        }
-//                    }
-//                    if (i.getVariantId() == combos.getVariantId()) {
-//                        var comboItem = comboItemRepository.findUserByComboIdVAndVariantId(id, i.getVariantId());
-//                        comboItem.setQuantity(i.getQuannity());
-//                        try {
-//                            comboItemRepository.save(comboItem);
-//                        } catch (Exception e) {
-//                            throw new ErrorException("cập nhập combomapping thất bại");
-//                        }
-//                        idUpdate.add(i.getVariantId());
-//                    }
-//
-//                    System.out.println("idAdd:" + ":" + idAdd);
-//                    System.out.println("idUpdate:" + ":" + idUpdate);
-//                    System.out.println("idDelete:" + ":" + idDelete);
-//                }
-//
-////                ComboItem comboItemDelete = comboItems.stream()
-////                        .filter((p) -> i.getVariantId() != p.getVariantId())
-////                        .findAny()
-////                        .orElse(null);
-////                if (comboItemDelete != null) {
-////                    comboItemRepository.deleteById(comboItemDelete.getId());
-////                }
-////                ComboItem comboItemFilter = comboItems.stream()
-////                        .filter((p) -> i.getVariantId() == p.getVariantId())
-////                        .findAny()
-////                        .orElse(null);
-////                // variant chưa có tại combo thực hiện add vào combo
-////                if (comboItemFilter == null) {
-////                    var variant = variantRepository.findById(i.getVariantId());
-////                    ComboItem comboItem = new ComboItem();
-////                    comboItem.setComboId(comboNew.getId());
-////                    comboItem.setItemId(variant.get().getItemId());
-////                    comboItem.setVariantId(variant.get().getId());
-////                    comboItem.setCreatedOn(CommonCode.getTimestamp());
-////                    comboItem.setModifiedOn(0);
-////                    //lưu combo_id và item id vào bảng mapping
-////                    try {
-////                        comboItemRepository.save(comboItem);
-////                    } catch (Exception e) {
-////                        throw new ErrorException("tạo combomapping thất bại");
-////                    }
-////                    var itemResponse = itemService.getById(variant.get().getItemId());
-////                    itemRepsones.add(itemResponse);
-////                } else {
-////                    var comboItem = comboItemRepository.findUserByComboIdVAndVariantId(id, i.getVariantId());
-////                    comboItem.setQuannity(i.getQuannity());
-////                    try {
-////                        comboItemRepository.save(comboItem);
-////                    } catch (Exception e) {
-////                        throw new ErrorException("cập nhập combomapping thất bại");
-////                    }
-////                }
-//
-//            }
-//        }
+        updateVariant(request.getVarianIds(),comboItems,id);
         categoryResponse.set();
         comboRespone.setCategory(category);
         return comboRespone;
@@ -244,13 +168,15 @@ public class ComboServiceImpl implements ComboService {
             comboRespone.setCategory(category);
         }
         List<ComboItem> comboItems = comboItemRepository.findUserByComboId(id);
+
         if(comboItems.size()>0){
             List<ComboItemResponse> itemRepsones = new ArrayList<>();
             for (var i : comboItems){
                var itemRepsone = getbyItemId(i.getItemId(),i.getVariantId());
                ComboItemResponse comboItemResponse = new ComboItemResponse();
                comboItemResponse.setItem(itemRepsone);
-               comboItemResponse.setQuanntity(i.getQuantity());
+               comboItemResponse.setQuantity(i.getQuantity());
+               comboItemResponse.setComboitemId(i.getId());
                itemRepsones.add(comboItemResponse);
             }
             comboRespone.setItems(itemRepsones);
@@ -340,50 +266,48 @@ public class ComboServiceImpl implements ComboService {
                 comboRespones,
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results.getTotalElements()));
     }
-//    @Transactional(rollbackOn = Exception.class)
-//    void updateVariant(List<VariantComboRequest> variantRequests, List<ComboItem> comboItems) {
-//        List<Variant> variantNews = new ArrayList<>();
-//
-//        if (comboItems != null) {
-//            if (variantRequests != null) {
-//                for (val variantRq : variantRequests) {
-//                    var variant = mapper.map(variantRq, Variant.class);
-//                    //variant add
-//                    if (variantRq.getVariantId() == 0) {
-//                        variant.setCreatedOn(CommonCode.getTimestamp());
-//                        variant.setModifiedOn(0);
-//                        variant.setItemId(itemId);
-//                        variant.setStatus(CommonStatus.VariantStatus.ACTIVE);
-//                        var variantAdd = variantRepository.save(variant);
-//                        updateIngredients(variantRq.getIngredients(), null, itemId, variantAdd.getId());
-//                    } else {
-//                        //variant update
-//                        var variantOld = variants.stream().filter(v -> v.getId().equals(variant.getId())).collect(Collectors.toList()).stream().findFirst().orElse(null);
-//                        if (variantOld != null) {
-//                            variantOld.setModifiedOn();
-//                            variantOld.setName(variant.getName());
-//                            variantOld.setPrice(variant.getPrice());
-//                            variantNews.add(variantOld);
-//                            var itemIngredients = itemIngredientRepository.findItemIngredientByVariantIdAndItemId(variantOld.getId(), itemId);
-//                            updateIngredients(variantRq.getIngredients(), itemIngredients, itemId, variantOld.getId());
-//                        }
-//                    }
-//                }
-//                //Variant deleted
-//                for (var variant : variants) {
-//                    var variantDeleted = variantRequests.stream().filter(vq -> vq.getId() == variant.getId()).collect(Collectors.toList()).stream().findFirst();
-//                    if (!variantDeleted.isPresent() || variantDeleted.get() == null) {
-//                        var itemIngredients = itemIngredientRepository.findItemIngredientByVariantIdAndItemId(variant.getId(), itemId);
-//                        updateIngredients(null, itemIngredients, itemId, variant.getId());
-//                        variant.setModifiedOn();
-//                        variant.setStatus(CommonStatus.VariantStatus.DELETED);
-//                        variantNews.add(variant);
-//                    }
-//                }
-//            }
-//            if(variantNews != null && variantNews.size() != 0){
-//                variantRepository.saveAll(variantNews);
-//            }
-//        }
-//    }
+    @Transactional(rollbackOn = Exception.class)
+    void updateVariant(List<VariantComboRequest> variantRequests, List<ComboItem> comboItems,int comboId)
+    {
+        List<ComboItem> comboItemNews = new ArrayList<>();
+        if (comboItems != null) {
+            if (variantRequests != null) {
+                for (val variantRq : variantRequests) {
+                    var comboitem = mapper.map(variantRq, ComboItem.class);
+                    //variant add
+                    if (variantRq.getComboitemId() == 0) {
+                        val variant = variantRepository.findById(variantRq.getVariantId());
+                       comboitem.setComboId(comboId);
+                       comboitem.setVariantId(variantRq.getVariantId());
+                       comboitem.setQuantity(variantRq.getQuantity());
+                       comboitem.setItemId(variant.get().getItemId());
+                       comboitem.setStatus(1);
+                       comboitem.setCreatedOn(CommonCode.getTimestamp());
+                       comboitem.setModifiedOn(0);
+                       comboItemRepository.save(comboitem);
+                    } else {
+                        //variant update
+                        var comboitemOld = comboItems.stream().filter(v -> v.getId().equals(variantRq.getComboitemId())).collect(Collectors.toList()).stream().findFirst().orElse(null);
+                        if (comboitemOld != null) {
+                            comboitemOld.setModifiedOn(CommonCode.getTimestamp());
+                            comboitemOld.setQuantity(variantRq.getQuantity());
+                            comboItemNews.add(comboitemOld);
+                        }
+                    }
+                }
+                //Variant deleted
+                for (var comboItem : comboItems) {
+                    var variantDeleted = variantRequests.stream().filter(vq -> vq.getComboitemId() == comboItem.getId()).collect(Collectors.toList()).stream().findFirst();
+                    if (!variantDeleted.isPresent() || variantDeleted.get() == null) {
+                        comboItem.setModifiedOn(CommonCode.getTimestamp());
+                        comboItem.setStatus(2);
+                        comboItemNews.add(comboItem);
+                    }
+                }
+            }
+            if(comboItemNews != null && comboItemNews.size() != 0){
+                comboItemRepository.saveAll(comboItemNews);
+            }
+        }
+    }
 }

@@ -170,7 +170,7 @@ const Combos = (props: CombosProps & PropsFromRedux) => {
                 stickyHeader
                 tableDrillDown
                 stickyHeaderTop={52}
-                onRowClick={(e, data) => {}}
+                onRowClick={(e, data) => { history.push(`/admin/combos/${data.id}`)}}
                 disablePaging={false}
               >
                 <GridColumn

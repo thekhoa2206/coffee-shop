@@ -84,7 +84,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
     let res = await ComboService.getById(id);
     if (res.data) {
       let combo = res.data;
-      let comboRq: CreateComboRequest = {
+     let comboRq: CreateComboRequest = {
         name: combo.name,
         imageUrl: combo.imageUrl,
         description: combo.description,
@@ -101,15 +101,17 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
            quantity: v.quantity ? v.quantity : 0,
            price: x.price,
            name: v.item?.name + "-" + x.name,
+           comboitemId:v.comboitemId? v.comboitemId : 0
          };
          variantComboRequests.push(vq);
        });
      });
       
       comboRq.varianIds =  variantComboRequests;
-      setCategory(combo.categoryId);
+      setCategory(combo.category);
       setComboRequest(comboRq)
       setVariantComboRequest(variantComboRequests);
+      
     }
   };
 
@@ -240,6 +242,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
             return {
               ...v,
               quantity: v.quantity + 1,
+              comboitemId:v.comboitemId,
             };
           } else return { ...(v || []), variant };
         });
@@ -283,7 +286,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
     <>
       <Box className={classes.container}>
         <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
-          Thêm mới combo
+          Thông tin combo
         </Typography>
         <Grid container xs={12} spacing={2}>
           <Grid item xs={8}>
@@ -397,13 +400,13 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                           )}
                           placeholder="Tìm kiếm mặt hàng"
                           onChange={(item: ItemResponses) => {
-                            debugger;
                             addVariant(
                               {
                                 variantId: item.variants.id,
                                 quantity: 1,
                                 price: item.variants.price,
                                 name: item.name + "-" + item.variants.name,
+                                comboitemId:0
                               },
                               item
                             );
@@ -530,7 +533,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                         }
                       }}
                       placeholder="Tìm kiếm"
-                      placeholderSelect="Chọn nhóm mặt hàng"
+                      placeholderSelect= {category? category.name :"Chọn nhóm mặt hàng"}
                       inputSearchClassRoot={classes.inputCategory}
                     />
                   </Box>

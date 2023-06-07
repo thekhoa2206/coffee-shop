@@ -88,29 +88,7 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
     }
   };
 
-  const updateIngredients = (
-    item: IngredientItemRequest,
-    variant: VariantRequest
-  ) => {
-    let variantNews = variants.map((v) => {
-      if (v.id === variant.id) {
-        let ingredient = v.ingredients?.find(
-          (ig) => ig.ingredientId === item.ingredientId
-        );
-        if (ingredient) {
-          return {
-            ...v,
-            ingredients: v.ingredients?.map((ig) => {
-              if (ig.ingredientId === item.ingredientId) {
-                return item;
-              } else return ig;
-            }),
-          };
-        } else return v;
-      } else return v;
-    });
-    setVariants(variantNews);
-  };
+
   const updateVariant = (variant: VariantComboRequest) => {
     let variantNews = variantComboRequest.map((v) => {
       if (v.variantId === variant.variantId) {
@@ -120,56 +98,12 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
     setVariantComboRequest(variantNews);
   };
 
-  const deleteIngredients = (
-    item: IngredientItemRequest,
-    variant: VariantRequest
-  ) => {
-    let variantsNew = variants.map((v) => {
-      if (v.id === variant.id) {
-        return {
-          ...v,
-          ingredients: v.ingredients?.filter(
-            (i) => i.ingredientId !== item.ingredientId
-          ),
-        };
-      } else return v;
-    });
-    setVariants(variantsNew);
-  };
-
+ 
   const deleteVarinat = (variant: VariantComboRequest) => {
     let variantsNew = variantComboRequest.filter(
       (v) => v.variantId !== variant.variantId
     );
     setVariantComboRequest(variantsNew);
-  };
-
-  const addIngredients = (
-    item: IngredientItemRequest,
-    variant: VariantRequest
-  ) => {
-    let variantNews = variants.map((v) => {
-      if (v.id === variant.id) {
-        let ingredient = v.ingredients?.find(
-          (ig) => ig.ingredientId === item.ingredientId
-        );
-        if (ingredient) {
-          return {
-            ...v,
-            ingredients: v.ingredients?.map((ig) => {
-              if (ig.ingredientId === item.ingredientId) {
-                return { ...ig, amountConsume: ig.amountConsume + 1 };
-              } else return ig;
-            }),
-          };
-        } else
-          return {
-            ...v,
-            ingredients: [...(v.ingredients || []), item],
-          };
-      } else return v;
-    });
-    setVariants(variantNews);
   };
   const addVariant = (variant: VariantComboRequest, item: ItemResponses) => {
     debugger;
@@ -196,30 +130,6 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
       setVariantComboRequest(oke);
     }
   };
-  console.log("789", variantComboRequest);
-  const addVariants = () => {
-    let idMax = Math.max.apply(
-      null,
-      variants.map((item) => item.id)
-    );
-    setVariants([...variants, { id: idMax + 1, name: "", price: 0 }]);
-  };
-
-  const deleVariants = (variant: VariantRequest) => {
-    setVariants([...variants.filter((v) => v.id !== variant.id)]);
-  };
-  const updateVariants = (variant: VariantRequest) => {
-    setVariants([
-      ...variants.map((v) => {
-        if (v.id !== variant.id) {
-          return v;
-        } else {
-          return variant;
-        }
-      }),
-    ]);
-  };
-
   useEffect(() => {
     initUnit();
   }, []);
@@ -375,6 +285,7 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
                                 quantity: 1,
                                 price: item.variants.price,
                                 name: item.name + "-" + item.variants.name,
+                                comboitemId:0,
                               },
                               item
                             );
@@ -472,6 +383,7 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
               <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                 Tùy chọn Combo
               </Typography>
+              
               <Box
                 className={classes.boxContentPaper}
                 style={{ height: "350px" }}

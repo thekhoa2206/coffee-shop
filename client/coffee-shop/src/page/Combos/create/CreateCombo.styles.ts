@@ -23,6 +23,7 @@ const styles = (theme: Theme) =>
             padding: "0 42px",
           },
         },
+        
     });
 
 export default styles;

@@ -129,7 +129,7 @@ let MAIN_ROUTES = (): Route[] => [
     authorities: [AccountRole.ADMIN],
   },
   {
-    path: "/combos/edit/${id}",
+    path: "/combos/:id",
     component: UpdateCombo,
     extract: true,
     header: {

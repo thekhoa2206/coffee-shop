@@ -24,6 +24,7 @@ export type VariantComboRequest = {
   quantity: number;
   price: number;
   name: string;
+  comboitemId:number;
 };
 export type ComboRespone = {
   name?: string;
@@ -31,7 +32,7 @@ export type ComboRespone = {
   description?: string;
   discountPercentage?: number;
   price?: number;
-  categoryId?: CategoryResponse;
+  category?: CategoryResponse;
   items?: ComboItemResponse[];
   id: number;
   createdOn?: string;
@@ -43,6 +44,7 @@ export type ComboRespone = {
 export type ComboItemResponse = {
   item?: ItemResponse;
   quantity?: number;
+  comboitemId?:number;
 };
 export type ListComboRespone = {
   data?: ComboRespone[];

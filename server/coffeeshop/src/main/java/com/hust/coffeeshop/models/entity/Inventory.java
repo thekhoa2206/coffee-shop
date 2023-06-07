@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -20,4 +21,7 @@ public class Inventory extends BaseEntity{
 
     @Column(name = "status")
     private int status;
+
+    @Column(name = "total_money")
+    private BigDecimal totalMoney;
 }
