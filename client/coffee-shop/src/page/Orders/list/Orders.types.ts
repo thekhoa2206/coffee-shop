@@ -29,5 +29,7 @@ export interface LineItemStore {
    combo: boolean;
    quantity:number
    price: number;
+   lineAmount?: number;
    variants?: ProductVariantResponse[];
+   available?: number;
 }

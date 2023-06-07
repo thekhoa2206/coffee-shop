@@ -33,3 +33,20 @@ export interface OrderItemResponse extends BaseResponse {
     price: number;
     productId: number;
 }
+
+export type OrderRequest = {
+    code?: string | null;
+    customerId: number;
+    note?: string | null;
+    discountTotal: number;
+    orderItemRequest?: OrderItemRequest[];
+    total?: number;
+}
+
+export type OrderItemRequest = {
+    name?: string;
+    productId?: number;
+    combo?: boolean;
+    quantity: number;
+    price: number;
+}

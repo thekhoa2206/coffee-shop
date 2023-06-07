@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -129,6 +130,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public OrderResponse create(OrderRequest request) {
         Order order = new Order();
         if (request.getOrderItemRequest() == null || request.getOrderItemRequest().size() == 0)
@@ -150,7 +152,7 @@ public class OrderServiceImpl implements OrderService {
         order.setCustomerId(request.getCustomerId());
         order.setNote(request.getNote());
         order.setDiscount_total(request.getDiscountTotal() != null ? request.getDiscountTotal() : BigDecimal.ZERO);
-        order.setTotal(order.getTotal());
+        order.setTotal(request.getTotal());
 
         order = orderRepository.save(order);
         List<OrderItem> lineItems = new ArrayList<>();
@@ -179,31 +181,10 @@ public class OrderServiceImpl implements OrderService {
             if (!combo.isPresent() || combo == null) throw new ErrorException("Không tìm thấy combo!");
             var comboItems = comboItemRepository.findComboItemByComboId(combo.get().getId());
             if (comboItems != null || comboItems.size() > 0) {
-                var variantIds = comboItems.stream().map(ComboItem::getId).collect(Collectors.toList());
+                var variantIds = comboItems.stream().map(ComboItem::getVariantId).collect(Collectors.toList());
                 var variants = variantRepository.findVariantByIds(variantIds);
                 if (variantIds != null && variantIds.size() > 0) {
-                    var itemIngredients = itemIngredientRepository.findItemIngredientByVariantIds(variantIds);
-                    var itemIngredientIds = itemIngredients.stream().map(ItemIngredient::getIngredientId).collect(Collectors.toList());
-                    var ingredients = ingredientRepository.findByIds(itemIngredientIds);
-                    if (ingredients != null && ingredients.size() > 0) {
-                        for (var ingredient : ingredients) {
-                            var itemIngredient = itemIngredients
-                                    .stream()
-                                    .filter(i -> i.getIngredientId() == ingredient.getId())
-                                    .collect(Collectors.toList())
-                                    .stream()
-                                    .findFirst()
-                                    .orElse(null);
-                            if(itemIngredient != null){
-                                //số lượng, khối lượng bán đi
-                                var amount = request.getQuantity()*itemIngredient.getAmountConsume();
-                                if(ingredient.getQuantity() - amount < 0) throw new ErrorException("Nguyên liệu không đủ số lượng, khối lượng có thể bán!");
-                                ingredient.setQuantity(ingredient.getQuantity() - amount);
-                            }else {
-                                throw new ErrorException("Không tìm thấy phiên bản mặt hàng!");
-                            }
-                        }
-                    }
+                    setIngredient(variantIds, request);
                 } else {
                     throw new ErrorException("Không tìm thấy phiên bản mặt hàng!");
                 }
@@ -211,7 +192,37 @@ public class OrderServiceImpl implements OrderService {
                 throw new ErrorException("Không tìm thấy combo!");
             }
         } else {
+            var variantId = request.getProductId();
+            List<Integer> variantIds = new ArrayList<>();
+            variantIds.add(variantId);
+            setIngredient(variantIds, request);
+        }
+    }
 
+    //Hàm trừ nguyên liệu
+    private void setIngredient(List<Integer> variantIds, OrderItemRequest request) {
+        var itemIngredients = itemIngredientRepository.findItemIngredientByVariantIds(variantIds);
+        var itemIngredientIds = itemIngredients.stream().map(ItemIngredient::getIngredientId).collect(Collectors.toList());
+        var ingredients = ingredientRepository.findByIds(itemIngredientIds);
+        if (ingredients != null && ingredients.size() > 0) {
+            for (var ingredient : ingredients) {
+                var itemIngredient = itemIngredients
+                        .stream()
+                        .filter(i -> i.getIngredientId() == ingredient.getId())
+                        .collect(Collectors.toList())
+                        .stream()
+                        .findFirst()
+                        .orElse(null);
+                if(itemIngredient != null){
+                    //số lượng, khối lượng bán đi
+                    var amount = request.getQuantity()*itemIngredient.getAmountConsume();
+                    if(ingredient.getQuantity() - amount < 0) throw new ErrorException("Nguyên liệu không đủ số lượng, khối lượng có thể bán!");
+                    ingredient.setQuantity(ingredient.getQuantity() - amount);
+                    ingredientRepository.save(ingredient);
+                }else {
+                    throw new ErrorException("Không tìm thấy phiên bản mặt hàng!");
+                }
+            }
         }
     }
 }

@@ -14,6 +14,7 @@ const styles = (theme: Theme) =>
         },
         boxContentPaper: {
             padding: "16px 16px",
+            borderTop: "1px solid #E8EAEB"
         },
         inputCategory: {
             marginTop: "16px", width: "293px",
@@ -42,6 +43,14 @@ const styles = (theme: Theme) =>
               fontSize: 32,
               marginRight: 10,
               color: "#4BA7F3",
+            },
+          },
+          listItemRoot: {
+            height: 30,
+            alignItems: "flex-end",
+            padding: "1px 0 1px 16px",
+            "& .MuiListItemText-root": {
+              margin: 0,
             },
           },
     });

@@ -12,6 +12,7 @@ export interface ProductResponse extends BaseResponse {
     combo?: boolean;
     categoryResponse?: CategoryResponse;
     variants: ProductVariantResponse[];
+    available?: number;
 }
 
 export interface ProductVariantResponse extends BaseResponse {

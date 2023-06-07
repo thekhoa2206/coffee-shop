@@ -3,15 +3,18 @@ import { CustomerResponse } from "services/CustomerService";
 import { ProductResponse } from "services/ProductService";
 import create, { SetState } from "zustand";
 import { LineItemStore } from "../list/Orders.types";
+import { toNumber } from "lodash";
 export type OrderStore = {
     lineItems?: LineItemStore[] | null;
     customer?: CustomerResponse | null;
-
+    code?: string | null;
     note?: string | null;
     set: SetState<OrderStore>;
     addLineItem: (product: ProductResponse) => void;
     deleteLineItem: (id: number) => void;
     updateLineItem: (product: LineItemStore, id: number) => void;
+    total?: number | null;
+    discountTotal?: number | null;
 }
 
 export const initOrderStore = {
@@ -33,7 +36,8 @@ export const useOrderStore = create<OrderStore>((set) => ({
                                 if ((product.combo && li.combo && li.productId == product.id) || (!product.combo && !li.combo && li.productId == product.variants[0].id)) {
                                     return {
                                         ...li,
-                                        quantity: li.quantity+1,
+                                        quantity: (toNumber(li.quantity) + 1),
+                                        lineAmount: (toNumber(product.combo ? product.price : product.variants[0].price) || 0)*(toNumber(li.quantity) + 1)
                                     }
                                 } else {
                                     return li;
@@ -49,7 +53,8 @@ export const useOrderStore = create<OrderStore>((set) => ({
                             price: (product.combo ? product.price : product.variants[0].price) || 0,
                             productId: product.combo ? product.id : product.variants[0].id,
                             quantity: 1,
-                            name: product.combo ? product.name : (product.name + " - " + product.variants[0].name),
+                            name: product.name,
+                            lineAmount: ((product.combo ? product.price : product.variants[0].price) || 0)*1,
                         }]
                     } ;
                 }
@@ -62,7 +67,8 @@ export const useOrderStore = create<OrderStore>((set) => ({
                         price: (product.combo ? product.price : product.variants[0].price) || 0,
                         productId: product.combo ? product.id : product.variants[0].id,
                         quantity: 1,
-                        name: product.combo ? product.name : (product.name + " - " + product.variants[0].name),
+                        name: product.name,
+                        lineAmount: (toNumber(product.combo ? product.price : product.variants[0].price) || 0)*1,
                     }]
                 } ;
             }
@@ -81,9 +87,15 @@ export const useOrderStore = create<OrderStore>((set) => ({
             if(prev.lineItems){
                 let lineItems = prev.lineItems.map((item) => {
                     if(item.productId == id){
-                        return product;
+                        return {
+                            ...product,
+                            lineAmount: product.quantity * product.price,
+                        };
                     }else {
-                        return item;
+                        return {
+                            ...item,
+                            lineAmount: item.quantity * item.price,
+                        };
                     }
                 })
                 return {
