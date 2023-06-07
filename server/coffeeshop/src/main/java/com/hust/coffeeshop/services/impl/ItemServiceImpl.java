@@ -271,6 +271,13 @@ public class ItemServiceImpl implements ItemService {
         for (val item : results.getContent()
         ) {
             val itemResponse = mapper.map(item, ItemRepsone.class);
+            var data = variantRepository.findVariantByItemId(itemResponse.getId());
+            List<VariantRepsone> variantRepsones = new ArrayList<>();
+            for (val i : data){
+            val variantResponse = mapper.map(i,VariantRepsone.class);
+            variantRepsones.add(variantResponse);
+            }
+            itemResponse.setVariants(variantRepsones);
             itemRepsones.add(itemResponse);
         }
 

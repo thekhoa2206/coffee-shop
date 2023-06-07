@@ -61,6 +61,11 @@ const useGenMenuData = () => {
         typeRoute: "default",
       },
       {
+        title: "Combo",
+        path: "/admin/combos",
+        typeRoute: "default",
+      },
+      {
         title: "Nguyên liệu",
         path: "/admin/ingredients",
         typeRoute: "default",

@@ -18,6 +18,21 @@ export type ItemResponse = {
     modifiedOn?: string;
     modifiedBy?: string;
 }
+export type ItemResponses = {
+    id: number;
+    name: string;
+    imageUrl: string;
+    description: string;
+    discountPercentage: number;
+    status?: string;
+    category: CategoryResponse;
+    stockUnitResponse: StockUnitResponse
+    variants: VariantResponse;
+    createdOn?: string;
+    createdBy?: string;
+    modifiedOn?: string;
+    modifiedBy?: string;
+}
 
 export type ItemFilterRequest = {
     ids?: number[];
