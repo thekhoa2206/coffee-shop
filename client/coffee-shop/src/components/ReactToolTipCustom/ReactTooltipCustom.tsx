@@ -17,13 +17,22 @@ const useStyles = (style?: React.CSSProperties) =>
       ...style,
     },
   });
-const ReactTooltipCustom = (props: TooltipProps & { style?: React.CSSProperties }) => {
+const ReactTooltipCustom = (
+  props: TooltipProps & { style?: React.CSSProperties }
+) => {
   const { style, ...remainProps } = props;
   const classes = useStyles(props.style)();
   useEffect(() => {
     ReactTooltip.rebuild();
   });
-  return <ReactTooltip effect="solid" type="light" className={classes.tooltip} {...remainProps} />;
+  return (
+    <ReactTooltip
+      effect="solid"
+      type="light"
+      className={classes.tooltip}
+      {...remainProps}
+    />
+  );
 };
 
 export default ReactTooltipCustom;

@@ -54,6 +54,7 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
                 let ingredient = v.ingredients?.find((ig) => (ig.ingredientId === item.ingredientId));
                 if (ingredient) {
                     return {
+                        
                         ...v,
                         ingredients: v.ingredients?.map((ig) => {
                             if (ig.ingredientId === item.ingredientId) {
@@ -81,6 +82,7 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
 
 
     const addIngredients = (item: IngredientItemRequest, variant: VariantRequest) => {
+        debugger
         let variantNews = variants.map((v) => {
             if (v.id === variant.id) {
                 let ingredient = v.ingredients?.find((ig) => (ig.ingredientId === item.ingredientId));

@@ -9,7 +9,7 @@ class ComboService {
     static async create(request: CreateComboRequest): Promise<AxiosResponse<ComboRespone>> {
         return axios.post(`/combo`,request , { ...getAxiosConfig()});
     }
-    static async update(request: CreateComboRequest, id: number): Promise<AxiosResponse<ComboRespone>> {
+    static async update(request: CreateComboRequest, id: string): Promise<AxiosResponse<ComboRespone>> {
         return axios.put(`/combo/${id}`,request, { ...getAxiosConfig()});
     }
     static async getById(id: string): Promise<AxiosResponse<ComboRespone>> {
