@@ -3,12 +3,14 @@ import Route from "./shared/model/routing/route.model";
 import MainLayoutComponent from "layout/main/MainLayout";
 import { AccountRole } from "utilities/AccountRole";
 
+
 const CustomerList = React.lazy(() => import("./page/Customer"));
 const IngredientList = React.lazy(() => import("./page/Ingredients"));
 const ItemList = React.lazy(() => import("./page/Items"));
 const CreateItem = React.lazy(() => import("./page/Items/create"));
 const ComboList = React.lazy(() => import("./page/Combos"));
 const CreateCombo = React.lazy(() => import("./page/Combos/create"));
+const UpdateCombo = React.lazy(() => import("./page/Combos/update"));
 
 
 
@@ -120,6 +122,18 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: "Tạo combo",
+      linkTo: "/admin/combos",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/combos/edit/${id}",
+    component: UpdateCombo,
+    extract: true,
+    header: {
+      title: "edit combo",
       linkTo: "/admin/combos",
       showNoti: false,
       withSubtitle: false,

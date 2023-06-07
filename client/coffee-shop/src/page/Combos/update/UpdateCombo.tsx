@@ -34,7 +34,9 @@ import {
 import IngredientsService from "services/IngredientsService/IngredientsService";
 import {
   IngredientItemRequest,
+  ItemFilterRequest,
   ItemRequest,
+  ItemResponses,
   VariantRequest,
 } from "services/ItemsService";
 import { AppState } from "store/store";
@@ -51,7 +53,7 @@ import {
   CreateComboRequest,
   VariantComboRequest,
 } from "services/ComboService/types";
-export interface UpdateComboProps extends WithStyles<typeof styles> {}
+export interface UpdateComboProps extends WithStyles<typeof styles> { }
 const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
   const { classes, authState } = props;
   const [categories, setCategories] = useState<CategoryResponse[]>();
@@ -62,6 +64,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
   const [variants, setVariants] = useState<VariantRequest[]>([
     { id: 1, name: "", price: 0 },
   ]);
+  const [variantComboRequest, setVariantComboRequest] = useState<VariantComboRequest[]>([]);
   const [stockUnits, setStockUnits] = useState<StockUnitResponse[]>();
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
@@ -90,22 +93,23 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
         categoryId: 0,
         varianIds: [],
       }
-
-      let VariantComboRequests:VariantComboRequest[] = combo.items?.map((v) => {
+      let variantComboRequests : VariantComboRequest[] = [];
+      combo.items?.map((v) => {
         v.item?.variants.map((x) => {
-          let vq: VariantComboRequest = {
-            variantId: x.id,
-            quantity: v.quantity ? v.quantity : 0,
-            price: x.price,
-            name: v.item?.name + "-" + x.name,
-          };
-          return vq;
-        });
-      });
-      comboRq.varianIds = VariantComboRequests;
-      setVariants(variantRequests);
+         let vq: VariantComboRequest = {
+           variantId: x.id,
+           quantity: v.quantity ? v.quantity : 0,
+           price: x.price,
+           name: v.item?.name + "-" + x.name,
+         };
+         variantComboRequests.push(vq);
+       });
+     });
+      
+      comboRq.varianIds =  variantComboRequests;
       setCategory(combo.categoryId);
-      setItemRequest(comboRq);
+      setComboRequest(comboRq)
+      setVariantComboRequest(variantComboRequests);
     }
   };
 
@@ -210,28 +214,66 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
       setStockUnits(res.data.data);
     }
   };
-  const handleUpdateItem = async () => {
-    variants.forEach((item) => {
-      if (!itemRequest?.variantRequest?.find((vq) => vq.id == item.id)) {
-        item.id = 0;
-      }
-      if (!item.name) {
-        SnackbarUtils.error(`Tên phiên bản ${item.id} không được để trống!`);
-        return;
-      }
+  const deleteVarinat = (variant: VariantComboRequest) => {
+    let variantsNew = variantComboRequest.filter(
+      (v) => v.variantId !== variant.variantId
+    );
+    setVariantComboRequest(variantsNew);
+  };
+
+  const updateVariant = (variant: VariantComboRequest) => {
+    let variantNews = variantComboRequest.map((v) => {
+      if (v.variantId === variant.variantId) {
+        return variant;
+      } else return v;
     });
-    let requet: ItemRequest = {
-      ...itemRequest,
+    setVariantComboRequest(variantNews);
+  };
+  const addVariant = (variant: VariantComboRequest, item: ItemResponses) => {
+    if (variantComboRequest.length > 0) {
+      let variantOld = variantComboRequest.find(
+        (v) => v.variantId === variant.variantId
+      );
+      if (variantOld) {
+        let itemNews = variantComboRequest?.map((v) => {
+          if (v.variantId === variant.variantId) {
+            return {
+              ...v,
+              quantity: v.quantity + 1,
+            };
+          } else return { ...(v || []), variant };
+        });
+        setVariantComboRequest(itemNews);
+      } else {
+        let variantNews = [...variantComboRequest, variant];
+        setVariantComboRequest(variantNews);
+      }
+    } else {
+      let oke = [variant];
+      setVariantComboRequest(oke);
+    }
+  };
+  const handleUpdateCombo = async () => {
+    // variants.forEach((item) => {
+    //   if (!itemRequest?.variantRequest?.find((vq) => vq.id == item.id)) {
+    //     item.id = 0;
+    //   }
+    //   if (!item.name) {
+    //     SnackbarUtils.error(`Tên phiên bản ${item.id} không được để trống!`);
+    //     return;
+    //   }
+    // });
+    let requet: CreateComboRequest = {
+      ...comboRequest,
       categoryId: category?.id || 0,
-      stockUnitId: 1,
-      variantRequest: variants,
+      varianIds: variantComboRequest,
     };
 
     try {
-      let res = await ItemsService.update(requet, id);
+      let res = await ComboService.update(requet, id);
       if (res.data) {
-        SnackbarUtils.success("Cập nhật mặt hàng thành công");
-        history.push(`/admin/items/${res.data.id}`);
+        SnackbarUtils.success("Cập nhật combo thành công");
+        history.push(`/admin/combo/${res.data.id}`);
       }
     } catch (error) {
       SnackbarUtils.error(getMessageError(error));
@@ -240,167 +282,161 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
   return (
     <>
       <Box className={classes.container}>
+        <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
+          Thêm mới combo
+        </Typography>
         <Grid container xs={12} spacing={2}>
           <Grid item xs={8}>
             <Paper className={classes.wrapperBoxInfo}>
-              <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
-                Thông tin nguyên liệu
-              </Typography>
               <Box className={classes.boxContentPaper}>
-                <Typography style={{ fontWeight: 500 }}>Phiên bản</Typography>
+                <Typography style={{ fontWeight: 500 }}>Tên combo</Typography>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    value={comboRequest?.name}
+                    onChange={(e: any) => {
+                      setComboRequest({
+                        ...comboRequest,
+                        name: e.target.value as any,
+                      });
+                    }}
+                    placeholder="Nhập tên combo"
+                  />
+                </Grid>
+              </Box>
+            </Paper>
+            <Paper className={classes.wrapperBoxInfo}>
+              <Box className={classes.boxContentPaper}>
+                <Typography style={{ fontWeight: 500, marginBottom: 15 }}>
+                  Thiết lập combo
+                </Typography>
+                <Grid item xs={12}>
+                  <NumberInputTextField
+                    fullWidth
+                    placeholder="0đ"
+                    onChange={(e: any) => {
+                      setComboRequest({
+                        ...comboRequest,
+                        price: e.target.value as number,
+                      });
+                    }}
+                    name={""}
+                    label={"Giá combo "}
+                    value={comboRequest?.price}
+                  />
+                </Grid>
                 <Box
-                  style={{ width: "100%", borderTop: "1px solid #E8EAEB" }}
-                ></Box>
-                {variants &&
-                  variants.length > 0 &&
-                  variants.map((variant, index) => (
-                    <Box
-                      key={index}
-                      style={{
-                        paddingTop: "10px",
-                        borderBottom: "1px solid #E8EAEB",
-                      }}
-                    >
-                      <Box style={{ float: "right", height: "10px" }}>
-                        <IconButton
-                          aria-label="close"
-                          style={{
-                            width: "26px",
-                            height: "26px",
-                            padding: "5px",
-                            borderRadius: "100%",
-                          }}
-                          onClick={() => {
-                            deleVariants(variant);
-                          }}
-                        >
-                          <CloseIcon
-                            style={{ width: "20px", color: "rgb(149 149 149)" }}
-                          />
-                        </IconButton>
-                      </Box>
-                      <Grid container xs={12} spacing={2}>
-                        <Grid item xs={5}>
-                          <TextField
-                            fullWidth
-                            value={variant.name}
-                            onChange={(e: any) => {
-                              updateVariants({
-                                ...variant,
-                                name: e.target.value,
-                              });
-                            }}
-                            placeholder="Nhập tên phiên bản"
-                            label={"Tên phiên bản " + (index + 1)}
-                          />
-                        </Grid>
-                        <Grid item xs={7}>
-                          <NumberInputTextField
-                            fullWidth
-                            placeholder="Giá phiên bản"
-                            onChange={(e: any) => {
-                              updateVariants({
-                                ...variant,
-                                price: e.target.value as number,
-                              });
-                            }}
-                            value={variant.price}
-                            name={""}
-                            label={"Giá phiên bản " + (index + 1)}
-                          />
-                        </Grid>
-                      </Grid>
-                      <Typography
-                        style={{ marginTop: "16px", fontWeight: 500 }}
-                      >
-                        Thông tin danh sách nguyên liệu
-                      </Typography>
+                  style={{
+                    paddingTop: "10px",
+                    borderBottom: "1px solid #E8EAEB",
+                  }}
+                >
+                  <Typography style={{ marginTop: "16px", fontWeight: 500 }}>
+                    Thông tin danh sách mặt hàng
+                  </Typography>
+                  <Box>
+                    <Box style={{ padding: "16px 0px" }}>
                       <Box>
-                        <Box style={{ padding: "16px 0px" }}>
-                          <Box>
-                            <SelectInfinite
-                              getOptionLabel={(item) => item?.name || ""}
-                              fetchDataSource={async (
-                                filter: IngredientFilterRequest
-                              ) => {
-                                let res = await IngredientsService.filter(
-                                  filter
-                                );
-                                const dataSource = {} as DataSource;
-                                if (res.data.data) {
-                                  dataSource.data = res.data.data;
-                                  dataSource.metaData = {
-                                    totalPage: Math.ceil(
-                                      (res.data.metadata?.total || 0) /
-                                        (filter.limit || 10)
-                                    ),
-                                    totalItems: res.data.metadata?.total || 0,
-                                  };
-                                }
-                                return Promise.resolve(dataSource);
+                        <SelectInfinite
+                          getOptionLabel={(item) => item?.name || ""}
+                          fetchDataSource={async (
+                            filter: ItemFilterRequest
+                          ) => {
+                            let res = await ItemsService.filter(filter);
+                            const dataSource = {} as DataSource;
+                            if (res.data.data) {
+                              dataSource.data = res.data.data.reduce(
+                                (aray, obj) => {
+                                  const dataVarian = obj.variants.map(
+                                    (x: any) => ({
+                                      id: obj.id,
+                                      name: obj.name,
+                                      image: obj.imageUrl,
+                                      status: obj.status,
+                                      variants: x,
+                                      quantity: 1,
+                                    })
+                                  );
+                                  aray = aray.concat(dataVarian as any);
+                                  return aray;
+                                },
+                                []
+                              );
+                              console.log("test", dataSource.data);
+                              dataSource.metaData = {
+                                totalPage: Math.ceil(
+                                  (res.data.metadata?.total || 0) /
+                                    (filter.limit || 0)
+                                ),
+                                totalItems: res.data.metadata?.total || 0,
+                              };
+                            }
+                            return Promise.resolve(dataSource);
+                          }}
+                          onQueryChange={(filter: any) => {
+                            let dataSourceFilter: ItemFilterRequest = {
+                              query: filter.query,
+                              page: filter.page || 1,
+                            };
+                            return dataSourceFilter;
+                          }}
+                          renderOption={(option: ItemResponses) => (
+                            <Box
+                              style={{
+                                width: "100%",
+                                lineHeight: "40px",
+                                padding: "16px 0px",
+                                cursor: "pointer",
                               }}
-                              onQueryChange={(filter: any) => {
-                                let dataSourceFilter: IngredientFilterRequest =
-                                  {
-                                    limit: 10,
-                                    query: filter.query,
-                                    page: filter.page || 1,
-                                  };
-                                return dataSourceFilter;
-                              }}
-                              renderOption={(option: IngredientResponse) => (
-                                <Box
-                                  style={{
-                                    width: "100%",
-                                    lineHeight: "40px",
-                                    padding: "16px 0px",
-                                    cursor: "pointer",
-                                  }}
-                                >
-                                  <Typography style={{ marginLeft: "16px" }}>
-                                    {option.name} - Tồn kho: {option.quantity}
-                                  </Typography>
-                                </Box>
-                              )}
-                              placeholder="Tìm kiếm nguyên liệu"
-                              onChange={(ingredient: IngredientResponse) => {
-                                addIngredients(
-                                  {
-                                    amountConsume: 1,
-                                    name: ingredient.name,
-                                    ingredientId: ingredient.id,
-                                    stockUnitId:
-                                      ingredient.stockUnitResponse?.id || 0,
-                                  },
-                                  variant
-                                );
-                              }}
-                              value={null}
-                              className={classes.infiniteList}
-                              NoResultsComponent={() => (
-                                <NoResultsComponent
-                                  nameObject="nguyên liệu"
-                                  helpText={
-                                    "Thử thay đổi từ khóa tìm kiếm hoặc thêm mới"
-                                  }
-                                  style={{ padding: "48px 0 84px" }}
-                                />
-                              )}
+                            >
+                              <Typography style={{ marginLeft: "16px" }}>
+                                {option.name}-{option.variants.name} - giá:{" "}
+                                {option.variants.price}
+                              </Typography>
+                            </Box>
+                          )}
+                          placeholder="Tìm kiếm mặt hàng"
+                          onChange={(item: ItemResponses) => {
+                            debugger;
+                            addVariant(
+                              {
+                                variantId: item.variants.id,
+                                quantity: 1,
+                                price: item.variants.price,
+                                name: item.name + "-" + item.variants.name,
+                              },
+                              item
+                            );
+                          }}
+                          value={null}
+                          className={classes.infiniteList}
+                          NoResultsComponent={() => (
+                            <NoResultsComponent
+                              nameObject="nguyên liệu"
+                              helpText={
+                                "Thử thay đổi từ khóa tìm kiếm hoặc thêm mới"
+                              }
+                              style={{ padding: "48px 0 84px" }}
                             />
-                          </Box>
-                        </Box>
-                        <Box>
-                          <Table stickyHeader>
-                            <TableHead>
-                              <TableCell>STT</TableCell>
-                              <TableCell>Tên nguyên liệu</TableCell>
-                              <TableCell align="center">Số lượng</TableCell>
-                              <TableCell align="center">Đơn vị</TableCell>
-                              <TableCell style={{ width: "50px" }}></TableCell>
-                            </TableHead>
-                            {variant.ingredients &&
-                              variant.ingredients.length > 0 &&
-                              variant.ingredients.map((item, index) => (
+                          )}
+                        />
+                      </Box>
+                    </Box>
+                    <Box>
+                      <Table stickyHeader>
+                        <TableHead>
+                          <TableCell>STT</TableCell>
+                          <TableCell>Tên mặt hàng </TableCell>
+                          <TableCell align="center">Số lượng</TableCell>
+                          <TableCell align="center">Giá</TableCell>
+                          <TableCell style={{ width: "50px" }}></TableCell>
+                        </TableHead>
+                        {variantComboRequest &&
+                          variantComboRequest.length > 0 &&
+                          variantComboRequest.map(
+                            (item, index) => (
+                              console.log("oke", item),
+                              (
                                 <TableBody key={index}>
                                   <TableCell>{index + 1}</TableCell>
                                   <TableCell>
@@ -408,57 +444,30 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                                   </TableCell>
                                   <TableCell align="center">
                                     <NumberInputTextField
-                                      value={item.amountConsume}
+                                      value={item.quantity}
                                       onChange={(value: any) => {
-                                        updateIngredients(
-                                          {
-                                            ...item,
-                                            amountConsume: value.target
-                                              .value as number,
-                                          },
-                                          variant
-                                        );
+                                        updateVariant({
+                                          ...item,
+                                          quantity: value.target
+                                            .value as number,
+                                        });
                                       }}
                                       name={"quantity"}
-                                      style={{ marginTop: "-15px" }}
+                                      style={{
+                                        marginTop: "-15px",
+                                        width: "50%",
+                                      }}
                                     />
                                   </TableCell>
-                                  <TableCell align="center">
-                                    <Select
-                                      value={item?.stockUnitId}
-                                      disabled
-                                      style={{ marginTop: "10px" }}
-                                      onChange={(
-                                        event: React.ChangeEvent<{
-                                          value: unknown;
-                                        }>
-                                      ) => {
-                                        updateIngredients(
-                                          {
-                                            ...item,
-                                            stockUnitId: event.target
-                                              .value as number,
-                                          },
-                                          variant
-                                        );
-                                      }}
-                                      placeholder="Chọn đơn vị"
-                                    >
-                                      {stockUnits?.map((item, index) => {
-                                        return (
-                                          <MenuItem key={index} value={item.id}>
-                                            <Typography>{item.name}</Typography>
-                                          </MenuItem>
-                                        );
-                                      })}
-                                    </Select>
+                                  <TableCell>
+                                    <Typography>{item.price}</Typography>
                                   </TableCell>
                                   <TableCell style={{ width: "50px" }}>
                                     <IconButton
                                       aria-label="close"
                                       style={{ width: "20px" }}
                                       onClick={() => {
-                                        deleteIngredients(item, variant);
+                                        deleteVarinat(item);
                                       }}
                                     >
                                       <CloseIcon
@@ -470,54 +479,33 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                                     </IconButton>
                                   </TableCell>
                                 </TableBody>
-                              ))}
-                          </Table>
-                          {!(
-                            variant.ingredients &&
-                            variant.ingredients.length > 0
-                          ) && (
-                            <Box style={{ margin: "auto", padding: "24px" }}>
-                              <BoxNoDataComponent width="150px" />
-                            </Box>
+                              )
+                            )
                           )}
+                      </Table>
+                      {!(
+                        variantComboRequest && variantComboRequest.length > 0
+                      ) && (
+                        <Box style={{ margin: "auto", padding: "24px" }}>
+                          <BoxNoDataComponent width="150px" />
                         </Box>
-                      </Box>
+                      )}
                     </Box>
-                  ))}
-                <Button
-                  onClick={() => {
-                    addVariants();
-                  }}
-                  style={{ marginTop: "10px" }}
-                  startIcon={<PlusIcon color="primary" />}
-                  variant="text"
-                  color="primary"
-                >
-                  Thêm phiên bản
-                </Button>
+                  </Box>
+                </Box>
               </Box>
             </Paper>
           </Grid>
           <Grid item xs={4}>
             <Paper className={classes.wrapperBoxInfo}>
               <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
-                Thông tin mặt hàng
+                Tùy chọn Combo
               </Typography>
               <Box
                 className={classes.boxContentPaper}
                 style={{ height: "350px" }}
               >
                 <Grid xs={12}>
-                  <TextField
-                    label="Tên mặt hàng"
-                    placeholder="Nhập tên mặt hàng"
-                    required
-                    fullWidth
-                    value={itemRequest?.name}
-                    onChange={(e: any) => {
-                      setItemRequest({ ...itemRequest, name: e.target.value });
-                    }}
-                  />
                   <NumberInputTextField
                     label="Giảm giá mặt hàng"
                     placeholder="Nhập giá trị giảm giá"
@@ -525,6 +513,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                     onChange={(e) => {}}
                     fullWidth
                     name={"discount"}
+                    value={comboRequest?.discountPercentage ?? 0}
                   />
                   <Box style={{ marginTop: "16px", width: "293px" }}>
                     <SearchSuggest
@@ -549,10 +538,10 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                     <TextareaAutosize
                       label="Mô tả"
                       height={60}
-                      value={itemRequest?.description}
+                      value={comboRequest?.description} 
                       onChange={(e: any) => {
-                        setItemRequest({
-                          ...itemRequest,
+                        setComboRequest({
+                          ...comboRequest,
                           description: e.target.value,
                         });
                       }}
@@ -580,7 +569,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
           color="primary"
           style={{ marginLeft: "16px" }}
           onClick={() => {
-            handleUpdateItem();
+            handleUpdateCombo();
           }}
         >
           Lưu
