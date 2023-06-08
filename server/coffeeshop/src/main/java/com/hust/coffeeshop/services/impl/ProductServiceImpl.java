@@ -79,7 +79,10 @@ public class ProductServiceImpl implements ProductService {
             if(items != null && items.size() > 0){
                 for (var item: items) {
                     ProductResponse productResponse = mapperProductByItem(item);
-                    productResponses.add(productResponse);
+                    productResponse.setCombo(false);
+                   if(productResponse.getVariants() != null && productResponse.getVariants().size() > 0){
+                       productResponses.add(productResponse);
+                   }
                 }
             }
         }
@@ -127,7 +130,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductResponse.ProductVariantResponse> productVariants = new ArrayList<>();
         //với sp combo
         if (isCombo) {
-            var comboItems = comboItemRepository.findUserByComboId(productId);
+            var comboItems = comboItemRepository.findComboItemByComboId(productId);
             if (comboItems != null && comboItems.size() > 0) {
                 List<Integer> variantIds = comboItems.stream().map(ComboItem::getVariantId).collect(Collectors.toList());
                 var variants = variantRepository.findVariantByIds(variantIds);

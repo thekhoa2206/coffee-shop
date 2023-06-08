@@ -33,7 +33,7 @@ export function getMessageError(e: any) {
       message = e;
     } else if (e.request.status === 422) {
       try {
-        const fieldErrors = e.response.request.response.data_error.errors;
+        const fieldErrors = e.response.request.response.errors;
         message = Object.keys(fieldErrors)
           .map((key) => (isNil(key) || key.trim().length === 0 ? fieldErrors[key] : `${key} : ${fieldErrors[key]}`))
           .join(" , ");

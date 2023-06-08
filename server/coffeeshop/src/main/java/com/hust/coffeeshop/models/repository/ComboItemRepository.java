@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ComboItemRepository   extends JpaRepository<ComboItem, Integer>, JpaSpecificationExecutor<ComboItem> {
     @Query(value = "SELECT combo_item.* FROM combo_item WHERE combo_id = ?1  AND  status =1", nativeQuery = true)
-    List<ComboItem> findUserByComboId(int comboId);
+    List<ComboItem> findComboItemByComboId(int comboId);
     @Query(value = "SELECT combo_item.* FROM combo_item WHERE combo_id = ?1 AND  variant_id = ?2", nativeQuery = true)
     ComboItem findUserByComboIdVAndVariantId(int comboId,int variantId);
 //    @Query(value = "SELECT variant.* FROM variant WHERE item_id = ?1 AND  status = 1", nativeQuery = true)

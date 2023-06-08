@@ -21,6 +21,7 @@ const InputQuantity = (props: InputQuantityProps) => {
     autoHidden,
     name = "quantity",
     disabled,
+    styleInput,
   } = props;
   const classes = useStyles();
   const [valueInput, setValueInput] = useState(value);
@@ -78,14 +79,14 @@ const InputQuantity = (props: InputQuantityProps) => {
 
   return (
     <Box className={clsx(classes.root, className)}>
-      <IconButton
+      {/* <IconButton
         disabled={disabled}
         classes={{ root: classes.iconButton }}
         className={clsx("icon-btn btn-subtract", autoHidden ? "auto-hidden" : "")}
         onClick={() => handleClickBtn("down")}
       >
         <RemoveCircleOutlinedIcon fontSize="small" />
-      </IconButton>
+      </IconButton> */}
       <NumberInputTextField
         inputComponent={SapoTextField}
         textFieldProps={{
@@ -99,12 +100,12 @@ const InputQuantity = (props: InputQuantityProps) => {
         decimalSeparator={decimalSeparator}
         decimalScale={decimalScale}
         onKeyDown={handleKey}
-        styleInput={{ textAlign: "center" }}
+        styleInput={styleInput ? styleInput : { textAlign: "center" } }
         selectOnFocus={true}
         max={max}
         style={style}
       />
-
+{/* 
       <IconButton
         disabled={disabled}
         classes={{ root: classes.iconButton }}
@@ -112,7 +113,7 @@ const InputQuantity = (props: InputQuantityProps) => {
         onClick={(e) => handleClickBtn("up")}
       >
         <AddCircleOutlinedIcon fontSize="small" />
-      </IconButton>
+      </IconButton> */}
     </Box>
   );
 };

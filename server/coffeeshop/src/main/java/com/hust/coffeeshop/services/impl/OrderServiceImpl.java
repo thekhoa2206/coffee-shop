@@ -2,10 +2,9 @@ package com.hust.coffeeshop.services.impl;
 
 import com.hust.coffeeshop.common.CommonStatus;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
-import com.hust.coffeeshop.models.dto.order.OrderFilterRequest;
-import com.hust.coffeeshop.models.dto.order.OrderItemResponse;
-import com.hust.coffeeshop.models.dto.order.OrderRequest;
-import com.hust.coffeeshop.models.dto.order.OrderResponse;
+import com.hust.coffeeshop.models.dto.order.*;
+import com.hust.coffeeshop.models.entity.ComboItem;
+import com.hust.coffeeshop.models.entity.ItemIngredient;
 import com.hust.coffeeshop.models.entity.Order;
 import com.hust.coffeeshop.models.entity.OrderItem;
 import com.hust.coffeeshop.models.exception.ErrorException;
@@ -21,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,16 +35,29 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final CustomerService customerService;
     private final ProductService productService;
+    private final ComboRepository comboRepository;
+    private final ComboItemRepository comboItemRepository;
+    private final ItemIngredientRepository itemIngredientRepository;
+    private final IngredientRepository ingredientRepository;
+    private final VariantRepository variantRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService) {
+    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository) {
         this.orderRepository = orderRepository;
         this.filterRepository = filterRepository;
         this.mapper = mapper;
         this.orderItemRepository = orderItemRepository;
         this.customerService = customerService;
         this.productService = productService;
+        this.comboRepository = comboRepository;
+        this.comboItemRepository = comboItemRepository;
+        this.itemIngredientRepository = itemIngredientRepository;
+        this.ingredientRepository = ingredientRepository;
+        this.variantRepository = variantRepository;
     }
-
+/*
+* Coi 2 loại sản phẩm là combo và sp thường => khi bán hàng bán 2 loại sp là combo và sp thường(variant)
+* product id là lưu 2 loại(combo_id với sp combo và variant_id với sp thường)
+* */
     @Override
     public PagingListResponse<OrderResponse> filter(OrderFilterRequest filter) {
         if (filter.getQuery() != null) {
@@ -117,6 +130,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public OrderResponse create(OrderRequest request) {
         Order order = new Order();
         if (request.getOrderItemRequest() == null || request.getOrderItemRequest().size() == 0)
@@ -128,7 +142,7 @@ public class OrderServiceImpl implements OrderService {
 
         var lastId = orderRepository.getLastOrderId();
         if (request.getCode() == null)
-        order.setCode("DON" + (lastId + 1));
+            order.setCode("DON" + (lastId + 1));
         else order.setCode(request.getCode());
         order.setStatus(CommonStatus.OrderStatus.DRAFT);
         order.setCreatedOn();
@@ -138,11 +152,12 @@ public class OrderServiceImpl implements OrderService {
         order.setCustomerId(request.getCustomerId());
         order.setNote(request.getNote());
         order.setDiscount_total(request.getDiscountTotal() != null ? request.getDiscountTotal() : BigDecimal.ZERO);
-        order.setTotal(order.getTotal());
+        order.setTotal(request.getTotal());
 
         order = orderRepository.save(order);
         List<OrderItem> lineItems = new ArrayList<>();
-        for ( var item: request.getOrderItemRequest()) {
+        for (var item : request.getOrderItemRequest()) {
+            checkAvailable(item);
             var lineItem = mapper.map(item, OrderItem.class);
             lineItem.setCreatedOn();
             lineItem.setModifiedOn();
@@ -152,20 +167,63 @@ public class OrderServiceImpl implements OrderService {
             lineItem.setOrderId(order.getId());
             lineItems.add(lineItem);
         }
-        if(lineItems != null && lineItems.size() > 0){
+        if (lineItems != null && lineItems.size() > 0) {
             orderItemRepository.saveAll(lineItems);
         }
         var orderResponse = mapperOrderResponse(order);
         return orderResponse;
     }
 
-    //Hàm check có thể bán
-    private void checkAvailable(){
-
+    //Hàm check có thể bán trừ kho
+    private void checkAvailable(OrderItemRequest request) {
+        if (request.isCombo()) {
+            var combo = comboRepository.findById(request.getProductId());
+            if (!combo.isPresent() || combo == null) throw new ErrorException("Không tìm thấy combo!");
+            var comboItems = comboItemRepository.findComboItemByComboId(combo.get().getId());
+            if (comboItems != null || comboItems.size() > 0) {
+                var variantIds = comboItems.stream().map(ComboItem::getVariantId).collect(Collectors.toList());
+                var variants = variantRepository.findVariantByIds(variantIds);
+                if (variantIds != null && variantIds.size() > 0) {
+                    setIngredient(variantIds, request);
+                } else {
+                    throw new ErrorException("Không tìm thấy phiên bản mặt hàng!");
+                }
+            } else {
+                throw new ErrorException("Không tìm thấy combo!");
+            }
+        } else {
+            var variantId = request.getProductId();
+            List<Integer> variantIds = new ArrayList<>();
+            variantIds.add(variantId);
+            setIngredient(variantIds, request);
+        }
     }
-    //Hàm check trừ kho
-    private void setAvailable(){
 
+    //Hàm trừ nguyên liệu
+    private void setIngredient(List<Integer> variantIds, OrderItemRequest request) {
+        var itemIngredients = itemIngredientRepository.findItemIngredientByVariantIds(variantIds);
+        var itemIngredientIds = itemIngredients.stream().map(ItemIngredient::getIngredientId).collect(Collectors.toList());
+        var ingredients = ingredientRepository.findByIds(itemIngredientIds);
+        if (ingredients != null && ingredients.size() > 0) {
+            for (var ingredient : ingredients) {
+                var itemIngredient = itemIngredients
+                        .stream()
+                        .filter(i -> i.getIngredientId() == ingredient.getId())
+                        .collect(Collectors.toList())
+                        .stream()
+                        .findFirst()
+                        .orElse(null);
+                if(itemIngredient != null){
+                    //số lượng, khối lượng bán đi
+                    var amount = request.getQuantity()*itemIngredient.getAmountConsume();
+                    if(ingredient.getQuantity() - amount < 0) throw new ErrorException("Nguyên liệu không đủ số lượng, khối lượng có thể bán!");
+                    ingredient.setQuantity(ingredient.getQuantity() - amount);
+                    ingredientRepository.save(ingredient);
+                }else {
+                    throw new ErrorException("Không tìm thấy phiên bản mặt hàng!");
+                }
+            }
+        }
     }
 }
 

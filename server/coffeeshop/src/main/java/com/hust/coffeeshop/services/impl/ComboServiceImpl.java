@@ -149,7 +149,8 @@ public class ComboServiceImpl implements ComboService {
         var comboRespone = mapper.map(comboNew, ComboRespone.class);
         List<ItemRepsone> itemRepsones = new ArrayList<>();
         var categoryResponse = mapper.map(category, CategoryResponse.class);
-        List<ComboItem> comboItems = comboItemRepository.findUserByComboId(id);
+
+        List<ComboItem> comboItems = comboItemRepository.findComboItemByComboId(id);
         updateVariant(request.getVarianIds(),comboItems,id);
         categoryResponse.set();
         comboRespone.setCategory(category);
@@ -167,8 +168,7 @@ public class ComboServiceImpl implements ComboService {
             if(category!= null)
             comboRespone.setCategory(category);
         }
-        List<ComboItem> comboItems = comboItemRepository.findUserByComboId(id);
-
+        List<ComboItem> comboItems = comboItemRepository.findComboItemByComboId(id);
         if(comboItems.size()>0){
             List<ComboItemResponse> itemRepsones = new ArrayList<>();
             for (var i : comboItems){
@@ -203,7 +203,7 @@ public class ComboServiceImpl implements ComboService {
         if (combo.get() == null) throw new ErrorException("Không tìm thấy mặt hàng");
         combo.get().setStatus(CommonStatus.CustomerStatus.DELETED);
         combo.get().setModifiedOn(CommonCode.getTimestamp());
-        List<ComboItem> comboItems = comboItemRepository.findUserByComboId(id);
+        List<ComboItem> comboItems = comboItemRepository.findComboItemByComboId(id);
         for(var i : comboItems){
             comboItemRepository.deleteById(i.getId());
         }

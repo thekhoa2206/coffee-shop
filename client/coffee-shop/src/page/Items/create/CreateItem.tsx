@@ -265,8 +265,7 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
                                                                     value={item.amountConsume}
                                                                     onChange={(value: any) => {
                                                                         updateIngredients({ ...item, amountConsume: value.target.value as number }, variant);
-                                                                    }
-                                                                    }
+                                                                    }}
                                                                     name={"quantity"} style={{ marginTop: "-15px" }} />
                                                             </TableCell>
                                                             <TableCell align="center">
