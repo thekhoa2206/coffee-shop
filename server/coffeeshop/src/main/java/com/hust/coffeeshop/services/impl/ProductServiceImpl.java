@@ -146,6 +146,7 @@ public class ProductServiceImpl implements ProductService {
                     productVariant.setModifiedOn(variant.getModifiedOn());
                     productVariant.setModifiedBy(variant.getModifiedBy());
                     productVariant.setCreatedBy(variant.getCreatedBy());
+                    productVariant.setQuantity(comboItem.getQuantity());
                     List<Integer> ids = new ArrayList<>();
                     ids.add(variant.getId());
                     var productIngredients = mapperProductIngredients(ids);
@@ -173,6 +174,7 @@ public class ProductServiceImpl implements ProductService {
                     productVariant.setModifiedOn(variant.getModifiedOn());
                     productVariant.setModifiedBy(variant.getModifiedBy());
                     productVariant.setCreatedBy(variant.getCreatedBy());
+                    productVariant.setQuantity(1);
                     productVariant.setId(variant.getId());
                     List<Integer> ids = new ArrayList<>();
                     ids.add(variant.getId());
@@ -245,6 +247,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     //Hàm tính số lượng có thể bán của variant
+    @Override
     public List<VariantAvailable> getQuantityAvailableVariant(List<Integer> variantIds) {
         List<VariantAvailable> variantAvailables = new ArrayList<>();
         List<ItemIngredient> itemIngredients = itemIngredientRepository.findItemIngredientByVariantIds(variantIds);

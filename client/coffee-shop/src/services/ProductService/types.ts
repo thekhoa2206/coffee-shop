@@ -21,6 +21,7 @@ export interface ProductVariantResponse extends BaseResponse {
     price?: number;
     ingredients?: ProductIngredientResponse[];
     productItemId?: number;
+    quantity?: number;
 }
 
 export interface ProductIngredientResponse extends BaseResponse {

@@ -87,7 +87,7 @@ public class ItemServiceImpl implements ItemService {
                     variant.setCreatedOn(CommonCode.getTimestamp());
                     variant.setModifiedOn();
                     variant.setPrice(i.getPrice());
-                    variant.setName(i.getName());
+                    variant.setName(item.getName() + " - " + i.getName());
                     variant.setItemId(ItemNew.getId());
                     VariantRepsone variantRepsone = mapper.map(request.getVariantRequest(), VariantRepsone.class);
 

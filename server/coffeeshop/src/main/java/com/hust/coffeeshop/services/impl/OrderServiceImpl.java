@@ -153,6 +153,7 @@ public class OrderServiceImpl implements OrderService {
         order.setNote(request.getNote());
         order.setDiscount_total(request.getDiscountTotal() != null ? request.getDiscountTotal() : BigDecimal.ZERO);
         order.setTotal(request.getTotal());
+        order.setPaymentStatus(CommonStatus.PaymentStatus.UNPAID);
 
         order = orderRepository.save(order);
         List<OrderItem> lineItems = new ArrayList<>();
@@ -224,6 +225,19 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
         }
+    }
+
+    @Override
+    public OrderResponse getById(int id){
+        if(id == 0) throw new ErrorException("Không có id đơn hàng");
+        var order = orderRepository.findById(id);
+        if(!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
+        var orderResponse = mapperOrderResponse(order.get());
+        var customer = customerService.getById(order.get().getCustomerId());
+        if (customer != null) {
+            orderResponse.setCustomerResponse(customer);
+        }
+        return orderResponse;
     }
 }
 

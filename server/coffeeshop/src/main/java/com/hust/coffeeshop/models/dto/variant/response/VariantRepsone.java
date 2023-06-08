@@ -16,4 +16,5 @@ public class VariantRepsone extends BaseResponse {
     private BigDecimal price;
     private int itemId;
     private List<IngredientItemResponse> ingredients;
+    private int available;
 }

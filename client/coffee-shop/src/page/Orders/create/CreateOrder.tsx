@@ -52,6 +52,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
     customer,
     total,
     discountTotal,
+    reset,
   } = useOrderStore();
   const [querySearchCustomer, setQuerySearchCustomer] = useState("");
   const [openDialogAddCustomer, setOpenDialogAddCustomer] = useState(false);
@@ -63,7 +64,10 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
     },
     []
   );
-
+    useEffect(() => {
+      reset();
+      set((prev) => ({ ...prev, context: "create" }));
+    }, [])
   const totalLineAmount = () => {
     let total = 0;
     if (lineItems && lineItems.length > 0) {

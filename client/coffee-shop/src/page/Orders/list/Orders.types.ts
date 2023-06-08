@@ -31,5 +31,6 @@ export interface LineItemStore {
    price: number;
    lineAmount?: number;
    variants?: ProductVariantResponse[];
-   available?: number;
+   available: number;
+   isShow?: boolean;
 }

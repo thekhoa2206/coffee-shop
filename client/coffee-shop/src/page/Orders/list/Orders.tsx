@@ -164,7 +164,7 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                                     stickyHeader
                                     tableDrillDown
                                     stickyHeaderTop={52}
-                                    onRowClick={(e, data) => { history.push(`/admin/items/${data.id}`)}}
+                                    onRowClick={(e, data) => { history.push(`/admin/orders/${data.id}`)}}
                                     disablePaging={false}
                                 >
                                     <GridColumn
@@ -199,24 +199,6 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                                         width={150}
                                         align="left"
                                     />
-                                    {/* <GridColumn
-                                        field="unit"
-                                        title={getItemsQuickFilterLabel(
-                                            ItemsQuickFilterOptions.UNIT
-                                        )}
-                                        width={150}
-                                        align="left"
-                                    >
-                                        {({ dataItem }: CellTemplateProps) => {
-                                            return (
-                                                <>
-                                                    <Typography>
-                                                        {dataItem.stockUnitResponse?.name}
-                                                    </Typography>
-                                                </>
-                                            );
-                                        }}
-                                    </GridColumn> */}
                                     <GridColumn
                                         field="note"
                                         title={getOrdersQuickFilterLabel(

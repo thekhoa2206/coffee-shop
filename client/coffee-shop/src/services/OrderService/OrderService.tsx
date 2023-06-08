@@ -8,5 +8,8 @@ class OrderService {
     static async create(request?: OrderRequest): Promise<AxiosResponse<OrderResponse>> {
         return axios.post(`/orders`,request, { ...getAxiosConfig()});
     }
+    static async getById(id?: string): Promise<AxiosResponse<OrderResponse>> {
+        return axios.get(`/orders/${id}`, { ...getAxiosConfig() });
+    }
 }
 export default OrderService;

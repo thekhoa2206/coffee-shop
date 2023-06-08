@@ -15,6 +15,7 @@ const CreateOrder = React.lazy(() => import("./page/Orders/create"));
 const DetailItem = React.lazy(() => import("./page/Items/detail"));
 const EditItem = React.lazy(() => import("./page/Items/update"));
 const Orders = React.lazy(() => import("./page/Orders/list"));
+const OrderDetail = React.lazy(() => import("./page/Orders/detail"));
 
 
 export const LAYOUT_ROUTES: Route[] = [
@@ -185,6 +186,18 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: "Tạo đơn hàng",
+      linkTo: "/admin/orders",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/orders/:id",
+    component: OrderDetail,
+    extract: true,
+    header: {
+      title: "Chi tiết đơn hàng",
       linkTo: "/admin/orders",
       showNoti: false,
       withSubtitle: false,

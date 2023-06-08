@@ -11,4 +11,6 @@ public interface OrderService {
 
     //hàm create order
     OrderResponse create(OrderRequest orderRequest);
+
+    OrderResponse getById(int id);
 }
