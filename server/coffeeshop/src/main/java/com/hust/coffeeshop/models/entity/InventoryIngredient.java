@@ -13,8 +13,6 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "inventory_ingredient")
 public class InventoryIngredient extends BaseEntity{
-    @Column(name = "name")
-    private String name ;
 
     @Column(name = "quantity")
     private int quantity;

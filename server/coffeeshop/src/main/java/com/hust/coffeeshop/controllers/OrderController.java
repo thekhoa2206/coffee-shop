@@ -4,13 +4,14 @@ import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.order.OrderFilterRequest;
 import com.hust.coffeeshop.models.dto.order.OrderRequest;
 import com.hust.coffeeshop.models.dto.order.OrderResponse;
+import com.hust.coffeeshop.models.exception.BaseException;
 import com.hust.coffeeshop.services.OrderService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/orders")
 @CrossOrigin("http://localhost:3000")
-public class OrderController {
+public class OrderController extends BaseException {
     private final OrderService orderService;
 
     public OrderController(OrderService orderService) {

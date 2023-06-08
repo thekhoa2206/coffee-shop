@@ -14,9 +14,9 @@ import java.util.Date;
 public class BaseResponse {
     private Integer id;
     private long createdOn;
-    private Integer createdBy;
+    private String createdBy;
     private long modifiedOn;
-    private Integer modifiedBy;
+    private String modifiedBy;
     private Date createdDate;
     private Date modifiedDate;
     public void set() {
