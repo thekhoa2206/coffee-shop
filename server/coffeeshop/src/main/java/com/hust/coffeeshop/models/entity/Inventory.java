@@ -16,6 +16,9 @@ public class Inventory extends BaseEntity{
     @Column(name = "code")
     private String code;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "type")
     private String type;
 
@@ -24,4 +27,6 @@ public class Inventory extends BaseEntity{
 
     @Column(name = "total_money")
     private BigDecimal totalMoney;
+    @Column(name = "description")
+    private String description;
 }

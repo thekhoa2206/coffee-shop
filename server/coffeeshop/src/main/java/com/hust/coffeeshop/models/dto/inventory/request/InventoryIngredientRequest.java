@@ -1,0 +1,13 @@
+package com.hust.coffeeshop.models.dto.inventory.request;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+@Getter
+@Setter
+public class InventoryIngredientRequest {
+  private int  ingredientId;
+  private int  quantity;
+  private BigDecimal ingredientMoney;
+}

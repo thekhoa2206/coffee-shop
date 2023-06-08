@@ -18,6 +18,20 @@ public class CommonCode
         code = code + String.valueOf(ranNum);
         return code;
     }
+    public  static String GenerateCodeWarehouse(){
+        String code = "NK";
+        Random rand = new Random();
+        int ranNum = rand.nextInt((99999 - 10000) + 1) + 10000;
+        code = code + String.valueOf(ranNum);
+        return code;
+    }
+    public  static String GenerateCodeexport(){
+        String code = "XK";
+        Random rand = new Random();
+        int ranNum = rand.nextInt((99999 - 10000) + 1) + 10000;
+        code = code + String.valueOf(ranNum);
+        return code;
+    }
     public static long getTimestamp() {
         ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         return Date.from(now.toInstant()).getTime() ;

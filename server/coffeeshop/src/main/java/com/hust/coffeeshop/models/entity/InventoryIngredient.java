@@ -25,6 +25,9 @@ public class InventoryIngredient extends BaseEntity{
     @Column(name = "inventory_id")
     private int inventoryId ;
 
+    @Column(name = "status")
+    private int status ;
+
     @Column(name = "ingredient_money")
     private BigDecimal ingredientMoney ;
 }
