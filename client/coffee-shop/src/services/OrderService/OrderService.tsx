@@ -11,5 +11,11 @@ class OrderService {
     static async getById(id?: string): Promise<AxiosResponse<OrderResponse>> {
         return axios.get(`/orders/${id}`, { ...getAxiosConfig() });
     }
+    static async addPayment(id?: string): Promise<AxiosResponse<OrderResponse>> {
+        return axios.put(`/orders/${id}/payment`,{}, { ...getAxiosConfig() });
+    }
+    static async update(request?: OrderRequest, id?: string): Promise<AxiosResponse<OrderResponse>> {
+        return axios.put(`/orders/${id}`,request, { ...getAxiosConfig()});
+    }
 }
 export default OrderService;

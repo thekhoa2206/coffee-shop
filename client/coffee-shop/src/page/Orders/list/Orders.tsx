@@ -192,14 +192,6 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                                         }}
                                     </GridColumn>
                                     <GridColumn
-                                        field="accountName"
-                                        title={getOrdersQuickFilterLabel(
-                                            OrdersQuickFilterOptions.ACCOUNT_NAME
-                                        )}
-                                        width={150}
-                                        align="left"
-                                    />
-                                    <GridColumn
                                         field="note"
                                         title={getOrdersQuickFilterLabel(
                                             OrdersQuickFilterOptions.NOTE
@@ -318,6 +310,24 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                                                 <>
                                                     <Typography>
                                                         {formatMoney(dataItem.discountTotal || 0)}
+                                                    </Typography>
+                                                </>
+                                            );
+                                        }}
+                                    </GridColumn>
+                                    <GridColumn
+                                        field="accountName"
+                                        title={getOrdersQuickFilterLabel(
+                                            OrdersQuickFilterOptions.ACCOUNT_NAME
+                                        )}
+                                        width={150}
+                                        align="left"
+                                    >
+                                        {({ dataItem }: CellTemplateProps) => {
+                                            return (
+                                                <>
+                                                    <Typography>
+                                                        ---
                                                     </Typography>
                                                 </>
                                             );

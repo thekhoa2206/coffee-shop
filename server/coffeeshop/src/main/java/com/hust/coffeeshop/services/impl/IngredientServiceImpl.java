@@ -2,13 +2,13 @@ package com.hust.coffeeshop.services.impl;
 
 import com.hust.coffeeshop.common.CommonStatus;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
-import com.hust.coffeeshop.models.dto.customer.CustomerResponse;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientFilterRequest;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientRequest;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientResponse;
 import com.hust.coffeeshop.models.dto.stockunit.StockUnitResponse;
-import com.hust.coffeeshop.models.entity.Customer;
+import com.hust.coffeeshop.models.entity.ComboItem;
 import com.hust.coffeeshop.models.entity.Ingredient;
+import com.hust.coffeeshop.models.entity.ItemIngredient;
 import com.hust.coffeeshop.models.entity.StockUnit;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
@@ -22,20 +22,20 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class IngredientServiceImpl implements IngredientService {
     private final IngredientRepository ingredientRepository;
+    private final ItemIngredientRepository itemIngredientRepository;
     private final ModelMapper mapper;
     private final FilterRepository filterRepository;
     private final StockUnitRepository stockUnitRepository;
 
-    public IngredientServiceImpl(IngredientRepository ingredientRepository, ModelMapper mapper, FilterRepository filterRepository, StockUnitRepository stockUnitRepository) {
+    public IngredientServiceImpl(IngredientRepository ingredientRepository, ItemIngredientRepository itemIngredientRepository, ModelMapper mapper, FilterRepository filterRepository, StockUnitRepository stockUnitRepository) {
         this.ingredientRepository = ingredientRepository;
+        this.itemIngredientRepository = itemIngredientRepository;
         this.mapper = mapper;
         this.filterRepository = filterRepository;
         this.stockUnitRepository = stockUnitRepository;
@@ -110,12 +110,40 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public PagingListResponse<IngredientResponse> filter(IngredientFilterRequest filter) {
+        var results = filterIngredient(filter);
+        List<IngredientResponse> ingredientResponses = new ArrayList<>();
+        for (val ingredient : results.getContent()
+        ) {
+            val ingredientResponse = mapper.map(ingredient, IngredientResponse.class);
+            var stockUnit = stockUnitRepository.findById(ingredient.getStockUnitId()).get();
+            var stockUnitResponse = mapper.map(stockUnit, StockUnitResponse.class);
+            ingredientResponse.setStockUnitResponse(stockUnitResponse);
+            ingredientResponses.add(ingredientResponse);
+        }
+
+        return new PagingListResponse<>(
+                ingredientResponses,
+                new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results.getTotalElements()));
+    }
+    @Override
+    public Page<Ingredient> filterIngredient(IngredientFilterRequest filter){
         Pageable pageable = PageRequest.of(
                 filter.getPage() - 1,
                 filter.getLimit(),
                 Sort.by(Sort.Direction.DESC, "id"));
         var filters = new ArrayList<Filter>();
-
+        //variantIds
+        if (filter.getVariantIds() != null) {
+            var ingredientItems = itemIngredientRepository.findItemIngredientByVariantIds(filter.getVariantIds());
+            var ingredientIds= ingredientItems.stream().map(ItemIngredient::getIngredientId).collect(Collectors.toList());
+            if(ingredientItems != null && ingredientIds.size() > 0){
+                if(filter.getIds() != null){
+                    filter.getIds().addAll(ingredientIds);
+                }else{
+                    filter.setIds(ingredientIds);
+                }
+            }
+        }
         //id
         if (filter.getIds() != null) {
             Filter ids = Filter.builder()
@@ -147,18 +175,7 @@ public class IngredientServiceImpl implements IngredientService {
         if (filters.size() > 0)
             results = ingredientRepository.findAll(filterRepository.getSpecificationFromFilters(filters), pageable);
         else results = ingredientRepository.findAll(pageable);
-        List<IngredientResponse> ingredientResponses = new ArrayList<>();
-        for (val ingredient : results.getContent()
-        ) {
-            val ingredientResponse = mapper.map(ingredient, IngredientResponse.class);
-            var stockUnit = stockUnitRepository.findById(ingredient.getStockUnitId()).get();
-            var stockUnitResponse = mapper.map(stockUnit, StockUnitResponse.class);
-            ingredientResponse.setStockUnitResponse(stockUnitResponse);
-            ingredientResponses.add(ingredientResponse);
-        }
 
-        return new PagingListResponse<>(
-                ingredientResponses,
-                new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results.getTotalElements()));
+        return results;
     }
 }

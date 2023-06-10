@@ -30,6 +30,12 @@ import { OrderStatus, PaymentStatus } from "../utils/OrderContants";
 import styles from "./OrderDetail.styles";
 import Chip from "components/Chip/Chip.component";
 import BoxStep from "./components/BoxStep";
+import Button from "components/Button";
+import { PencilIcon, PrintIcon } from "components/SVG";
+import { CloseOutlined, PaymentOutlined } from "@material-ui/icons";
+import Dialog from "components/Dialog/Dialog";
+import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
+import useModal from "components/Modal/useModal";
 
 export interface OrderDetailProps extends WithStyles<typeof styles> { }
 const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
@@ -48,11 +54,9 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
         reset,
         order,
     } = useOrderStore();
-    const [querySearchCustomer, setQuerySearchCustomer] = useState("");
-    const [openDialogAddCustomer, setOpenDialogAddCustomer] = useState(false);
     const history = useHistory();
     const { id } = useParams<{ id: string }>();
-
+    const { closeModal, confirm, openModal } = useModal();
     useEffect(() => {
         initData();
     }, [id])
@@ -144,13 +148,6 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
             }
         }
     }
-    const handleChangeCustomer = useCallback(
-        (customer: CustomerResponse | null) => {
-            set((prev) => ({ ...prev, customer: customer }));
-        },
-        []
-    );
-
     const totalLineAmount = () => {
         let total = 0;
         if (lineItems && lineItems.length > 0) {
@@ -167,54 +164,6 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
         }));
     }, [totalLineAmount, discountTotal]);
 
-    const createOrder = async () => {
-        if (!lineItems || lineItems.length === 0) {
-            SnackbarUtils.error("Sản phẩm không được để trống");
-            return;
-        }
-        if (!customer) {
-            SnackbarUtils.error("Thông tin khách hàng không được để trống");
-            return;
-        }
-        let orderLineItems: OrderItemRequest[] = [];
-        let error = null;
-        lineItems.forEach((i) => {
-            if (i.quantity > (i.available)) {
-                error = "Số lượng có thể bán nhỏ hơn số lượng bán!";
-            }
-        });
-        if (error) {
-            SnackbarUtils.error(error);
-            return;
-        }
-        lineItems.map((item) => {
-            let lineItemRequest: OrderItemRequest = {
-                productId: item.productId,
-                combo: item.combo,
-                name: item.name,
-                quantity: item.quantity,
-                price: item.price,
-            };
-            orderLineItems.push(lineItemRequest);
-        });
-        let requestOrder: OrderRequest = {
-            customerId: customer.id || 0,
-            note: note,
-            discountTotal: discountTotal || 0,
-            orderItemRequest: orderLineItems,
-            code: code,
-            total: total || 0,
-        };
-        try {
-            let res = await OrderService.create(requestOrder);
-            if (res.data) {
-                SnackbarUtils.success("Tạo đơn hàng thành công!");
-                history.push(`/admin/orders/${res.data.id}`);
-            }
-        } catch (error) {
-            SnackbarUtils.error(getMessageError(error));
-        }
-    };
 
     const renderOrderStatus = (status?: number) => {
         switch (status) {
@@ -241,6 +190,21 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                 return <Chip className="warning" variant="outlined" size="medium" label={PaymentStatus.getName(status)} />;
         }
     };
+
+    const addPayment = async () => {
+        try {
+            let res = await OrderService.addPayment(id);
+            if (res) {
+                SnackbarUtils.success("Thanh toán đơn hàng thành công")
+                set((prev) => ({
+                    ...prev,
+                    order: order,
+                }))
+            }
+        } catch (error) {
+            SnackbarUtils.error(getMessageError(error));
+        }
+    }
     return (
         <>
             <Box className={classes.container}>
@@ -252,10 +216,28 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                             </Typography>
                             {order?.status && renderOrderStatus(order.status)}
                         </Box>
+                        <Box display="flex" alignItems="center" style={{ marginTop: 10 }}>
+                            <Button startIcon={<PencilIcon />} color="inherit" variant="text" onClick={() => { history.push(`/admin/orders/${id}/edit`) }}>Sửa</Button>
+                            <Button startIcon={<PaymentOutlined />} color="inherit" variant="text" onClick={() => {
+                                openModal(ConfirmDialog, {
+                                    confirmButtonText: "Xác nhận",
+                                    message: "Bạn có muốn thanh toán đơn hàng này không?",
+                                    title: "Thanh toán đơn hàng",
+                                    cancelButtonText: "Thoát",
+                                }).result.then((res) => {
+                                    debugger
+                                    if (res) {
+                                        addPayment();
+                                    }
+                                })
+                            }}>Thanh toán</Button>
+                            <Button startIcon={<PrintIcon />} color="inherit" variant="text" onClick={() => { }}>In</Button>
+                            <Button startIcon={<CloseOutlined />} btnType="destruction" variant="text" onClick={() => { }}>Hủy</Button>
+                        </Box>
                     </Grid>
                     <Grid item xs={6} style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <BoxStep order={order} />
-                </Grid>
+                        <BoxStep order={order} />
+                    </Grid>
                 </Grid>
                 <Grid container xs={12} spacing={2}>
                     <Grid item xs={8}>
@@ -273,8 +255,8 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                 <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                                     Thông tin thanh toán
                                 </Typography>
-                                <Box style={{marginLeft: 300, marginTop: 6}}>
-                                {renderPaymentStatus(order?.paymentStatus)}
+                                <Box style={{ marginLeft: 300, marginTop: 6 }}>
+                                    {renderPaymentStatus(order?.paymentStatus)}
                                 </Box>
                             </Box>
                             <Box className={classes.boxContentPaper}>

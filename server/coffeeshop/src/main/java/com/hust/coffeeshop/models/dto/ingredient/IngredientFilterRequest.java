@@ -12,4 +12,5 @@ public class IngredientFilterRequest extends PagingFilterRequest {
     private List<Integer> ids;
     private String query;
     private String statuses;
+    private List<Integer> variantIds;
 }

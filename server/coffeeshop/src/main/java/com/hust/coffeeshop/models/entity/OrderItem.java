@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -25,7 +26,7 @@ public class OrderItem extends BaseEntity {
     private int status;
 
     @Column(name = "price")
-    private String price;
+    private BigDecimal price;
 
     @Column(name = "quantity")
     private int quantity;

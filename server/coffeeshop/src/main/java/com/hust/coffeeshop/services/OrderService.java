@@ -13,4 +13,8 @@ public interface OrderService {
     OrderResponse create(OrderRequest orderRequest);
 
     OrderResponse getById(int id);
+
+    OrderResponse addPayment(int id);
+
+    OrderResponse update(OrderRequest orderRequest, int id);
 }

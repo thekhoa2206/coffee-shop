@@ -20,7 +20,8 @@ import {
 export type TableLineItemProps = {};
 export const TableLineItem = (props: TableLineItemProps) => {
   const { } = props;
-  const { lineItems, updateLineItem, deleteLineItem, context } = useOrderStore();
+  const { lineItems, updateLineItem, deleteLineItem, context, order } = useOrderStore();
+  
   return (
     <Fragment>
       <Table stickyHeader>
@@ -30,7 +31,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
           <TableCell>Số lượng</TableCell>
           <TableCell>Giá tiền</TableCell>
           <TableCell>Thành tiền</TableCell>
-          {context !== "detail" && (<TableCell></TableCell>)}
+          {context !== "detail" && order && order?.paymentStatus === 1 && order?.status === 1 && (<TableCell></TableCell>)}
         </TableHead>
         {lineItems &&
           lineItems.map((item, index) => (
@@ -39,7 +40,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>
-                  {context !== "detail" ? (
+                  {(context !== "detail" && order && order?.paymentStatus === 1 && order?.status === 1) ? (
                     <InputQuantity
                       value={item.quantity}
                       onChange={(value: any) => {
@@ -55,7 +56,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
                   ) : (<Typography>{item.quantity}</Typography>)}
                 </TableCell>
                 <TableCell>
-                  {context !== "detail" ? (<InputQuantity
+                  {context !== "detail" && order && order?.paymentStatus === 1 && order?.status === 1 ?  (<InputQuantity
                     value={item.price}
                     onChange={(value) => {
                       updateLineItem(
@@ -70,7 +71,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
                   />) : (<Typography>{formatMoney(item.price || 0)}</Typography>)}
                 </TableCell>
                 <TableCell>{formatMoney(item.lineAmount || 0)}</TableCell>
-                {context !== "detail" && (
+                {context !== "detail" && order && order?.status === 1 && order?.paymentStatus === 1 && (
                   <TableCell>
                     <IconButton
                       style={{ width: 20, height: 20 }}
@@ -89,7 +90,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
                     <TableCell style={{ background: "#F2F9FF" }}>{variant.name}</TableCell>
                     <TableCell align="center" colSpan={2} style={{ background: "#F2F9FF" }}>{`${((variant.quantity || 1) * item.quantity)} x ${formatMoney(variant.price || 0)}`}</TableCell>
                     <TableCell style={{ border: "none" }} />
-                    {context !== "detail" && <TableCell />}
+                    {context !== "detail" && order && order?.status === 1 && order?.paymentStatus === 1 && <TableCell style={{ border: "none" }}/>}
                   </TableRow>
                 )))
               }
@@ -101,7 +102,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
                       updateLineItem({ ...item, isShow: true }, item.productId
                       )
                     }} color="primary">Xem combo</Button></TableCell>
-                    {context !== "detail" && <TableCell style={{ border: "none" }} />}
+                    {context !== "detail" && order && order?.status === 1 && order?.paymentStatus === 1 && <TableCell style={{ border: "none" }} />}
                   </TableRow>
                 ) : ((item.combo && item.variants && item.variants.length > 0) && <TableRow>
                   <TableCell style={{ border: "none" }} />
@@ -109,7 +110,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
                     updateLineItem({ ...item, isShow: false }, item.productId
                     )
                   }} color="primary">Rút gọn</Button></TableCell>
-                  {context !== "detail" && <TableCell style={{ border: "none" }} />}
+                  {context !== "detail" && order && order?.status === 1 && order?.paymentStatus === 1 && <TableCell style={{ border: "none" }} />}
                 </TableRow>)
               }
             </TableBody>

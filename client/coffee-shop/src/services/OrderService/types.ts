@@ -45,6 +45,7 @@ export type OrderRequest = {
 }
 
 export type OrderItemRequest = {
+    id?: number;
     name?: string;
     productId?: number;
     combo?: boolean;

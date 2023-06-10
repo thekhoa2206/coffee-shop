@@ -1,15 +1,15 @@
 package com.hust.coffeeshop.services.impl;
 
 import com.hust.coffeeshop.common.CommonStatus;
+import com.hust.coffeeshop.common.TypeAction;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
+import com.hust.coffeeshop.models.dto.ingredient.IngredientFilterRequest;
 import com.hust.coffeeshop.models.dto.order.*;
-import com.hust.coffeeshop.models.entity.ComboItem;
-import com.hust.coffeeshop.models.entity.ItemIngredient;
-import com.hust.coffeeshop.models.entity.Order;
-import com.hust.coffeeshop.models.entity.OrderItem;
+import com.hust.coffeeshop.models.entity.*;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
 import com.hust.coffeeshop.services.CustomerService;
+import com.hust.coffeeshop.services.IngredientService;
 import com.hust.coffeeshop.services.OrderService;
 import com.hust.coffeeshop.services.ProductService;
 import lombok.val;
@@ -40,8 +40,9 @@ public class OrderServiceImpl implements OrderService {
     private final ItemIngredientRepository itemIngredientRepository;
     private final IngredientRepository ingredientRepository;
     private final VariantRepository variantRepository;
+    private final IngredientService ingredientService;
 
-    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService) {
         this.orderRepository = orderRepository;
         this.filterRepository = filterRepository;
         this.mapper = mapper;
@@ -53,11 +54,13 @@ public class OrderServiceImpl implements OrderService {
         this.itemIngredientRepository = itemIngredientRepository;
         this.ingredientRepository = ingredientRepository;
         this.variantRepository = variantRepository;
+        this.ingredientService = ingredientService;
     }
-/*
-* Coi 2 loại sản phẩm là combo và sp thường => khi bán hàng bán 2 loại sp là combo và sp thường(variant)
-* product id là lưu 2 loại(combo_id với sp combo và variant_id với sp thường)
-* */
+
+    /*
+     * Coi 2 loại sản phẩm là combo và sp thường => khi bán hàng bán 2 loại sp là combo và sp thường(variant)
+     * product id là lưu 2 loại(combo_id với sp combo và variant_id với sp thường)
+     * */
     @Override
     public PagingListResponse<OrderResponse> filter(OrderFilterRequest filter) {
         if (filter.getQuery() != null) {
@@ -119,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderResponse mapperOrderResponse(Order order) {
         val orderResponse = mapper.map(order, OrderResponse.class);
-        var orderItems = orderItemRepository.findOrderByOrderId(order.getId());
+        var orderItems = orderItemRepository.findOrderItemByOrderId(order.getId());
         List<OrderItemResponse> orderItemResponses = new ArrayList<>();
         for (var orderItem : orderItems) {
             var orderItemResponse = mapper.map(orderItem, OrderItemResponse.class);
@@ -214,13 +217,14 @@ public class OrderServiceImpl implements OrderService {
                         .stream()
                         .findFirst()
                         .orElse(null);
-                if(itemIngredient != null){
+                if (itemIngredient != null) {
                     //số lượng, khối lượng bán đi
-                    var amount = request.getQuantity()*itemIngredient.getAmountConsume();
-                    if(ingredient.getQuantity() - amount < 0) throw new ErrorException("Nguyên liệu không đủ số lượng, khối lượng có thể bán!");
+                    var amount = request.getQuantity() * itemIngredient.getAmountConsume();
+                    if (ingredient.getQuantity() - amount < 0)
+                        throw new ErrorException("Nguyên liệu không đủ số lượng, khối lượng có thể bán!");
                     ingredient.setQuantity(ingredient.getQuantity() - amount);
                     ingredientRepository.save(ingredient);
-                }else {
+                } else {
                     throw new ErrorException("Không tìm thấy phiên bản mặt hàng!");
                 }
             }
@@ -228,16 +232,220 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse getById(int id){
-        if(id == 0) throw new ErrorException("Không có id đơn hàng");
+    public OrderResponse getById(int id) {
+        if (id == 0) throw new ErrorException("Không có id đơn hàng");
         var order = orderRepository.findById(id);
-        if(!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
+        if (!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
         var orderResponse = mapperOrderResponse(order.get());
         var customer = customerService.getById(order.get().getCustomerId());
         if (customer != null) {
             orderResponse.setCustomerResponse(customer);
         }
         return orderResponse;
+    }
+
+    @Override
+    public OrderResponse addPayment(int id) {
+        if (id == 0) throw new ErrorException("Không có id đơn hàng");
+        var order = orderRepository.findById(id);
+        if (!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
+        if(order.get().getPaymentStatus() == CommonStatus.PaymentStatus.PAID)
+            throw new ErrorException("Đơn hàng đã thanh toán");
+        order.get().setPaymentStatus(CommonStatus.PaymentStatus.PAID);
+        order.get().setModifiedOn();
+        var orderNew = orderRepository.save(order.get());
+        var orderResponse = mapperOrderResponse(orderNew);
+        var customer = customerService.getById(orderNew.getCustomerId());
+        if (customer != null) {
+            orderResponse.setCustomerResponse(customer);
+        }
+        return orderResponse;
+    }
+
+    @Override
+    @Transactional
+    public OrderResponse update(OrderRequest request, int id) {
+        if (id == 0) throw new ErrorException("Không có id đơn hàng");
+        var order = orderRepository.findById(id);
+        if (!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
+        var orderNew = order.get();
+        List<OrderItemResponse> lineItems = new ArrayList<>();
+
+        orderNew.setNote(request.getNote());
+        orderNew.setModifiedOn();
+        if (orderNew.getStatus() == CommonStatus.OrderStatus.DRAFT) {
+            orderNew.setTotal(request.getTotal());
+            orderNew.setCode(request.getCode());
+            orderNew.setDiscount_total(request.getDiscountTotal());
+            orderNew.setCustomerId(request.getCustomerId());
+            lineItems = setOrderItems(request.getOrderItemRequest(), id);
+        }
+        var orderResponse = mapperOrderResponse(orderNew);
+        if (lineItems != null && lineItems.size() > 0) {
+            orderResponse.setOrderItemResponses(lineItems);
+        }
+        orderRepository.save(orderNew);
+        return orderResponse;
+    }
+
+    @Transactional
+    public List<OrderItemResponse> setOrderItems(List<OrderItemRequest> requests, int orderId) {
+        /*
+         * cập nhật đơn chia làm 3 trường hợp(2 list lineItem của đơn - list 1 request, list 2 đã lưu ở database)
+         * TH1: tạo mới item: item có id = 0 ở request
+         * TH2: update item: item có id ở cả 2 list
+         * TH3: xóa item: item chỉ có id trong list 2,
+         * */
+        List<OrderItemResponse> itemResponses = new ArrayList<>();
+        var orderItems = orderItemRepository.findOrderItemByOrderId(orderId);
+        for (var itemNew : requests) {
+
+            //Tạo
+            if (itemNew.getId() == 0) {
+                var item = mapper.map(itemNew, OrderItem.class);
+                item.setOrderId(orderId);
+                item.setModifiedOn();
+                item.setCreatedBy(1);
+                item.setModifiedBy(1);
+                item.setCreatedOn();
+                item.setStatus(CommonStatus.OrderItemStatus.ACTIVE);
+                checkInventoryUpdate(itemNew, TypeAction.ADD, null);
+                item = orderItemRepository.save(item);
+                OrderItemResponse itemResponse = mapper.map(item, OrderItemResponse.class);
+                itemResponses.add(itemResponse);
+
+            } else {
+                //Sửa
+                var itemOld = orderItems.stream().filter(i -> i.getId() == itemNew.getId())
+                        .collect(Collectors.toList()).stream().findFirst().orElse(null);
+                if (itemOld != null) {
+                    checkInventoryUpdate(itemNew, TypeAction.UPDATE, itemOld);
+                    itemOld.setName(itemNew.getName());
+                    itemOld.setPrice(itemNew.getPrice());
+                    itemOld.setCombo(itemNew.isCombo());
+                    itemOld.setOrderId(orderId);
+                    itemOld.setQuantity(itemNew.getQuantity());
+                    itemOld.setModifiedOn();
+                    OrderItemResponse itemResponse = mapper.map(itemOld, OrderItemResponse.class);
+                    itemResponses.add(itemResponse);
+                    orderItemRepository.save(itemOld);
+                }
+            }
+
+            for (var item : orderItems) {
+                var itemDeleted = orderItems.stream().filter(i -> i.getId() == item.getId())
+                        .collect(Collectors.toList())
+                        .stream().findFirst().orElse(null);
+                if (itemDeleted == null) {
+                    item.setStatus(CommonStatus.OrderItemStatus.DELETED);
+                    item.setModifiedOn();
+                    checkInventoryUpdate(null, TypeAction.DELETED, item);
+                    orderItemRepository.save(item);
+                }
+            }
+        }
+        return itemResponses;
+    }
+
+    //Hàm sửa tồn kho khi sửa đơn hàng
+    private void checkInventoryUpdate(OrderItemRequest itemNew, TypeAction type, OrderItem itemOld) {
+        //Sửa tồn khi thêm sp
+        /*
+         * - Với sản phẩm là combo => tìm kiếm nguyên liệu thuộc variant của combo và update lại tồn kho,
+         * - Với sản phẩm là sp thường => tìm kiếm nguyên liệu thuộc variant và update lại tồn
+         * */
+        if (type.equals(TypeAction.ADD) && itemNew != null) {
+            checkAvailable(itemNew);
+        } else if (type.equals(TypeAction.UPDATE) && itemNew != null && itemOld != null) {
+            /*
+             * Sửa tồn kho của nguyên liệu khi update sản phẩm
+             * */
+            if (itemNew.isCombo()) {
+                var combo = comboRepository.findById(itemNew.getProductId());
+                if (!combo.isPresent() || combo == null) throw new ErrorException("Không tìm thấy combo!");
+                var comboItems = comboItemRepository.findComboItemByComboId(combo.get().getId());
+                if (comboItems != null || comboItems.size() > 0) {
+                    var variantIds = comboItems.stream().map(ComboItem::getVariantId).collect(Collectors.toList());
+                    if (variantIds != null && variantIds.size() > 0) {
+                        List<InventoryVariant> inventoryVariants = new ArrayList<>();
+                        for (var variantId: variantIds) {
+                            InventoryVariant inventoryVariant = new InventoryVariant();
+                            inventoryVariant.setVariantId(variantId);
+                            inventoryVariant.setQuantity(itemOld.getQuantity() - itemNew.getQuantity());
+                            inventoryVariants.add(inventoryVariant);
+                        }
+                        changeInventory(inventoryVariants);
+                    } else {
+                        throw new ErrorException("Không tìm thấy phiên bản mặt hàng!");
+                    }
+                } else {
+                    throw new ErrorException("Không tìm thấy combo!");
+                }
+            } else {
+                var variantId = itemNew.getProductId();
+                List<InventoryVariant> inventoryVariants = new ArrayList<>();
+                InventoryVariant inventoryVariant = new InventoryVariant();
+                inventoryVariant.setVariantId(variantId);
+                inventoryVariant.setQuantity(itemOld.getQuantity() - itemNew.getQuantity());
+                inventoryVariants.add(inventoryVariant);
+                changeInventory(inventoryVariants);
+            }
+        } else if (type.equals(TypeAction.DELETED) && itemOld != null) {
+            if (itemOld.isCombo()) {
+                var combo = comboRepository.findById(itemOld.getProductId());
+                if (!combo.isPresent() || combo == null) throw new ErrorException("Không tìm thấy combo!");
+                var comboItems = comboItemRepository.findComboItemByComboId(combo.get().getId());
+                if (comboItems != null || comboItems.size() > 0) {
+                    var variantIds = comboItems.stream().map(ComboItem::getVariantId).collect(Collectors.toList());
+                    if (variantIds != null && variantIds.size() > 0) {
+                        List<InventoryVariant> inventoryVariants = new ArrayList<>();
+                        for (var variantId: variantIds) {
+                            InventoryVariant inventoryVariant = new InventoryVariant();
+                            inventoryVariant.setVariantId(variantId);
+                            inventoryVariant.setQuantity(itemOld.getQuantity());
+                            inventoryVariants.add(inventoryVariant);
+                        }
+                        changeInventory(inventoryVariants);
+                    } else {
+                        throw new ErrorException("Không tìm thấy phiên bản mặt hàng!");
+                    }
+                } else {
+                    throw new ErrorException("Không tìm thấy combo!");
+                }
+            } else {
+                var variantId = itemOld.getProductId();
+                List<InventoryVariant> inventoryVariants = new ArrayList<>();
+                InventoryVariant inventoryVariant = new InventoryVariant();
+                inventoryVariant.setVariantId(variantId);
+                inventoryVariant.setQuantity(itemOld.getQuantity());
+                inventoryVariants.add(inventoryVariant);
+                changeInventory(inventoryVariants);
+            }
+        }
+    }
+
+    //Hàm thay đổi kho
+    private void changeInventory(List<InventoryVariant> inventoryVariants) {
+        if (inventoryVariants != null && inventoryVariants.size() > 0) {
+            for (var inventory : inventoryVariants) {
+                List<Integer> variantIds = new ArrayList<>();
+                variantIds.add(inventory.getVariantId());
+                Page<Ingredient> ingredients = null;
+                if (variantIds != null && variantIds.size() > 0) {
+                    IngredientFilterRequest filter = new IngredientFilterRequest();
+                    filter.setVariantIds(variantIds);
+                    ingredients = ingredientService.filterIngredient(filter);
+                }
+                if (ingredients != null) {
+                    for (var ingredient : ingredients) {
+                        ingredient.setQuantity(ingredient.getQuantity() + inventory.getQuantity());
+                        ingredient.setModifiedOn();
+                        ingredientRepository.save(ingredient);
+                    }
+                }
+
+            }
+        }
     }
 }
 

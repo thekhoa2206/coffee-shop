@@ -24,6 +24,7 @@ export interface IOrderQuickFilter extends BaseFilter {
 }
 
 export interface LineItemStore {
+   id?: number; //id của lineItem nếu không có thì tạo mới
    name?: string;
    productId: number; //product_id là combo_id với sp combo variantId với sp thường.
    combo: boolean;
