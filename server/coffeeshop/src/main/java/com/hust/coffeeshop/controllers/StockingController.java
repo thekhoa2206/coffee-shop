@@ -2,31 +2,30 @@ package com.hust.coffeeshop.controllers;
 
 import com.hust.coffeeshop.configuration.jwt.JwtProvider;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
-import com.hust.coffeeshop.models.dto.inventory.repsone.InventoryReponse;
-import com.hust.coffeeshop.models.dto.inventory.request.CreateinventoryRequest;
-import com.hust.coffeeshop.models.dto.item.request.ItemRequest;
-import com.hust.coffeeshop.models.dto.item.response.ItemRepsone;
+import com.hust.coffeeshop.models.dto.stocktaking.repsone.StocktakingReponse;
+import com.hust.coffeeshop.models.dto.stocktaking.request.CreateStocktakingRequest;
+import com.hust.coffeeshop.models.dto.stocktaking.request.StoctakingFilterRequest;
 import com.hust.coffeeshop.models.entity.User;
 import com.hust.coffeeshop.models.exception.BaseException;
 import com.hust.coffeeshop.models.repository.UserRepository;
-import com.hust.coffeeshop.services.InventoryService;
+import com.hust.coffeeshop.services.StocktakingService;
 import com.hust.coffeeshop.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping(value = "/api/inventory")
+@RequestMapping(value = "/api/stocktaking")
 @CrossOrigin("http://localhost:3000")
-public class InventoryController extends BaseException {
-    private final InventoryService inventoryService;
+public class StockingController extends BaseException {
+    private final StocktakingService stocktakingService;
     private final UserService userService;
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
 
 
-    public InventoryController(InventoryService inventoryService, UserService userService, JwtProvider jwtProvider, UserRepository userRepository) {
-        this.inventoryService = inventoryService;
+    public StockingController(StocktakingService stocktakingService, UserService userService, JwtProvider jwtProvider, UserRepository userRepository) {
+        this.stocktakingService = stocktakingService;
         this.userService = userService;
         this.jwtProvider = jwtProvider;
         this.userRepository = userRepository;
@@ -41,16 +40,16 @@ public class InventoryController extends BaseException {
     }
     // tạo user mới
     @PostMapping
-    public InventoryReponse create(@RequestBody CreateinventoryRequest request,HttpServletRequest requestHttp)
-    { return inventoryService.create(request,requestHttp);
+    public StocktakingReponse create(@RequestBody CreateStocktakingRequest request, HttpServletRequest requestHttp)
+    { return stocktakingService.create(request,requestHttp);
     }
     @GetMapping("/{id}")
-    public InventoryReponse getById(@PathVariable("id") int id){
-        return inventoryService.getbyId(id);
+    public StocktakingReponse getById(@PathVariable("id") int id){
+        return stocktakingService.getbyId(id);
     }
 
     @GetMapping
-    public PagingListResponse<InventoryReponse> filter(ItemRequest filter){
-        return inventoryService.filter(filter);
+    public PagingListResponse<StocktakingReponse> filter(StoctakingFilterRequest filter){
+        return stocktakingService.filter(filter);
     }
 }

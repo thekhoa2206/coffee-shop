@@ -1,4 +1,4 @@
-package com.hust.coffeeshop.models.dto.inventory.repsone;
+package com.hust.coffeeshop.models.dto.stocktaking.repsone;
 
 import com.hust.coffeeshop.models.dto.BaseResponse;
 import lombok.Getter;
@@ -9,11 +9,12 @@ import java.util.List;
 
 @Getter
 @Setter
-public class InventoryReponse extends BaseResponse {
+public class StocktakingReponse extends BaseResponse {
     private String name;
     private String type;
     private BigDecimal totalMoney;
     private String description;
-    private List<InventoryIngredientReponse> object;
+    private int status;
+    private List<StocktakingIngredientReponse> object;
 
 }

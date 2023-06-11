@@ -6,7 +6,10 @@ import { AppState } from "store/store";
 import { hasPermission } from "utilities";
 import { AccountRole } from "utilities/AccountRole";
 import {
-  MenuDashboardIcon, MenuOrderIcon, AccountSettingIcon, MenuProductIcon
+  MenuDashboardIcon,
+  MenuOrderIcon,
+  AccountSettingIcon,
+  MenuProductIcon,
 } from "../../SVG";
 import { MenuItem } from "./MenuData.types";
 const useGenMenuData = () => {
@@ -71,6 +74,11 @@ const useGenMenuData = () => {
         typeRoute: "default",
       },
       {
+        title: "Nhập kho",
+        path: "/admin/receipts",
+        typeRoute: "default",
+      },
+      {
         title: "Quản lý kho",
         path: "/admin/inventory",
         typeRoute: "default",
@@ -102,7 +110,7 @@ const useGenMenuData = () => {
     listMenu.push(genMenuDashboard());
     listMenu.push(genMenuOrder());
     listMenu.push(genMenuCustomer());
-    listMenu.push(genMenuProduct())
+    listMenu.push(genMenuProduct());
     return listMenu;
   };
   const genSapoMenu = async () => {
@@ -118,7 +126,7 @@ const useGenMenuData = () => {
   }, [menuItems]);
   useEffect(() => {
     genSapoMenu();
-  },[]);
+  }, []);
 };
 
 export default useGenMenuData;

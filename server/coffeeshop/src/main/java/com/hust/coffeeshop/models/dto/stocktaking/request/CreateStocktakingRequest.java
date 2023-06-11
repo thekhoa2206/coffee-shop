@@ -1,18 +1,17 @@
-package com.hust.coffeeshop.models.dto.inventory.request;
+package com.hust.coffeeshop.models.dto.stocktaking.request;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
 @Setter
-public class CreateinventoryRequest {
+public class CreateStocktakingRequest {
     private String name;
     private String type;
     private BigDecimal totalMoney;
     private String description;
-    List<InventoryIngredientRequest> object;
+    List<StocktakingIngredientRequest> object;
 }

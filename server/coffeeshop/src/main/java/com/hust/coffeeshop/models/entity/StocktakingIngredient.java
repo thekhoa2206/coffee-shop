@@ -11,8 +11,8 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Entity
-@Table(name = "inventory_ingredient")
-public class InventoryIngredient extends BaseEntity{
+@Table(name = "stocktaking_ingredient")
+public class StocktakingIngredient extends BaseEntity{
 
     @Column(name = "quantity")
     private int quantity;
@@ -20,8 +20,8 @@ public class InventoryIngredient extends BaseEntity{
     @Column(name = "ingredient_id")
     private int ingredientId ;
 
-    @Column(name = "inventory_id")
-    private int inventoryId ;
+    @Column(name = "stocktaking_id")
+    private int stocktakingId ;
 
     @Column(name = "status")
     private int status ;
