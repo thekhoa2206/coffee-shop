@@ -1,8 +1,11 @@
 import {
     Box,
+    ButtonGroup,
     Grid,
     ListItem,
     ListItemText,
+    Menu,
+    MenuItem,
     Typography,
     WithStyles,
     withStyles
@@ -31,11 +34,12 @@ import styles from "./OrderDetail.styles";
 import Chip from "components/Chip/Chip.component";
 import BoxStep from "./components/BoxStep";
 import Button from "components/Button";
-import { PencilIcon, PrintIcon } from "components/SVG";
-import { CloseOutlined, PaymentOutlined } from "@material-ui/icons";
+import { OrderCancelIcon, OrderIcon, PencilIcon, PrintIcon } from "components/SVG";
+import { ArrowDropDownCircle, ArrowDropDownCircleOutlined, ArrowDropDownCircleRounded, ArrowDropDownCircleSharp, ArrowDropDownSharp, CloseOutlined, PaymentOutlined } from "@material-ui/icons";
 import Dialog from "components/Dialog/Dialog";
 import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
 import useModal from "components/Modal/useModal";
+import Select from "components/Select/Index";
 
 export interface OrderDetailProps extends WithStyles<typeof styles> { }
 const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
@@ -57,6 +61,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
     const history = useHistory();
     const { id } = useParams<{ id: string }>();
     const { closeModal, confirm, openModal } = useModal();
+    const [openMenuCreateOrder, setOpenMenuCreateOrder] = useState(false);
     useEffect(() => {
         initData();
     }, [id])
@@ -217,7 +222,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                             {order?.status && renderOrderStatus(order.status)}
                         </Box>
                         <Box display="flex" alignItems="center" style={{ marginTop: 10 }}>
-                            <Button startIcon={<PencilIcon />} color="inherit" variant="text" onClick={() => { history.push(`/admin/orders/${id}/edit`) }}>Sửa</Button>
+                            <Button startIcon={<PrintIcon />} color="inherit" variant="text" onClick={() => { }}>In</Button>
                             <Button startIcon={<PaymentOutlined />} color="inherit" variant="text" onClick={() => {
                                 openModal(ConfirmDialog, {
                                     confirmButtonText: "Xác nhận",
@@ -225,14 +230,91 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                     title: "Thanh toán đơn hàng",
                                     cancelButtonText: "Thoát",
                                 }).result.then((res) => {
-                                    debugger
                                     if (res) {
                                         addPayment();
                                     }
                                 })
                             }}>Thanh toán</Button>
-                            <Button startIcon={<PrintIcon />} color="inherit" variant="text" onClick={() => { }}>In</Button>
-                            <Button startIcon={<CloseOutlined />} btnType="destruction" variant="text" onClick={() => { }}>Hủy</Button>
+                            <ButtonGroup style={{ background: "#eff3f3" }} variant="text">
+                                <Button
+                                    variant="text"
+                                    id={`btn-create-order`}
+                                    onClick={() => {
+                                        setOpenMenuCreateOrder(true);
+                                    }}
+                                >
+                                    Khác <ArrowDropDownSharp style={{ color: openMenuCreateOrder ? "#0088FF" : "", marginLeft: 10 }} />
+                                </Button>
+                            </ButtonGroup>
+                            <Menu
+                                anchorEl={document.getElementById(`btn-create-order`)}
+                                getContentAnchorEl={null}
+                                open={openMenuCreateOrder}
+                                onClose={() => {
+                                    setOpenMenuCreateOrder(false);
+                                }}
+                                anchorOrigin={{
+                                    vertical: "bottom",
+                                    horizontal: "right",
+                                }}
+                                transformOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                }}
+                                disableRestoreFocus
+                            >
+                                <MenuItem
+
+                                    onClick={() => { history.push(`/admin/orders/${id}/edit`) }}
+                                >
+                                    <PencilIcon style={{ color: "#adadad", marginRight: 10 }} /> Sửa
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+
+                                    }}
+                                >
+                                    <OrderCancelIcon style={{ color: "#adadad", marginRight: 10 }} /> Hủy
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={async () => {
+                                        setOpenMenuCreateOrder(false);
+                                        try {
+                                            let res = await OrderService.updateStatus(id, OrderStatus.WAITING_DELIVERY);
+                                            if (res.data) {
+                                                SnackbarUtils.success("Đơn hàng đã chuyển sang trạng thái chờ lấy đồ");
+                                                set((prev) => ({
+                                                    ...prev,
+                                                    order: res.data,
+                                                }))
+                                            }
+                                        } catch (error) {
+                                            SnackbarUtils.error(getMessageError(error));
+                                        }
+                                    }}
+                                >
+                                    <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Chờ lấy đồ
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={async () => {
+                                        setOpenMenuCreateOrder(false);
+                                        try {
+                                            let res = await OrderService.updateStatus(id, OrderStatus.COMPLETED);
+                                            if (res.data) {
+                                                SnackbarUtils.success("Đơn hàng đã hoàn thành");
+                                                set((prev) => ({
+                                                    ...prev,
+                                                    order: res.data,
+                                                }))
+                                            }
+                                        } catch (error) {
+                                            SnackbarUtils.error(getMessageError(error));
+                                        }
+                                    }}
+                                >
+                                    <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Hoàn thành
+                                </MenuItem>
+                            </Menu>
                         </Box>
                     </Grid>
                     <Grid item xs={6} style={{ display: "flex", justifyContent: "flex-end" }}>

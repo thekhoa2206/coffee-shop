@@ -17,5 +17,8 @@ class OrderService {
     static async update(request?: OrderRequest, id?: string): Promise<AxiosResponse<OrderResponse>> {
         return axios.put(`/orders/${id}`,request, { ...getAxiosConfig()});
     }
+    static async updateStatus(id?: string, status?: number): Promise<AxiosResponse<OrderResponse>> {
+        return axios.put(`/orders/${id}/update_status/${status}`,{}, { ...getAxiosConfig()});
+    }
 }
 export default OrderService;
