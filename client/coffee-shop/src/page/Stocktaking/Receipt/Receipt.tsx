@@ -99,11 +99,13 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
               totalMoney: receipt.totalMoney,
               status: receipt.status,
               type: receipt.type,
+              code:receipt.code,
             };
           }) || [],
         total: res.data.metadata?.total || 0,
       });
     setLoading(false);
+    
   };
 
   const handlePageChange = (e: GridPageChangeEvent) => {
@@ -168,7 +170,10 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
             <LoadingAuth />
           ) : (
             <React.Fragment>
+    
+              
               {data.total > 0 ? (
+                console.log("66",data),
                 <SapoGrid
                   data={data}
                   page={filters?.page}
@@ -197,13 +202,7 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
                     width={150}
                     align="left"
                   >
-                    {({ dataItem }: CellTemplateProps) => {
-                      return (
-                        <>
-                          <Typography>{"NK" + dataItem.stt}</Typography>
-                        </>
-                      );
-                    }}
+
                   </GridColumn>
                   <GridColumn
                     field="name"
@@ -215,14 +214,6 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
                   />
 
                   <GridColumn
-                    field="quantity"
-                    title={getReceiptQuickFilterLabel(
-                      ReceiptQuickFilterOptions.QUANTITY
-                    )}
-                    width={150}
-                    align="left"
-                  />
-                  <GridColumn
                     field="type"
                     title={getReceiptQuickFilterLabel(
                       ReceiptQuickFilterOptions.TYPE
@@ -230,10 +221,10 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
                     width={150}
                     align="left"
                   >
-                    <Typography>Nhập hàng</Typography>
+                  
                   </GridColumn>
                   <GridColumn
-                    field="totalPrice"
+                    field="totalMoney"
                     title={getReceiptQuickFilterLabel(
                       ReceiptQuickFilterOptions.PRICE
                     )}
@@ -244,7 +235,7 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
                       return (
                         <>
                           <Typography>
-                            {formatMoney(dataItem.exportPrice || 0)}
+                            {formatMoney(dataItem.totalMoney || 0)}
                           </Typography>
                         </>
                       );
@@ -285,7 +276,7 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
                         <>
                           <Typography>
                             {formatDateUTCToLocalDateString(
-                              dataItem.createdOn,
+                              dataItem.modifiedOn,
                               false,
                               "DD/MM/YYYY"
                             )}

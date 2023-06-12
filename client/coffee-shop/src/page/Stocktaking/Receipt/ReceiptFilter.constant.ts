@@ -6,7 +6,7 @@ export const ReceiptQuickFilterOptions = {
   NAME: "name",
   QUANTITY: "quantity",
   STATUS: "status",
-  PRICE: "price",
+  PRICE: "totalMoney",
   CREATED_ON: "createdOn",
   MODIFIED_ON: "modifieldOn",
   TYPE: "type",

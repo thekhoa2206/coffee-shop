@@ -3,6 +3,7 @@ package com.hust.coffeeshop.services.impl;
 import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientResponse;
+import com.hust.coffeeshop.models.dto.role.RoleResponse;
 import com.hust.coffeeshop.models.dto.stocktaking.repsone.StocktakingIngredientReponse;
 import com.hust.coffeeshop.models.dto.stocktaking.repsone.StocktakingReponse;
 import com.hust.coffeeshop.models.dto.stocktaking.request.CreateStocktakingRequest;
@@ -64,6 +65,7 @@ public class StocktakingServiceImpl implements StocktakingService {
         stocktaking.setTotalMoney(request.getTotalMoney());
         stocktaking.setCreatedOn(CommonCode.getTimestamp());
         stocktaking.setModifiedOn(0);
+        stocktaking.setTotalMoney(request.getTotalMoney());
         stocktaking.setType(request.getType());
 //        inventory.setCreatedBy(user.getId());
         var stocktakingNew= stocktakingRepository.save(stocktaking);
@@ -79,6 +81,26 @@ public class StocktakingServiceImpl implements StocktakingService {
                 stocktakingIngredient.setCreatedOn(CommonCode.getTimestamp());
                 stocktakingIngredient.setModifiedOn(0);
                 stocktakingIngredients.add(stocktakingIngredient);
+                if(request.getType().equals("import")){
+                    val ingredient = ingredientRepository.findById(i.getIngredientId());
+                    if(ingredient.get() == null) throw  new ErrorException("lỗi liên kết kho"+i.getIngredientId());
+                    ingredient.get().setQuantity(ingredient.get().getQuantity()+i.getQuantity());
+                    try {
+                                ingredientRepository.save(ingredient.get());
+                    } catch (Exception e) {
+                        throw new ErrorException("liên kết kho thất bại");
+                    }
+                }
+                if(request.getType().equals("export")){
+                    val ingredient = ingredientRepository.findById(i.getIngredientId());
+                    if(ingredient.get() == null) throw  new ErrorException("lỗi liên kết kho"+i.getIngredientId());
+                    ingredient.get().setQuantity(ingredient.get().getQuantity()-i.getQuantity());
+                    try {
+                        ingredientRepository.save(ingredient.get());
+                    } catch (Exception e) {
+                        throw new ErrorException("liên kết kho thất bại");
+                    }
+                }
             }
             stocktakingIngredientRepository.saveAll(stocktakingIngredients);
         }
@@ -155,6 +177,12 @@ public class StocktakingServiceImpl implements StocktakingService {
         for (val i : results.getContent()
         ) {
             val stocktakingReponse = mapper.map(i, StocktakingReponse.class);
+            if(stocktakingReponse.getType().equals("import")){
+                stocktakingReponse.setType("Phiếu nhập");
+            }
+            if(stocktakingReponse.getType().equals("export")){
+                stocktakingReponse.setType("Phiếu xuất");
+            }
             val stocktakingIngredients = stocktakingIngredientRepository.findItemIngredientByInventoryId(i.getId());
             val data = getIngredients(stocktakingIngredients);
             stocktakingReponse.setObject(data);
@@ -174,7 +202,7 @@ public class StocktakingServiceImpl implements StocktakingService {
                 StocktakingIngredientReponse data = new StocktakingIngredientReponse();
                 data.setIngredientMoney(i.getIngredientMoney());
                 data.setQuantity(i.getQuantity());
-               val ingredient =  ingredientRepository.findById(i.getId());
+                val ingredient =  ingredientRepository.findById(i.getIngredientId());
                val ingredientReponse = mapper.map(ingredient.get(), IngredientResponse.class);
                data.setIngredientResponse(ingredientReponse);
                stocktakingIngredientRepons.add(data);

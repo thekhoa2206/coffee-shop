@@ -44,7 +44,7 @@ import {
 import { AppState } from "store/store";
 import ItemsService from "services/ItemsService/ItemsService";
 import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
-import { getMessageError } from "utilities";
+import { formatNumberDecimal, getMessageError } from "utilities";
 import { useHistory } from "react-router-dom";
 import Select from "components/Select/Index";
 import StockUnitService from "services/StockUnitService/StockUnitService";
@@ -61,7 +61,8 @@ import {
 import StocktakingService from "services/StocktakingService/StocktakingService";
 import { log } from "console";
 import { render } from "react-dom";
-import { ReciptStore } from './store';
+import { receiptStore } from "../store/store";
+
 export interface CreateReceiptProps extends WithStyles<typeof styles> {}
 const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
   const { classes, authState } = props;
@@ -78,7 +79,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
   const {
      set,
      total,
-  } = ReciptStore();
+  } = receiptStore();
   const [stockUnits, setStockUnits] = useState<StockUnitResponse[]>();
   const [toltalMoeny, settoltalMoeny] = useState<number>();
   const [stocktakingIngredientRequest, setStocktakingIngredientRequest] =
@@ -87,7 +88,11 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
   const updateIngredient = (ingredient: StocktakingIngredientRequest) => {
     let datatNews = stocktakingIngredientRequest.map((v) => {
       if (v.ingredientId === ingredient.ingredientId) {
-        return ingredient;
+       let toltalMoeny = ingredient.ingredientMoney * ingredient.quantity
+        return {
+          ...ingredient,
+          totalMoney:toltalMoeny,
+        };
       } else return v;
     });
     setStocktakingIngredientRequest(datatNews);
@@ -111,6 +116,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
             return {
               ...v,
               quantity: v.quantity + 1,
+              totalMoney: v.quantity*v.ingredientMoney,
             };
           } else return { ...(v || []), ingredient };
         });
@@ -133,19 +139,14 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
       SnackbarUtils.error(`Tên phiếu không được để trống!`);
       return;
     }
-    let money = stocktakingIngredientRequest.reduce(
-      (acc, x) => acc + x.ingredientMoney,
-      0
-    );
-    let quantity = stocktakingIngredientRequest.reduce(
-      (acc, x) => acc + x.quantity,
-      0
-    );
-    let totalMoney = money * quantity;
+    if (!stocktakingIngredientRequest || stocktakingIngredientRequest.length ===0) {
+      SnackbarUtils.error(`Chưa chọn phần nguyên liệu `);
+      return;
+    }
     let requet: CreateStocktakingRequest = {
       ...receiptRequest,
       type: "import",
-      totalMoney: totalMoney,
+      totalMoney: sumMoeny(),
       object: stocktakingIngredientRequest,
     };
     try {
@@ -158,27 +159,15 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
       SnackbarUtils.error(getMessageError(error));
     }
   };
-  const sumMoeny = async () => {
-    debugger;
-    console.log("test", stocktakingIngredientRequest);
-
-    let money = stocktakingIngredientRequest.reduce(
-      (acc, x) => acc + x.ingredientMoney,
-      0
-    );
-    let quantity = stocktakingIngredientRequest.reduce(
-      (acc, x) => acc + x.quantity,
-      0
-    );
-    let test = money * quantity;
-    settoltalMoeny(toltalMoeny ? money * quantity : money * quantity);
+  const sumMoeny = () => {
+    let total = 0;
+    if (stocktakingIngredientRequest && stocktakingIngredientRequest.length > 0) {
+      stocktakingIngredientRequest.map((x) => {
+        total += x.totalMoney || 0;
+      });
+    }
+    return total;
   };
-  useEffect(() => {
-    set((prev) => ({
-      ...prev,
-      total: sumMoeny() - (discountTotal || 0),
-    }));
-  }, [totalLineAmount, discountTotal]);
   return (
     <>
       <Box className={classes.container}>
@@ -273,6 +262,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                             name: ingredient.name ? ingredient.name : "",
                             quantity: 1,
                             ingredientMoney: 1000,
+                            totalMoney:1000,
                           });
                         }}
                         value={null}
@@ -296,7 +286,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                         <TableCell>Tên mặt hàng </TableCell>
                         <TableCell align="center">Số lượng</TableCell>
                         <TableCell align="center">Giá nhập</TableCell>
-                        <TableCell align="center">Tổng tiền</TableCell>
+                        <TableCell align="center">Thành tiền</TableCell>
                         <TableCell style={{ width: "50px" }}></TableCell>
                       </TableHead>
                       {stocktakingIngredientRequest &&
@@ -351,9 +341,6 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                                 }}
                               />
                             </TableCell>
-                            <TableCell>
-                              <TextField value={toltalMoeny} />
-                            </TableCell>
                             <TableCell style={{ width: "50px" }}>
                               <IconButton
                                 aria-label="close"
@@ -373,6 +360,11 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                           </TableBody>
                         ))}
                     </Table>
+                    <Box style={{ margin: "auto", padding: "24px",marginLeft:"680px",display:"flex" }}>
+                    <Typography style={{fontWeight: 500}}>Tổng tiền:</Typography>
+                    <Typography style={{fontWeight: 500}}>{formatNumberDecimal(sumMoeny())}</Typography>
+                    <Typography style={{fontWeight: 500}}>đ</Typography>
+                    </Box>
                     {!(
                       stocktakingIngredientRequest &&
                       stocktakingIngredientRequest.length > 0

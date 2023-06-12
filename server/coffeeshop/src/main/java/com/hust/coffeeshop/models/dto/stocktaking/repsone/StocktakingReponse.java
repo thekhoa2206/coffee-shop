@@ -15,6 +15,7 @@ public class StocktakingReponse extends BaseResponse {
     private BigDecimal totalMoney;
     private String description;
     private int status;
+    private  String code;
     private List<StocktakingIngredientReponse> object;
 
 }
