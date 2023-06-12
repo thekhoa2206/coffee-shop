@@ -13,5 +13,7 @@ public class CreateStocktakingRequest {
     private String type;
     private BigDecimal totalMoney;
     private String description;
+    private boolean payment;
+    private String status;
     List<StocktakingIngredientRequest> object;
 }

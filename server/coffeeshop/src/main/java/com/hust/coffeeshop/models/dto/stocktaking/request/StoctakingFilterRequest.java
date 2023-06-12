@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 public class StoctakingFilterRequest extends PagingFilterRequest {
     private String query;
-    private String statuses;
+    private List<Integer> statuses;
     private List<Integer> ids;
     private String type;
 }

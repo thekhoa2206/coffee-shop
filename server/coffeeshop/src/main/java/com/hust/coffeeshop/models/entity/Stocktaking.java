@@ -23,7 +23,9 @@ public class Stocktaking extends BaseEntity{
     private String type;
 
     @Column(name = "status")
-    private int status;
+    private String status;
+    @Column(name = "payment")
+    private int payment;
 
     @Column(name = "total_money")
     private BigDecimal totalMoney;

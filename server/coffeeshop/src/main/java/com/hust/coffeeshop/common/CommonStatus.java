@@ -10,7 +10,20 @@ public class CommonStatus {
         public final static int ACTIVE = 1;
         public final static int DELETED = 2;
     }
+    public class StockingStatus {
+        //đặt hàng
+        public final static String ORDER ="Đặt hàng";
+        //nhập kho
+        public final static String WAREHOUSE = "Nhập kho";
+        public final static String DELETED = "Hủy phiếu";
+    }
 
+    public class StockingPayment {
+        //chưa than toán
+        public final static int UNPAID = 1;
+        // đã thanh toán
+        public final static int ACTIVE = 2;
+    }
     public class IngredientStatus {
         public final static int ACTIVE = 1;
         public final static int DELETED = 2;

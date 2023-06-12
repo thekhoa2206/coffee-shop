@@ -1,6 +1,7 @@
 package com.hust.coffeeshop.services.impl;
 
 import com.hust.coffeeshop.common.CommonCode;
+import com.hust.coffeeshop.common.CommonStatus;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientResponse;
 import com.hust.coffeeshop.models.dto.role.RoleResponse;
@@ -60,7 +61,18 @@ public class StocktakingServiceImpl implements StocktakingService {
             stocktaking.setCode(CommonCode.GenerateCodeexport());
         }
         stocktaking.setName(request.getName());
-        stocktaking.setStatus(1);
+        if(request.getStatus().equals("order")){
+            stocktaking.setStatus(CommonStatus.StockingStatus.ORDER);
+        }
+        if(request.getStatus().equals("warehouse")) {
+            stocktaking.setStatus(CommonStatus.StockingStatus.WAREHOUSE);
+        }
+        if(request.isPayment()){
+            stocktaking.setPayment(CommonStatus.StockingPayment.ACTIVE);
+        }
+        else {
+            stocktaking.setPayment(CommonStatus.StockingPayment.UNPAID);
+        }
         stocktaking.setDescription(request.getDescription());
         stocktaking.setTotalMoney(request.getTotalMoney());
         stocktaking.setCreatedOn(CommonCode.getTimestamp());
@@ -77,7 +89,7 @@ public class StocktakingServiceImpl implements StocktakingService {
                 stocktakingIngredient.setIngredientId(i.getIngredientId());
                 stocktakingIngredient.setQuantity(i.getQuantity());
                 stocktakingIngredient.setIngredientMoney(i.getIngredientMoney());
-                stocktakingIngredient.setStatus(1);
+                stocktakingIngredient.setStatus(CommonStatus.IngredientStatus.ACTIVE);
                 stocktakingIngredient.setCreatedOn(CommonCode.getTimestamp());
                 stocktakingIngredient.setModifiedOn(0);
                 stocktakingIngredients.add(stocktakingIngredient);
@@ -165,7 +177,7 @@ public class StocktakingServiceImpl implements StocktakingService {
             Filter statuses = Filter.builder()
                     .field("status")
                     .operator(QueryOperator.IN)
-                    .values(Arrays.asList(filter.getStatuses().split(",")))
+                    .values(filter.getStatuses().stream().map(Object::toString).collect(Collectors.toList()))
                     .build();
             filters.add(statuses);
         }
