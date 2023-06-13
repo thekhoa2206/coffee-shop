@@ -10,27 +10,24 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@Table(name = "order_item")
+@Table(name = "order_item_combo")
 @Entity
-public class OrderItem extends BaseEntity {
-    @Column(name = "order_id")
-    private int orderId;
-
-    @Column(name = "product_id")
-    private int productId;
-
-    @Column(name = "combo")
-    private boolean combo;
+public class OrderItemCombo extends BaseEntity{
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "status")
     private int status;
+
+    @Column(name = "order_id")
+    private int orderId;
+
+    @Column(name = "order_item_id")
+    private int orderItemId;
 
     @Column(name = "price")
     private BigDecimal price;
 
     @Column(name = "quantity")
     private int quantity;
-
-    @Column(name = "name")
-    private String name;
 }

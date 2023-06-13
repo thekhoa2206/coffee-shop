@@ -40,6 +40,8 @@ public class ProductResponse extends BaseResponse {
         private List<ProductIngredientResponse> ingredients;
         //id thành phần(với combo là combo_item_id )
         private int productItemId;
+        //Số lượng với variant trong combo
+        private int quantity;
     }
 
     @Getter

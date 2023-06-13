@@ -14,7 +14,7 @@ import java.util.List;
 public class OrderResponse extends BaseResponse {
     private String code;
     private CustomerResponse customerResponse;
-    private String status;
+    private int status;
     private BigDecimal total;
     private BigDecimal discountTotal;
     private UserResponse userResponse;

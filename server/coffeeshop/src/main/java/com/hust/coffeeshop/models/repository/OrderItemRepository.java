@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, Integer>, JpaSpecificationExecutor<OrderItem> {
     @Query(value = "SELECT order_item.* FROM order_item WHERE order_id= ?1 AND status = 1", nativeQuery = true)
-    List<OrderItem> findOrderByOrderId(int  orderId);
+    List<OrderItem> findOrderItemByOrderId(int  orderId);
 
 }

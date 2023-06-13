@@ -90,9 +90,9 @@ export type IngredientItemResponse = {
     amountConsume?: number;
     ingredientId?: number;
     name?: string;
-    createdOn?: string;
-    createdBy?: string;
-    modifiedOn?: string;
-    modifiedBy?: string;
+    createdOn?: Date;
+    createdBy?: number;
+    modifiedOn?: Date;
+    modifiedBy?: number;
     stockUnitResponse?: StockUnitResponse;
 }

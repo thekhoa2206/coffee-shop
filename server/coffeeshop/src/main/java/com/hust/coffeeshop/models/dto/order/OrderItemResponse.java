@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class OrderItemResponse extends BaseResponse {
-    private String status;
+    private int status;
     private boolean combo;
     private int quantity;
     private String name;

@@ -10,6 +10,7 @@ export interface OrderResponse extends BaseResponse {
     note?: string;
     orderItemResponses?: OrderItemResponse[];
     userResponse?: UserResponse;
+    paymentStatus?: number;
 }
 
 export type ListOrderResponse = {
@@ -44,6 +45,7 @@ export type OrderRequest = {
 }
 
 export type OrderItemRequest = {
+    id?: number;
     name?: string;
     productId?: number;
     combo?: boolean;

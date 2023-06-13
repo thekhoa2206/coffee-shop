@@ -1,16 +1,26 @@
 package com.hust.coffeeshop.common;
 
+import lombok.val;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 public class CommonCode
 {
+    private static final List<DateTimeFormatter> DATE_FORMATS = Arrays.asList(
+            DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"), DateTimeFormat.forPattern("yyyy-MM-dd  HH:mm:ss"),
+            DateTimeFormat.forPattern("yyyy-MM-dd HH:mm"), DateTimeFormat.forPattern("yyyy-MM-dd"),
+            DateTimeFormat.forPattern("yyyyMMdd"), DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS"),
+            DateTimeFormat.forPattern("dd-MM-yyy"));
+
     public  static String GenerateCodeRole(){
         String code = "R";
         Random rand = new Random();
@@ -34,4 +44,5 @@ public class CommonCode
         long millis = date.getTime();
         return millis;
     }
+
 }

@@ -16,4 +16,7 @@ public interface ComboItemRepository   extends JpaRepository<ComboItem, Integer>
     ComboItem findUserByComboIdVAndVariantId(int comboId,int variantId);
 //    @Query(value = "SELECT variant.* FROM variant WHERE item_id = ?1 AND  status = 1", nativeQuery = true)
 //    List<Variant> findVariantByItemId(int itemId);
+
+    @Query(value = "SELECT combo_item.* FROM combo_item WHERE combo_id in (?1)", nativeQuery = true)
+    List<ComboItem> findComboItemByComboIds(List<Integer> comboId);
 }

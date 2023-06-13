@@ -26,7 +26,7 @@ public class Order extends BaseEntity{
     private BigDecimal total ;
 
     @Column(name = "discount_total")
-    private BigDecimal discount_total;
+    private BigDecimal discountTotal;
 
     @Column(name = "note")
     private String note;

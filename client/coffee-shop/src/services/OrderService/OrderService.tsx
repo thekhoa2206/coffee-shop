@@ -8,5 +8,17 @@ class OrderService {
     static async create(request?: OrderRequest): Promise<AxiosResponse<OrderResponse>> {
         return axios.post(`/orders`,request, { ...getAxiosConfig()});
     }
+    static async getById(id?: string): Promise<AxiosResponse<OrderResponse>> {
+        return axios.get(`/orders/${id}`, { ...getAxiosConfig() });
+    }
+    static async addPayment(id?: string): Promise<AxiosResponse<OrderResponse>> {
+        return axios.put(`/orders/${id}/payment`,{}, { ...getAxiosConfig() });
+    }
+    static async update(request?: OrderRequest, id?: string): Promise<AxiosResponse<OrderResponse>> {
+        return axios.put(`/orders/${id}`,request, { ...getAxiosConfig()});
+    }
+    static async updateStatus(id?: string, status?: number): Promise<AxiosResponse<OrderResponse>> {
+        return axios.put(`/orders/${id}/update_status/${status}`,{}, { ...getAxiosConfig()});
+    }
 }
 export default OrderService;

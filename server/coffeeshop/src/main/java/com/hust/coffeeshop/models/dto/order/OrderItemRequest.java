@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class OrderItemRequest {
+    private int id;
     private String name;
     private int productId;
     private boolean combo;
