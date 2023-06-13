@@ -120,8 +120,8 @@ public class ProductServiceImpl implements ProductService {
                 .build();
         product.setCreatedOn(combo.getCreatedOn());
         product.setModifiedOn(combo.getModifiedOn());
-        product.setCreatedBy(combo.getCreatedBy());
-        product.setModifiedBy(combo.getModifiedBy());
+//        product.setCreatedBy(combo.getCreatedBy());
+//        product.setModifiedBy(combo.getModifiedBy());
         product.setId(combo.getId());
         return product;
     }
@@ -144,8 +144,8 @@ public class ProductServiceImpl implements ProductService {
                     productVariant.setProductItemId(comboItem.getId());
                     productVariant.setCreatedOn(variant.getCreatedOn());
                     productVariant.setModifiedOn(variant.getModifiedOn());
-                    productVariant.setModifiedBy(variant.getModifiedBy());
-                    productVariant.setCreatedBy(variant.getCreatedBy());
+//                    productVariant.setModifiedBy(variant.getModifiedBy());
+//                    productVariant.setCreatedBy(variant.getCreatedBy());
                     productVariant.setQuantity(comboItem.getQuantity());
                     List<Integer> ids = new ArrayList<>();
                     ids.add(variant.getId());
@@ -172,8 +172,8 @@ public class ProductServiceImpl implements ProductService {
                     productVariant.setProductItemId(productId);
                     productVariant.setCreatedOn(variant.getCreatedOn());
                     productVariant.setModifiedOn(variant.getModifiedOn());
-                    productVariant.setModifiedBy(variant.getModifiedBy());
-                    productVariant.setCreatedBy(variant.getCreatedBy());
+//                    productVariant.setModifiedBy(variant.getModifiedBy());
+//                    productVariant.setCreatedBy(variant.getCreatedBy());
                     productVariant.setQuantity(1);
                     productVariant.setId(variant.getId());
                     List<Integer> ids = new ArrayList<>();
@@ -207,8 +207,8 @@ public class ProductServiceImpl implements ProductService {
                 .build();
         product.setCreatedOn(item.getCreatedOn());
         product.setModifiedOn(item.getModifiedOn());
-        product.setCreatedBy(item.getCreatedBy());
-        product.setModifiedBy(item.getModifiedBy());
+//        product.setCreatedBy(item.getCreatedBy());
+//        product.setModifiedBy(item.getModifiedBy());
         product.setId(item.getId());
         return product;
     }
@@ -234,9 +234,9 @@ public class ProductServiceImpl implements ProductService {
                 }
                 productIngredient.setStatus(itemIngredient.getStatus());
                 productIngredient.setAmountConsume(itemIngredient.getAmountConsume());
-                productIngredient.setCreatedBy(itemIngredient.getCreatedBy());
+//                productIngredient.setCreatedBy(itemIngredient.getCreatedBy());
                 productIngredient.setCreatedOn(itemIngredient.getCreatedOn());
-                productIngredient.setModifiedBy(itemIngredient.getModifiedBy());
+//                productIngredient.setModifiedBy(itemIngredient.getModifiedBy());
                 productIngredient.setModifiedOn(itemIngredient.getModifiedOn());
                 productIngredient.setId(itemIngredient.getId());
 

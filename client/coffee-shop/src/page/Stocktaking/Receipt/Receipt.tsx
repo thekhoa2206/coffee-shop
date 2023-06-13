@@ -1,48 +1,49 @@
 import { Box, Typography, withStyles } from "@material-ui/core";
 import { AddCircleOutline } from "@material-ui/icons";
 import Button from "components/Button";
-import Chip from "components/Chip/Chip.component";
 import LoadingAuth from "components/Loading/LoadingAuth";
 import NoResultsComponent from "components/NoResults/NoResultsComponent";
 import { GridColumn } from "components/SapoGrid/GridColumn/GridColumn";
 import SapoGrid from "components/SapoGrid/SapoGrid";
-import { DataResult, GridPageChangeEvent } from "components/SapoGrid/SapoGrid.type";
+import {
+  DataResult,
+  GridPageChangeEvent,
+} from "components/SapoGrid/SapoGrid.type";
 import { CellTemplateProps } from "components/SapoGridSticky";
 import SearchBox from "components/SearchBox/SearchBox";
-import { TagFilterItemType } from "components/TagFilterItem/TagFilterItem.types";
 import useQueryParams from "hocs/useQueryParams";
 import React, { useEffect, useState } from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
-import { CustomerFilterRequest, CustomerResponse } from "services/CustomerService";
-import CustomerService from "services/CustomerService/CustomerService";
+import {
+  IngredientFilterRequest,
+  IngredientResponse,
+} from "services/IngredientsService";
 import { AppState } from "store/store";
-import {
-  formatDateUTCToLocalDateString
-} from "utilities";
-import {
-  getNameAndDatePredefined
-} from "utilities/DateRangesPredefine";
+import { formatDateUTCToLocalDateString, formatMoney } from "utilities";
 import QueryUtils from "utilities/QueryUtils";
-import styles from "./Customer.styles";
 import {
-  CustomerProps,
-  ICustomerQuickFilter
-} from "./Customer.types";
+  StocktakingReponse,
+  StoctakingFilterRequest,
+} from "services/StocktakingService/type";
+import { ReceiptProps } from "./Receipt.type";
+import StocktakingService from "services/StocktakingService/StocktakingService";
+import { StocktakingIngredientReponse } from "../../../services/StocktakingService/type";
 import {
-  CustomerQuickFilterOptions,
-  getCustomerQuickFilterLabel
-} from "./Filter/CustomerFilter.constant";
-import { DialogAddCustomer } from "./DialogAddCustomer/DialogAddCustomer";
+  ReceiptQuickFilterOptions,
+  getReceiptQuickFilterLabel,
+} from "./ReceiptFilter.constant";
+import styles from "./Receipt.styles";
+import Chip from "components/Chip/Chip.component";
 
-const Customer = (props: CustomerProps & PropsFromRedux) => {
+const Receipt = (props: ReceiptProps & PropsFromRedux) => {
   const { classes, authState } = props;
   const location = useLocation();
   const queryParams = useQueryParams();
   const [loading, setLoading] = useState<boolean>(true);
-  const [openDialogAddCustomer, setOpenDialogAddCustomer] = useState(false);
-  const [selected, setSelected] = useState<CustomerResponse>();
-  const [tagsFilterItem, setTagsFilterItem] = useState<TagFilterItemType[]>([]);
+  const [openDialogIngredient, setOpenDialogIngredient] =
+    useState<boolean>(false);
+  const [selected, setSelected] = useState<StocktakingReponse>();
   const [data, setData] = useState<DataResult>({
     data: [],
     total: 0,
@@ -56,14 +57,15 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
       const data = searchFilter.split("=");
       dataFromQuery[data[0]] = decodeURIComponent(data[1]);
     }
-    const initFilter: CustomerFilterRequest = {
+    const initFilter: StoctakingFilterRequest = {
       page: Number(dataFromQuery["page"]) || 1,
       limit: Number(dataFromQuery["limit"]) || undefined,
       query: dataFromQuery["query"] || undefined,
+      type: "import",
     };
     return initFilter;
   };
-  const [filters, setFilters] = useState<CustomerFilterRequest>({
+  const [filters, setFilters] = useState<StoctakingFilterRequest>({
     ...getDefaultQuery(),
   });
   useEffect(() => {
@@ -77,89 +79,56 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
     });
   };
   useEffect(() => {
-    document.title = "Danh sách khách hàng";
+    document.title = "Danh sách nguyên liệu";
   }, []);
-  async function fetchDataFilterItems(filters: ICustomerQuickFilter) {
-    let tagFilter: TagFilterItemType[] = [];
-    if (!filters.created_on_predefined) {
-      if (filters.created_on_max || filters.created_on_min) {
-        let label = `Từ ${filters.created_on_min
-          ? formatDateUTCToLocalDateString(filters.created_on_min, false)
-          : "trước "
-          } đến ${filters.created_on_max
-            ? formatDateUTCToLocalDateString(filters.created_on_max, true)
-            : `hiện tại`
-          }`;
-        tagFilter.push({
-          filterType: "created_on_max,created_on_min",
-          filterName: CustomerQuickFilterOptions.CREATED_ON,
-          label: `${getCustomerQuickFilterLabel(
-            CustomerQuickFilterOptions.CREATED_ON
-          )}: ${label}`,
-        });
-      }
-    } else {
-      if (filters.created_on_predefined) {
-        tagFilter.push({
-          filterType: "created_on_max,created_on_min,created_on_predefined",
-          filterName: CustomerQuickFilterOptions.CREATED_ON,
-          label: `${getCustomerQuickFilterLabel(
-            CustomerQuickFilterOptions.CREATED_ON
-          )}: ${getNameAndDatePredefined(filters.created_on_predefined)}`,
-        });
-      }
-    }
-    setTagsFilterItem(tagFilter);
-  }
-  const initData = async (filters: CustomerFilterRequest) => {
-    let res = await CustomerService.filter(filters);
-    if(res.data)setData({data: res.data.data?.map((item, index) => {
-      return {
-        stt: index + 1,
-        createdBy: item.createdBy,
-        createdOn: item.createdOn,
-        dob: item.dob,
-        id: item.id,
-        modifiedBy: item.modifiedBy,
-        modifiedOn: item.modifiedOn,
-        name: item.name,
-        phoneNumber: item.phoneNumber,
-        sex: item.sex,
-        status: item.status,
-      }
-    }) || [], total: res.data.metadata?.total || 0 })
-    setLoading(false)
+
+  const initData = async (filters: StoctakingFilterRequest) => {
+    let res = await StocktakingService.filter(filters);
+    if (res.data)
+      setData({
+        data:
+          res.data.data?.map((receipt, index) => {
+            return {
+              stt: index + 1,
+              createdBy: receipt.createdBy,
+              createdOn: receipt.createdOn,
+              description: receipt.description,
+              id: receipt.id,
+              modifiedBy: receipt.modifiedBy,
+              modifiedOn: receipt.modifiedOn,
+              name: receipt.name,
+              totalMoney: receipt.totalMoney,
+              status: receipt.status,
+              type: receipt.type,
+              code:receipt.code,
+            };
+          }) || [],
+        total: res.data.metadata?.total || 0,
+      });
+    setLoading(false);
+    
   };
-  
-  // const onSubmitFilter = (filter: ICustomerQuickFilter) => {
-  //   filter.page = 1;
-  //   setFilters(filter);
-  //   changeQueryString(filter);
-  // };
-  // const onRowClick = useCallback((e, data) => {
-  //   setOpenDialogUpdateCustomer(true);
-  // }, []);
 
   const handlePageChange = (e: GridPageChangeEvent) => {
-    setLoading(true)
+    setLoading(true);
     const page = e.page;
     const newParams: Record<string, any> = {
       ...Object.fromEntries(queryParams),
       page: page.page,
       limit: page.pageSize,
     };
-    setFilters((prev) => ({ ...prev, limit: page.pageSize || 20, page: page.page }))
+    setFilters((prev) => ({ ...prev, limit: page.pageSize, page: page.page }));
     changeQueryString(newParams);
   };
   const handleSearch = (value: any) => {
     if (!value || !value?.trim()) {
     }
-    const newFilters: CustomerFilterRequest = {
+    const newFilters: IngredientFilterRequest = {
       ...filters,
       page: 1,
       query: value?.trim(),
     };
-    setFilters((prev) => ({ ...prev, query: value?.trim() }))
+    setFilters((prev) => ({ ...prev, query: value?.trim() }));
     changeQueryString(newFilters);
   };
   return (
@@ -175,10 +144,10 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
               color="primary"
               startIcon={<AddCircleOutline />}
               onClick={() => {
-                setOpenDialogAddCustomer(true);
+                history.push("/admin/receipts/create");
               }}
             >
-              {"Thêm khách hàng khác"}
+              {"tạo phiếu nhập"}
             </Button>
           </Box>
         </Box>
@@ -186,8 +155,10 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
           <Box className={classes.utilities}>
             <Box className={classes.filterAndSearchBox}>
               <SearchBox
-                placeholder={"Tìm kiếm khách hàng bằng tên, sđt, mã khách hàng"}
-                onSubmit={(e, value) => {handleSearch(value)}}
+                placeholder={"Tìm kiếm nguyên liệu ..."}
+                onSubmit={(e, value) => {
+                  handleSearch(value);
+                }}
                 value={null}
                 onBlur={(value: any) => {
                   if (value !== filters.query) handleSearch(value);
@@ -200,7 +171,10 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
             <LoadingAuth />
           ) : (
             <React.Fragment>
+    
+              
               {data.total > 0 ? (
+                console.log("66",data),
                 <SapoGrid
                   data={data}
                   page={filters?.page}
@@ -209,7 +183,10 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
                   stickyHeader
                   tableDrillDown
                   stickyHeaderTop={52}
-                  onRowClick={(e, data) => {setSelected(data); setOpenDialogAddCustomer(true)}}
+                  onRowClick={(e, data) => {
+                    setSelected(data);
+                    setOpenDialogIngredient(true);
+                  }}
                   disablePaging={false}
                 >
                   <GridColumn
@@ -220,42 +197,55 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
                   />
                   <GridColumn
                     field="code"
-                    title={getCustomerQuickFilterLabel(
-                      CustomerQuickFilterOptions.CODE
+                    title={getReceiptQuickFilterLabel(
+                      ReceiptQuickFilterOptions.CODE
                     )}
                     width={150}
                     align="left"
                   >
-                    {({ dataItem }: CellTemplateProps) => {
-                      return (
-                        <>
-                          <Typography>
-                            {"KH" +dataItem.stt}
-                          </Typography>
-                        </>
-                      );
-                    }}
+
                   </GridColumn>
                   <GridColumn
                     field="name"
-                    title={getCustomerQuickFilterLabel(
-                      CustomerQuickFilterOptions.NAME
+                    title={getReceiptQuickFilterLabel(
+                      ReceiptQuickFilterOptions.NAME
                     )}
                     width={150}
                     align="left"
                   />
+
                   <GridColumn
-                    field="phoneNumber"
-                    title={getCustomerQuickFilterLabel(
-                      CustomerQuickFilterOptions.PHONE_NUMBER
+                    field="type"
+                    title={getReceiptQuickFilterLabel(
+                      ReceiptQuickFilterOptions.TYPE
                     )}
                     width={150}
                     align="left"
-                  />
+                  >
+                  
+                  </GridColumn>
+                  <GridColumn
+                    field="totalMoney"
+                    title={getReceiptQuickFilterLabel(
+                      ReceiptQuickFilterOptions.PRICE
+                    )}
+                    width={100}
+                    align="left"
+                  >
+                    {({ dataItem }: CellTemplateProps) => {
+                      return (
+                        <>
+                          <Typography>
+                            {formatMoney(dataItem.totalMoney || 0)}
+                          </Typography>
+                        </>
+                      );
+                    }}
+                  </GridColumn>
                   <GridColumn
                     field="createdOn"
-                    title={getCustomerQuickFilterLabel(
-                      CustomerQuickFilterOptions.CREATED_ON
+                    title={getReceiptQuickFilterLabel(
+                      ReceiptQuickFilterOptions.CREATED_ON
                     )}
                     width={100}
                     align="left"
@@ -275,43 +265,27 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
                     }}
                   </GridColumn>
                   <GridColumn
-                    field="createdOn"
-                    title={getCustomerQuickFilterLabel(
-                      CustomerQuickFilterOptions.MODIFIED_ON
+                    field="modifedOn"
+                    title={getReceiptQuickFilterLabel(
+                      ReceiptQuickFilterOptions.STATUS
                     )}
                     width={100}
                     align="left"
                   >
                     {({ dataItem }: CellTemplateProps) => {
+                      if( dataItem.status === "Nhập kho"){ 
+                        return (
+                          <>
+                        <Chip variant="outlined" size="small" label={dataItem.status} className="info" />
+                        </>
+                      )}  
+                      if(dataItem.status === "Đặt hàng"){
                       return (
                         <>
-                          <Typography>
-                            {formatDateUTCToLocalDateString(
-                              dataItem.createdOn,
-                              false,
-                              "DD/MM/YYYY"
-                            )}
-                          </Typography>
-                        </>
-                      );
-                    }}
-                  </GridColumn>
-                  <GridColumn
-                    field="createdOn"
-                    title={getCustomerQuickFilterLabel(
-                      CustomerQuickFilterOptions.MODIFIED_ON
-                    )}
-                    width={100}
-                    align="left"
-                  >
-                    {({ dataItem }: CellTemplateProps) => {
-                      return (
-                        <>
-                        {}
-                          <Chip variant="outlined" size="small" label="Đang hoạt động" className="success" />
-                        </>
-                      );
-                    }}
+                      <Chip variant="outlined" size="small" label={dataItem.status} className="success" />
+                      </>)
+                     }
+                     }}
                   </GridColumn>
                 </SapoGrid>
               ) : (
@@ -324,11 +298,14 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
           )}
         </Box>
       </Box>
-      <DialogAddCustomer open={openDialogAddCustomer} onClose={() => setOpenDialogAddCustomer(false)} initData={() => {
-          initData(filters);
-        }}
-        customer={selected}
- />
+      {/* <DialogAddIngredient
+                open={openDialogIngredient}
+                onClose={() => setOpenDialogIngredient(false)}
+                ingredient={selected}
+                initData={() => {
+                    initData(filters);
+                }}
+            /> */}
     </>
   );
 };
@@ -339,5 +316,4 @@ const mapStateToProps = (state: AppState) => ({
 });
 const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
-export default connect(mapStateToProps, {})(withStyles(styles)(Customer));
-
+export default connect(mapStateToProps, {})(withStyles(styles)(Receipt));

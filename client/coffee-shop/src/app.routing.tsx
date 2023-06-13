@@ -15,11 +15,12 @@ const CreateOrder = React.lazy(() => import("./page/Orders/create"));
 const DetailItem = React.lazy(() => import("./page/Items/detail"));
 const EditItem = React.lazy(() => import("./page/Items/update"));
 const Orders = React.lazy(() => import("./page/Orders/list"));
+
 const OrderDetail = React.lazy(() => import("./page/Orders/detail"));
 const OrderEdit = React.lazy(() => import("./page/Orders/edit"));
 
-
-
+const receipt =React.lazy(() => import("./page/Stocktaking/Receipt/Receipt"));
+const Createreceipt =React.lazy(() => import("./page/Stocktaking/Receipt/Create"));
 export const LAYOUT_ROUTES: Route[] = [
   {
     path: "/",
@@ -80,6 +81,30 @@ let MAIN_ROUTES = (): Route[] => [
     header: {
       title: "Nguyên liệu",
       linkTo: "/admin/ingredients",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/receipts",
+    component: receipt,
+    extract: true,
+    header: {
+      title: "Nhập kho ",
+      linkTo: "/admin/receipts",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/receipts/create",
+    component: Createreceipt,
+    extract: true,
+    header: {
+      title: " tạo phiếu Nhập kho ",
+      linkTo: "/admin/receipts",
       showNoti: false,
       withSubtitle: false,
     },

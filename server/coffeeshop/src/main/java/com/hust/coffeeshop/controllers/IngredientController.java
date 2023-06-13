@@ -7,13 +7,14 @@ import com.hust.coffeeshop.models.dto.customer.CustomerResponse;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientFilterRequest;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientRequest;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientResponse;
+import com.hust.coffeeshop.models.exception.BaseException;
 import com.hust.coffeeshop.services.IngredientService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/ingredient")
 @CrossOrigin("http://localhost:3000")
-public class IngredientController {
+public class IngredientController extends BaseException {
     private final IngredientService ingredientService;
 
     public IngredientController(IngredientService ingredientService) {
