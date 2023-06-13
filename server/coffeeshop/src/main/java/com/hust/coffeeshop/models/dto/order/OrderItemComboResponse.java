@@ -4,17 +4,17 @@ import com.hust.coffeeshop.models.dto.BaseResponse;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import java.math.BigDecimal;
-import java.util.List;
 
 @Getter
 @Setter
-public class OrderItemResponse extends BaseResponse {
-    private int status;
-    private boolean combo;
-    private int quantity;
+public class OrderItemComboResponse extends BaseResponse {
     private String name;
+    private int status;
+    private int orderId;
+    private int orderItemId;
     private BigDecimal price;
-    private int productId;
-    private List<OrderItemComboResponse> orderItemComboResponses;
+    private int quantity;
+    private int comboItemId;
 }

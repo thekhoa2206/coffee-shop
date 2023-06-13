@@ -42,8 +42,9 @@ public class OrderServiceImpl implements OrderService {
     private final IngredientRepository ingredientRepository;
     private final VariantRepository variantRepository;
     private final IngredientService ingredientService;
+    private final OrderItemComboRepository orderItemComboRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService) {
+    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService, OrderItemComboRepository orderItemComboRepository) {
         this.orderRepository = orderRepository;
         this.filterRepository = filterRepository;
         this.mapper = mapper;
@@ -56,6 +57,7 @@ public class OrderServiceImpl implements OrderService {
         this.ingredientRepository = ingredientRepository;
         this.variantRepository = variantRepository;
         this.ingredientService = ingredientService;
+        this.orderItemComboRepository = orderItemComboRepository;
     }
 
     /*
@@ -127,6 +129,17 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItemResponse> orderItemResponses = new ArrayList<>();
         for (var orderItem : orderItems) {
             var orderItemResponse = mapper.map(orderItem, OrderItemResponse.class);
+            if (orderItem.isCombo()) {
+                var orderCombos = orderItemComboRepository.findOrderItemComboByOrderItemId(orderItem.getId());
+                List<OrderItemComboResponse> orderItemComboResponses = new ArrayList<>();
+                if (orderCombos != null && orderCombos.size() > 0) {
+                    for (var orderItemCombo : orderCombos) {
+                        var orderItemComboResponse = mapper.map(orderItemCombo, OrderItemComboResponse.class);
+                        orderItemComboResponses.add(orderItemComboResponse);
+                    }
+                }
+                orderItemResponse.setOrderItemComboResponses(orderItemComboResponses);
+            }
             orderItemResponses.add(orderItemResponse);
         }
         orderResponse.setOrderItemResponses(orderItemResponses);
@@ -160,20 +173,42 @@ public class OrderServiceImpl implements OrderService {
         order.setPaymentStatus(CommonStatus.PaymentStatus.UNPAID);
 
         order = orderRepository.save(order);
-        List<OrderItem> lineItems = new ArrayList<>();
         for (var item : request.getOrderItemRequest()) {
-            checkAvailable(item);
             var lineItem = mapper.map(item, OrderItem.class);
+            lineItem.setOrderId(order.getId());
+            checkAvailable(item);
             lineItem.setCreatedOn();
             lineItem.setModifiedOn();
             lineItem.setCreatedBy(1);
             lineItem.setModifiedBy(1);
             lineItem.setStatus(CommonStatus.OrderItemStatus.ACTIVE);
-            lineItem.setOrderId(order.getId());
-            lineItems.add(lineItem);
-        }
-        if (lineItems != null && lineItems.size() > 0) {
-            orderItemRepository.saveAll(lineItems);
+            lineItem = orderItemRepository.save(lineItem);
+
+            if(lineItem.isCombo()){
+                var combo = comboRepository.findById(lineItem.getProductId());
+                if (!combo.isPresent() || combo == null) throw new ErrorException("Không tìm thấy combo!");
+                var comboItems = comboItemRepository.findComboItemByComboId(combo.get().getId());
+                if (comboItems != null || comboItems.size() > 0) {
+                    var variantIds = comboItems.stream().map(ComboItem::getVariantId).collect(Collectors.toList());
+                    var variants = variantRepository.findVariantByIds(variantIds);
+                    for (var comboItem : comboItems) {
+                        var variant = variants.stream().filter(v -> v.getId() == comboItem.getVariantId()).collect(Collectors.toList()).stream().findFirst().orElse(null);
+                        OrderItemCombo orderItemCombo = new OrderItemCombo();
+                        orderItemCombo.setOrderId(order.getId());
+                        orderItemCombo.setOrderItemId(lineItem.getId());
+                        orderItemCombo.setName(variant.getName());
+                        orderItemCombo.setPrice(variant.getPrice());
+                        orderItemCombo.setQuantity(comboItem.getQuantity() * lineItem.getQuantity());
+                        orderItemCombo.setStatus(CommonStatus.Status.ACTIVE);
+                        orderItemCombo.setCreatedOn();
+                        orderItemCombo.setModifiedOn();
+                        orderItemCombo.setCreatedBy(1);
+                        orderItemCombo.setModifiedBy(1);
+                        orderItemCombo.setComboItemId(comboItem.getId());
+                        orderItemComboRepository.save(orderItemCombo);
+                    }
+                }
+            }
         }
         var orderResponse = mapperOrderResponse(order);
         return orderResponse;
@@ -247,7 +282,7 @@ public class OrderServiceImpl implements OrderService {
         if (id == 0) throw new ErrorException("Không có id đơn hàng");
         var order = orderRepository.findById(id);
         if (!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
-        if(order.get().getPaymentStatus() == CommonStatus.PaymentStatus.PAID)
+        if (order.get().getPaymentStatus() == CommonStatus.PaymentStatus.PAID)
             throw new ErrorException("Đơn hàng đã thanh toán");
         order.get().setPaymentStatus(CommonStatus.PaymentStatus.PAID);
         order.get().setModifiedOn();
@@ -309,7 +344,9 @@ public class OrderServiceImpl implements OrderService {
                 item.setStatus(CommonStatus.OrderItemStatus.ACTIVE);
                 checkInventoryUpdate(itemNew, TypeAction.ADD, null);
                 item = orderItemRepository.save(item);
+                var orderItemCombos = setOrderItemCombo(item, TypeAction.ADD);
                 OrderItemResponse itemResponse = mapper.map(item, OrderItemResponse.class);
+                itemResponse.setOrderItemComboResponses(orderItemCombos);
                 itemResponses.add(itemResponse);
 
             } else {
@@ -326,6 +363,8 @@ public class OrderServiceImpl implements OrderService {
                     itemOld.setModifiedOn();
                     OrderItemResponse itemResponse = mapper.map(itemOld, OrderItemResponse.class);
                     itemResponses.add(itemResponse);
+                    var orderItemCombos = setOrderItemCombo(itemOld, TypeAction.UPDATE);
+                    itemResponse.setOrderItemComboResponses(orderItemCombos);
                     orderItemRepository.save(itemOld);
                 }
             }
@@ -338,11 +377,64 @@ public class OrderServiceImpl implements OrderService {
                     item.setStatus(CommonStatus.OrderItemStatus.DELETED);
                     item.setModifiedOn();
                     checkInventoryUpdate(null, TypeAction.DELETED, item);
+                    setOrderItemCombo(item, TypeAction.DELETED);
                     orderItemRepository.save(item);
                 }
             }
         }
         return itemResponses;
+    }
+
+    //Hàm set orderItemCombo
+    private List<OrderItemComboResponse> setOrderItemCombo(OrderItem lineItem, TypeAction type) {
+        List<OrderItemComboResponse> orderItemComboResponses = new ArrayList<>();
+        var combo = comboRepository.findById(lineItem.getProductId());
+        if (!combo.isPresent() || combo == null) throw new ErrorException("Không tìm thấy combo!");
+        var comboItems = comboItemRepository.findComboItemByComboId(combo.get().getId());
+        if (type.equals(TypeAction.ADD)) {
+            if (comboItems != null || comboItems.size() > 0) {
+                var variantIds = comboItems.stream().map(ComboItem::getVariantId).collect(Collectors.toList());
+                var variants = variantRepository.findVariantByIds(variantIds);
+                for (var comboItem : comboItems) {
+                    var variant = variants.stream().filter(v -> v.getId() == comboItem.getVariantId()).collect(Collectors.toList()).stream().findFirst().orElse(null);
+                    OrderItemCombo orderItemCombo = new OrderItemCombo();
+                    orderItemCombo.setOrderId(lineItem.getOrderId());
+                    orderItemCombo.setOrderItemId(lineItem.getId());
+                    orderItemCombo.setName(variant.getName());
+                    orderItemCombo.setPrice(variant.getPrice());
+                    orderItemCombo.setQuantity(comboItem.getQuantity());
+                    orderItemCombo.setStatus(CommonStatus.Status.ACTIVE);
+                    orderItemCombo.setCreatedOn();
+                    orderItemCombo.setModifiedOn();
+                    orderItemCombo.setCreatedBy(1);
+                    orderItemCombo.setModifiedBy(1);
+                    orderItemCombo.setComboItemId(comboItem.getId());
+                    orderItemCombo = orderItemComboRepository.save(orderItemCombo);
+                    var orderItemComboResponse = mapper.map(orderItemCombo, OrderItemComboResponse.class);
+                    orderItemComboResponses.add(orderItemComboResponse);
+                }
+            }
+        } else if (type.equals(TypeAction.UPDATE)) {
+            var orderItemCombos = orderItemComboRepository.findOrderItemComboByOrderItemId(lineItem.getId());
+            if (orderItemCombos != null && orderItemCombos.size() > 0) {
+                for (var orderItemCombo : orderItemCombos) {
+                    orderItemCombo.setModifiedOn();
+                    orderItemCombo = orderItemComboRepository.save(orderItemCombo);
+                    var orderItemComboResponse = mapper.map(orderItemCombo, OrderItemComboResponse.class);
+                    orderItemComboResponses.add(orderItemComboResponse);
+                }
+            }
+        } else if (type.equals(TypeAction.DELETED)) {
+            var orderItemCombos = orderItemComboRepository.findOrderItemComboByOrderItemId(lineItem.getId());
+            if (orderItemCombos != null && orderItemCombos.size() > 0) {
+                for (var orderItemCombo : orderItemCombos) {
+                    orderItemCombo.setStatus(CommonStatus.Status.DELETED);
+                    orderItemCombo.setModifiedOn();
+                    orderItemComboRepository.save(orderItemCombo);
+                }
+            }
+        }
+        return orderItemComboResponses;
     }
 
     //Hàm sửa tồn kho khi sửa đơn hàng
@@ -366,7 +458,7 @@ public class OrderServiceImpl implements OrderService {
                     var variantIds = comboItems.stream().map(ComboItem::getVariantId).collect(Collectors.toList());
                     if (variantIds != null && variantIds.size() > 0) {
                         List<InventoryVariant> inventoryVariants = new ArrayList<>();
-                        for (var variantId: variantIds) {
+                        for (var variantId : variantIds) {
                             InventoryVariant inventoryVariant = new InventoryVariant();
                             inventoryVariant.setVariantId(variantId);
                             inventoryVariant.setQuantity(itemOld.getQuantity() - itemNew.getQuantity());
@@ -397,7 +489,7 @@ public class OrderServiceImpl implements OrderService {
                     var variantIds = comboItems.stream().map(ComboItem::getVariantId).collect(Collectors.toList());
                     if (variantIds != null && variantIds.size() > 0) {
                         List<InventoryVariant> inventoryVariants = new ArrayList<>();
-                        for (var variantId: variantIds) {
+                        for (var variantId : variantIds) {
                             InventoryVariant inventoryVariant = new InventoryVariant();
                             inventoryVariant.setVariantId(variantId);
                             inventoryVariant.setQuantity(itemOld.getQuantity());
@@ -447,12 +539,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse updateStatus(int id, int status){
+    public OrderResponse updateStatus(int id, int status) {
         if (id == 0) throw new ErrorException("Không có id đơn hàng");
         var order = orderRepository.findById(id);
         if (!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
-        if((order.get().getStatus() != CommonStatus.OrderStatus.DRAFT
-                || order.get().getStatus() != CommonStatus.PaymentStatus.PAID) && status == CommonStatus.OrderStatus.DELETED){
+        if ((order.get().getStatus() != CommonStatus.OrderStatus.DRAFT
+                || order.get().getStatus() != CommonStatus.PaymentStatus.PAID) && status == CommonStatus.OrderStatus.DELETED) {
             throw new ErrorException("Đơn hàng không được hủy!");
         }
         order.get().setStatus(status);
@@ -465,10 +557,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderPrintForm getPrintForm(PrintOrderRequest printOrder) throws IOException, TemplateException {
         String htmlContent = null;
-        if(printOrder.getOrderId() != 0){
+        if (printOrder.getOrderId() != 0) {
             val printSample = PrintSample.CONTENT_HTML;
             val order = orderRepository.findById(printOrder.getOrderId());
-            if(order != null && printSample != null){
+            if (order != null && printSample != null) {
                 val orderPrintModel = mapper.map(order.get(), OrderPrintModel.class);
                 orderPrintModel.setForPrintForm();
                 htmlContent = PrintUtils.process(printSample, orderPrintModel, PrintVariableMap.ORDER);
@@ -477,7 +569,7 @@ public class OrderServiceImpl implements OrderService {
         return new OrderPrintForm(printOrder.getOrderId(), htmlContent);
     }
 
-    private OrderPrintModel mapperOrderPrintModel(Order order){
+    private OrderPrintModel mapperOrderPrintModel(Order order) {
         OrderPrintModel model = new OrderPrintModel();
         model.setCode(order.getCode());
         model.setCreatedOn(order.getCreatedOn());
@@ -488,9 +580,9 @@ public class OrderServiceImpl implements OrderService {
         model.setPaymentStatus(order.getPaymentStatus());
         model.setStatus(order.getStatus());
         var lineItems = orderItemRepository.findOrderItemByOrderId(order.getId());
-        if(lineItems != null){
-            List<OrderPrintModel.OrderItemPrintModel> itemModels= new ArrayList<>();
-            for (var lineItem: lineItems) {
+        if (lineItems != null) {
+            List<OrderPrintModel.OrderItemPrintModel> itemModels = new ArrayList<>();
+            for (var lineItem : lineItems) {
                 OrderPrintModel.OrderItemPrintModel itemModel = new OrderPrintModel.OrderItemPrintModel();
                 itemModel.setId(lineItem.getId());
                 itemModel.setLineAmount(lineItem.getPrice().multiply(BigDecimal.valueOf(lineItem.getQuantity())));

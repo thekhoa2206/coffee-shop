@@ -31,7 +31,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
           <TableCell>Số lượng</TableCell>
           <TableCell>Giá tiền</TableCell>
           <TableCell>Thành tiền</TableCell>
-          {context !== "detail" && order && order?.paymentStatus === 1 && order?.status === 1 && (<TableCell></TableCell>)}
+          {(context !== "detail" && order && order?.paymentStatus === 1 && order?.status === 1) || (context === "create") && (<TableCell></TableCell>)}
         </TableHead>
         {lineItems &&
           lineItems.map((item, index) => (
@@ -40,7 +40,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>
-                  {(context !== "detail" && order && order?.paymentStatus === 1 && order?.status === 1) ? (
+                  {(context !== "detail" && order && order?.paymentStatus === 1 && order?.status === 1) || (context === "create") ? (
                     <InputQuantity
                       value={item.quantity}
                       onChange={(value: any) => {
@@ -56,7 +56,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
                   ) : (<Typography>{item.quantity}</Typography>)}
                 </TableCell>
                 <TableCell>
-                  {context !== "detail" && order && order?.paymentStatus === 1 && order?.status === 1 ?  (<InputQuantity
+                  {(context !== "detail" && order && order?.paymentStatus === 1 && order?.status === 1 ) || (context === "create") ?  (<InputQuantity
                     value={item.price}
                     onChange={(value) => {
                       updateLineItem(
@@ -71,7 +71,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
                   />) : (<Typography>{formatMoney(item.price || 0)}</Typography>)}
                 </TableCell>
                 <TableCell>{formatMoney(item.lineAmount || 0)}</TableCell>
-                {context !== "detail" && order && order?.status === 1 && order?.paymentStatus === 1 && (
+                {(context !== "detail" && order && order?.status === 1 && order?.paymentStatus === 1) || (context === "create") && (
                   <TableCell>
                     <IconButton
                       style={{ width: 20, height: 20 }}
@@ -102,7 +102,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
                       updateLineItem({ ...item, isShow: true }, item.productId
                       )
                     }} color="primary">Xem combo</Button></TableCell>
-                    {context !== "detail" && order && order?.status === 1 && order?.paymentStatus === 1 && <TableCell style={{ border: "none" }} />}
+                    {(context !== "detail" && order && order?.status === 1 && order?.paymentStatus === 1) || (context === "create") && <TableCell style={{ border: "none" }} />}
                   </TableRow>
                 ) : ((item.combo && item.variants && item.variants.length > 0) && <TableRow>
                   <TableCell style={{ border: "none" }} />
@@ -110,7 +110,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
                     updateLineItem({ ...item, isShow: false }, item.productId
                     )
                   }} color="primary">Rút gọn</Button></TableCell>
-                  {context !== "detail" && order && order?.status === 1 && order?.paymentStatus === 1 && <TableCell style={{ border: "none" }} />}
+                  {(context !== "detail" && order && order?.status === 1 && order?.paymentStatus === 1 ) || (context === "create")  && <TableCell style={{ border: "none" }} />}
                 </TableRow>)
               }
             </TableBody>

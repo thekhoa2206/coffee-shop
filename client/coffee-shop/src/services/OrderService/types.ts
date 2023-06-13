@@ -33,6 +33,17 @@ export interface OrderItemResponse extends BaseResponse {
     name: string;
     price: number;
     productId: number;
+    orderItemComboResponses?: OrderItemComboResponse[];
+}
+
+export interface OrderItemComboResponse extends BaseResponse {
+    name?: string;
+    status?: number;
+    orderId?: number;
+    orderItemId?: number;
+    price?: number;
+    quantity?: number;
+    comboItemId?: number;
 }
 
 export type OrderRequest = {
