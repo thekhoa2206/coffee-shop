@@ -147,12 +147,8 @@ public class ComboServiceImpl implements ComboService {
             category = categoryRepository.findById(request.getCategoryId()).get();
         }
         var comboRespone = mapper.map(comboNew, ComboRespone.class);
-        List<ItemRepsone> itemRepsones = new ArrayList<>();
-        var categoryResponse = mapper.map(category, CategoryResponse.class);
-
         List<ComboItem> comboItems = comboItemRepository.findComboItemByComboId(id);
         updateVariant(request.getVarianIds(),comboItems,id);
-        categoryResponse.set();
         comboRespone.setCategory(category);
         return comboRespone;
     }

@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface StocktakingIngredientRepository extends JpaRepository<StocktakingIngredient, Integer>, JpaSpecificationExecutor<StocktakingIngredient> {
-    @Query(value = "SELECT stocktaking_ingredient.* FROM stocktaking_ingredient WHERE stocktaking_id = ?1", nativeQuery = true)
+    @Query(value = "SELECT stocktaking_ingredient.* FROM stocktaking_ingredient WHERE stocktaking_id = ?1 AND status =1", nativeQuery = true)
     List<StocktakingIngredient> findItemIngredientByInventoryId(int stocktaking_id);
 }

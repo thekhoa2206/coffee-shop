@@ -2,6 +2,8 @@ package com.hust.coffeeshop.controllers;
 
 import com.hust.coffeeshop.configuration.jwt.JwtProvider;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
+import com.hust.coffeeshop.models.dto.item.request.CreateItemRequest;
+import com.hust.coffeeshop.models.dto.item.response.ItemRepsone;
 import com.hust.coffeeshop.models.dto.stocktaking.repsone.StocktakingReponse;
 import com.hust.coffeeshop.models.dto.stocktaking.request.CreateStocktakingRequest;
 import com.hust.coffeeshop.models.dto.stocktaking.request.StoctakingFilterRequest;
@@ -51,5 +53,14 @@ public class StockingController extends BaseException {
     @GetMapping
     public PagingListResponse<StocktakingReponse> filter(StoctakingFilterRequest filter){
         return stocktakingService.filter(filter);
+    }
+    @PutMapping("/{id}")
+    public StocktakingReponse update(@RequestBody CreateStocktakingRequest request, @PathVariable("id") int id){
+        return stocktakingService.update(request, id);
+    }
+
+    @DeleteMapping
+    public void delete(@PathVariable("id") int id){
+        stocktakingService.delete(id);
     }
 }

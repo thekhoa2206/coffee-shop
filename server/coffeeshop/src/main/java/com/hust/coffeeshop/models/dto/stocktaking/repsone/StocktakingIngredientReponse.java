@@ -11,4 +11,5 @@ public class StocktakingIngredientReponse {
     private BigDecimal ingredientMoney;
     private int  quantity;
     private IngredientResponse ingredientResponse;
+    private int id;
 }
