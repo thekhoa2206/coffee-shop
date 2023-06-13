@@ -30,4 +30,8 @@ public class OrderItemCombo extends BaseEntity{
 
     @Column(name = "quantity")
     private int quantity;
+
+    @Column(name = "combo_item_id")
+    private int comboItemId;
+
 }

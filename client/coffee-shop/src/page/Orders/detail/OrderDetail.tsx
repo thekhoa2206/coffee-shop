@@ -264,7 +264,6 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                 disableRestoreFocus
                             >
                                 <MenuItem
-
                                     onClick={() => { history.push(`/admin/orders/${id}/edit`) }}
                                 >
                                     <PencilIcon style={{ color: "#adadad", marginRight: 10 }} /> Sửa

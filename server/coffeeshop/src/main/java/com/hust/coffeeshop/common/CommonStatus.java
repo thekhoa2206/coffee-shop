@@ -42,4 +42,9 @@ public class CommonStatus {
         public final static int ACTIVE = 1;
         public final static int DELETED = 2;
     }
+
+    public class Status {
+        public final static int ACTIVE = 1;
+        public final static int DELETED = 2;
+    }
 }
