@@ -64,6 +64,7 @@ import { render } from "react-dom";
 import Switch from "components/Switch/Switch.component";
 import { check } from "prettier";
 import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
+import useModal from "components/Modal/useModal";
 
 export interface CreateReceiptProps extends WithStyles<typeof styles> {}
 const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
@@ -82,6 +83,8 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
   const [toltalMoeny, settoltalMoeny] = useState<number>();
   const [stocktakingIngredientRequest, setStocktakingIngredientRequest] =
     useState<StocktakingIngredientRequest[]>([]);
+    const { closeModal, confirm, openModal } = useModal();
+
   const history = useHistory();
   const updateIngredient = (ingredient: StocktakingIngredientRequest) => {
     let datatNews = stocktakingIngredientRequest.map((v) => {
@@ -137,7 +140,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
     }
   };
 
-  const handleCreateCombo = async (status:string) => {
+  const handleCreateRecpit = async (status:number) => {
     if (!receiptRequest?.name) {
       SnackbarUtils.error(`Tên phiếu không được để trống!`);
       return;
@@ -422,19 +425,20 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
         style={{
           display: "flex",
           marginBottom: "100px",
-          marginLeft: "1150px",
+          marginLeft: "760px",
           marginTop: "16px",
         }}
       >
-        <Button variant="outlined" color="primary">
+ 
+        <Button variant="outlined" color="secondary">
           Hủy
         </Button>
         <Button
-          variant="contained"
+          variant="outlined"
           color="primary"
           style={{ marginLeft: "16px" }}
           onClick={() => {
-            handleCreateCombo("order");
+            handleCreateRecpit(1);
           }}
         >
           Đặt hàng
@@ -444,8 +448,22 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
           color="primary"
           style={{ marginLeft: "16px" }}
           onClick={() => {
-            handleCreateCombo("warehouse");
-          }}
+            if(!checked){
+              openModal(ConfirmDialog, {
+                confirmButtonText: "Xác nhận",
+                message: "Bạn chưa thanh toán phiếu,bạn có muốn tiếp tục đặt hàng và nhập kho không?",
+                title: "Thanh toán phiếu nhập kho",
+                cancelButtonText: "Thoát",
+            }).result.then((res) => {
+                if (res) {
+                  handleCreateRecpit(1);;
+                }
+            })
+          }else{
+            handleCreateRecpit(2)
+          }
+        
+        }}
         >
           Đặt hàng và Nhập kho
         </Button>

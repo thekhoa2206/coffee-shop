@@ -58,10 +58,10 @@ public class StocktakingServiceImpl implements StocktakingService {
             stocktaking.setCode(CommonCode.GenerateCodeWarehouse());
 
         stocktaking.setName(request.getName());
-        if(request.getStatus().equals("order")){
+        if(request.getStatus()==1){
             stocktaking.setStatus(CommonStatus.StockingStatus.ORDER);
         }
-        if(request.getStatus().equals("warehouse")) {
+        if(request.getStatus()==2) {
             stocktaking.setStatus(CommonStatus.StockingStatus.WAREHOUSE);
         }
         if(request.isPayment()){

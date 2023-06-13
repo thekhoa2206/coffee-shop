@@ -14,6 +14,6 @@ public class CreateStocktakingRequest {
     private BigDecimal totalMoney;
     private String description;
     private boolean payment;
-    private String status;
+    private int status;
     List<StocktakingIngredientRequest> object;
 }

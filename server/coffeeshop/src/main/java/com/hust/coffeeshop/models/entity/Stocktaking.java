@@ -23,7 +23,7 @@ public class Stocktaking extends BaseEntity{
     private String type;
 
     @Column(name = "status")
-    private String status;
+    private int status;
     @Column(name = "payment")
     private int payment;
 

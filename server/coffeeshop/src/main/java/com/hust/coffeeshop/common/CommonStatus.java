@@ -12,10 +12,10 @@ public class CommonStatus {
     }
     public class StockingStatus {
         //đặt hàng
-        public final static String ORDER ="Đặt hàng";
+        public final static int ORDER =1;
         //nhập kho
-        public final static String WAREHOUSE = "Nhập kho";
-        public final static String DELETED = "Hủy phiếu";
+        public final static int WAREHOUSE =2;
+        public final static int DELETED = 3;
     }
 
     public class StockingPayment {

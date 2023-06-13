@@ -273,13 +273,13 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
                     align="left"
                   >
                     {({ dataItem }: CellTemplateProps) => {
-                      if( dataItem.status === "Nhập hàng"){ 
+                      if( dataItem.status === "Nhập kho"){ 
                         return (
                           <>
                         <Chip variant="outlined" size="small" label={dataItem.status} className="info" />
                         </>
                       )}  
-                      if(dataItem.status === "Nhập hàng"){
+                      if(dataItem.status === "Đặt hàng"){
                       return (
                         <>
                       <Chip variant="outlined" size="small" label={dataItem.status} className="success" />
