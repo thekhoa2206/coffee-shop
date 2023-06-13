@@ -38,6 +38,8 @@ export type CreateStocktakingRequest = {
   totalMoney?: number;
   description?: string;
   object?: StocktakingIngredientRequest[];
+  payment?:boolean;
+  status?: string;
 };
 
 export type StocktakingIngredientRequest = {

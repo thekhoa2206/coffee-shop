@@ -56,10 +56,7 @@ public class StocktakingServiceImpl implements StocktakingService {
         Stocktaking stocktaking = mapper.map(request, Stocktaking.class);
         if(request.getType().equals("import")){
             stocktaking.setCode(CommonCode.GenerateCodeWarehouse());
-        }
-        else {
-            stocktaking.setCode(CommonCode.GenerateCodeexport());
-        }
+
         stocktaking.setName(request.getName());
         if(request.getStatus().equals("order")){
             stocktaking.setStatus(CommonStatus.StockingStatus.ORDER);
@@ -72,6 +69,10 @@ public class StocktakingServiceImpl implements StocktakingService {
         }
         else {
             stocktaking.setPayment(CommonStatus.StockingPayment.UNPAID);
+        }
+        }
+        else {
+            stocktaking.setCode(CommonCode.GenerateCodeexport());
         }
         stocktaking.setDescription(request.getDescription());
         stocktaking.setTotalMoney(request.getTotalMoney());

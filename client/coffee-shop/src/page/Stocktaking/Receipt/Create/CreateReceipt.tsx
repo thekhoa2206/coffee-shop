@@ -61,7 +61,9 @@ import {
 import StocktakingService from "services/StocktakingService/StocktakingService";
 import { log } from "console";
 import { render } from "react-dom";
-import { receiptStore } from "../store/store";
+import Switch from "components/Switch/Switch.component";
+import { check } from "prettier";
+import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
 
 export interface CreateReceiptProps extends WithStyles<typeof styles> {}
 const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
@@ -76,10 +78,6 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
   const [variants, setVariants] = useState<VariantRequest[]>([
     { id: 1, name: "", price: 0 },
   ]);
-  const {
-     set,
-     total,
-  } = receiptStore();
   const [stockUnits, setStockUnits] = useState<StockUnitResponse[]>();
   const [toltalMoeny, settoltalMoeny] = useState<number>();
   const [stocktakingIngredientRequest, setStocktakingIngredientRequest] =
@@ -97,6 +95,11 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
     });
     setStocktakingIngredientRequest(datatNews);
     sumMoeny();
+  };
+  const [checked, setChecked] = React.useState(false);
+  const [note, setNote] = React.useState<string>();
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
   };
   const deleteVarinat = (ingredient: StocktakingIngredientRequest) => {
     let datatdelete = stocktakingIngredientRequest.filter(
@@ -134,7 +137,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
     }
   };
 
-  const handleCreateCombo = async () => {
+  const handleCreateCombo = async (status:string) => {
     if (!receiptRequest?.name) {
       SnackbarUtils.error(`Tên phiếu không được để trống!`);
       return;
@@ -148,6 +151,9 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
       type: "import",
       totalMoney: sumMoeny(),
       object: stocktakingIngredientRequest,
+      status:status,
+      payment:checked,
+      description:note
     };
     try {
       let res = await StocktakingService.create(requet);
@@ -378,6 +384,38 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
               </Box>
             </Box>
           </Paper>
+          
+          <Paper className={classes.wrapperBoxInfo} style={{display:"flex"}}>
+          <Grid  item xs={8}>
+            <Box className={classes.boxContentPaper}>
+              <Typography style={{ fontWeight: 500 }}>Ghi chú</Typography>
+              <Grid item xs={2}>
+              <Box style={{ width: 600 }}>
+              <TextareaAutosize
+                        height={60}
+                        onChange={(e: any) => {
+                          setNote( e.target.value as any,
+                          );
+                        }}
+                        value={note}
+                      />
+                      </Box>
+              </Grid>
+            </Box>
+            </Grid>
+          <Grid  item xs={4}>
+          <Box className={classes.boxContentPaper} style={{display:"flex",marginLeft:120}}>
+              <Typography style={{ fontWeight: 500 }}>Thanh toán</Typography>
+              <Grid item xs={2}>
+                <Switch
+                checked={checked}
+                onChange={handleChange}
+                ></Switch>
+              </Grid>
+            </Box>
+          </Grid>
+          </Paper>
+        
         </Grid>
       </Box>
       <Box
@@ -396,15 +434,26 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
           color="primary"
           style={{ marginLeft: "16px" }}
           onClick={() => {
-            handleCreateCombo();
+            handleCreateCombo("order");
           }}
         >
-          Tạo phiếu
+          Đặt hàng
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ marginLeft: "16px" }}
+          onClick={() => {
+            handleCreateCombo("warehouse");
+          }}
+        >
+          Đặt hàng và Nhập kho
         </Button>
       </Box>
     </>
   );
 };
+
 
 const mapStateToProps = (state: AppState) => ({
   menuState: state.menu,

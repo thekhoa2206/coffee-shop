@@ -307,6 +307,7 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
                     {({ dataItem }: CellTemplateProps) => {
                       return (
                         <>
+                        {}
                           <Chip variant="outlined" size="small" label="Đang hoạt động" className="success" />
                         </>
                       );

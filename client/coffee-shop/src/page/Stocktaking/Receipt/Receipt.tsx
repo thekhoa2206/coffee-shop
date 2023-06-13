@@ -34,6 +34,7 @@ import {
   getReceiptQuickFilterLabel,
 } from "./ReceiptFilter.constant";
 import styles from "./Receipt.styles";
+import Chip from "components/Chip/Chip.component";
 
 const Receipt = (props: ReceiptProps & PropsFromRedux) => {
   const { classes, authState } = props;
@@ -266,24 +267,25 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
                   <GridColumn
                     field="modifedOn"
                     title={getReceiptQuickFilterLabel(
-                      ReceiptQuickFilterOptions.MODIFIED_ON
+                      ReceiptQuickFilterOptions.STATUS
                     )}
                     width={100}
                     align="left"
                   >
                     {({ dataItem }: CellTemplateProps) => {
+                      if( dataItem.status === "Nhập hàng"){ 
+                        return (
+                          <>
+                        <Chip variant="outlined" size="small" label={dataItem.status} className="info" />
+                        </>
+                      )}  
+                      if(dataItem.status === "Nhập hàng"){
                       return (
                         <>
-                          <Typography>
-                            {formatDateUTCToLocalDateString(
-                              dataItem.modifiedOn,
-                              false,
-                              "DD/MM/YYYY"
-                            )}
-                          </Typography>
-                        </>
-                      );
-                    }}
+                      <Chip variant="outlined" size="small" label={dataItem.status} className="success" />
+                      </>)
+                     }
+                     }}
                   </GridColumn>
                 </SapoGrid>
               ) : (
