@@ -105,7 +105,7 @@ let MAIN_ROUTES = (): Route[] => [
     component: Createreceipt,
     extract: true,
     header: {
-      title: " tạo phiếu Nhập kho ",
+      title: " Tạo phiếu Nhập kho ",
       linkTo: "/admin/receipts",
       showNoti: false,
       withSubtitle: false,
@@ -117,7 +117,7 @@ let MAIN_ROUTES = (): Route[] => [
     component: UpdateReceipt,
     extract: true,
     header: {
-      title: " cập nhật phiếu Nhập kho ",
+      title: " Cập nhật phiếu ",
       linkTo: "/admin/receipts",
       showNoti: false,
       withSubtitle: false,

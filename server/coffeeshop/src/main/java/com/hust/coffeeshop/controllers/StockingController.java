@@ -59,7 +59,7 @@ public class StockingController extends BaseException {
         return stocktakingService.update(request, id);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id){
         stocktakingService.delete(id);
     }

@@ -69,6 +69,7 @@ import useModal from "components/Modal/useModal";
 import { receiveMessageOnPort } from "worker_threads";
 import { type } from "os";
 import { StockingType } from "page/Stocktaking/utils/StocktakingContants";
+import BoxStep from "../components/BoxStep";
 
 export interface UpdateReceiptProps extends WithStyles<typeof styles> { }
 const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
@@ -195,7 +196,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
     }
     let request: CreateStocktakingRequest = {
       ...receiptRequest,
-      type: "import",
+      type: receipt?.type,
       totalMoney: sumMoeny(),
       object: stocktakingIngredientRequest,
       status: status,
@@ -254,9 +255,13 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
     
     <>
       <Box className={classes.container}>
-        <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
-          Thông tin phiếu  {receipt?.code}
+      <Grid item xs={12} style={{ display: "flex", justifyContent: "flex-end" }}>
+      <Typography variant="h6" style={{ padding: "12px 4px 26px",fontSize:25,marginRight:290 }}>
+          Thông tin phiếu {renderReceipttype(receipt?.type)} - {receipt?.code}
         </Typography>
+                        <BoxStep stock={receipt} />
+                    </Grid>
+
         {receipt?.status && receipt.status === 1 ? 
         (
           <Grid container xs={12} spacing={2}>
@@ -712,9 +717,13 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                 marginTop: "16px",
               }}
             >
-              <Button variant="outlined" color="secondary"
+              <Button variant="outlined"  style={{
+                    background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
+                    borderColor: "#ff4d4d",
+                    boxShadow: "inset 0 1px 0 0 #ff4d4",
+                    color: "#fff"
+              }}
                 onClick={() => {
-
                   openModal(ConfirmDialog, {
                     confirmButtonText: "Huỷ phiếu",
                     message:
@@ -749,7 +758,6 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                     });
                   } else {
                     handleUpdateRecpit(2);
-                    (2);
                   }
                 }}
               >
@@ -762,11 +770,21 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
               style={{
                 display: "flex",
                 marginBottom: "100px",
-                marginLeft: "760px",
+                // marginLeft: "160px",
                 marginTop: "16px",
+                float:"right",
+                marginRight:138
               }}
             >
             <Button variant="outlined" color="secondary"
+            style={{
+              background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
+              borderColor: "#ff4d4d",
+              boxShadow: "inset 0 1px 0 0 #ff4d4",
+              color: "#fff",
+              float:"left"
+
+        }}
                 onClick={() => {
 
                   openModal(ConfirmDialog, {

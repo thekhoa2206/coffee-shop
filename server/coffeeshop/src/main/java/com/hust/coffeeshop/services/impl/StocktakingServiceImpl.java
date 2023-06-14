@@ -140,6 +140,12 @@ public class StocktakingServiceImpl implements StocktakingService {
         if (request.getDescription() != null) data.setDescription(request.getDescription());
         data.setTotalMoney(request.getTotalMoney());
         data.setModifiedOn(CommonCode.getTimestamp());
+        if(request.getStatus()==1){
+            data.setStatus(CommonStatus.StockingStatus.ORDER);
+        }
+        if(request.getStatus()==2) {
+            data.setStatus(CommonStatus.StockingStatus.WAREHOUSE);
+        }
         val stocktakingIngredients = stocktakingIngredientRepository.findItemIngredientByInventoryId(id);
         List<StocktakingIngredient> stocktakingIngredientNews = new ArrayList<>();
         if (stocktakingIngredients.size() != 0) {
