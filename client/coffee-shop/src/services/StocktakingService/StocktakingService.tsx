@@ -8,7 +8,7 @@ class StocktakingService {
     static async create(request: CreateStocktakingRequest): Promise<AxiosResponse<StocktakingReponse>> {
         return axios.post(`/stocktaking`,request , { ...getAxiosConfig()});
     }
-    static async update(request: CreateStocktakingRequest, id: number): Promise<AxiosResponse<StocktakingReponse>> {
+    static async update(request: CreateStocktakingRequest, id: string): Promise<AxiosResponse<StocktakingReponse>> {
         return axios.put(`/stocktaking/${id}`,request, { ...getAxiosConfig()});
     }
     static async getById(id: string): Promise<AxiosResponse<StocktakingReponse>> {

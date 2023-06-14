@@ -68,8 +68,9 @@ import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
 import useModal from "components/Modal/useModal";
 import { receiveMessageOnPort } from "worker_threads";
 import { type } from "os";
+import { StockingType } from "page/Stocktaking/utils/StocktakingContants";
 
-export interface UpdateReceiptProps extends WithStyles<typeof styles> {}
+export interface UpdateReceiptProps extends WithStyles<typeof styles> { }
 const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
   const { classes, authState } = props;
   const [categories, setCategories] = useState<CategoryResponse[]>();
@@ -129,6 +130,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
           ingredientMoney: v.ingredientMoney,
           name: v.ingredientResponse.name,
           totalMoney: v.quantity * v.ingredientMoney,
+          id: v.id,
         };
         stocktakingIngredientRequests.push(vq);
       });
@@ -136,6 +138,10 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
       setStocktakingIngredientRequest(stocktakingIngredientRequests);
       setReceiptRequest(receiptRq);
       setReceipt(receipt);
+      {
+        receipt.payment === 2 ? setChecked(true) : setChecked(false);
+
+      }
     }
   };
   const deleteVarinat = (ingredient: StocktakingIngredientRequest) => {
@@ -158,6 +164,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
               ...v,
               quantity: v.quantity + 1,
               totalMoney: v.quantity * v.ingredientMoney,
+              id: v.id
             };
           } else return { ...(v || []), ingredient };
         });
@@ -174,7 +181,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
       sumMoeny();
     }
   };
-  const handleCreateRecpit = async (status: number) => {
+  const handleUpdateRecpit = async (status: number) => {
     if (!receiptRequest?.name) {
       SnackbarUtils.error(`Tên phiếu không được để trống!`);
       return;
@@ -186,7 +193,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
       SnackbarUtils.error(`Chưa chọn phần nguyên liệu `);
       return;
     }
-    let requet: CreateStocktakingRequest = {
+    let request: CreateStocktakingRequest = {
       ...receiptRequest,
       type: "import",
       totalMoney: sumMoeny(),
@@ -196,15 +203,26 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
       description: note,
     };
     try {
-      let res = await StocktakingService.create(requet);
+      let res = await StocktakingService.update(request, id);
       if (res.data) {
-        SnackbarUtils.success("Tạo phiếu nhập kho thành công");
+        SnackbarUtils.success("cập nhập phiếu thành công");
         history.push(`/admin/receipts`);
       }
     } catch (error) {
       SnackbarUtils.error(getMessageError(error));
     }
   };
+  const handleDeleteReceipt = async () => {
+    try {
+      let res = await StocktakingService.delete(id);
+      if (res.data) {
+        SnackbarUtils.success("Xoá phiếu nhập kho thành công");
+        history.push(`/admin/receipts`);
+      }
+    } catch (error) {
+      SnackbarUtils.error(getMessageError(error));
+    }
+  }
   const sumMoeny = () => {
     let total = 0;
     if (
@@ -217,19 +235,36 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
     }
     return total;
   };
-  return (
+  const renderReceipttype = (type?: string) => {
+    switch (type) {
+      case StockingType.IMPORT:
+        return (
+          StockingType.getName(type)
+        );
+      case StockingType.EXPORT:
+        return (
+          StockingType.getName(type)
+        );
+      default:
+        return "";
+    }
+  };
+  return ( 
+
+    
     <>
       <Box className={classes.container}>
         <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
-          Thông tin phiếu nhập {receipt?.code}
+          Thông tin phiếu  {receipt?.code}
         </Typography>
-        {receipt?.status && receipt.status === 1 ? (
+        {receipt?.status && receipt.status === 1 ? 
+        (
           <Grid container xs={12} spacing={2}>
             <Paper className={classes.wrapperBoxInfo}>
               <Box className={classes.boxContentPaper}>
                 <Typography style={{ fontWeight: 500 }}>Loại phiếu</Typography>
                 <Grid item xs={12}>
-                  <TextField fullWidth value={receipt?.type} disabled />
+                  <TextField fullWidth value={renderReceipttype(receipt?.type)} disabled />
                 </Grid>
               </Box>
             </Paper>
@@ -274,7 +309,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                               dataSource.metaData = {
                                 totalPage: Math.ceil(
                                   (res.data.metadata?.total || 0) /
-                                    (filter.limit || 0)
+                                  (filter.limit || 0)
                                 ),
                                 totalItems: res.data.metadata?.total || 0,
                               };
@@ -310,6 +345,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                               quantity: 1,
                               ingredientMoney: 1000,
                               totalMoney: 1000,
+                              id: 0,
                             });
                           }}
                           value={null}
@@ -427,10 +463,10 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                         stocktakingIngredientRequest &&
                         stocktakingIngredientRequest.length > 0
                       ) && (
-                        <Box style={{ margin: "auto", padding: "24px" }}>
-                          <BoxNoDataComponent width="150px" />
-                        </Box>
-                      )}
+                          <Box style={{ margin: "auto", padding: "24px" }}>
+                            <BoxNoDataComponent width="150px" />
+                          </Box>
+                        )}
                     </Box>
                   </Box>
                 </Box>
@@ -451,7 +487,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                         onChange={(e: any) => {
                           setNote(e.target.value as any);
                         }}
-                        value={note}
+                        value={receipt.description}
                       />
                     </Box>
                   </Grid>
@@ -486,7 +522,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
               <Box className={classes.boxContentPaper}>
                 <Typography style={{ fontWeight: 500 }}>Loại phiếu</Typography>
                 <Grid item xs={12}>
-                  <TextField fullWidth value={receipt?.type} disabled />
+                  <TextField fullWidth value={renderReceipttype(receipt?.type)} disabled />
                 </Grid>
               </Box>
             </Paper>
@@ -613,10 +649,10 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                         stocktakingIngredientRequest &&
                         stocktakingIngredientRequest.length > 0
                       ) && (
-                        <Box style={{ margin: "auto", padding: "24px" }}>
-                          <BoxNoDataComponent width="150px" />
-                        </Box>
-                      )}
+                          <Box style={{ margin: "auto", padding: "24px" }}>
+                            <BoxNoDataComponent width="150px" />
+                          </Box>
+                        )}
                     </Box>
                   </Box>
                 </Box>
@@ -637,7 +673,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                         onChange={(e: any) => {
                           setNote(e.target.value as any);
                         }}
-                        value={note}
+                        value={receipt?.description}
                       />
                     </Box>
                   </Grid>
@@ -652,6 +688,8 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                     Thanh toán
                   </Typography>
                   <Grid item xs={2}>
+                    
+                    
                     <Switch checked={checked} onChange={handleChange}></Switch>
                   </Grid>
                 </Box>
@@ -660,9 +698,12 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
           </Grid>
         )}
       </Box>
-      {receipt?.type.includes("Nhập hàng") ? (
+      {receipt?.type.includes("import") ? 
+      (
         <Box>
-          {receipt?.status && receipt.status === 1 ? (
+          {receipt?.status && receipt.status === 1 ?
+          //trường hợp phiếu nhập hàng đang đặt hàng
+          (
             <Box
               style={{
                 display: "flex",
@@ -671,8 +712,23 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                 marginTop: "16px",
               }}
             >
-              <Button variant="outlined" color="secondary">
-                Hủy
+              <Button variant="outlined" color="secondary"
+                onClick={() => {
+
+                  openModal(ConfirmDialog, {
+                    confirmButtonText: "Huỷ phiếu",
+                    message:
+                      "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
+                    title: "Huỷ phiếu nhập kho",
+                    cancelButtonText: "Thoát",
+                  }).result.then((res) => {
+                    if (res) {
+                      handleDeleteReceipt();
+                    }
+                  });
+                }}
+              >
+                Hủy phiếu
               </Button>
               <Button
                 variant="contained"
@@ -688,11 +744,12 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                       cancelButtonText: "Thoát",
                     }).result.then((res) => {
                       if (res) {
-                        handleCreateRecpit(2);
+                        handleUpdateRecpit(2);
                       }
                     });
                   } else {
-                    handleCreateRecpit(2);
+                    handleUpdateRecpit(2);
+                    (2);
                   }
                 }}
               >
@@ -700,6 +757,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
               </Button>
             </Box>
           ) : (
+            //trường hợp là phiếu nhập hàng đã Nhập kho 
             <Box
               style={{
                 display: "flex",
@@ -708,17 +766,25 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                 marginTop: "16px",
               }}
             >
-              <Button
-                variant="outlined"
-                color="primary"
-                style={{ marginLeft: "16px" }}
+            <Button variant="outlined" color="secondary"
                 onClick={() => {
-                  handleCreateRecpit(1);
+
+                  openModal(ConfirmDialog, {
+                    confirmButtonText: "Huỷ phiếu",
+                    message:
+                      "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
+                    title: "Huỷ phiếu nhập kho",
+                    cancelButtonText: "Thoát",
+                  }).result.then((res) => {
+                    if (res) {
+                      handleDeleteReceipt();
+                    }
+                  });
                 }}
               >
-                Đặt hàng
+                Hủy phiếu
               </Button>
-            </Box>
+              </Box>
           )}
         </Box>
       ) : (
@@ -730,12 +796,20 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
             marginTop: "16px",
           }}
         >
-          <Button
-            variant="outlined"
-            color="primary"
-            style={{ marginLeft: "16px" }}
+          <Button variant="outlined" color="secondary"
             onClick={() => {
-              handleCreateRecpit(1);
+
+              openModal(ConfirmDialog, {
+                confirmButtonText: "Huỷ phiếu",
+                message:
+                  "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
+                title: "Huỷ phiếu nhập kho",
+                cancelButtonText: "Thoát",
+              }).result.then((res) => {
+                if (res) {
+                  handleDeleteReceipt();
+                }
+              });
             }}
           >
             Hủy phiếu

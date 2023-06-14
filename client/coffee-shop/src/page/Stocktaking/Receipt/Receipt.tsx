@@ -217,10 +217,7 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
                     stickyHeader
                     tableDrillDown
                     stickyHeaderTop={52}
-                    onRowClick={(e, data) => {
-                      setSelected(data);
-                      setOpenDialogIngredient(true);
-                    }}
+                    onRowClick={(e, data) => { history.push(`/admin/receipts/${data.id}/edit`)}}
                     disablePaging={false}
                   >
                     <GridColumn

@@ -43,7 +43,6 @@ public class StocktakingServiceImpl implements StocktakingService {
     private final BaseService baseService;
     private final FilterRepository filterRepository;
 
-
     public StocktakingServiceImpl(StocktakingRepository stocktakingRepository, ModelMapper mapper, StocktakingIngredientRepository stocktakingIngredientRepository, IngredientRepository ingredientRepository, BaseService baseService, FilterRepository filterRepository) {
         this.stocktakingRepository = stocktakingRepository;
         this.mapper = mapper;

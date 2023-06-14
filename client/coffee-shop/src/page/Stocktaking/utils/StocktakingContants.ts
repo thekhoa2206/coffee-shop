@@ -30,3 +30,18 @@ export const PaymentStatus = {
         }
     },
 };
+
+export const StockingType = {
+    IMPORT: "import",
+    EXPORT: "expor",
+    getName: (type?: string) => {
+        switch (type) {
+            case StockingType.IMPORT:
+                return `Nhập kho`;
+            case StockingType.EXPORT:
+                return `Xuất kho`;
+            default:
+                return "Kiểm kê";
+        }
+    },
+};

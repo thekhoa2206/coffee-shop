@@ -2,6 +2,7 @@ import React from "react";
 import Route from "./shared/model/routing/route.model";
 import MainLayoutComponent from "layout/main/MainLayout";
 import { AccountRole } from "utilities/AccountRole";
+import UpdateReceipt from "page/Stocktaking/Receipt/Update/UpdateReceipt";
 
 
 const CustomerList = React.lazy(() => import("./page/Customer"));
@@ -21,6 +22,7 @@ const OrderEdit = React.lazy(() => import("./page/Orders/edit"));
 
 const receipt =React.lazy(() => import("./page/Stocktaking/Receipt/Receipt"));
 const Createreceipt =React.lazy(() => import("./page/Stocktaking/Receipt/Create"));
+const editReceipt = React.lazy(() => import("./page/Stocktaking/Receipt/Update"));
 export const LAYOUT_ROUTES: Route[] = [
   {
     path: "/",
@@ -104,6 +106,18 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: " tạo phiếu Nhập kho ",
+      linkTo: "/admin/receipts",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/receipts/:id/edit",
+    component: UpdateReceipt,
+    extract: true,
+    header: {
+      title: " cập nhật phiếu Nhập kho ",
       linkTo: "/admin/receipts",
       showNoti: false,
       withSubtitle: false,
