@@ -267,10 +267,21 @@ public class StocktakingServiceImpl implements StocktakingService {
         val stocktaking = stocktakingRepository.findById(id);
         if(stocktaking.get()== null) throw new  ErrorException("Không tìm thấy Phiếu");
         val stocktakingReponse = mapper.map(stocktaking.get(), StocktakingReponse.class);
-        val stocktakingIngredients = stocktakingIngredientRepository.findItemIngredientByInventoryId(id);
-        val data = getIngredients(stocktakingIngredients);
-        stocktakingReponse.setObject(data);
-        return stocktakingReponse;
+
+        if(stocktaking.get().getStatus() ==3){
+            val stocktakingIngredients = stocktakingIngredientRepository.findItemIngredientByStoltakingId(  id);
+            val data = getIngredients(stocktakingIngredients);
+            stocktakingReponse.setObject(data);
+            return stocktakingReponse;
+        }
+        else {
+            val stocktakingIngredients = stocktakingIngredientRepository.findItemIngredientByInventoryId(id);
+            val data = getIngredients(stocktakingIngredients);
+            stocktakingReponse.setObject(data);
+            return stocktakingReponse;
+        }
+
+
     }
     // xóa
     @Override
@@ -284,18 +295,17 @@ public class StocktakingServiceImpl implements StocktakingService {
             for(val data :stocktakingIngredients) {
                 data.setStatus(CommonStatus.IngredientStatus.DELETED);
                 var ingredient = ingredientRepository.findById(data.getIngredientId());
-                if (stocktaking.get().getType().equals("Phiếu nhập") && stocktaking.get().getStatus()==2) {
+                if (stocktaking.get().getType().equals("import") && stocktaking.get().getStatus()==2) {
                     ingredient.get().setQuantity( ingredient.get().getQuantity()- data.getQuantity());
                     ingredientRepository.save(ingredient.get());
                 }
-                if(stocktaking.get().equals("Phiếu xuất")){
+                if(stocktaking.get().equals("export")){
                     ingredient.get().setQuantity( ingredient.get().getQuantity()+ data.getQuantity());
                     ingredientRepository.save(ingredient.get());
                 }
                 stocktakingIngredientRepository.save(data);
             }
         }
-
     }
     //api filter
     @Override
@@ -352,10 +362,10 @@ public class StocktakingServiceImpl implements StocktakingService {
         ) {
             val stocktakingReponse = mapper.map(i, StocktakingReponse.class);
             if(stocktakingReponse.getType().equals("import")){
-                stocktakingReponse.setType("Phiếu nhập");
+                stocktakingReponse.setType("import");
             }
             if(stocktakingReponse.getType().equals("export")){
-                stocktakingReponse.setType("Phiếu xuất");
+                stocktakingReponse.setType("export");
             }
             val stocktakingIngredients = stocktakingIngredientRepository.findItemIngredientByInventoryId(i.getId());
             val data = getIngredients(stocktakingIngredients);

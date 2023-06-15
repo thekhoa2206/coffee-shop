@@ -250,590 +250,604 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
         return "";
     }
   };
-  return ( 
+  return (
 
-    
+
     <>
       <Box className={classes.container}>
-      <Grid item xs={12} style={{ display: "flex", justifyContent: "flex-end" }}>
-      <Typography variant="h6" style={{ padding: "12px 4px 26px",fontSize:25,marginRight:290 }}>
-          Thông tin phiếu {renderReceipttype(receipt?.type)} - {receipt?.code}
-        </Typography>
-                        <BoxStep stock={receipt} />
-                    </Grid>
+        <Grid item xs={12} style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Typography variant="h6" style={{ padding: "12px 4px 26px", fontSize: 25, marginRight: 290 }}>
+            Thông tin phiếu {renderReceipttype(receipt?.type)} - {receipt?.code}
+          </Typography>
+          <BoxStep stock={receipt} />
+        </Grid>
 
-        {receipt?.status && receipt.status === 1 ? 
-        (
-          <Grid container xs={12} spacing={2}>
-            <Paper className={classes.wrapperBoxInfo}>
-              <Box className={classes.boxContentPaper}>
-                <Typography style={{ fontWeight: 500 }}>Loại phiếu</Typography>
-                <Grid item xs={12}>
-                  <TextField fullWidth value={renderReceipttype(receipt?.type)} disabled />
-                </Grid>
-              </Box>
-            </Paper>
-            <Paper className={classes.wrapperBoxInfo}>
-              <Box className={classes.boxContentPaper}>
-                <Typography style={{ fontWeight: 500 }}>Tên phiếu</Typography>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    value={receipt.name}
-                    placeholder="Nhập tên phiếu"
-                    disabled
-                  />
-                </Grid>
-              </Box>
-            </Paper>
-            <Paper className={classes.wrapperBoxInfo}>
-              <Box className={classes.boxContentPaper}>
-                <Box
-                  style={{
-                    paddingTop: "10px",
-                    borderBottom: "1px solid #E8EAEB",
-                  }}
-                >
-                  <Typography style={{ marginTop: "16px", fontWeight: 500 }}>
-                    Thông tin danh sách nguyên liệu
-                  </Typography>
-                  <Box>
-                    <Box style={{ padding: "16px 0px" }}>
-                      <Box>
-                        <SelectInfinite
-                          getOptionLabel={(ingredient) =>
-                            ingredient?.name || ""
-                          }
-                          fetchDataSource={async (
-                            filter: IngredientFilterRequest
-                          ) => {
-                            let res = await IngredientsService.filter(filter);
-                            const dataSource = {} as DataSource;
-                            if (res.data.data) {
-                              dataSource.data = res.data.data;
-                              dataSource.metaData = {
-                                totalPage: Math.ceil(
-                                  (res.data.metadata?.total || 0) /
-                                  (filter.limit || 0)
-                                ),
-                                totalItems: res.data.metadata?.total || 0,
-                              };
+        {receipt?.status && receipt.status === 1 ?
+          (
+            <Grid container xs={12} spacing={2}>
+              <Paper className={classes.wrapperBoxInfo}>
+                <Box className={classes.boxContentPaper}>
+                  <Typography style={{ fontWeight: 500 }}>Loại phiếu</Typography>
+                  <Grid item xs={12}>
+                    <TextField fullWidth value={renderReceipttype(receipt?.type)} disabled />
+                  </Grid>
+                </Box>
+              </Paper>
+              <Paper className={classes.wrapperBoxInfo}>
+                <Box className={classes.boxContentPaper}>
+                  <Typography style={{ fontWeight: 500 }}>Tên phiếu</Typography>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      value={receipt.name}
+                      placeholder="Nhập tên phiếu"
+                      disabled
+                    />
+                  </Grid>
+                </Box>
+              </Paper>
+              <Paper className={classes.wrapperBoxInfo}>
+                <Box className={classes.boxContentPaper}>
+                  <Box
+                    style={{
+                      paddingTop: "10px",
+                      borderBottom: "1px solid #E8EAEB",
+                    }}
+                  >
+                    <Typography style={{ marginTop: "16px", fontWeight: 500 }}>
+                      Thông tin danh sách nguyên liệu
+                    </Typography>
+                    <Box>
+                      <Box style={{ padding: "16px 0px" }}>
+                        <Box>
+                          <SelectInfinite
+                            getOptionLabel={(ingredient) =>
+                              ingredient?.name || ""
                             }
-                            return Promise.resolve(dataSource);
+                            fetchDataSource={async (
+                              filter: IngredientFilterRequest
+                            ) => {
+                              let res = await IngredientsService.filter(filter);
+                              const dataSource = {} as DataSource;
+                              if (res.data.data) {
+                                dataSource.data = res.data.data;
+                                dataSource.metaData = {
+                                  totalPage: Math.ceil(
+                                    (res.data.metadata?.total || 0) /
+                                    (filter.limit || 0)
+                                  ),
+                                  totalItems: res.data.metadata?.total || 0,
+                                };
+                              }
+                              return Promise.resolve(dataSource);
+                            }}
+                            onQueryChange={(filter: any) => {
+                              let dataSourceFilter: IngredientFilterRequest = {
+                                query: filter.query,
+                                page: filter.page || 1,
+                              };
+                              return dataSourceFilter;
+                            }}
+                            renderOption={(option: IngredientResponse) => (
+                              <Box
+                                style={{
+                                  width: "100%",
+                                  lineHeight: "40px",
+                                  padding: "16px 0px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <Typography style={{ marginLeft: "16px" }}>
+                                  {option.name}-- số lượng còn: {option.quantity}
+                                </Typography>
+                              </Box>
+                            )}
+                            placeholder="Tìm kiếm nguyên liệu "
+                            onChange={(ingredient: IngredientResponse) => {
+                              addIngredient({
+                                ingredientId: ingredient.id,
+                                name: ingredient.name ? ingredient.name : "",
+                                quantity: 1,
+                                ingredientMoney: 1000,
+                                totalMoney: 1000,
+                                id: 0,
+                              });
+                            }}
+                            value={null}
+                            className={classes.infiniteList}
+                            NoResultsComponent={() => (
+                              <NoResultsComponent
+                                nameObject="nguyên liệu"
+                                helpText={
+                                  "Thử thay đổi từ khóa tìm kiếm hoặc thêm mới"
+                                }
+                                style={{ padding: "48px 0 84px" }}
+                              />
+                            )}
+                          />
+                        </Box>
+                      </Box>
+                      <Box>
+                        <Table stickyHeader>
+                          <TableHead>
+                            <TableCell>STT</TableCell>
+                            <TableCell>Tên mặt hàng </TableCell>
+                            <TableCell align="center">Số lượng</TableCell>
+                            <TableCell align="center">Giá nhập</TableCell>
+                            <TableCell align="center">Thành tiền</TableCell>
+                            <TableCell style={{ width: "50px" }}></TableCell>
+                          </TableHead>
+                          {stocktakingIngredientRequest &&
+                            stocktakingIngredientRequest.length > 0 &&
+                            stocktakingIngredientRequest.map((data, index) => (
+                              <TableBody key={index}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>
+                                  <Typography>{data.name}</Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <NumberInputTextField
+                                    value={data.quantity}
+                                    onChange={(value: any) => {
+                                      updateIngredient({
+                                        ...data,
+                                        quantity: value.target.value as number,
+                                      });
+                                    }}
+                                    name={"quantity"}
+                                    style={{
+                                      marginTop: "-15px",
+                                      width: "50%",
+                                    }}
+                                  />
+                                </TableCell>
+                                <TableCell align="center">
+                                  <NumberInputTextField
+                                    value={data.ingredientMoney}
+                                    onChange={(value: any) => {
+                                      updateIngredient({
+                                        ...data,
+                                        ingredientMoney: value.target
+                                          .value as number,
+                                      });
+                                    }}
+                                    name={"ingredientMoney"}
+                                    style={{
+                                      marginTop: "-15px",
+                                      width: "50%",
+                                    }}
+                                  />
+                                </TableCell>
+                                <TableCell align="center">
+                                  <TextField
+                                    value={data.ingredientMoney * data.quantity}
+                                    name={"total"}
+                                    disabled
+                                    style={{
+                                      marginTop: "-15px",
+                                      width: "50%",
+                                    }}
+                                  />
+                                </TableCell>
+                                <TableCell style={{ width: "50px" }}>
+                                  <IconButton
+                                    aria-label="close"
+                                    style={{ width: "20px" }}
+                                    onClick={() => {
+                                      deleteVarinat(data);
+                                    }}
+                                  >
+                                    <CloseIcon
+                                      style={{
+                                        width: "20px",
+                                        color: "rgb(149 149 149)",
+                                      }}
+                                    />
+                                  </IconButton>
+                                </TableCell>
+                              </TableBody>
+                            ))}
+                        </Table>
+                        <Box
+                          style={{
+                            margin: "auto",
+                            padding: "24px",
+                            marginLeft: "680px",
+                            display: "flex",
                           }}
-                          onQueryChange={(filter: any) => {
-                            let dataSourceFilter: IngredientFilterRequest = {
-                              query: filter.query,
-                              page: filter.page || 1,
-                            };
-                            return dataSourceFilter;
-                          }}
-                          renderOption={(option: IngredientResponse) => (
-                            <Box
-                              style={{
-                                width: "100%",
-                                lineHeight: "40px",
-                                padding: "16px 0px",
-                                cursor: "pointer",
-                              }}
-                            >
-                              <Typography style={{ marginLeft: "16px" }}>
-                                {option.name}-- số lượng còn: {option.quantity}
-                              </Typography>
+                        >
+                          <Typography style={{ fontWeight: 500 }}>
+                            Tổng tiền:
+                          </Typography>
+                          <Typography style={{ fontWeight: 500 }}>
+                            {formatNumberDecimal(sumMoeny())}
+                          </Typography>
+                          <Typography style={{ fontWeight: 500 }}>đ</Typography>
+                        </Box>
+                        {!(
+                          stocktakingIngredientRequest &&
+                          stocktakingIngredientRequest.length > 0
+                        ) && (
+                            <Box style={{ margin: "auto", padding: "24px" }}>
+                              <BoxNoDataComponent width="150px" />
                             </Box>
                           )}
-                          placeholder="Tìm kiếm nguyên liệu "
-                          onChange={(ingredient: IngredientResponse) => {
-                            addIngredient({
-                              ingredientId: ingredient.id,
-                              name: ingredient.name ? ingredient.name : "",
-                              quantity: 1,
-                              ingredientMoney: 1000,
-                              totalMoney: 1000,
-                              id: 0,
-                            });
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
+              </Paper>
+
+              <Paper
+                className={classes.wrapperBoxInfo}
+                style={{ display: "flex" }}
+              >
+                <Grid item xs={8}>
+                  <Box className={classes.boxContentPaper}>
+                    <Typography style={{ fontWeight: 500 }}>Ghi chú</Typography>
+                    <Grid item xs={2}>
+                      <Box style={{ width: 600 }}>
+                        <TextareaAutosize
+                          height={60}
+                          onChange={(e: any) => {
+                            setNote(e.target.value as any);
                           }}
-                          value={null}
-                          className={classes.infiniteList}
-                          NoResultsComponent={() => (
-                            <NoResultsComponent
-                              nameObject="nguyên liệu"
-                              helpText={
-                                "Thử thay đổi từ khóa tìm kiếm hoặc thêm mới"
-                              }
-                              style={{ padding: "48px 0 84px" }}
-                            />
-                          )}
+                          value={receipt.description}
                         />
                       </Box>
-                    </Box>
-                    <Box>
-                      <Table stickyHeader>
-                        <TableHead>
-                          <TableCell>STT</TableCell>
-                          <TableCell>Tên mặt hàng </TableCell>
-                          <TableCell align="center">Số lượng</TableCell>
-                          <TableCell align="center">Giá nhập</TableCell>
-                          <TableCell align="center">Thành tiền</TableCell>
-                          <TableCell style={{ width: "50px" }}></TableCell>
-                        </TableHead>
-                        {stocktakingIngredientRequest &&
-                          stocktakingIngredientRequest.length > 0 &&
-                          stocktakingIngredientRequest.map((data, index) => (
-                            <TableBody key={index}>
-                              <TableCell>{index + 1}</TableCell>
-                              <TableCell>
-                                <Typography>{data.name}</Typography>
-                              </TableCell>
-                              <TableCell align="center">
-                                <NumberInputTextField
-                                  value={data.quantity}
-                                  onChange={(value: any) => {
-                                    updateIngredient({
-                                      ...data,
-                                      quantity: value.target.value as number,
-                                    });
-                                  }}
-                                  name={"quantity"}
-                                  style={{
-                                    marginTop: "-15px",
-                                    width: "50%",
-                                  }}
-                                />
-                              </TableCell>
-                              <TableCell align="center">
-                                <NumberInputTextField
-                                  value={data.ingredientMoney}
-                                  onChange={(value: any) => {
-                                    updateIngredient({
-                                      ...data,
-                                      ingredientMoney: value.target
-                                        .value as number,
-                                    });
-                                  }}
-                                  name={"ingredientMoney"}
-                                  style={{
-                                    marginTop: "-15px",
-                                    width: "50%",
-                                  }}
-                                />
-                              </TableCell>
-                              <TableCell align="center">
-                                <TextField
-                                  value={data.ingredientMoney * data.quantity}
-                                  name={"total"}
-                                  disabled
-                                  style={{
-                                    marginTop: "-15px",
-                                    width: "50%",
-                                  }}
-                                />
-                              </TableCell>
-                              <TableCell style={{ width: "50px" }}>
-                                <IconButton
-                                  aria-label="close"
-                                  style={{ width: "20px" }}
-                                  onClick={() => {
-                                    deleteVarinat(data);
-                                  }}
-                                >
-                                  <CloseIcon
-                                    style={{
-                                      width: "20px",
-                                      color: "rgb(149 149 149)",
-                                    }}
-                                  />
-                                </IconButton>
-                              </TableCell>
-                            </TableBody>
-                          ))}
-                      </Table>
-                      <Box
-                        style={{
-                          margin: "auto",
-                          padding: "24px",
-                          marginLeft: "680px",
-                          display: "flex",
-                        }}
-                      >
-                        <Typography style={{ fontWeight: 500 }}>
-                          Tổng tiền:
-                        </Typography>
-                        <Typography style={{ fontWeight: 500 }}>
-                          {formatNumberDecimal(sumMoeny())}
-                        </Typography>
-                        <Typography style={{ fontWeight: 500 }}>đ</Typography>
-                      </Box>
-                      {!(
-                        stocktakingIngredientRequest &&
-                        stocktakingIngredientRequest.length > 0
-                      ) && (
-                          <Box style={{ margin: "auto", padding: "24px" }}>
-                            <BoxNoDataComponent width="150px" />
-                          </Box>
-                        )}
-                    </Box>
+                    </Grid>
                   </Box>
-                </Box>
-              </Box>
-            </Paper>
-
-            <Paper
-              className={classes.wrapperBoxInfo}
-              style={{ display: "flex" }}
-            >
-              <Grid item xs={8}>
-                <Box className={classes.boxContentPaper}>
-                  <Typography style={{ fontWeight: 500 }}>Ghi chú</Typography>
-                  <Grid item xs={2}>
-                    <Box style={{ width: 600 }}>
-                      <TextareaAutosize
-                        height={60}
-                        onChange={(e: any) => {
-                          setNote(e.target.value as any);
-                        }}
-                        value={receipt.description}
-                      />
-                    </Box>
-                  </Grid>
-                </Box>
-              </Grid>
-              <Grid item xs={4}>
-                <Box
-                  className={classes.boxContentPaper}
-                  style={{ display: "flex", marginLeft: 120 }}
-                >
-                  <Typography style={{ fontWeight: 500 }}>
-                    Thanh toán
-                  </Typography>
-
-                  <Grid item xs={2}>
-                    {checked ? (
-                      <Switch checked={checked} disabled></Switch>
-                    ) : (
-                      <Switch
-                        checked={checked}
-                        onChange={handleChange}
-                      ></Switch>
-                    )}
-                  </Grid>
-                </Box>
-              </Grid>
-            </Paper>
-          </Grid>
-        ) : (
-          <Grid container xs={12} spacing={2}>
-            <Paper className={classes.wrapperBoxInfo}>
-              <Box className={classes.boxContentPaper}>
-                <Typography style={{ fontWeight: 500 }}>Loại phiếu</Typography>
-                <Grid item xs={12}>
-                  <TextField fullWidth value={renderReceipttype(receipt?.type)} disabled />
                 </Grid>
-              </Box>
-            </Paper>
-            <Paper className={classes.wrapperBoxInfo}>
-              <Box className={classes.boxContentPaper}>
-                <Typography style={{ fontWeight: 500 }}>Tên phiếu</Typography>
-                <Grid item xs={12}>
-                  <TextField fullWidth value={receipt?.name} disabled />
-                </Grid>
-              </Box>
-            </Paper>
-            <Paper className={classes.wrapperBoxInfo}>
-              <Box className={classes.boxContentPaper}>
-                <Box
-                  style={{
-                    paddingTop: "10px",
-                    borderBottom: "1px solid #E8EAEB",
-                  }}
-                >
-                  <Typography style={{ marginTop: "16px", fontWeight: 500 }}>
-                    Thông tin danh sách nguyên liệu
-                  </Typography>
-                  <Box>
-                    <Box>
-                      <Table stickyHeader>
-                        <TableHead>
-                          <TableCell>STT</TableCell>
-                          <TableCell>Tên mặt hàng </TableCell>
-                          <TableCell align="center">Số lượng</TableCell>
-                          <TableCell align="center">Giá nhập</TableCell>
-                          <TableCell align="center">Thành tiền</TableCell>
-                          <TableCell style={{ width: "50px" }}></TableCell>
-                        </TableHead>
-                        {stocktakingIngredientRequest &&
-                          stocktakingIngredientRequest.length > 0 &&
-                          stocktakingIngredientRequest.map((data, index) => (
-                            <TableBody key={index}>
-                              <TableCell>{index + 1}</TableCell>
-                              <TableCell>
-                                <Typography>{data.name}</Typography>
-                              </TableCell>
-                              <TableCell align="center">
-                                <NumberInputTextField
-                                  value={data.quantity}
-                                  onChange={(value: any) => {
-                                    updateIngredient({
-                                      ...data,
-                                      quantity: value.target.value as number,
-                                    });
-                                  }}
-                                  disabled
-                                  name={"quantity"}
-                                  style={{
-                                    marginTop: "-15px",
-                                    width: "50%",
-                                  }}
-                                />
-                              </TableCell>
-                              <TableCell align="center">
-                                <NumberInputTextField
-                                  value={data.ingredientMoney}
-                                  onChange={(value: any) => {
-                                    updateIngredient({
-                                      ...data,
-                                      ingredientMoney: value.target
-                                        .value as number,
-                                    });
-                                  }}
-                                  disabled
-                                  name={"ingredientMoney"}
-                                  style={{
-                                    marginTop: "-15px",
-                                    width: "50%",
-                                  }}
-                                />
-                              </TableCell>
-                              <TableCell align="center">
-                                <TextField
-                                  value={data.ingredientMoney * data.quantity}
-                                  name={"total"}
-                                  disabled
-                                  style={{
-                                    marginTop: "-15px",
-                                    width: "50%",
-                                  }}
-                                />
-                              </TableCell>
-                              <TableCell style={{ width: "50px" }}>
-                                <IconButton
-                                  aria-label="close"
-                                  style={{ width: "20px" }}
-                                  onClick={() => {
-                                    deleteVarinat(data);
-                                  }}
-                                >
-                                  <CloseIcon
-                                    style={{
-                                      width: "20px",
-                                      color: "rgb(149 149 149)",
-                                    }}
-                                  />
-                                </IconButton>
-                              </TableCell>
-                            </TableBody>
-                          ))}
-                      </Table>
-                      <Box
-                        style={{
-                          margin: "auto",
-                          padding: "24px",
-                          marginLeft: "680px",
-                          display: "flex",
-                        }}
-                      >
-                        <Typography style={{ fontWeight: 500 }}>
-                          Tổng tiền:
-                        </Typography>
-                        <Typography style={{ fontWeight: 500 }}>
-                          {formatNumberDecimal(sumMoeny())}
-                        </Typography>
-                        <Typography style={{ fontWeight: 500 }}>đ</Typography>
-                      </Box>
-                      {!(
-                        stocktakingIngredientRequest &&
-                        stocktakingIngredientRequest.length > 0
-                      ) && (
-                          <Box style={{ margin: "auto", padding: "24px" }}>
-                            <BoxNoDataComponent width="150px" />
-                          </Box>
-                        )}
-                    </Box>
+                <Grid item xs={4}>
+                  <Box
+                    className={classes.boxContentPaper}
+                    style={{ display: "flex", marginLeft: 120 }}
+                  >
+                    <Typography style={{ fontWeight: 500 }}>
+                      Thanh toán
+                    </Typography>
+
+                    <Grid item xs={2}>
+                      {checked ? (
+                        <Switch checked={checked} disabled></Switch>
+                      ) : (
+                        <Switch
+                          checked={checked}
+                          onChange={handleChange}
+                        ></Switch>
+                      )}
+                    </Grid>
                   </Box>
-                </Box>
-              </Box>
-            </Paper>
-
-            <Paper
-              className={classes.wrapperBoxInfo}
-              style={{ display: "flex" }}
-            >
-              <Grid item xs={8}>
-                <Box className={classes.boxContentPaper}>
-                  <Typography style={{ fontWeight: 500 }}>Ghi chú</Typography>
-                  <Grid item xs={2}>
-                    <Box style={{ width: 600 }}>
-                      <TextareaAutosize
-                        height={60}
-                        onChange={(e: any) => {
-                          setNote(e.target.value as any);
-                        }}
-                        value={receipt?.description}
-                      />
-                    </Box>
-                  </Grid>
-                </Box>
-              </Grid>
-              <Grid item xs={4}>
-                <Box
-                  className={classes.boxContentPaper}
-                  style={{ display: "flex", marginLeft: 120 }}
-                >
-                  <Typography style={{ fontWeight: 500 }}>
-                    Thanh toán
-                  </Typography>
-                  <Grid item xs={2}>
-                    
-                    
-                    <Switch checked={checked} onChange={handleChange}></Switch>
-                  </Grid>
-                </Box>
-              </Grid>
-            </Paper>
-          </Grid>
-        )}
-      </Box>
-      {receipt?.type.includes("import") ? 
-      (
-        <Box>
-          {receipt?.status && receipt.status === 1 ?
-          //trường hợp phiếu nhập hàng đang đặt hàng
-          (
-            <Box
-              style={{
-                display: "flex",
-                marginBottom: "100px",
-                marginLeft: "760px",
-                marginTop: "16px",
-              }}
-            >
-              <Button variant="outlined"  style={{
-                    background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
-                    borderColor: "#ff4d4d",
-                    boxShadow: "inset 0 1px 0 0 #ff4d4",
-                    color: "#fff"
-              }}
-                onClick={() => {
-                  openModal(ConfirmDialog, {
-                    confirmButtonText: "Huỷ phiếu",
-                    message:
-                      "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
-                    title: "Huỷ phiếu nhập kho",
-                    cancelButtonText: "Thoát",
-                  }).result.then((res) => {
-                    if (res) {
-                      handleDeleteReceipt();
-                    }
-                  });
-                }}
-              >
-                Hủy phiếu
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ marginLeft: "16px" }}
-                onClick={() => {
-                  if (!checked) {
-                    openModal(ConfirmDialog, {
-                      confirmButtonText: "Xác nhận",
-                      message:
-                        "Bạn chưa thanh toán phiếu,bạn có muốn tiếp tục nhập kho không?",
-                      title: "Thanh toán phiếu nhập kho",
-                      cancelButtonText: "Thoát",
-                    }).result.then((res) => {
-                      if (res) {
-                        handleUpdateRecpit(2);
-                      }
-                    });
-                  } else {
-                    handleUpdateRecpit(2);
-                  }
-                }}
-              >
-                Nhập kho
-              </Button>
-            </Box>
+                </Grid>
+              </Paper>
+            </Grid>
           ) : (
-            //trường hợp là phiếu nhập hàng đã Nhập kho 
-            <Box
-              style={{
-                display: "flex",
-                marginBottom: "100px",
-                // marginLeft: "160px",
-                marginTop: "16px",
-                float:"right",
-                marginRight:138
-              }}
-            >
-            <Button variant="outlined" color="secondary"
-            style={{
-              background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
-              borderColor: "#ff4d4d",
-              boxShadow: "inset 0 1px 0 0 #ff4d4",
-              color: "#fff",
-              float:"left"
+            <Grid container xs={12} spacing={2}>
+              <Paper className={classes.wrapperBoxInfo}>
+                <Box className={classes.boxContentPaper}>
+                  <Typography style={{ fontWeight: 500 }}>Loại phiếu</Typography>
+                  <Grid item xs={12}>
+                    <TextField fullWidth value={renderReceipttype(receipt?.type)} disabled />
+                  </Grid>
+                </Box>
+              </Paper>
+              <Paper className={classes.wrapperBoxInfo}>
+                <Box className={classes.boxContentPaper}>
+                  <Typography style={{ fontWeight: 500 }}>Tên phiếu</Typography>
+                  <Grid item xs={12}>
+                    <TextField fullWidth value={receipt?.name} disabled />
+                  </Grid>
+                </Box>
+              </Paper>
+              <Paper className={classes.wrapperBoxInfo}>
+                <Box className={classes.boxContentPaper}>
+                  <Box
+                    style={{
+                      paddingTop: "10px",
+                      borderBottom: "1px solid #E8EAEB",
+                    }}
+                  >
+                    <Typography style={{ marginTop: "16px", fontWeight: 500 }}>
+                      Thông tin danh sách nguyên liệu
+                    </Typography>
+                    <Box>
+                      <Box>
+                        <Table stickyHeader>
+                          <TableHead>
+                            <TableCell>STT</TableCell>
+                            <TableCell>Tên mặt hàng </TableCell>
+                            <TableCell align="center">Số lượng</TableCell>
+                            <TableCell align="center">Giá nhập</TableCell>
+                            <TableCell align="center">Thành tiền</TableCell>
+                            <TableCell style={{ width: "50px" }}></TableCell>
+                          </TableHead>
+                          {stocktakingIngredientRequest &&
+                            stocktakingIngredientRequest.length > 0 &&
+                            stocktakingIngredientRequest.map((data, index) => (
+                              <TableBody key={index}>
+                                <TableCell>{index + 1}</TableCell>
+                                <TableCell>
+                                  <Typography>{data.name}</Typography>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <NumberInputTextField
+                                    value={data.quantity}
+                                    onChange={(value: any) => {
+                                      updateIngredient({
+                                        ...data,
+                                        quantity: value.target.value as number,
+                                      });
+                                    }}
+                                    disabled
+                                    name={"quantity"}
+                                    style={{
+                                      marginTop: "-15px",
+                                      width: "50%",
+                                    }}
+                                  />
+                                </TableCell>
+                                <TableCell align="center">
+                                  <NumberInputTextField
+                                    value={data.ingredientMoney}
+                                    onChange={(value: any) => {
+                                      updateIngredient({
+                                        ...data,
+                                        ingredientMoney: value.target
+                                          .value as number,
+                                      });
+                                    }}
+                                    disabled
+                                    name={"ingredientMoney"}
+                                    style={{
+                                      marginTop: "-15px",
+                                      width: "50%",
+                                    }}
+                                  />
+                                </TableCell>
+                                <TableCell align="center">
+                                  <TextField
+                                    value={data.ingredientMoney * data.quantity}
+                                    name={"total"}
+                                    disabled
+                                    style={{
+                                      marginTop: "-15px",
+                                      width: "50%",
+                                    }}
+                                  />
+                                </TableCell>
+                                <TableCell style={{ width: "50px" }}>
+                                  <IconButton
+                                    aria-label="close"
+                                    style={{ width: "20px" }}
+                                    onClick={() => {
+                                      deleteVarinat(data);
+                                    }}
+                                  >
+                                    <CloseIcon
+                                      style={{
+                                        width: "20px",
+                                        color: "rgb(149 149 149)",
+                                      }}
+                                    />
+                                  </IconButton>
+                                </TableCell>
+                              </TableBody>
+                            ))}
+                        </Table>
+                        <Box
+                          style={{
+                            margin: "auto",
+                            padding: "24px",
+                            marginLeft: "680px",
+                            display: "flex",
+                          }}
+                        >
+                          <Typography style={{ fontWeight: 500 }}>
+                            Tổng tiền:
+                          </Typography>
+                          <Typography style={{ fontWeight: 500 }}>
+                            {formatNumberDecimal(sumMoeny())}
+                          </Typography>
+                          <Typography style={{ fontWeight: 500 }}>đ</Typography>
+                        </Box>
+                        {!(
+                          stocktakingIngredientRequest &&
+                          stocktakingIngredientRequest.length > 0
+                        ) && (
+                            <Box style={{ margin: "auto", padding: "24px" }}>
+                              <BoxNoDataComponent width="150px" />
+                            </Box>
+                          )}
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
+              </Paper>
 
-        }}
-                onClick={() => {
-
-                  openModal(ConfirmDialog, {
-                    confirmButtonText: "Huỷ phiếu",
-                    message:
-                      "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
-                    title: "Huỷ phiếu nhập kho",
-                    cancelButtonText: "Thoát",
-                  }).result.then((res) => {
-                    if (res) {
-                      handleDeleteReceipt();
-                    }
-                  });
-                }}
+              <Paper
+                className={classes.wrapperBoxInfo}
+                style={{ display: "flex" }}
               >
-                Hủy phiếu
-              </Button>
-              </Box>
-          )}
-        </Box>
-      ) : (
-        <Box
-          style={{
-            display: "flex",
-            marginBottom: "100px",
-            marginLeft: "760px",
-            marginTop: "16px",
-          }}
-        >
-          <Button variant="outlined" color="secondary"
-            onClick={() => {
+                <Grid item xs={8}>
+                  <Box className={classes.boxContentPaper}>
+                    <Typography style={{ fontWeight: 500 }}>Ghi chú</Typography>
+                    <Grid item xs={2}>
+                      <Box style={{ width: 600 }}>
+                        <TextareaAutosize
+                          height={60}
+                          onChange={(e: any) => {
+                            setNote(e.target.value as any);
+                          }}
+                          value={receipt?.description}
+                        />
+                      </Box>
+                    </Grid>
+                  </Box>
+                </Grid>
+                <Grid item xs={4}>
+                  <Box
+                    className={classes.boxContentPaper}
+                    style={{ display: "flex", marginLeft: 120 }}
+                  >
+                    <Typography style={{ fontWeight: 500 }}>
+                      Thanh toán
+                    </Typography>
+                    <Grid item xs={2}>
 
-              openModal(ConfirmDialog, {
-                confirmButtonText: "Huỷ phiếu",
-                message:
-                  "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
-                title: "Huỷ phiếu nhập kho",
-                cancelButtonText: "Thoát",
-              }).result.then((res) => {
-                if (res) {
-                  handleDeleteReceipt();
-                }
-              });
+
+                      <Switch checked={checked} onChange={handleChange}></Switch>
+                    </Grid>
+                  </Box>
+                </Grid>
+              </Paper>
+            </Grid>
+          )}
+      </Box>
+      {receipt?.type.includes("import") ?
+        (
+          <Box>
+            {receipt.status && receipt.status === 3 ? ("") :
+              (
+                <Box>
+                  {receipt.status === 1 ?
+                    //trường hợp phiếu nhập hàng đang đặt hàng
+                    (
+                      <Box
+                        style={{
+                          display: "flex",
+                          marginBottom: "100px",
+                          marginLeft: "760px",
+                          marginTop: "16px",
+                        }}
+                      >
+                        <Button variant="outlined" style={{
+                          background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
+                          borderColor: "#ff4d4d",
+                          boxShadow: "inset 0 1px 0 0 #ff4d4",
+                          color: "#fff"
+                        }}
+                          onClick={() => {
+                            openModal(ConfirmDialog, {
+                              confirmButtonText: "Huỷ phiếu",
+                              message:
+                                "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
+                              title: "Huỷ phiếu nhập kho",
+                              cancelButtonText: "Thoát",
+                            }).result.then((res) => {
+                              if (res) {
+                                handleDeleteReceipt();
+                              }
+                            });
+                          }}
+                        >
+                          Hủy phiếu
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          style={{ marginLeft: "16px" }}
+                          onClick={() => handleUpdateRecpit(1)
+                          }
+                        >
+                          Lưu
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          style={{ marginLeft: "16px" }}
+                          onClick={() => {
+                            if (!checked) {
+                              openModal(ConfirmDialog, {
+                                confirmButtonText: "Xác nhận",
+                                message:
+                                  "Bạn chưa thanh toán phiếu,bạn có muốn tiếp tục nhập kho không?",
+                                title: "Thanh toán phiếu nhập kho",
+                                cancelButtonText: "Thoát",
+                              }).result.then((res) => {
+                                if (res) {
+                                  handleUpdateRecpit(2);
+                                }
+                              });
+                            } else {
+                              handleUpdateRecpit(2);
+                            }
+                          }}
+                        >
+                          Nhập kho
+                        </Button>
+                      </Box>
+                    ) : (
+                      //trường hợp là phiếu nhập hàng đã Nhập kho 
+                      <Box
+                        style={{
+                          display: "flex",
+                          marginBottom: "100px",
+                          // marginLeft: "160px",
+                          marginTop: "16px",
+                          float: "right",
+                          marginRight: 138
+                        }}
+                      >
+                        <Button variant="outlined" color="secondary"
+                          style={{
+                            background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
+                            borderColor: "#ff4d4d",
+                            boxShadow: "inset 0 1px 0 0 #ff4d4",
+                            color: "#fff",
+                            float: "left"
+
+                          }}
+                          onClick={() => {
+
+                            openModal(ConfirmDialog, {
+                              confirmButtonText: "Huỷ phiếu",
+                              message:
+                                "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
+                              title: "Huỷ phiếu nhập kho",
+                              cancelButtonText: "Thoát",
+                            }).result.then((res) => {
+                              if (res) {
+                                handleDeleteReceipt();
+                              }
+                            });
+                          }}
+                        >
+                          Hủy phiếu
+                        </Button>
+                      </Box>
+                    )}
+                </Box>)}
+
+          </Box>
+        ) : (
+          <Box
+            style={{
+              display: "flex",
+              marginBottom: "100px",
+              marginLeft: "760px",
+              marginTop: "16px",
             }}
           >
-            Hủy phiếu
-          </Button>
-        </Box>
-      )}
+            <Button variant="outlined" color="secondary"
+              onClick={() => {
+
+                openModal(ConfirmDialog, {
+                  confirmButtonText: "Huỷ phiếu",
+                  message:
+                    "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
+                  title: "Huỷ phiếu nhập kho",
+                  cancelButtonText: "Thoát",
+                }).result.then((res) => {
+                  if (res) {
+                    handleDeleteReceipt();
+                  }
+                });
+              }}
+            >
+              Hủy phiếu
+            </Button>
+          </Box>
+        )}
     </>
   );
 };

@@ -35,10 +35,10 @@ import {
 } from "./ReceiptFilter.constant";
 import styles from "./Receipt.styles";
 import Chip from "components/Chip/Chip.component";
-import { ReeceiptStatus } from "../utils/StocktakingContants";
+import { ReeceiptStatus, StockingType } from "../utils/StocktakingContants";
 
 const Receipt = (props: ReceiptProps & PropsFromRedux) => {
-  const { classes, authState } = props;
+  const { classes, authState, type} = props;
   const location = useLocation();
   const queryParams = useQueryParams();
   const [loading, setLoading] = useState<boolean>(true);
@@ -62,7 +62,7 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
       page: Number(dataFromQuery["page"]) || 1,
       limit: Number(dataFromQuery["limit"]) || undefined,
       query: dataFromQuery["query"] || undefined,
-      type: "import",
+      type: type,
     };
     return initFilter;
   };
@@ -165,6 +165,20 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
         return "";
     }
   };
+  const renderReceipttype = (type?: string) => {
+    switch (type) {
+      case StockingType.IMPORT:
+        return (
+          StockingType.getName(type)
+        );
+      case StockingType.EXPORT:
+        return (
+          StockingType.getName(type)
+        );
+      default:
+        return "";
+    }
+  };
 
   return (
     <>
@@ -250,7 +264,17 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
                       )}
                       width={150}
                       align="left"
-                    ></GridColumn>
+                    >
+                      {({ dataItem }: CellTemplateProps) => {
+                        return (
+                          <>
+                            <Typography>
+                            {renderReceipttype(dataItem.type)}
+                            </Typography>
+                          </>
+                        );
+                      }}
+                    </GridColumn>
                     <GridColumn
                       field="totalMoney"
                       title={getReceiptQuickFilterLabel(
