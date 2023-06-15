@@ -16,7 +16,6 @@ import java.util.List;
 @Setter
 public class OrderPrintModel {
     private String code;
-    private CustomerResponse customerResponse;
     private int status;
     private BigDecimal total;
     private BigDecimal discountTotal;
@@ -53,7 +52,7 @@ public class OrderPrintModel {
         private BigDecimal lineAmount;
         private String lineAmountText;
         private String priceText;
-        private List<OrderVariantItemPrintModel> variantItems;
+        private List<OrderVariantComboPrintModel> itemCombos;
     }
     @Getter
     @Setter
@@ -64,11 +63,12 @@ public class OrderPrintModel {
     }
     @Getter
     @Setter
-    public static class OrderVariantItemPrintModel {
+    public static class OrderVariantComboPrintModel {
         private int id;
         private String name;
-        private String quantity;
-        private String price;
+        private int quantity;
+        private BigDecimal price;
+        private String priceText;
     }
 
     public void setForPrintForm(){
@@ -85,5 +85,16 @@ public class OrderPrintModel {
         this.storeEmail = "trasua123@gmail.com";
         this.totalText = NumberUtils.getNumberEnFormat(this.total);
         this.discountTotalText = NumberUtils.getNumberEnFormat(this.discountTotal);
+        for (var lineItem : this.lineItems) {
+            lineItem.lineAmount = lineItem.price.multiply(BigDecimal.valueOf(lineItem.quantity));
+            lineItem.priceText = NumberUtils.getNumberEnFormat(lineItem.price);
+            lineItem.lineAmountText = NumberUtils.getNumberEnFormat(lineItem.lineAmount);
+            if(lineItem.combo){
+                for (var combo : lineItem.itemCombos) {
+                    combo.priceText = NumberUtils.getNumberEnFormat(combo.price);
+                }
+            }
+        }
+
     }
 }

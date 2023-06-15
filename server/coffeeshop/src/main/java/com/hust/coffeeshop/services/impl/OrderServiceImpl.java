@@ -561,7 +561,7 @@ public class OrderServiceImpl implements OrderService {
             val printSample = PrintSample.CONTENT_HTML;
             val order = orderRepository.findById(printOrder.getOrderId());
             if (order != null && printSample != null) {
-                val orderPrintModel = mapper.map(order.get(), OrderPrintModel.class);
+                val orderPrintModel = mapperOrderPrintModel(order.get());
                 orderPrintModel.setForPrintForm();
                 htmlContent = PrintUtils.process(printSample, orderPrintModel, PrintVariableMap.ORDER);
             }
@@ -579,6 +579,14 @@ public class OrderServiceImpl implements OrderService {
         model.setNote(order.getNote());
         model.setPaymentStatus(order.getPaymentStatus());
         model.setStatus(order.getStatus());
+        var customer = customerService.getById(order.getCustomerId());
+        if (customer != null) {
+            OrderPrintModel.CustomerPrintModel customerPrintModel = new OrderPrintModel.CustomerPrintModel();
+            customerPrintModel.setId(customer.getId());
+            customerPrintModel.setName(customer.getName());
+            customerPrintModel.setPhone(customer.getPhoneNumber());
+            model.setCustomer(customerPrintModel);
+        }
         var lineItems = orderItemRepository.findOrderItemByOrderId(order.getId());
         if (lineItems != null) {
             List<OrderPrintModel.OrderItemPrintModel> itemModels = new ArrayList<>();
@@ -592,12 +600,24 @@ public class OrderServiceImpl implements OrderService {
                 itemModel.setPrice(lineItem.getPrice());
                 itemModel.setStatus(lineItem.getStatus());
                 itemModel.setName(lineItem.getName());
-
-                OrderPrintModel.OrderVariantItemPrintModel variantModel = new OrderPrintModel.OrderVariantItemPrintModel();
+                if(itemModel.isCombo()){
+                    List<OrderPrintModel.OrderVariantComboPrintModel> variantModels = new ArrayList<>();
+                    var itemCombos = orderItemComboRepository.findOrderItemComboByOrderItemId(itemModel.getId());
+                    for (var itemCombo: itemCombos) {
+                        OrderPrintModel.OrderVariantComboPrintModel variantModel = new OrderPrintModel.OrderVariantComboPrintModel();
+                        variantModel.setId(itemCombo.getId());
+                        variantModel.setPrice(itemCombo.getPrice());
+                        variantModel.setName(itemCombo.getName());
+                        variantModel.setQuantity(itemCombo.getQuantity());
+                        variantModels.add(variantModel);
+                    }
+                    itemModel.setItemCombos(variantModels);
+                }
                 itemModels.add(itemModel);
             }
             model.setLineItems(itemModels);
         }
+        model.setForPrintForm();
         return model;
     }
 

@@ -63,3 +63,11 @@ export type OrderItemRequest = {
     quantity: number;
     price: number;
 }
+export type OrderPrintFormFilter = {
+    orderId?: number;
+}
+
+export type OrderPrintForm = {
+    orderId: number;
+    htmlContent?: string;
+}

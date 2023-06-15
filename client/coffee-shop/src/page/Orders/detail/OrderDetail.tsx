@@ -18,7 +18,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { CustomerResponse } from "services/CustomerService";
-import { OrderItemRequest, OrderRequest } from "services/OrderService";
+import { OrderItemRequest, OrderPrintFormFilter, OrderRequest } from "services/OrderService";
 import OrderService from "services/OrderService/OrderService";
 import { ProductIngredientResponse, ProductVariantResponse } from "services/ProductService";
 import { VariantFilterRequest } from "services/VariantService";
@@ -40,6 +40,8 @@ import Dialog from "components/Dialog/Dialog";
 import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
 import useModal from "components/Modal/useModal";
 import Select from "components/Select/Index";
+import PrintiIframe from "components/PrintiIframe";
+import PrintUtils from "components/PrintiIframe/PrintUtils";
 
 export interface OrderDetailProps extends WithStyles<typeof styles> { }
 const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
@@ -62,6 +64,8 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
     const { id } = useParams<{ id: string }>();
     const { closeModal, confirm, openModal } = useModal();
     const [openMenuCreateOrder, setOpenMenuCreateOrder] = useState(false);
+    const refPrint = React.useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         initData();
     }, [id])
@@ -69,6 +73,28 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
         reset();
         set((prev) => ({ ...prev, context: "detail" }));
     }, [])
+
+    const printOrder = () => {
+        try {
+            let htmlContent = "";
+            if (order) {
+                let printFormRequest: OrderPrintFormFilter = {
+                    orderId: order.id,
+                }
+                OrderService.printForm(printFormRequest).then((res) => {
+                    if (res && res.data) {
+                        if (res.data.htmlContent) {
+                            htmlContent += res.data.htmlContent;
+                        }
+                    }
+                    PrintUtils.print(htmlContent);
+                })
+            }
+        } catch (error) {
+
+        }
+    }
+
     const initData = async () => {
         let res = await OrderService.getById(id);
         if (res.data) {
@@ -222,7 +248,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                             {order?.status && renderOrderStatus(order.status)}
                         </Box>
                         <Box display="flex" alignItems="center" style={{ marginTop: 10 }}>
-                            <Button startIcon={<PrintIcon />} color="inherit" variant="text" onClick={() => { }}>In</Button>
+                            <Button startIcon={<PrintIcon />} color="inherit" variant="text" onClick={() => { printOrder()}}>In</Button>
                             <Button startIcon={<PaymentOutlined />} color="inherit" variant="text" onClick={() => {
                                 openModal(ConfirmDialog, {
                                     confirmButtonText: "Xác nhận",
@@ -447,6 +473,10 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                     </Grid>
                 </Grid>
             </Box>
+            <PrintiIframe iframeId="printOrderDetailForm">
+                <div ref={refPrint}></div>
+            </PrintiIframe>
+
         </>
     );
 };
