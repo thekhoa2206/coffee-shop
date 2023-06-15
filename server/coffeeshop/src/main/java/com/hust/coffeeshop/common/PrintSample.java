@@ -41,11 +41,6 @@ public class PrintSample {
             "\t\t\t<td style=\"padding-bottom: 10px;\">{customer_name}</td>\n" +
             "\t\t\t<td style=\"padding-bottom: 10px;\">{customer_name}</td>\n" +
             "\t\t</tr>\n" +
-            "\t\t<tr>\n" +
-            "\t\t\t<td style=\"padding-right: 20px;line-height: 20px;\">{customer_address} - {customer_ward} - {customer_district} - {customer_city}</td>\n" +
-            "\t\t\t<td style=\"padding-right: 20px;line-height: 20px;\">{customer_address} - {customer_ward} - {customer_district} - {customer_city}</td>\n" +
-            "\t\t\t<td>&nbsp;</td>\n" +
-            "\t\t</tr>\n" +
             "\t</tbody>\n" +
             "</table>\n" +
             "\n" +
