@@ -15,6 +15,20 @@ export const ReeceiptStatus = {
         }
     },
 };
+export const ExportStatus = {
+    EXPORT: 2,
+    DELETED: 3,
+    getName: (status?: number) => {
+        switch (status) {
+            case ExportStatus.EXPORT:
+                return `Xuất kho`;
+            case ExportStatus.DELETED:
+                return `Đã hủy`;
+            default:
+                return "";
+        }
+    },
+};
 
 export const PaymentStatus = {
     UNPAID: 1,
@@ -33,7 +47,7 @@ export const PaymentStatus = {
 
 export const StockingType = {
     IMPORT: "import",
-    EXPORT: "expor",
+    EXPORT: "export",
     getName: (type?: string) => {
         switch (type) {
             case StockingType.IMPORT:

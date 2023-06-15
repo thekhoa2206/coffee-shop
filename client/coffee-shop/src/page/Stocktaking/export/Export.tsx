@@ -26,19 +26,19 @@ import {
   StocktakingReponse,
   StoctakingFilterRequest,
 } from "services/StocktakingService/type";
-import { ReceiptProps } from "./Receipt.type";
+import { ExportProps } from "./Export.type";
 import StocktakingService from "services/StocktakingService/StocktakingService";
 import { StocktakingIngredientReponse } from "../../../services/StocktakingService/type";
 import {
   ReceiptQuickFilterOptions,
   getReceiptQuickFilterLabel,
-} from "./ReceiptFilter.constant";
-import styles from "./Receipt.styles";
+} from "../Receipt/ReceiptFilter.constant";
+import styles from "./Export.styles";
 import Chip from "components/Chip/Chip.component";
-import { ReeceiptStatus, StockingType } from "../utils/StocktakingContants";
+import { ExportStatus, StockingType } from "../utils/StocktakingContants";
 
-const Receipt = (props: ReceiptProps & PropsFromRedux) => {
-  const { classes, authState, type} = props;
+const Export = (props: ExportProps & PropsFromRedux) => {
+  const { classes, authState} = props;
   const location = useLocation();
   const queryParams = useQueryParams();
   const [loading, setLoading] = useState<boolean>(true);
@@ -62,7 +62,7 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
       page: Number(dataFromQuery["page"]) || 1,
       limit: Number(dataFromQuery["limit"]) || undefined,
       query: dataFromQuery["query"] || undefined,
-      type: "import",
+      type: "export",
     };
     return initFilter;
   };
@@ -132,33 +132,24 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
     changeQueryString(newFilters);
   };
 
-  const renderReceiptStatus = (status?: number) => {
+  const renderExportStatus = (status?: number) => {
     switch (status) {
-      case ReeceiptStatus.ORDER:
-        return (
-          <Chip
-            className="info"
-            variant="outlined"
-            size="medium"
-            label={ReeceiptStatus.getName(status)}
-          />
-        );
-      case ReeceiptStatus.WAREHOUSE:
+      case ExportStatus.EXPORT:
         return (
           <Chip
             className="warning"
             variant="outlined"
             size="medium"
-            label={ReeceiptStatus.getName(status)}
+            label={ExportStatus.getName(status)}
           />
         );
-      case ReeceiptStatus.DELETED:
+      case ExportStatus.DELETED:
         return (
           <Chip
             className="danger"
             variant="outlined"
             size="medium"
-            label={ReeceiptStatus.getName(status)}
+            label={ExportStatus.getName(status)}
           />
         );
       default:
@@ -193,10 +184,10 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
               color="primary"
               startIcon={<AddCircleOutline />}
               onClick={() => {
-                history.push("/admin/receipts/create");
+                history.push("/admin/exports/create");
               }}
             >
-              {"Tạo phiếu nhập"}
+              {"Tạo phiếu xuất"}
             </Button>
           </Box>
         </Box>
@@ -231,7 +222,7 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
                     stickyHeader
                     tableDrillDown
                     stickyHeaderTop={52}
-                    onRowClick={(e, data) => { history.push(`/admin/receipts/${data.id}/edit`)}}
+                    onRowClick={(e, data) => { history.push(`/admin/exports/${data.id}/edit`)}}
                     disablePaging={false}
                   >
                     <GridColumn
@@ -324,7 +315,7 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
                       align="left"
                     >
                       {({ dataItem }: CellTemplateProps) => {
-                        return renderReceiptStatus(dataItem.status);
+                        return renderExportStatus(dataItem.status);
                       }}
                     </GridColumn>
                   </SapoGrid>
@@ -357,4 +348,4 @@ const mapStateToProps = (state: AppState) => ({
 });
 const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
-export default connect(mapStateToProps, {})(withStyles(styles)(Receipt));
+export default connect(mapStateToProps, {})(withStyles(styles)(Export));

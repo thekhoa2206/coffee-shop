@@ -255,12 +255,20 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
 
     <>
       <Box className={classes.container}>
+      {receipt?.type.includes("import")? 
         <Grid item xs={12} style={{ display: "flex", justifyContent: "flex-end" }}>
           <Typography variant="h6" style={{ padding: "12px 4px 26px", fontSize: 25, marginRight: 290 }}>
             Thông tin phiếu {renderReceipttype(receipt?.type)} - {receipt?.code}
           </Typography>
-          <BoxStep stock={receipt} />
+
+          <BoxStep stock={receipt} /> 
         </Grid>
+        :<Grid item xs={12} style={{ justifyContent: "flex-end" }}>
+        <Typography variant="h6" style={{ padding: "12px 4px 26px", fontSize: 25 }}>
+          Thông tin phiếu {renderReceipttype(receipt?.type)} - {receipt?.code}
+        </Typography>
+      </Grid>
+      }
 
         {receipt?.status && receipt.status === 1 ?
           (

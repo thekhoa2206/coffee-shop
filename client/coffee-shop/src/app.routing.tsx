@@ -23,6 +23,8 @@ const OrderEdit = React.lazy(() => import("./page/Orders/edit"));
 const receipt =React.lazy(() => import("./page/Stocktaking/Receipt/Receipt"));
 const Createreceipt =React.lazy(() => import("./page/Stocktaking/Receipt/Create"));
 const editReceipt = React.lazy(() => import("./page/Stocktaking/Receipt/Update"));
+const Export =React.lazy(() => import("./page/Stocktaking/export/Export"));
+const CreateExport =React.lazy(() => import("./page/Stocktaking/export/Create"));
 export const LAYOUT_ROUTES: Route[] = [
   {
     path: "/",
@@ -93,7 +95,7 @@ let MAIN_ROUTES = (): Route[] => [
     component: receipt,
     extract: true,
     header: {
-      title: "Nhập kho ",
+      title: "Danh sách phiếu nhập kho ",
       linkTo: "/admin/receipts",
       showNoti: false,
       withSubtitle: false,
@@ -117,8 +119,44 @@ let MAIN_ROUTES = (): Route[] => [
     component: UpdateReceipt,
     extract: true,
     header: {
-      title: " Cập nhật phiếu ",
+      title: " Cập nhật phiếu nhập kho ",
       linkTo: "/admin/receipts",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/exports/:id/edit",
+    component: UpdateReceipt,
+    extract: true,
+    header: {
+      title: " Cập nhật phiếu xuất kho  ",
+      linkTo: "/admin/exports",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/exports",
+    component: Export,
+    extract: true,
+    header: {
+      title: "Danh sách phiếu xuất kho ",
+      linkTo: "/admin",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/exports/create",
+    component: CreateExport,
+    extract: true,
+    header: {
+      title: " Tạo phiếu Xuất kho ",
+      linkTo: "/admin/exports",
       showNoti: false,
       withSubtitle: false,
     },
