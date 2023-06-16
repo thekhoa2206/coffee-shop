@@ -3,6 +3,7 @@ import Route from "./shared/model/routing/route.model";
 import MainLayoutComponent from "layout/main/MainLayout";
 import { AccountRole } from "utilities/AccountRole";
 import UpdateReceipt from "page/Stocktaking/Receipt/Update/UpdateReceipt";
+import Users from "page/Users/Users";
 
 
 const CustomerList = React.lazy(() => import("./page/Customer"));
@@ -25,6 +26,7 @@ const Createreceipt =React.lazy(() => import("./page/Stocktaking/Receipt/Create"
 const editReceipt = React.lazy(() => import("./page/Stocktaking/Receipt/Update"));
 const Export =React.lazy(() => import("./page/Stocktaking/export/Export"));
 const CreateExport =React.lazy(() => import("./page/Stocktaking/export/Create"));
+const User =React.lazy(() => import("./page/Users"));
 export const LAYOUT_ROUTES: Route[] = [
   {
     path: "/",
@@ -290,6 +292,18 @@ let MAIN_ROUTES = (): Route[] => [
     header: {
       title: "Sửa đơn hàng",
       linkTo: "/admin/orders",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/users",
+    component: Users,
+    extract: true,
+    header: {
+      title: "Nhân viên",
+      linkTo: "/admin/users",
       showNoti: false,
       withSubtitle: false,
     },

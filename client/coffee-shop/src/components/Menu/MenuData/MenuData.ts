@@ -30,7 +30,15 @@ const useGenMenuData = () => {
     };
     return menu;
   };
-
+  const genMenuUser= () => {
+    let menu: MenuItem = {
+      id: "user",
+      icon: MenuProductIcon,
+      title: "Nhân viên",
+      path: "/admin/users",
+    };
+    return menu;
+  };
   const genMenuCustomer = () => {
     let menu: MenuItem = {
       id: "customer",
@@ -66,21 +74,6 @@ const useGenMenuData = () => {
       {
         title: "Combo",
         path: "/admin/combos",
-        typeRoute: "default",
-      },
-      {
-        title: "Nguyên liệu",
-        path: "/admin/ingredients",
-        typeRoute: "default",
-      },
-      {
-        title: "Nhập kho",
-        path: "/admin/receipts",
-        typeRoute: "default",
-      },
-      {
-        title: "Quản lý kho",
-        path: "/admin/inventory",
         typeRoute: "default",
       },
     ];
@@ -138,7 +131,8 @@ const useGenMenuData = () => {
     listMenu.push(genMenuOrder());
     listMenu.push(genMenuCustomer());
     listMenu.push(genMenuProduct());
-    listMenu.push(genMenuInventory())
+    listMenu.push(genMenuInventory());
+    listMenu.push(genMenuUser());
     return listMenu;
   };
   const genSapoMenu = async () => {

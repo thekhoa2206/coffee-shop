@@ -26,11 +26,11 @@ public class User extends BaseEntity{
     @Column(name = "email")
     private String email;
 
-    @Column(name = "dob")
-    private long dob;
+//    @Column(name = "dob")
+//    private long dob;
 
     @Column(name = "status")
-    private String status;
+    private int status;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",

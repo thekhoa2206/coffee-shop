@@ -55,8 +55,8 @@ public class StockingController extends BaseException {
         return stocktakingService.filter(filter);
     }
     @PutMapping("/{id}")
-    public StocktakingReponse update(@RequestBody CreateStocktakingRequest request, @PathVariable("id") int id){
-        return stocktakingService.update(request, id);
+    public StocktakingReponse update(@RequestBody CreateStocktakingRequest request, @PathVariable("id") int id,HttpServletRequest requestHttp){
+        return stocktakingService.update(request, id,requestHttp);
     }
 
     @DeleteMapping("/{id}")

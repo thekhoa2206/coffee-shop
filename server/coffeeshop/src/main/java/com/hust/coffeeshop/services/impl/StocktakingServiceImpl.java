@@ -81,7 +81,7 @@ public class StocktakingServiceImpl implements StocktakingService {
         stocktaking.setModifiedOn(0);
         stocktaking.setTotalMoney(request.getTotalMoney());
         stocktaking.setType(request.getType());
-//        inventory.setCreatedBy(user.getId());
+//        stocktaking.setCreatedBy(user.getName());
         var stocktakingNew= stocktakingRepository.save(stocktaking);
         List<StocktakingIngredient> stocktakingIngredients = new ArrayList<>();
         if(request.getObject().size() != 0){
@@ -120,15 +120,14 @@ public class StocktakingServiceImpl implements StocktakingService {
         }
        var InventoryIngredientReponse = getIngredients(stocktakingIngredients);
         val inventoryReponse = mapper.map(stocktaking, StocktakingReponse.class);
-//        inventoryReponse.setCreatedBy(user.getName());
         inventoryReponse.setObject(InventoryIngredientReponse);
         return inventoryReponse;
-
     }
     //api update
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public StocktakingReponse update(CreateStocktakingRequest request, int id) {
+    public StocktakingReponse update(CreateStocktakingRequest request, int id,HttpServletRequest requestHttp) {
+//        var user= baseService.getuser(requestHttp);
         val stocktaking = stocktakingRepository.findById(id);
         if (stocktaking.get() == null) throw new ErrorException("Không tìm thấy Phiếu");
         val data = mapper.map(stocktaking.get(), Stocktaking.class);
@@ -140,6 +139,7 @@ public class StocktakingServiceImpl implements StocktakingService {
         if (request.getDescription() != null) data.setDescription(request.getDescription());
         data.setTotalMoney(request.getTotalMoney());
         data.setModifiedOn(CommonCode.getTimestamp());
+//        data.setModifiedBy(user.getName());
         if(request.getStatus()==1){
             data.setStatus(CommonStatus.StockingStatus.ORDER);
         }
@@ -299,7 +299,7 @@ public class StocktakingServiceImpl implements StocktakingService {
                     ingredient.get().setQuantity( ingredient.get().getQuantity()- data.getQuantity());
                     ingredientRepository.save(ingredient.get());
                 }
-                if(stocktaking.get().equals("export")){
+                if(stocktaking.get().getType().equals("export")){
                     ingredient.get().setQuantity( ingredient.get().getQuantity()+ data.getQuantity());
                     ingredientRepository.save(ingredient.get());
                 }

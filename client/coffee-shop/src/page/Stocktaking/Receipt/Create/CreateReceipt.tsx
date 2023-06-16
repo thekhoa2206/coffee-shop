@@ -294,7 +294,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                         <TableCell>STT</TableCell>
                         <TableCell>Tên mặt hàng </TableCell>
                         <TableCell align="center">Số lượng</TableCell>
-                        <TableCell align="center">Giá nhập</TableCell>
+                        <TableCell align="center">Đơn Giá(VND)</TableCell>
                         <TableCell align="center">Thành tiền</TableCell>
                         <TableCell style={{ width: "50px" }}></TableCell>
                       </TableHead>
@@ -425,7 +425,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
         style={{
           display: "flex",
           marginBottom: "100px",
-          marginLeft: "760px",
+          marginLeft: "950px",
           marginTop: "16px",
         }}
       >

@@ -216,9 +216,12 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
   const handleDeleteReceipt = async () => {
     try {
       let res = await StocktakingService.delete(id);
-      if (res.data) {
+      if (res) {
         SnackbarUtils.success("Xoá phiếu nhập kho thành công");
-        history.push(`/admin/receipts`);
+        {receipt?.type.includes("import")?history.push(`/admin/receipts`)
+        :history.push(`/admin/exports`)
+      }
+        
       }
     } catch (error) {
       SnackbarUtils.error(getMessageError(error));
@@ -255,20 +258,20 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
 
     <>
       <Box className={classes.container}>
-      {receipt?.type.includes("import")? 
-        <Grid item xs={12} style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Typography variant="h6" style={{ padding: "12px 4px 26px", fontSize: 25, marginRight: 290 }}>
-            Thông tin phiếu {renderReceipttype(receipt?.type)} - {receipt?.code}
-          </Typography>
+        {receipt?.type.includes("import") ?
+          <Grid item xs={12} style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Typography variant="h6" style={{ padding: "12px 4px 26px", fontSize: 25, marginRight: 290 }}>
+              Thông tin phiếu {renderReceipttype(receipt?.type)} - {receipt?.code}
+            </Typography>
 
-          <BoxStep stock={receipt} /> 
-        </Grid>
-        :<Grid item xs={12} style={{ justifyContent: "flex-end" }}>
-        <Typography variant="h6" style={{ padding: "12px 4px 26px", fontSize: 25 }}>
-          Thông tin phiếu {renderReceipttype(receipt?.type)} - {receipt?.code}
-        </Typography>
-      </Grid>
-      }
+            <BoxStep stock={receipt} />
+          </Grid>
+          : <Grid item xs={12} style={{ justifyContent: "flex-end" }}>
+            <Typography variant="h6" style={{ padding: "12px 4px 26px", fontSize: 25 }}>
+              Thông tin phiếu {renderReceipttype(receipt?.type)} - {receipt?.code}
+            </Typography>
+          </Grid>
+        }
 
         {receipt?.status && receipt.status === 1 ?
           (
@@ -630,6 +633,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                                     onClick={() => {
                                       deleteVarinat(data);
                                     }}
+                                    disabled
                                   >
                                     <CloseIcon
                                       style={{
@@ -711,8 +715,10 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
             </Grid>
           )}
       </Box>
+
       {receipt?.type.includes("import") ?
         (
+          // phiếu nhập kho 
           <Box>
             {receipt.status && receipt.status === 3 ? ("") :
               (
@@ -724,7 +730,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                         style={{
                           display: "flex",
                           marginBottom: "100px",
-                          marginLeft: "760px",
+                          marginLeft: "1030px",
                           marginTop: "16px",
                         }}
                       >
@@ -793,7 +799,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                           // marginLeft: "160px",
                           marginTop: "16px",
                           float: "right",
-                          marginRight: 138
+                          marginRight: 300
                         }}
                       >
                         <Button variant="outlined" color="secondary"
@@ -828,22 +834,35 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
 
           </Box>
         ) : (
-          <Box
+          // Phiếu xuất
+          <Box>
+            
+            {//Huỷ phiếu
+            receipt?.status===3 ? "": 
+            //Phiếu xuất kho
+            <Box
             style={{
               display: "flex",
               marginBottom: "100px",
-              marginLeft: "760px",
               marginTop: "16px",
+              marginLeft: 1249,
+              
             }}
           >
-            <Button variant="outlined" color="secondary"
-              onClick={() => {
+            <Button variant="outlined" color="secondary" style={{
+              background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
+              borderColor: "#ff4d4d",
+              boxShadow: "inset 0 1px 0 0 #ff4d4",
+              color: "#fff",
+              
 
+            }}
+              onClick={() => {
                 openModal(ConfirmDialog, {
                   confirmButtonText: "Huỷ phiếu",
                   message:
                     "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
-                  title: "Huỷ phiếu nhập kho",
+                  title: "Huỷ phiếu",
                   cancelButtonText: "Thoát",
                 }).result.then((res) => {
                   if (res) {
@@ -854,7 +873,9 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
             >
               Hủy phiếu
             </Button>
+          </Box>}
           </Box>
+         
         )}
     </>
   );
@@ -867,3 +888,4 @@ const mapStateToProps = (state: AppState) => ({
 const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 export default connect(mapStateToProps, {})(withStyles(styles)(UpdateReceipt));
+ 
