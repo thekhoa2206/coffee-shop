@@ -68,6 +68,7 @@ public class ItemServiceImpl implements ItemService {
         item.setStatus(CommonStatus.CustomerStatus.ACTIVE);
         item.setCreatedOn(CommonCode.getTimestamp());
         item.setModifiedOn();
+        item.setDiscountPercentage(request.getDiscountPercentage());
         StockUnit stockUnit = new StockUnit();
         if (request.getStockUnitId() != 0) {
             stockUnit = stockUnitRepository.findById(request.getStockUnitId()).get();
@@ -171,8 +172,10 @@ public class ItemServiceImpl implements ItemService {
         var data = variantRepository.findVariantByItemId(id);
 
         var category = categoryRepository.findById(item.get().getCategoryId());
-        var categoryRes = mapper.map(category.get(), CategoryResponse.class);
-        itemResponse.setCategory(categoryRes);
+        if(category.isPresent()){
+            var categoryRes = mapper.map(category.get(), CategoryResponse.class);
+            itemResponse.setCategory(categoryRes);
+        }
         if (data != null) {
             List<VariantRepsone> variants = new ArrayList<>();
             for (var i : data) {

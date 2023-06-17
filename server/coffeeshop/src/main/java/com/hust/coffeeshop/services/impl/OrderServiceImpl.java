@@ -204,6 +204,7 @@ public class OrderServiceImpl implements OrderService {
                         orderItemCombo.setModifiedOn();
                         orderItemCombo.setCreatedBy(1);
                         orderItemCombo.setModifiedBy(1);
+                        orderItemCombo.setVariantId(variant.getId());
                         orderItemCombo.setComboItemId(comboItem.getId());
                         orderItemComboRepository.save(orderItemCombo);
                     }
@@ -284,6 +285,8 @@ public class OrderServiceImpl implements OrderService {
         if (!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
         if (order.get().getPaymentStatus() == CommonStatus.PaymentStatus.PAID)
             throw new ErrorException("Đơn hàng đã thanh toán");
+        if (order.get().getStatus() == CommonStatus.OrderStatus.DELETED)
+            throw new ErrorException("Đơn hàng đã hủy không thể thanh toán");
         order.get().setPaymentStatus(CommonStatus.PaymentStatus.PAID);
         order.get().setModifiedOn();
         var orderNew = orderRepository.save(order.get());
@@ -303,7 +306,6 @@ public class OrderServiceImpl implements OrderService {
         if (!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
         var orderNew = order.get();
         List<OrderItemResponse> lineItems = new ArrayList<>();
-
         orderNew.setNote(request.getNote());
         orderNew.setModifiedOn();
         if (orderNew.getStatus() == CommonStatus.OrderStatus.DRAFT) {
@@ -409,6 +411,7 @@ public class OrderServiceImpl implements OrderService {
                     orderItemCombo.setCreatedBy(1);
                     orderItemCombo.setModifiedBy(1);
                     orderItemCombo.setComboItemId(comboItem.getId());
+                    orderItemCombo.setVariantId(variant.getId());
                     orderItemCombo = orderItemComboRepository.save(orderItemCombo);
                     var orderItemComboResponse = mapper.map(orderItemCombo, OrderItemComboResponse.class);
                     orderItemComboResponses.add(orderItemComboResponse);
@@ -544,8 +547,11 @@ public class OrderServiceImpl implements OrderService {
         var order = orderRepository.findById(id);
         if (!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
         if ((order.get().getStatus() != CommonStatus.OrderStatus.DRAFT
-                || order.get().getStatus() != CommonStatus.PaymentStatus.PAID) && status == CommonStatus.OrderStatus.DELETED) {
+                && order.get().getStatus() != CommonStatus.PaymentStatus.PAID) && status == CommonStatus.OrderStatus.DELETED) {
             throw new ErrorException("Đơn hàng không được hủy!");
+        }
+        if (status == CommonStatus.OrderStatus.COMPLETED && order.get().getStatus() == CommonStatus.OrderStatus.DELETED) {
+            throw new ErrorException("Đơn hàng đã hủy không thể hoàn thành!");
         }
         order.get().setStatus(status);
         order.get().setModifiedOn();

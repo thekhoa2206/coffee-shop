@@ -6,14 +6,17 @@ import { AccountRole } from "utilities/AccountRole";
 
 const CustomerList = React.lazy(() => import("./page/Customer"));
 const IngredientList = React.lazy(() => import("./page/Ingredients"));
+
 const ItemList = React.lazy(() => import("./page/Items"));
 const CreateItem = React.lazy(() => import("./page/Items/create"));
+const DetailItem = React.lazy(() => import("./page/Items/detail"));
+const EditItem = React.lazy(() => import("./page/Items/update"));
+
 const ComboList = React.lazy(() => import("./page/Combos"));
 const CreateCombo = React.lazy(() => import("./page/Combos/create"));
 const UpdateCombo = React.lazy(() => import("./page/Combos/update"));
+
 const CreateOrder = React.lazy(() => import("./page/Orders/create"));
-const DetailItem = React.lazy(() => import("./page/Items/detail"));
-const EditItem = React.lazy(() => import("./page/Items/update"));
 const Orders = React.lazy(() => import("./page/Orders/list"));
 
 const OrderDetail = React.lazy(() => import("./page/Orders/detail"));
@@ -111,6 +114,18 @@ let MAIN_ROUTES = (): Route[] => [
     authorities: [AccountRole.ADMIN],
   },
   {
+    path: "/items/create",
+    component: CreateItem,
+    extract: true,
+    header: {
+      title: "Tạo mặt hàng",
+      linkTo: "/admin/items",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
     path: "/items",
     component: ItemList,
     extract: true,
@@ -140,18 +155,6 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: "Sửa mặt hàng",
-      linkTo: "/admin/items",
-      showNoti: false,
-      withSubtitle: false,
-    },
-    authorities: [AccountRole.ADMIN],
-  },
-  {
-    path: "/items/create",
-    component: CreateItem,
-    extract: true,
-    header: {
-      title: "Tạo mặt hàng",
       linkTo: "/admin/items",
       showNoti: false,
       withSubtitle: false,

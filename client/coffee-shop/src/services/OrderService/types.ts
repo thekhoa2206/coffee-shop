@@ -44,6 +44,7 @@ export interface OrderItemComboResponse extends BaseResponse {
     price?: number;
     quantity?: number;
     comboItemId?: number;
+    variantId?: number;
 }
 
 export type OrderRequest = {

@@ -120,12 +120,13 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                     if (li.combo) {
                         if (variantRes.data.data) {
                             variantRes.data.data.map((v) => {
+                                let combo = li.orderItemComboResponses?.find((co) => v.id === co.variantId);
                                 let ingredients = v.ingredients.map((ig) => {
                                     let ingredientRq: ProductIngredientResponse = {
                                         id: ig.id || 0,
                                         amountConsume: ig.amountConsume,
                                         createdBy: ig.createdBy,
-                                        createdOn: ig.createdOn,
+                                        createdOn: ig.createdOn, 
                                         ingredientId: ig.ingredientId,
                                         modifiedBy: ig.modifiedBy,
                                         modifiedOn: ig.modifiedOn,
@@ -134,6 +135,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                     }
                                     return ingredientRq;
                                 })
+                                debugger;
                                 variants.push({
                                     id: v.id,
                                     available: v.available,
@@ -142,9 +144,10 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                     ingredients: ingredients,
                                     modifiedBy: v.modifiedBy,
                                     modifiedOn: v.modifiedOn,
-                                    name: v.name,
-                                    price: v.price,
+                                    name: combo?.name,
+                                    price: combo?.price,
                                     productItemId: v.itemId,
+                                    quantity: combo?.quantity,
                                 });
                             })
                         }
@@ -296,7 +299,33 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                 </MenuItem>
                                 <MenuItem
                                     onClick={() => {
-
+                                        setOpenMenuCreateOrder(false);
+                                        if(order?.status !== OrderStatus.DRAFT){
+                                            SnackbarUtils.error("Đơn hàng không thể hủy");
+                                            return;
+                                        }
+                                        openModal(ConfirmDialog, {
+                                            title: "Hủy đơn hàng",
+                                            message: "Bạn có chắc chắn muốn hủy đơn hàng này không? Thao tác không thể khôi phục.",
+                                            isDelete: true,
+                                            deleteButtonText: "Hủy đơn",
+                                            cancelButtonText: "Thoát"
+                                        }).result.then( async (res) => {
+                                            if(res){
+                                                try {
+                                                    let res = await OrderService.updateStatus(id, OrderStatus.DELETED);
+                                                    if (res.data) {
+                                                        SnackbarUtils.success("Đơn hàng đã hủy thành công");
+                                                        set((prev) => ({
+                                                            ...prev,
+                                                            order: res.data,
+                                                        }))
+                                                    }
+                                                } catch (error) {
+                                                    SnackbarUtils.error(getMessageError(error));
+                                                }
+                                            }
+                                        })
                                     }}
                                 >
                                     <OrderCancelIcon style={{ color: "#adadad", marginRight: 10 }} /> Hủy
