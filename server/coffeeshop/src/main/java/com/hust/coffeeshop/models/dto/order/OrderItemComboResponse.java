@@ -4,7 +4,6 @@ import com.hust.coffeeshop.models.dto.BaseResponse;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import java.math.BigDecimal;
 
 @Getter
@@ -17,4 +16,5 @@ public class OrderItemComboResponse extends BaseResponse {
     private BigDecimal price;
     private int quantity;
     private int comboItemId;
+    private int variantId;
 }

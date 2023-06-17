@@ -4,6 +4,7 @@ import { AuthState } from "store/Authenticate/types";
 import { MenuState } from "store/Menu/types";
 import styles from "./Orders.styles";
 import { ProductVariantResponse } from "services/ProductService";
+import { OrderItemComboResponse } from "services/OrderService";
 
 export interface OrdersProps extends WithStyles<typeof styles> {
   menuState: MenuState;
@@ -34,4 +35,5 @@ export interface LineItemStore {
    variants?: ProductVariantResponse[];
    available: number;
    isShow?: boolean;
+   itemCombos?: OrderItemComboResponse[];
 }
