@@ -8,5 +8,6 @@ export interface ReceiptProps extends WithStyles<typeof styles> {
     menuState: MenuState;
     authState: AuthState;
     history: any;
+    type:string;
 }
 

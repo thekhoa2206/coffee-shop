@@ -46,35 +46,19 @@ export const DialogAddIngredient = (props: DialogAddIngredientProps) => {
             ...ingredient,
         };
         if (ingredient) {
-            if (props.ingredient?.id) {
-                IngredientsService.update(ingredientAdd, props.ingredient?.id)
-                    .then(async (res) => {
-                        if (res) {
-                            onClose();
-                            if (res.data) {
-                                if (initData) initData(res.data);
-                                SnackbarUtils.success("Cập nhật nguyên liệu thành công!");
-                            }
-                        }
-                    })
-                    .catch((err) => {
-                        SnackbarUtils.error(getMessageError(err));
-                    });
-            } else {
-                IngredientsService.create(ingredientAdd)
-                    .then(async (res) => {
-                        if (res) {
-                            onClose();
-                            if (res.data) {
-                                if (initData) initData(res.data);
-                                SnackbarUtils.success("Tạo mới nguyên liệu thành công!");
-                            }
-                        }
-                    })
-                    .catch((err) => {
-                        SnackbarUtils.error(getMessageError(err));
-                    });
-            }
+            IngredientsService.create(ingredientAdd)
+            .then(async (res) => {
+                if (res) {
+                    onClose();
+                    if (res.data) {
+                        if (initData) initData(res.data);
+                        SnackbarUtils.success("Tạo mới nguyên liệu thành công!");
+                    }
+                }
+            })
+            .catch((err) => {
+                SnackbarUtils.error(getMessageError(err));
+            });
         }
     };
     return (
@@ -82,7 +66,7 @@ export const DialogAddIngredient = (props: DialogAddIngredientProps) => {
             <Dialog
                 open={open}
                 onClose={onClose}
-                title={!!props.ingredient ? "Sửa nguyên liệu": "Thêm mới nguyên liệu"}
+                title={"Thêm mới nguyên liệu"}
                 onOk={handleAddCustomer}
                 textOk={"Lưu"}
                 minWidthPaper="790px"

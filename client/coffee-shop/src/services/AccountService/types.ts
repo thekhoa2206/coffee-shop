@@ -89,12 +89,12 @@ export type AccountRequest = {
 }
 
 export type RoleResponse = {
-  id: number;
-  createOn: Date;
-  modifiedon: Date;
-  note: string;
-  name: string;
-  code: string;
+  id?: number;
+  createOn?: Date;
+  modifiedon?: Date;
+  note?: string;
+  name?: string;
+  code?: string;
 }
 
 export type ListRoleResponse = {

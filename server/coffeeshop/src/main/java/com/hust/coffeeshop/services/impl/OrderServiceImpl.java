@@ -164,8 +164,8 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(CommonStatus.OrderStatus.DRAFT);
         order.setCreatedOn();
         order.setModifiedOn();
-        order.setCreatedBy(1);
-        order.setModifiedBy(1);
+        order.setCreatedBy("admin");
+        order.setModifiedBy("admin");
         order.setCustomerId(request.getCustomerId());
         order.setNote(request.getNote());
         order.setDiscountTotal(request.getDiscountTotal() != null ? request.getDiscountTotal() : BigDecimal.ZERO);
@@ -179,8 +179,8 @@ public class OrderServiceImpl implements OrderService {
             checkAvailable(item);
             lineItem.setCreatedOn();
             lineItem.setModifiedOn();
-            lineItem.setCreatedBy(1);
-            lineItem.setModifiedBy(1);
+            lineItem.setCreatedBy("admin");
+            lineItem.setModifiedBy("admin");
             lineItem.setStatus(CommonStatus.OrderItemStatus.ACTIVE);
             lineItem = orderItemRepository.save(lineItem);
 
@@ -202,8 +202,8 @@ public class OrderServiceImpl implements OrderService {
                         orderItemCombo.setStatus(CommonStatus.Status.ACTIVE);
                         orderItemCombo.setCreatedOn();
                         orderItemCombo.setModifiedOn();
-                        orderItemCombo.setCreatedBy(1);
-                        orderItemCombo.setModifiedBy(1);
+                        orderItemCombo.setCreatedBy("admin");
+                        orderItemCombo.setModifiedBy("admin");
                         orderItemCombo.setVariantId(variant.getId());
                         orderItemCombo.setComboItemId(comboItem.getId());
                         orderItemComboRepository.save(orderItemCombo);
@@ -340,8 +340,8 @@ public class OrderServiceImpl implements OrderService {
                 var item = mapper.map(itemNew, OrderItem.class);
                 item.setOrderId(orderId);
                 item.setModifiedOn();
-                item.setCreatedBy(1);
-                item.setModifiedBy(1);
+                item.setCreatedBy("admin");
+                item.setModifiedBy("admin");
                 item.setCreatedOn();
                 item.setStatus(CommonStatus.OrderItemStatus.ACTIVE);
                 checkInventoryUpdate(itemNew, TypeAction.ADD, null);
@@ -408,8 +408,8 @@ public class OrderServiceImpl implements OrderService {
                     orderItemCombo.setStatus(CommonStatus.Status.ACTIVE);
                     orderItemCombo.setCreatedOn();
                     orderItemCombo.setModifiedOn();
-                    orderItemCombo.setCreatedBy(1);
-                    orderItemCombo.setModifiedBy(1);
+                    orderItemCombo.setCreatedBy("admin");
+                    orderItemCombo.setModifiedBy("admin");
                     orderItemCombo.setComboItemId(comboItem.getId());
                     orderItemCombo.setVariantId(variant.getId());
                     orderItemCombo = orderItemComboRepository.save(orderItemCombo);

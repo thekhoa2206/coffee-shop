@@ -12,4 +12,6 @@ public interface StocktakingService {
     StocktakingReponse create(CreateStocktakingRequest request, HttpServletRequest requestHttp);
     StocktakingReponse getbyId(int id);
     PagingListResponse<StocktakingReponse> filter(StoctakingFilterRequest filter);
+    StocktakingReponse update(CreateStocktakingRequest request, int id,HttpServletRequest requestHttp);
+    void delete(int id);
 }

@@ -5,6 +5,12 @@ public class CommonStatus {
         public final static int ACTIVE = 1;
         public final static int DELETED = 2;
     }
+    public class UserStatus {
+        // làm việc
+        public final static int ACTIVE = 1;
+        //Nghỉ việc
+        public final static int DELETED = 2;
+    }
 
     public class StockUnitStatus {
         public final static int ACTIVE = 1;

@@ -2,7 +2,8 @@ import React from "react";
 import Route from "./shared/model/routing/route.model";
 import MainLayoutComponent from "layout/main/MainLayout";
 import { AccountRole } from "utilities/AccountRole";
-
+import UpdateReceipt from "page/Stocktaking/Receipt/Update/UpdateReceipt";
+import Users from "page/Users/Users";
 
 const CustomerList = React.lazy(() => import("./page/Customer"));
 const IngredientList = React.lazy(() => import("./page/Ingredients"));
@@ -22,8 +23,20 @@ const Orders = React.lazy(() => import("./page/Orders/list"));
 const OrderDetail = React.lazy(() => import("./page/Orders/detail"));
 const OrderEdit = React.lazy(() => import("./page/Orders/edit"));
 
-const receipt =React.lazy(() => import("./page/Stocktaking/Receipt/Receipt"));
-const Createreceipt =React.lazy(() => import("./page/Stocktaking/Receipt/Create"));
+const receipt = React.lazy(() => import("./page/Stocktaking/Receipt/Receipt"));
+const Createreceipt = React.lazy(
+  () => import("./page/Stocktaking/Receipt/Create")
+);
+const editReceipt = React.lazy(
+  () => import("./page/Stocktaking/Receipt/Update")
+);
+const Export = React.lazy(() => import("./page/Stocktaking/export/Export"));
+const CreateExport = React.lazy(
+  () => import("./page/Stocktaking/export/Create")
+);
+const User = React.lazy(() => import("./page/Users"));
+const CreateUser = React.lazy(() => import("./page/Users/create"));
+const EditUser = React.lazy(() => import("./page/Users/update"));
 export const LAYOUT_ROUTES: Route[] = [
   {
     path: "/",
@@ -41,7 +54,7 @@ export const LAYOUT_ROUTES: Route[] = [
   {
     path: "/admin",
     component: MainLayoutComponent,
-  }
+  },
 ];
 
 let MAIN_ROUTES = (): Route[] => [
@@ -94,7 +107,7 @@ let MAIN_ROUTES = (): Route[] => [
     component: receipt,
     extract: true,
     header: {
-      title: "Nhập kho ",
+      title: "Danh sách phiếu nhập kho ",
       linkTo: "/admin/receipts",
       showNoti: false,
       withSubtitle: false,
@@ -106,7 +119,7 @@ let MAIN_ROUTES = (): Route[] => [
     component: Createreceipt,
     extract: true,
     header: {
-      title: " tạo phiếu Nhập kho ",
+      title: " Tạo phiếu Nhập kho ",
       linkTo: "/admin/receipts",
       showNoti: false,
       withSubtitle: false,
@@ -120,6 +133,54 @@ let MAIN_ROUTES = (): Route[] => [
     header: {
       title: "Tạo mặt hàng",
       linkTo: "/admin/items",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/receipts/:id/edit",
+    component: UpdateReceipt,
+    extract: true,
+    header: {
+      title: " Cập nhật phiếu nhập kho ",
+      linkTo: "/admin/receipts",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/exports/:id/edit",
+    component: UpdateReceipt,
+    extract: true,
+    header: {
+      title: " Cập nhật phiếu xuất kho  ",
+      linkTo: "/admin/exports",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/exports",
+    component: Export,
+    extract: true,
+    header: {
+      title: "Danh sách phiếu xuất kho ",
+      linkTo: "/admin",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/exports/create",
+    component: CreateExport,
+    extract: true,
+    header: {
+      title: " Tạo phiếu Xuất kho ",
+      linkTo: "/admin/exports",
       showNoti: false,
       withSubtitle: false,
     },
@@ -241,6 +302,42 @@ let MAIN_ROUTES = (): Route[] => [
     header: {
       title: "Sửa đơn hàng",
       linkTo: "/admin/orders",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/users",
+    component: Users,
+    extract: true,
+    header: {
+      title: "Nhân viên",
+      linkTo: "/admin/users",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/users/create",
+    component: CreateUser,
+    extract: true,
+    header: {
+      title: " Thêm mới nhân viên",
+      linkTo: "/admin/users",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/users/:id/edit",
+    component: EditUser,
+    extract: true,
+    header: {
+      title: " Cập nhập thông tin nhân viên",
+      linkTo: "/admin/users",
       showNoti: false,
       withSubtitle: false,
     },

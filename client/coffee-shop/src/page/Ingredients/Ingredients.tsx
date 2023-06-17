@@ -25,6 +25,7 @@ import {
     IngredientProps
 } from "./Ingredients.type";
 import { DialogAddIngredient } from "./component/DialogAddIngredient";
+import { DialogEditIngredient } from "./component/DialogEditIngredient";
 
 const Ingredients = (props: IngredientProps & PropsFromRedux) => {
     const { classes, authState } = props;
@@ -32,6 +33,7 @@ const Ingredients = (props: IngredientProps & PropsFromRedux) => {
     const queryParams = useQueryParams();
     const [loading, setLoading] = useState<boolean>(true);
     const [openDialogIngredient, setOpenDialogIngredient] = useState<boolean>(false);
+    const [openDialogEditIngredient, setOpenDialogEditIngredient] = useState<boolean>(false);
     const [selected, setSelected] = useState<IngredientResponse>();
     const [data, setData] = useState<DataResult>({
         data: [],
@@ -162,7 +164,7 @@ const Ingredients = (props: IngredientProps & PropsFromRedux) => {
                                     stickyHeader
                                     tableDrillDown
                                     stickyHeaderTop={52}
-                                    onRowClick={(e, data) => { setSelected(data); setOpenDialogIngredient(true)}}
+                                    onRowClick={(e, data) => { setSelected(data); setOpenDialogEditIngredient(true)}}
                                     disablePaging={false}
                                 >
                                     <GridColumn
@@ -300,10 +302,17 @@ const Ingredients = (props: IngredientProps & PropsFromRedux) => {
             <DialogAddIngredient
                 open={openDialogIngredient}
                 onClose={() => setOpenDialogIngredient(false)}
-                ingredient={selected}
                 initData={() => {
                     initData(filters);
                 }}
+            />
+            <DialogEditIngredient
+             open={openDialogEditIngredient}
+             onClose={() => setOpenDialogEditIngredient(false)}
+             ingredient={selected}
+             initData={() => {
+                 initData(filters);
+             }}
             />
         </>
     );

@@ -19,7 +19,7 @@ public class BaseServiceImpl implements BaseService {
     }
     public User getuser(HttpServletRequest request){
         String tokenBearer = request.getHeader("Authorization");
-        String[] splits = tokenBearer.split(" ");
+        String[] splits = tokenBearer.split("");
         String username = jwtProvider.getUserNameFromJwtToken(splits[1]);
         User user = userRepository.findUserByUsername(username);
 

@@ -10,4 +10,5 @@ public class StocktakingIngredientRequest {
   private int  ingredientId;
   private int  quantity;
   private BigDecimal ingredientMoney;
+  private int id;
 }

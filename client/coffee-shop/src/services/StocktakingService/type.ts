@@ -11,12 +11,14 @@ export interface StocktakingReponse extends BaseResponse {
   type:string;
   code:string;
   object: StocktakingIngredientReponse[];
+  payment:number
 }
 
 export interface StocktakingIngredientReponse  {
   quantity: number;
   ingredientMoney: number;
   ingredientResponse: IngredientResponse;
+  id:number;
 }
 
 export interface ListStocktakingReponse {
@@ -48,4 +50,5 @@ export type StocktakingIngredientRequest = {
   ingredientMoney: number;
   name?:string
   totalMoney:number;
+  id?:number;
 };

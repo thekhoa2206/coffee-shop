@@ -28,21 +28,7 @@ export const DialogAddCustomer = (props: DialogAddCustomerProps) => {
       ...customer,
     };
     if (customer) {
-      if(props.customer?.id){
-        CustomerService.update(customerAdd, props.customer?.id)
-        .then(async (res) => {
-          if (res) {
-            onClose();
-            if (res.data) {
-              if (initData) initData(res.data);
-              SnackbarUtils.success("Cập nhật khách hàng thành công!");
-            }
-          }
-        })
-        .catch((err) => {
-          SnackbarUtils.error(getMessageError(err));
-        });
-      }else{
+  
         CustomerService.create(customerAdd)
         .then(async (res) => {
           if (res) {
@@ -56,7 +42,7 @@ export const DialogAddCustomer = (props: DialogAddCustomerProps) => {
         .catch((err) => {
           SnackbarUtils.error(getMessageError(err));
         });
-      }
+    
     }
   };
   return (
@@ -68,6 +54,8 @@ export const DialogAddCustomer = (props: DialogAddCustomerProps) => {
         onOk={handleAddCustomer}
         textOk={"Lưu"}
         minWidthPaper="790px"
+        textCancel={"Xoá khách hàng"}
+        isCancel={true}
         DialogTitleProps={{
           dividerBottom: true
         }}

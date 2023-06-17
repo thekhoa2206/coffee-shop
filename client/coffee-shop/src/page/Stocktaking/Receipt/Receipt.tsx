@@ -35,9 +35,10 @@ import {
 } from "./ReceiptFilter.constant";
 import styles from "./Receipt.styles";
 import Chip from "components/Chip/Chip.component";
+import { ReeceiptStatus, StockingType } from "../utils/StocktakingContants";
 
 const Receipt = (props: ReceiptProps & PropsFromRedux) => {
-  const { classes, authState } = props;
+  const { classes, authState, type} = props;
   const location = useLocation();
   const queryParams = useQueryParams();
   const [loading, setLoading] = useState<boolean>(true);
@@ -85,7 +86,8 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
   const initData = async (filters: StoctakingFilterRequest) => {
     let res = await StocktakingService.filter(filters);
     if (res.data)
-      setData({
+      setData(
+        {
         data:
           res.data.data?.map((receipt, index) => {
             return {
@@ -100,13 +102,12 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
               totalMoney: receipt.totalMoney,
               status: receipt.status,
               type: receipt.type,
-              code:receipt.code,
+              code: receipt.code,
             };
           }) || [],
         total: res.data.metadata?.total || 0,
       });
     setLoading(false);
-    
   };
 
   const handlePageChange = (e: GridPageChangeEvent) => {
@@ -131,6 +132,55 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
     setFilters((prev) => ({ ...prev, query: value?.trim() }));
     changeQueryString(newFilters);
   };
+
+  const renderReceiptStatus = (status?: number) => {
+    switch (status) {
+      case ReeceiptStatus.ORDER:
+        return (
+          <Chip
+            className="info"
+            variant="outlined"
+            size="medium"
+            label={ReeceiptStatus.getName(status)}
+          />
+        );
+      case ReeceiptStatus.WAREHOUSE:
+        return (
+          <Chip
+            className="warning"
+            variant="outlined"
+            size="medium"
+            label={ReeceiptStatus.getName(status)}
+          />
+        );
+      case ReeceiptStatus.DELETED:
+        return (
+          <Chip
+            className="danger"
+            variant="outlined"
+            size="medium"
+            label={ReeceiptStatus.getName(status)}
+          />
+        );
+      default:
+        return "";
+    }
+  };
+  const renderReceipttype = (type?: string) => {
+    switch (type) {
+      case StockingType.IMPORT:
+        return (
+          StockingType.getName(type)
+        );
+      case StockingType.EXPORT:
+        return (
+          StockingType.getName(type)
+        );
+      default:
+        return "";
+    }
+  };
+
   return (
     <>
       <Box className={classes.container}>
@@ -147,7 +197,7 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
                 history.push("/admin/receipts/create");
               }}
             >
-              {"tạo phiếu nhập"}
+              {"Tạo phiếu nhập"}
             </Button>
           </Box>
         </Box>
@@ -171,123 +221,115 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
             <LoadingAuth />
           ) : (
             <React.Fragment>
-    
-              
               {data.total > 0 ? (
-                console.log("66",data),
-                <SapoGrid
-                  data={data}
-                  page={filters?.page}
-                  pageSize={filters?.limit}
-                  onPageChange={handlePageChange}
-                  stickyHeader
-                  tableDrillDown
-                  stickyHeaderTop={52}
-                  onRowClick={(e, data) => {
-                    setSelected(data);
-                    setOpenDialogIngredient(true);
-                  }}
-                  disablePaging={false}
-                >
-                  <GridColumn
-                    field="stt"
-                    title={"STT"}
-                    width={80}
-                    align="center"
-                  />
-                  <GridColumn
-                    field="code"
-                    title={getReceiptQuickFilterLabel(
-                      ReceiptQuickFilterOptions.CODE
-                    )}
-                    width={150}
-                    align="left"
+                (console.log("66", data),
+                (
+                  <SapoGrid
+                    data={data}
+                    page={filters?.page}
+                    pageSize={filters?.limit}
+                    onPageChange={handlePageChange}
+                    stickyHeader
+                    tableDrillDown
+                    stickyHeaderTop={52}
+                    onRowClick={(e, data) => { history.push(`/admin/receipts/${data.id}/edit`)}}
+                    disablePaging={false}
                   >
+                    <GridColumn
+                      field="stt"
+                      title={"STT"}
+                      width={80}
+                      align="center"
+                    />
+                    <GridColumn
+                      field="code"
+                      title={getReceiptQuickFilterLabel(
+                        ReceiptQuickFilterOptions.CODE
+                      )}
+                      width={150}
+                      align="left"
+                    ></GridColumn>
+                    <GridColumn
+                      field="name"
+                      title={getReceiptQuickFilterLabel(
+                        ReceiptQuickFilterOptions.NAME
+                      )}
+                      width={150}
+                      align="left"
+                    />
 
-                  </GridColumn>
-                  <GridColumn
-                    field="name"
-                    title={getReceiptQuickFilterLabel(
-                      ReceiptQuickFilterOptions.NAME
-                    )}
-                    width={150}
-                    align="left"
-                  />
-
-                  <GridColumn
-                    field="type"
-                    title={getReceiptQuickFilterLabel(
-                      ReceiptQuickFilterOptions.TYPE
-                    )}
-                    width={150}
-                    align="left"
-                  >
-                  
-                  </GridColumn>
-                  <GridColumn
-                    field="totalMoney"
-                    title={getReceiptQuickFilterLabel(
-                      ReceiptQuickFilterOptions.PRICE
-                    )}
-                    width={100}
-                    align="left"
-                  >
-                    {({ dataItem }: CellTemplateProps) => {
-                      return (
-                        <>
-                          <Typography>
-                            {formatMoney(dataItem.totalMoney || 0)}
-                          </Typography>
-                        </>
-                      );
-                    }}
-                  </GridColumn>
-                  <GridColumn
-                    field="createdOn"
-                    title={getReceiptQuickFilterLabel(
-                      ReceiptQuickFilterOptions.CREATED_ON
-                    )}
-                    width={100}
-                    align="left"
-                  >
-                    {({ dataItem }: CellTemplateProps) => {
-                      return (
-                        <>
-                          <Typography>
-                            {formatDateUTCToLocalDateString(
-                              dataItem.createdOn,
-                              false,
-                              "DD/MM/YYYY"
-                            )}
-                          </Typography>
-                        </>
-                      );
-                    }}
-                  </GridColumn>
-                  <GridColumn
-                    field="modifedOn"
-                    title={getReceiptQuickFilterLabel(
-                      ReceiptQuickFilterOptions.STATUS
-                    )}
-                    width={100}
-                    align="left"
-                  >
-                    {({ dataItem }: CellTemplateProps) => {
-                      if( dataItem.status === "Nhập kho"){ 
+                    <GridColumn
+                      field="type"
+                      title={getReceiptQuickFilterLabel(
+                        ReceiptQuickFilterOptions.TYPE
+                      )}
+                      width={150}
+                      align="left"
+                    >
+                      {({ dataItem }: CellTemplateProps) => {
                         return (
                           <>
-                        <Chip variant="outlined" size="small" label={dataItem.status} className="info" />
-                        </>
-                      )}  
-                      if(dataItem.status === "Đặt hàng"){
-                      return (
-                        <>
-                      <Chip variant="outlined" size="small" label={dataItem.status} className="success" />
-                      </>)
-                     }
-                     }}
-                  </GridColumn>
-                </SapoGrid>
+                            <Typography>
+                            {renderReceipttype(dataItem.type)}
+                            </Typography>
+                          </>
+                        );
+                      }}
+                    </GridColumn>
+                    <GridColumn
+                      field="totalMoney"
+                      title={getReceiptQuickFilterLabel(
+                        ReceiptQuickFilterOptions.PRICE
+                      )}
+                      width={100}
+                      align="left"
+                    >
+                      {({ dataItem }: CellTemplateProps) => {
+                        return (
+                          <>
+                            <Typography>
+                              {formatMoney(dataItem.totalMoney || 0)}
+                            </Typography>
+                          </>
+                        );
+                      }}
+                    </GridColumn>
+                    <GridColumn
+                      field="createdOn"
+                      title={getReceiptQuickFilterLabel(
+                        ReceiptQuickFilterOptions.CREATED_ON
+                      )}
+                      width={100}
+                      align="left"
+                    >
+                      {({ dataItem }: CellTemplateProps) => {
+                        return (
+                          <>
+                            <Typography>
+                              {formatDateUTCToLocalDateString(
+                                dataItem.createdOn,
+                                false,
+                                "DD/MM/YYYY"
+                              )}
+                            </Typography>
+                          </>
+                        );
+                      }}
+                    </GridColumn>
+                    <GridColumn
+                      field="modifedOn"
+                      title={getReceiptQuickFilterLabel(
+                        ReceiptQuickFilterOptions.STATUS
+                      )}
+                      width={100}
+                      align="left"
+                    >
+                      {({ dataItem }: CellTemplateProps) => {
+                        return renderReceiptStatus(dataItem.status);
+                      }}
+                    </GridColumn>
+                  </SapoGrid>
+                ))
               ) : (
                 <NoResultsComponent
                   message={"Không tìm thấy kết quả"}
