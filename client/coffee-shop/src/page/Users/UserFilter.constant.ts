@@ -7,6 +7,7 @@ export const UserQuickFilterOptions = {
   USERNAME:"userName",
   PHONE:"phone",
   STATUS: "status",
+  ROLE:"role",
   CREATED_ON: "createdOn",
   MODIFIED_ON: "modifieldOn",
 
@@ -22,6 +23,8 @@ export const getUserQuickFilterLabel = (key: string) => {
       return `Trạng thái`;
        case UserQuickFilterOptions.PHONE:
       return `Số điện thoại`;
+      case UserQuickFilterOptions.ROLE:
+        return `Vai trò`;
     case UserQuickFilterOptions.CREATED_ON:
       return `Ngày tạo`;
     case UserQuickFilterOptions.MODIFIED_ON:

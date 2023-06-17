@@ -86,7 +86,8 @@ const Receipt = (props: ReceiptProps & PropsFromRedux) => {
   const initData = async (filters: StoctakingFilterRequest) => {
     let res = await StocktakingService.filter(filters);
     if (res.data)
-      setData({
+      setData(
+        {
         data:
           res.data.data?.map((receipt, index) => {
             return {

@@ -854,8 +854,6 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
               borderColor: "#ff4d4d",
               boxShadow: "inset 0 1px 0 0 #ff4d4",
               color: "#fff",
-              
-
             }}
               onClick={() => {
                 openModal(ConfirmDialog, {

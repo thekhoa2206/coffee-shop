@@ -59,7 +59,8 @@ public class UserServiceImpl implements UserService {
         user.setPassword(CommonCode.GeneratePassword(request.getPassword()));
         user.setRoles(role);
         user.setStatus(CommonStatus.UserStatus.ACTIVE);
-        user.setCreatedOn();
+        user.setCreatedOn(CommonCode.getTimestamp());
+        user.setModifiedOn(0);
 
         UserResponse userResponse = null;
         try {
@@ -76,22 +77,28 @@ public class UserServiceImpl implements UserService {
     public UserResponse update(CreateUserRequest request,int id) {
         val users = userRepository.findById(id);
         if (users.get() == null) throw new ErrorException("không tìm thấy nhân viên");
-        if (request.getPhoneNumber() != null)  users.get().setPhoneNumber(CommonCode.GeneratePassword(request.getPhoneNumber()));
+        if (request.getPhoneNumber() != null)  users.get().setPhoneNumber(request.getPhoneNumber());
         if(request.getPassword()!= null) users.get().setPassword(request.getPassword());
         if(request.getUsername()!= null) users.get().setUsername(request.getUsername());
+        users.get().setName(request.getName());
+        users.get().setModifiedOn(CommonCode.getTimestamp());
         List<Role> role = new ArrayList<>();
-        if(request.getRoleId() != 0){
+        String roleName = null;
+        if(request.getRoleId() != 0)
+        {
             var role1 = roleService.getById(request.getRoleId());
-        role.add(role1);
+            roleName= role1.getName();
+            role.add(role1);
+            users.get().setRoles(role);
         }
         users.get().setModifiedOn(CommonCode.getTimestamp());
         UserResponse userResponse = null;
         try {
             var userNew = userRepository.save(users.get());
             userResponse = mapper.map(userNew, UserResponse.class);
-            userResponse.setRole(role.get(1).getName());
+            userResponse.setRole(roleName);
         } catch (Exception e) {
-            throw new ErrorException("Tạo nhân viên thất bại");
+            throw new ErrorException("cập nhật nhân viên thất bại");
         }
         return userResponse;
     }
@@ -100,7 +107,9 @@ public class UserServiceImpl implements UserService {
         val users = userRepository.findById(id);
         if (users.get() == null) throw new ErrorException("không tìm thấy nhân viên");
          val userResponse = mapper.map(users.get(), UserResponse.class);
-         userResponse.setRole(users.get().getRoles().get(1).getName());
+        for(val r:users.get().getRoles()){
+            userResponse.setRole(r.getName());
+        }
          return userResponse;
     }
     @Override
@@ -157,7 +166,10 @@ public class UserServiceImpl implements UserService {
         for (val user : results.getContent()
         ) {
             val userResponse = mapper.map(user, UserResponse.class);
-            userResponse.setRole(user.getRoles().get(1).getName());
+            for(val r:user.getRoles()){
+                userResponse.setRole(r.getName());
+            }
+
             if(user.getStatus() ==1){
                 userRepsones.add(userResponse);
             }

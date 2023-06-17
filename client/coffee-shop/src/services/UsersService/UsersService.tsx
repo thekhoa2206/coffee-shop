@@ -8,7 +8,7 @@ class UsersService {
     static async getById(id?: string): Promise<AxiosResponse<UserResponse>> {
         return axios.get(`/user/${id}`, { ...getAxiosConfig()});
     }
-    static async delete(id: number): Promise<AxiosResponse<UserResponse>> {
+    static async delete(id: string): Promise<AxiosResponse<UserResponse>> {
         return axios.delete(`/user/${id}`, { ...getAxiosConfig()});
     }
     static async create(request: UserRequest): Promise<AxiosResponse<UserResponse>> {

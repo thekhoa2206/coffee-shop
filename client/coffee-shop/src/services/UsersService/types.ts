@@ -33,10 +33,11 @@ export type ListUserResponse = {
 }
 
 export type UserRequest = {
-    name: string;
-    username: string;
-    phoneNumber: number;
+    name?: string;
+    username?: string;
+    phoneNumber?: number;
     email?: string;
-    password:string;
-    roleId: number;
+    password?:string;
+    roleId?: number;
+    confimPassWord?:number;
 }

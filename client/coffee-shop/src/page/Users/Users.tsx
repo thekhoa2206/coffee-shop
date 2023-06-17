@@ -168,10 +168,10 @@ const User = (props: UserProps & PropsFromRedux) => {
               color="primary"
               startIcon={<AddCircleOutline />}
               onClick={() => {
-                history.push("/admin/receipts/create");
+                history.push("/admin/users/create");
               }}
             >
-              {"Tạo phiếu nhập"}
+              {"Thêm mới nhân viên"}
             </Button>
           </Box>
         </Box>
@@ -206,7 +206,7 @@ const User = (props: UserProps & PropsFromRedux) => {
                     stickyHeader
                     tableDrillDown
                     stickyHeaderTop={52}
-                    onRowClick={(e, data) => { history.push(`/admin/receipts/${data.id}/edit`)}}
+                    onRowClick={(e, data) => { history.push(`/admin/users/${data.id}/edit`)}}
                     disablePaging={false}
                   >
                     <GridColumn
@@ -237,6 +237,14 @@ const User = (props: UserProps & PropsFromRedux) => {
                       field="name"
                       title={getUserQuickFilterLabel(
                         UserQuickFilterOptions.NAME
+                      )}
+                      width={150}
+                      align="left"
+                    />
+                                 <GridColumn
+                      field="roleName"
+                      title={getUserQuickFilterLabel(
+                        UserQuickFilterOptions.ROLE
                       )}
                       width={150}
                       align="left"
