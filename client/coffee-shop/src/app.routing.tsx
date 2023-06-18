@@ -37,6 +37,10 @@ const CreateExport = React.lazy(
 const User = React.lazy(() => import("./page/Users"));
 const CreateUser = React.lazy(() => import("./page/Users/create"));
 const EditUser = React.lazy(() => import("./page/Users/update"));
+
+
+const ReportInventory = React.lazy(() => import("./page/Report/ReportInventory"));
+const ReportOrder = React.lazy(() => import("./page/Report/ReportOrder"));
 export const LAYOUT_ROUTES: Route[] = [
   {
     path: "/",
@@ -338,6 +342,31 @@ let MAIN_ROUTES = (): Route[] => [
     header: {
       title: " Cập nhập thông tin nhân viên",
       linkTo: "/admin/users",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+
+  {
+    path: "/report/inventory",
+    component: ReportInventory,
+    extract: true,
+    header: {
+      title: "Báo cáo kho",
+      linkTo: "",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/report/order",
+    component: ReportOrder,
+    extract: true,
+    header: {
+      title: "Báo cáo đơn hàng",
+      linkTo: "",
       showNoti: false,
       withSubtitle: false,
     },

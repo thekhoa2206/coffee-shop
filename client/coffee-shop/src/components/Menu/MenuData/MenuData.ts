@@ -13,8 +13,7 @@ import {
   MenuReportIcon,
 } from "../../SVG";
 import { MenuItem } from "./MenuData.types";
-import ReportIcon from "components/SVG/ReportIcon";
-import ReportOnboardingIcon from "components/SVG/ReportOnboardingIcon";
+
 const useGenMenuData = () => {
   const state = useSelector((state: AppState) => state);
   const dispatch = useDispatch();
