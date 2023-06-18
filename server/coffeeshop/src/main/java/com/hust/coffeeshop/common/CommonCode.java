@@ -37,9 +37,9 @@ public class CommonCode
         password = encoder.encode(password);
         return password;
     }
-    public static long getMilliSeconds( String myDate) throws ParseException {
+    public static long getMilliSeconds( String myDate, String pattern) throws ParseException {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern == null ? "yyyy/MM/dd HH:mm:ss": pattern);
         Date date = sdf.parse(myDate);
         long millis = date.getTime();
         return millis;

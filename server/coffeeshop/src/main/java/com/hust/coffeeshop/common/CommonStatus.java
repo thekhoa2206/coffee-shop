@@ -28,6 +28,8 @@ public class CommonStatus {
     public class OrderStatus {
         //Đặt hàng
         public final static int DRAFT = 1;
+        //Đang pha chế
+        public final static int IN_PROGRESS = 5;
         //Đang chờ lấy đồ
         public final static int WAITING_DELIVERY = 2;
         //Đã hoàn thành

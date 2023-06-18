@@ -23,8 +23,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
      * product id là lưu 2 loại(combo_id với sp combo và variant_id với sp thường)
      * */
     @Override
-    public PagingListResponse<OrderResponse> filter(OrderFilterRequest filter) {
+    public PagingListResponse<OrderResponse> filter(OrderFilterRequest filter) throws ParseException {
         if (filter.getQuery() != null) {
             var orders = orderRepository.findOrdersByQuery("%" + filter.getQuery() + "%");
             if (orders != null && orders.size() > 0) {
@@ -99,6 +101,49 @@ public class OrderServiceImpl implements OrderService {
                     .values(Arrays.asList(filter.getStatuses().split(",")))
                     .build();
             filters.add(statuses);
+        }
+        //payment_status
+        if (filter.getPaymentStatus() != null && !filter.getPaymentStatus().isEmpty()) {
+            Filter statuses = Filter.builder()
+                    .field("paymentStatus")
+                    .operator(QueryOperator.IN)
+                    .values(Arrays.asList(filter.getPaymentStatus().split(",")))
+                    .build();
+            filters.add(statuses);
+        }
+        //createdOn
+        if (filter.getCreatedOnMin() != null && !filter.getCreatedOnMin().isEmpty()) {
+            Filter createdOnMin = Filter.builder()
+                    .field("createdOn")
+                    .operator(QueryOperator.GREATER_THAN)
+                    .value(String.valueOf(CommonCode.getMilliSeconds(filter.getCreatedOnMin(), "yyyy-MM-dd'T'HH:mm:ss'Z'")))
+                    .build();
+            filters.add(createdOnMin);
+        }
+        if (filter.getCreatedOnMax() != null && !filter.getCreatedOnMax().isEmpty()) {
+            Filter createdOnMax = Filter.builder()
+                    .field("createdOn")
+                    .operator(QueryOperator.LESS_THAN)
+                    .value(String.valueOf(CommonCode.getMilliSeconds(filter.getCreatedOnMax(), "yyyy-MM-dd'T'HH:mm:ss'Z'")))
+                    .build();
+            filters.add(createdOnMax);
+        }
+        //modified
+        if (filter.getModifiedOnMin() != null && !filter.getModifiedOnMin().isEmpty()) {
+            Filter modifiedOn = Filter.builder()
+                    .field("modifiedOn")
+                    .operator(QueryOperator.GREATER_THAN)
+                    .value(String.valueOf(CommonCode.getMilliSeconds(filter.getModifiedOnMin(), "yyyy-MM-dd'T'HH:mm:ss'Z'")))
+                    .build();
+            filters.add(modifiedOn);
+        }
+        if (filter.getModifiedOnMax() != null && !filter.getModifiedOnMax().isEmpty()) {
+            Filter modifiedOn = Filter.builder()
+                    .field("modifiedOn")
+                    .operator(QueryOperator.LESS_THAN)
+                    .value(String.valueOf(CommonCode.getMilliSeconds(filter.getModifiedOnMax(), "yyyy-MM-dd'T'HH:mm:ss'Z'")))
+                    .build();
+            filters.add(modifiedOn);
         }
         Page<Order> results = null;
         List<OrderResponse> orderResponses = new ArrayList<>();
@@ -552,6 +597,12 @@ public class OrderServiceImpl implements OrderService {
         }
         if (status == CommonStatus.OrderStatus.COMPLETED && order.get().getStatus() == CommonStatus.OrderStatus.DELETED) {
             throw new ErrorException("Đơn hàng đã hủy không thể hoàn thành!");
+        }
+        if (order.get().getStatus() == CommonStatus.OrderStatus.DELETED) {
+            throw new ErrorException("Đơn hàng đã hủy không thể thực hiện!");
+        }
+        if (order.get().getStatus() == CommonStatus.OrderStatus.COMPLETED) {
+            throw new ErrorException("Đơn hàng đã hoàn thành không thể thực hiện hành động này!");
         }
         order.get().setStatus(status);
         order.get().setModifiedOn();

@@ -179,7 +179,7 @@ const SettingColumns = (props: SettingColumnsProps) => {
 
         {searchable && (
           <SearchBox
-            placeholder={t("component:filter.search")}
+            placeholder={"Tìm kiếm"}
             className={classes.searchbox}
             value={query}
             onChange={handleSearch}
