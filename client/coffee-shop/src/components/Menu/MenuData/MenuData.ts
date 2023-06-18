@@ -10,8 +10,11 @@ import {
   MenuOrderIcon,
   AccountSettingIcon,
   MenuProductIcon,
+  MenuReportIcon,
 } from "../../SVG";
 import { MenuItem } from "./MenuData.types";
+import ReportIcon from "components/SVG/ReportIcon";
+import ReportOnboardingIcon from "components/SVG/ReportOnboardingIcon";
 const useGenMenuData = () => {
   const state = useSelector((state: AppState) => state);
   const dispatch = useDispatch();
@@ -106,7 +109,28 @@ const useGenMenuData = () => {
     ];
     return menu;
   };
-
+  const genMenuReport = () => {
+    let menu: MenuItem = {
+      id: "report",
+      icon: MenuReportIcon,
+      title: "Báo cáo",
+      subMenus: [],
+      path: "/admin/report",
+    };
+    menu.subMenus = [
+      {
+        title: "Báo cáo kho",
+        path: "/admin/report/inventory",
+        typeRoute: "default",
+      },
+      {
+        title: "Báo cáo đơn hàng",
+        path: "/admin/report/order",
+        typeRoute: "default",
+      },
+    ];
+    return menu;
+  };
   const genMenuOrder = () => {
     let menu: MenuItem = {
       id: "order",
@@ -133,6 +157,7 @@ const useGenMenuData = () => {
     listMenu.push(genMenuProduct());
     listMenu.push(genMenuInventory());
     listMenu.push(genMenuUser());
+    listMenu.push(genMenuReport())
     return listMenu;
   };
   const genSapoMenu = async () => {
