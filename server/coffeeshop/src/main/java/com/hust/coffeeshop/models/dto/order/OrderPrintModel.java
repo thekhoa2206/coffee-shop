@@ -93,12 +93,12 @@ public class OrderPrintModel {
             lineItem.lineAmount = lineItem.price.multiply(BigDecimal.valueOf(lineItem.quantity));
             lineItem.priceText = NumberUtils.getNumberEnFormat(lineItem.price);
             lineItem.lineAmountText = NumberUtils.getNumberEnFormat(lineItem.lineAmount);
-            quantityTotal = quantityTotal + lineItem.quantity;
             if(lineItem.combo){
                 for (var combo : lineItem.itemCombos) {
+                    quantityTotal = quantityTotal + combo.quantity;
                     combo.priceText = NumberUtils.getNumberEnFormat(combo.price);
                 }
-            }
+            }else quantityTotal = quantityTotal + lineItem.quantity;
         }
         this.totalTextVnd = NumberUtils.readNumber(this.total);
         this.totalQuantity = quantityTotal;

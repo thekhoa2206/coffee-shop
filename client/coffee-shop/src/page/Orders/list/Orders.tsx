@@ -1,6 +1,8 @@
 import { Box, Typography, withStyles } from "@material-ui/core";
 import { AddCircleOutline } from "@material-ui/icons";
 import Button from "components/Button";
+import Chip from "components/Chip/Chip.component";
+import Image from "components/Image";
 import LoadingAuth from "components/Loading/LoadingAuth";
 import NoResultsComponent from "components/NoResults/NoResultsComponent";
 import { GridColumn } from "components/SapoGrid/GridColumn/GridColumn";
@@ -8,34 +10,44 @@ import SapoGrid from "components/SapoGrid/SapoGrid";
 import { DataResult, GridPageChangeEvent } from "components/SapoGrid/SapoGrid.type";
 import { CellTemplateProps } from "components/SapoGridSticky";
 import SearchBox from "components/SearchBox/SearchBox";
+import ListTagFilterItem from "components/TagFilterItem";
 import useQueryParams from "hocs/useQueryParams";
+import FiberManualRecordIcon from "images/order/full_circle.svg";
+import FiberManualRecordOutlinedIcon from "images/order/none_circle.svg";
 import React, { useEffect, useState } from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
-import { IngredientFilterRequest } from "services/IngredientsService";
-import { ItemFilterRequest } from "services/ItemsService";
-import { OrderFilterRequest } from "services/OrderService";
+import { IOOrderFilter, OrderFilter, OrderFilterModel } from "services/OrderService";
 import OrderService from "services/OrderService/OrderService";
 import { AppState } from "store/store";
 import {
+    formatDateUTC,
     formatDateUTCToLocalDateString, formatMoney
 } from "utilities";
 import QueryUtils from "utilities/QueryUtils";
+import { OrderStatus, PaymentStatus } from "../utils/OrderContants";
 import { OrdersQuickFilterOptions, getOrdersQuickFilterLabel } from "./OrderFilter.constant";
 import styles from "./Orders.styles";
 import {
     OrdersProps
 } from "./Orders.types";
+import OrderFilterOther from "./components/OrderFilterOther";
+import { cloneDeep, toString } from "lodash";
+import { TagFilterItemType } from "components/TagFilterItem/TagFilterItem.types";
+import { convertPredefinedToDate } from "utilities/DateRangesPredefine";
+import { OrderFilterHelpers } from "./components/OrderFilterHelpers";
 
 const Orders = (props: OrdersProps & PropsFromRedux) => {
     const { classes, authState } = props;
     const location = useLocation();
     const queryParams = useQueryParams();
     const [loading, setLoading] = useState<boolean>(true);
+    const [tagsFilterItem, setTagsFilterItem] = useState<TagFilterItemType[]>([]);
     const [data, setData] = useState<DataResult>({
         data: [],
         total: 0,
     });
+    const [openFilter, setOpenFilter] = useState<boolean>(false);
     const history = useHistory();
     const getDefaultQuery = () => {
         // Không hiểu tại sao useQueryParams không dùng đk
@@ -45,18 +57,36 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
             const data = searchFilter.split("=");
             dataFromQuery[data[0]] = decodeURIComponent(data[1]);
         }
-        const initFilter: ItemFilterRequest = {
+        const initFilter: OrderFilter = {
             page: Number(dataFromQuery["page"]) || 1,
             limit: Number(dataFromQuery["limit"]) || undefined,
             query: dataFromQuery["query"] || undefined,
+            modifiedOnMax: queryParams.get("modifiedOnMax") || undefined,
+            modifiedOnMin: queryParams.get("modifiedOnMin") || undefined,
+            modifiedOnPredefined: queryParams.get("modifiedOnPredefined")
+                ? toString(queryParams.get("modifiedOnPredefined"))
+                : undefined,
+            createdOnMax: queryParams.get("createdOnMax") || undefined,
+            createdOnMin: queryParams.get("createdOnMin") || undefined,
+            createdOnPredefined: queryParams.get("createdOnPredefined")
+                ? toString(queryParams.get("createdOnPredefined"))
+                : undefined,
+            statuses: queryParams.get("statuses") || undefined,
+            paymentStatus: queryParams.get("paymentStatus") || undefined,
+
         };
         return initFilter;
     };
-    const [filters, setFilters] = useState<ItemFilterRequest>({
-        ...getDefaultQuery(),
-    });
+    const [filters, setFilters] = useState<IOOrderFilter>(new OrderFilter());
+    const [filterModel, setFilterModel] = useState<OrderFilterModel | null>(null);
     useEffect(() => {
         let filters = getDefaultQuery();
+        OrderFilterHelpers.fetchDataFilterItems(filters).then((
+            { filterModel, tagsFilterItem }) => {
+            setFilterModel(filterModel);
+            setTagsFilterItem(tagsFilterItem);
+        })
+        setFilters(filters);
         initData(filters);
     }, [location.search]);
     const changeQueryString = (filters: Record<string, any>) => {
@@ -66,11 +96,22 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
         });
     };
     useEffect(() => {
-        document.title = "Danh sách nguyên liệu";
+        document.title = "Danh sách đơn hàng";
     }, []);
 
-    const initData = async (filters: OrderFilterRequest) => {
-        let res = await OrderService.filter(filters);
+    const initData = async (filters: OrderFilter) => {
+        let _filters = cloneDeep(filters);
+        if (_filters.createdOnPredefined) {
+            let newDateCreatedOn = convertPredefinedToDate(_filters.createdOnPredefined);
+            _filters.createdOnMin = formatDateUTC(newDateCreatedOn.startDate, false);
+            _filters.createdOnMax = formatDateUTC(newDateCreatedOn.endDate, true);
+        }
+        if (_filters.modifiedOnPredefined) {
+            let newDateCreatedOn = convertPredefinedToDate(_filters.modifiedOnPredefined);
+            _filters.modifiedOnMin = formatDateUTC(newDateCreatedOn.startDate, false);
+            _filters.modifiedOnMax = formatDateUTC(newDateCreatedOn.endDate, true);
+        }
+        let res = await OrderService.filter(_filters);
         if (res.data) setData({
             data: res.data.data?.map((item, index) => {
                 return {
@@ -109,7 +150,7 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
     const handleSearch = (value: any) => {
         if (!value || !value?.trim()) {
         }
-        const newFilters: IngredientFilterRequest = {
+        const newFilters: IOOrderFilter = {
             ...filters,
             page: 1,
             query: value?.trim(),
@@ -117,6 +158,35 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
         setFilters((prev) => ({ ...prev, query: value?.trim() }))
         changeQueryString(newFilters);
     };
+
+    const renderOrderStatus = (status?: number) => {
+        switch (status) {
+            case OrderStatus.DRAFT:
+                return <Chip className="default" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
+            case OrderStatus.IN_PROGRESS:
+                return <Chip className="info" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
+            case OrderStatus.WAITING_DELIVERY:
+                return <Chip className="warning" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
+            case OrderStatus.COMPLETED:
+                return <Chip className="success" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
+            case OrderStatus.DELETED:
+                return <Chip className="danger" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
+            default:
+                return "";
+        }
+    };
+    const renderPaymentStatus = (status?: number) => {
+        switch (status) {
+            case PaymentStatus.UNPAID:
+                return <Image src={FiberManualRecordOutlinedIcon} style={{ width: "12px", height: "12px" }} />;
+            case PaymentStatus.PAID:
+                return <Image src={FiberManualRecordIcon} style={{ width: "12px", height: "12px" }} />;
+            default:
+                return <Image src={FiberManualRecordOutlinedIcon} style={{ width: "12px", height: "12px" }} />;
+        }
+    };
+
+
     return (
         <>
             <Box className={classes.container}>
@@ -149,6 +219,35 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                                 }}
                                 className={classes.searchbox}
                             />
+                            <Button onClick={() => { setOpenFilter(true) }}>Bộ lọc</Button>
+                            <OrderFilterOther
+                                open={openFilter}
+                                filters={filters}
+                                filterModel={filterModel}
+                                setOpen={setOpenFilter}
+                                onSubmit={(newFilter) => {
+                                    changeQueryString({ ...newFilter, page: 1 });
+                                    setOpenFilter(false);
+                                }}
+                            />
+                        </Box>
+                        <Box>
+                            <ListTagFilterItem
+                                data={tagsFilterItem}
+                                handleClickTagFilter={(filterName) => {
+                                    setOpenFilter(true);
+                                    setTimeout(() => {
+                                        document.querySelector(`[filter-name=${filterName}]`)?.scrollIntoView();
+                                    }, 300);
+                                }}
+                                handleDeleteTagFilter={(filterType) => {
+                                    let newFilterQuery = cloneDeep(filters) as IOOrderFilter;
+                                    filterType.split(",").forEach((item) => {
+                                        (newFilterQuery as any)[`${item}`] = undefined;
+                                    });
+                                    changeQueryString({ ...newFilterQuery, page: 1 });
+                                }}
+                            />
                         </Box>
                     </Box>
                     {loading ? (
@@ -164,7 +263,7 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                                     stickyHeader
                                     tableDrillDown
                                     stickyHeaderTop={52}
-                                    onRowClick={(e, data) => { history.push(`/admin/orders/${data.id}`)}}
+                                    onRowClick={(e, data) => { history.push(`/admin/orders/${data.id}`) }}
                                     disablePaging={false}
                                 >
                                     <GridColumn
@@ -178,7 +277,7 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                                         title={getOrdersQuickFilterLabel(
                                             OrdersQuickFilterOptions.CODE
                                         )}
-                                        width={150}
+                                        width={100}
                                         align="left"
                                     >
                                         {({ dataItem }: CellTemplateProps) => {
@@ -316,6 +415,38 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                                         }}
                                     </GridColumn>
                                     <GridColumn
+                                        field="status"
+                                        title={getOrdersQuickFilterLabel(
+                                            OrdersQuickFilterOptions.STATUS
+                                        )}
+                                        width={100}
+                                        align="left"
+                                    >
+                                        {({ dataItem }: CellTemplateProps) => {
+                                            return (
+                                                <>
+                                                    {renderOrderStatus(dataItem.status)}
+                                                </>
+                                            );
+                                        }}
+                                    </GridColumn>
+                                    <GridColumn
+                                        field="status"
+                                        title={getOrdersQuickFilterLabel(
+                                            OrdersQuickFilterOptions.PAYMENT_STATUS
+                                        )}
+                                        width={100}
+                                        align="center"
+                                    >
+                                        {({ dataItem }: CellTemplateProps) => {
+                                            return (
+                                                <>
+                                                    {renderPaymentStatus(dataItem.paymentStatus)}
+                                                </>
+                                            );
+                                        }}
+                                    </GridColumn>
+                                    {/* <GridColumn
                                         field="accountName"
                                         title={getOrdersQuickFilterLabel(
                                             OrdersQuickFilterOptions.ACCOUNT_NAME
@@ -332,7 +463,7 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                                                 </>
                                             );
                                         }}
-                                    </GridColumn>
+                                    </GridColumn> */}
                                 </SapoGrid>
                             ) : (
                                 <NoResultsComponent

@@ -64,7 +64,7 @@ const SelectInfinite = memo(
       uniqKey = "id",
       fetchDataSource,
       onQueryChange,
-      placeholder = t("component:filter.search"),
+      placeholder = "Tìm kiếm",
       getOptionLabel,
       createable,
       textCreate,

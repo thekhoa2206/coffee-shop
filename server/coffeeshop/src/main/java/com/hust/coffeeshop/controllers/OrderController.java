@@ -8,6 +8,7 @@ import freemarker.template.TemplateException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @RestController
 @RequestMapping(value = "/api/orders")
@@ -19,7 +20,7 @@ public class OrderController extends BaseException {
         this.orderService = orderService;
     }
     @GetMapping
-    public PagingListResponse<OrderResponse> filter(OrderFilterRequest filter){
+    public PagingListResponse<OrderResponse> filter(OrderFilterRequest filter) throws ParseException {
         return orderService.filter(filter);
     }
 

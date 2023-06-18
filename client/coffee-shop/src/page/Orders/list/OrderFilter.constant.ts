@@ -12,6 +12,7 @@ export const OrdersQuickFilterOptions = {
     NOTE: "note",
     CREATED_ON: "createdOn",
     MODIFIED_ON: "modifieldOn",
+    PAYMENT_STATUS: "payment_status",
 };
 
 export const getOrdersQuickFilterLabel = (key: string) => {
@@ -36,6 +37,8 @@ export const getOrdersQuickFilterLabel = (key: string) => {
             return `Ngày tạo`;
         case OrdersQuickFilterOptions.MODIFIED_ON:
             return `Ngày sửa`;
+        case OrdersQuickFilterOptions.PAYMENT_STATUS:
+            return `Thanh toán`;
         default:
             return "";
     }

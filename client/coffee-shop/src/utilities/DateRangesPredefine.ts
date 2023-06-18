@@ -1,4 +1,3 @@
-import i18n from "i18n";
 import moment from "moment";
 
 export const DateRangesPredefineType = {
@@ -25,7 +24,7 @@ export const convertPredefinedToDate = (type: string) => {
     case DateRangesPredefineType.DAY_LAST_30:
       return { startDate: moment().subtract(30, "days").toDate(), endDate: moment().toDate() };
     case DateRangesPredefineType.THIS_WEEK:
-      return { startDate: moment().startOf("weeks").add(1, "days").toDate(), endDate: moment().toDate() };
+      return { startDate: moment().startOf("weeks").subtract(1, "weeks").toDate(), endDate: moment().toDate() };
     case DateRangesPredefineType.LAST_WEEK:
       return {
         startDate: moment().subtract(1, "days").subtract(1, "weeks").startOf("week").add(1, "days").toDate(),
@@ -56,6 +55,7 @@ export const convertStartEndDateToString = (startDate: Date, endDate: Date) => {
 
 export const getNameAndDatePredefined = (key: string) => {
   let date = convertPredefinedToDate(key);
+  debugger
   let dateRangeString = convertStartEndDateToString(date.startDate, date.endDate);
   let a = `${getNamePredefinedDate(key)} `;
   switch (key) {
