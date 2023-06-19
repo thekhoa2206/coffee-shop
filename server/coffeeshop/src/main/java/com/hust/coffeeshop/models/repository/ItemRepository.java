@@ -21,4 +21,8 @@ public interface ItemRepository  extends JpaRepository<Item, Integer>, JpaSpecif
             "    )" +
             ");", nativeQuery = true)
     List<Item> findItemByQuery(String query, List<Integer> statuses);
+
+    @Query(value = "SELECT item.* FROM item WHERE id =?1 ", nativeQuery = true)
+    List<Item> findItemByIngredient( Integer ingredientId );
+
 }

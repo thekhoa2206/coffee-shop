@@ -15,4 +15,10 @@ import java.util.List;
 public interface IngredientRepository extends JpaRepository<Ingredient, Integer>, JpaSpecificationExecutor<Ingredient> {
     @Query(value = "SELECT ingredient.* FROM ingredient WHERE id in (?1)", nativeQuery = true)
     List<Ingredient> findByIds(List<Integer> ids);
+    //xét số lượng  kỳ
+    @Query(value = "SELECT ingredient.qunatity FROM ingredient WHERE created_on<=?1 AND id=?2 ", nativeQuery = true)
+    Integer CountbyId(long date, int id);
+    @Query(value = "SELECT ingredient.* FROM ingredient WHERE created_on >=?1 AND created_on <=?2 ", nativeQuery = true)
+    List<Ingredient> findByIds(long startDate, long endDate);
+
 }

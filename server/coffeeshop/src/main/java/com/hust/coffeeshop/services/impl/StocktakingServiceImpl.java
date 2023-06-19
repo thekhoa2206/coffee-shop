@@ -1,24 +1,30 @@
 package com.hust.coffeeshop.services.impl;
 
-import com.hust.coffeeshop.common.CommonCode;
-import com.hust.coffeeshop.common.CommonStatus;
+import com.hust.coffeeshop.common.*;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientResponse;
 import com.hust.coffeeshop.models.dto.item.request.CreateItemRequest;
 import com.hust.coffeeshop.models.dto.item.response.ItemRepsone;
+import com.hust.coffeeshop.models.dto.order.OrderPrintForm;
+import com.hust.coffeeshop.models.dto.order.OrderPrintModel;
+import com.hust.coffeeshop.models.dto.order.PrintOrderRequest;
 import com.hust.coffeeshop.models.dto.role.RoleResponse;
 import com.hust.coffeeshop.models.dto.stocktaking.repsone.StocktakingIngredientReponse;
 import com.hust.coffeeshop.models.dto.stocktaking.repsone.StocktakingReponse;
+import com.hust.coffeeshop.models.dto.stocktaking.repsone.StoctakingPrintForm;
 import com.hust.coffeeshop.models.dto.stocktaking.request.CreateStocktakingRequest;
 import com.hust.coffeeshop.models.dto.item.request.ItemRequest;
+import com.hust.coffeeshop.models.dto.stocktaking.request.PrintStoctakingRequest;
 import com.hust.coffeeshop.models.dto.stocktaking.request.StoctakingFilterRequest;
 import com.hust.coffeeshop.models.entity.ComboItem;
+import com.hust.coffeeshop.models.entity.Order;
 import com.hust.coffeeshop.models.entity.Stocktaking;
 import com.hust.coffeeshop.models.entity.StocktakingIngredient;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
 import com.hust.coffeeshop.services.BaseService;
 import com.hust.coffeeshop.services.StocktakingService;
+import freemarker.template.TemplateException;
 import lombok.val;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -29,6 +35,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -397,4 +405,69 @@ public class StocktakingServiceImpl implements StocktakingService {
             return null;
         }
     }
+    //in phiếu
+    @Override
+    public StoctakingPrintForm getPrintForm(PrintStoctakingRequest printStoctaking) throws IOException, TemplateException {
+        String htmlContent = null;
+        if (printStoctaking.getStoctakingId() != 0) {
+            val printSample = PrintSample.CONTENT_HTML;
+            val stcktaking = stocktakingRepository.findById(printStoctaking.getStoctakingId());
+            if (stcktaking != null && printSample != null) {
+                val orderPrintModel = mapperOrderPrintModel(stcktaking.get());
+                orderPrintModel.setForPrintForm();
+                htmlContent = PrintUtils.process(printSample, orderPrintModel, PrintVariableMap.ORDER);
+            }
+        }
+        return new OrderPrintForm(printOrder.getOrderId(), htmlContent);
+    }
+    private OrderPrintModel mapperOrderPrintModel(Stocktaking stocktaking) {
+        OrderPrintModel model = new OrderPrintModel();
+        model.setCode(order.getCode());
+        model.setCreatedOn(order.getCreatedOn());
+        model.setCreatedOn(order.getModifiedOn());
+        model.setDiscountTotal(order.getDiscountTotal());
+        model.setTotal(order.getTotal());
+        model.setNote(order.getNote());
+        model.setPaymentStatus(order.getPaymentStatus());
+        model.setStatus(order.getStatus());
+        var customer = customerService.getById(order.getCustomerId());
+        if (customer != null) {
+            OrderPrintModel.CustomerPrintModel customerPrintModel = new OrderPrintModel.CustomerPrintModel();
+            customerPrintModel.setId(customer.getId());
+            customerPrintModel.setName(customer.getName());
+            customerPrintModel.setPhone(customer.getPhoneNumber());
+            model.setCustomer(customerPrintModel);
+        }
+        var lineItems = orderItemRepository.findOrderItemByOrderId(order.getId());
+        if (lineItems != null) {
+            List<OrderPrintModel.OrderItemPrintModel> itemModels = new ArrayList<>();
+            for (var lineItem : lineItems) {
+                OrderPrintModel.OrderItemPrintModel itemModel = new OrderPrintModel.OrderItemPrintModel();
+                itemModel.setId(lineItem.getId());
+                itemModel.setLineAmount(lineItem.getPrice().multiply(BigDecimal.valueOf(lineItem.getQuantity())));
+                itemModel.setCombo(lineItem.isCombo());
+                itemModel.setProductId(lineItem.getProductId());
+                itemModel.setQuantity(lineItem.getQuantity());
+                itemModel.setPrice(lineItem.getPrice());
+                itemModel.setStatus(lineItem.getStatus());
+                itemModel.setName(lineItem.getName());
+                if(itemModel.isCombo()){
+                    List<OrderPrintModel.OrderVariantComboPrintModel> variantModels = new ArrayList<>();
+                    var itemCombos = orderItemComboRepository.findOrderItemComboByOrderItemId(itemModel.getId());
+                    for (var itemCombo: itemCombos) {
+                        OrderPrintModel.OrderVariantComboPrintModel variantModel = new OrderPrintModel.OrderVariantComboPrintModel();
+                        variantModel.setId(itemCombo.getId());
+                        variantModel.setPrice(itemCombo.getPrice());
+                        variantModel.setName(itemCombo.getName());
+                        variantModel.setQuantity(itemCombo.getQuantity());
+                        variantModels.add(variantModel);
+                    }
+                    itemModel.setItemCombos(variantModels);
+                }
+                itemModels.add(itemModel);
+            }
+            model.setLineItems(itemModels);
+        }
+        model.setForPrintForm();
+        return model;
 }
