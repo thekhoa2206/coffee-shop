@@ -1,0 +1,19 @@
+package com.hust.coffeeshop.models.repository;
+
+import com.hust.coffeeshop.models.entity.OrderItem;
+import com.hust.coffeeshop.models.entity.OrderItemCombo;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface OrderItemComboRepository extends JpaRepository<OrderItemCombo, Integer>, JpaSpecificationExecutor<OrderItemCombo> {
+    @Query(value = "SELECT order_item_combo.* FROM order_item_combo WHERE order_item_id in (?1) AND status = 1", nativeQuery = true)
+    List<OrderItemCombo> findOrderItemComboByOrderItemIds(List<Integer> orderItemIds);
+
+    @Query(value = "SELECT order_item_combo.* FROM order_item_combo WHERE order_item_id= ?1 AND status = 1", nativeQuery = true)
+    List<OrderItemCombo> findOrderItemComboByOrderItemId(int orderItemId);
+}

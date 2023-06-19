@@ -49,7 +49,7 @@ const InlineInfinite = React.forwardRef<InlineInfiniteRef, InlineInfiniteProps>(
     uniqKey = "id",
     fetchDataSource,
     onQueryChange,
-    placeholder = t("component:filter.search"),
+    placeholder = "Tìm kiếm",
     getOptionLabel,
     NoResultsComponent,
     debounce = 300,

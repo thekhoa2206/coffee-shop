@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,4 +16,5 @@ public class OrderItemResponse extends BaseResponse {
     private String name;
     private BigDecimal price;
     private int productId;
+    private List<OrderItemComboResponse> orderItemComboResponses;
 }

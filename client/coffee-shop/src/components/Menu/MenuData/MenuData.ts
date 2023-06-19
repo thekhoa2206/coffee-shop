@@ -6,9 +6,14 @@ import { AppState } from "store/store";
 import { hasPermission } from "utilities";
 import { AccountRole } from "utilities/AccountRole";
 import {
-  MenuDashboardIcon, MenuOrderIcon, AccountSettingIcon, MenuProductIcon
+  MenuDashboardIcon,
+  MenuOrderIcon,
+  AccountSettingIcon,
+  MenuProductIcon,
+  MenuReportIcon,
 } from "../../SVG";
 import { MenuItem } from "./MenuData.types";
+
 const useGenMenuData = () => {
   const state = useSelector((state: AppState) => state);
   const dispatch = useDispatch();
@@ -27,7 +32,15 @@ const useGenMenuData = () => {
     };
     return menu;
   };
-
+  const genMenuUser= () => {
+    let menu: MenuItem = {
+      id: "user",
+      icon: MenuProductIcon,
+      title: "Nhân viên",
+      path: "/admin/users",
+    };
+    return menu;
+  };
   const genMenuCustomer = () => {
     let menu: MenuItem = {
       id: "customer",
@@ -65,20 +78,58 @@ const useGenMenuData = () => {
         path: "/admin/combos",
         typeRoute: "default",
       },
+    ];
+    return menu;
+  };
+  const genMenuInventory = () => {
+    let menu: MenuItem = {
+      id: "inventory",
+      icon: MenuProductIcon,
+      title: "Kho hàng",
+      subMenus: [],
+      path: "/admin/ingredients",
+    };
+    menu.subMenus = [
       {
         title: "Nguyên liệu",
         path: "/admin/ingredients",
         typeRoute: "default",
       },
       {
-        title: "Quản lý kho",
-        path: "/admin/inventory",
+        title: "Nhập kho",
+        path: "/admin/receipts",
+        typeRoute: "default",
+      },
+      {
+        title: "Xuất kho",
+        path: "/admin/exports",
         typeRoute: "default",
       },
     ];
     return menu;
   };
-
+  const genMenuReport = () => {
+    let menu: MenuItem = {
+      id: "report",
+      icon: MenuReportIcon,
+      title: "Báo cáo",
+      subMenus: [],
+      path: "/admin/report",
+    };
+    menu.subMenus = [
+      {
+        title: "Báo cáo kho",
+        path: "/admin/report/inventory",
+        typeRoute: "default",
+      },
+      {
+        title: "Báo cáo đơn hàng",
+        path: "/admin/report/order",
+        typeRoute: "default",
+      },
+    ];
+    return menu;
+  };
   const genMenuOrder = () => {
     let menu: MenuItem = {
       id: "order",
@@ -102,7 +153,10 @@ const useGenMenuData = () => {
     listMenu.push(genMenuDashboard());
     listMenu.push(genMenuOrder());
     listMenu.push(genMenuCustomer());
-    listMenu.push(genMenuProduct())
+    listMenu.push(genMenuProduct());
+    listMenu.push(genMenuInventory());
+    listMenu.push(genMenuUser());
+    listMenu.push(genMenuReport())
     return listMenu;
   };
   const genSapoMenu = async () => {
@@ -118,7 +172,7 @@ const useGenMenuData = () => {
   }, [menuItems]);
   useEffect(() => {
     genSapoMenu();
-  },[]);
+  }, []);
 };
 
 export default useGenMenuData;

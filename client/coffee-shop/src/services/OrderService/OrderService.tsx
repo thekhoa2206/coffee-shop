@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 import { getAxiosConfig } from "../config";
-import { ListOrderResponse, OrderFilterRequest, OrderRequest, OrderResponse } from "./types";
+import { ListOrderResponse, OrderFilter, OrderPrintForm, OrderPrintFormFilter, OrderRequest, OrderResponse } from "./types";
 class OrderService {
-    static async filter(filter?: OrderFilterRequest): Promise<AxiosResponse<ListOrderResponse>> {
+    static async filter(filter?: OrderFilter): Promise<AxiosResponse<ListOrderResponse>> {
         return axios.get(`/orders`, { ...getAxiosConfig(), params: filter});
     }
     static async create(request?: OrderRequest): Promise<AxiosResponse<OrderResponse>> {
@@ -19,6 +19,9 @@ class OrderService {
     }
     static async updateStatus(id?: string, status?: number): Promise<AxiosResponse<OrderResponse>> {
         return axios.put(`/orders/${id}/update_status/${status}`,{}, { ...getAxiosConfig()});
+    }
+    static async printForm(print?: OrderPrintFormFilter): Promise<AxiosResponse<OrderPrintForm>> {
+        return axios.get(`/orders/print_forms`, { ...getAxiosConfig(), params: print});
     }
 }
 export default OrderService;

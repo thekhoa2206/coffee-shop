@@ -22,13 +22,18 @@ public class PrintVariableMap {
             put("{line_stt}", "${line_index + 1}");
             put("{line_product_name}", "${line.name}");
             put("{line_price}", "${line.priceText}");
-            put("{line_quantity}", "${line.quantityText}");
+            put("{line_quantity}", "${line.quantity}");
             put("{line_amount}", "${line.lineAmountText}");
 
-            put("{total_quantity}", "${model.totalQuantityText}");
-            put("{total_amount}", "${model.totalAmountText}");
-            put("{total_discount}", "${model.discountTotalText}");
-            put("{total_cod}", "${model.totalText}");
+            put("{line_combo}", "${combo.name}");
+            put("{line_quantity_combo}", "${combo.quantity}");
+            put("{line_price_combo}", "${combo.priceText}");
+
+            put("{total_quantity}", "${model.totalQuantity?default('')}");
+            put("{total_amount}", "${model.totalAmountText?default('')}");
+            put("{total_discount}", "${model.discountTotalText?default('')}");
+            put("{total}", "${model.totalText?default('')}");
+            put("{total_text_vnd}", "${model.totalTextVnd?default('')}");
         }
     };
 

@@ -16,7 +16,6 @@ import java.util.List;
 @Setter
 public class OrderPrintModel {
     private String code;
-    private CustomerResponse customerResponse;
     private int status;
     private BigDecimal total;
     private BigDecimal discountTotal;
@@ -34,9 +33,10 @@ public class OrderPrintModel {
     private CustomerPrintModel customer;
 
     private String totalAmountText;
-    private String totalQuantityText;
+    private int totalQuantity;
     private String discountTotalText;
     private String totalText;
+    private String totalTextVnd;
 
     private List<OrderItemPrintModel> lineItems;
 
@@ -53,7 +53,7 @@ public class OrderPrintModel {
         private BigDecimal lineAmount;
         private String lineAmountText;
         private String priceText;
-        private List<OrderVariantItemPrintModel> variantItems;
+        private List<OrderVariantComboPrintModel> itemCombos;
     }
     @Getter
     @Setter
@@ -64,11 +64,12 @@ public class OrderPrintModel {
     }
     @Getter
     @Setter
-    public static class OrderVariantItemPrintModel {
+    public static class OrderVariantComboPrintModel {
         private int id;
         private String name;
-        private String quantity;
-        private String price;
+        private int quantity;
+        private BigDecimal price;
+        private String priceText;
     }
 
     public void setForPrintForm(){
@@ -85,5 +86,22 @@ public class OrderPrintModel {
         this.storeEmail = "trasua123@gmail.com";
         this.totalText = NumberUtils.getNumberEnFormat(this.total);
         this.discountTotalText = NumberUtils.getNumberEnFormat(this.discountTotal);
+        this.totalAmountText = NumberUtils.getNumberEnFormat(this.total.add(this.discountTotal != null ? this.discountTotal : BigDecimal.ZERO));
+        this.discountTotalText = NumberUtils.getNumberEnFormat(this.discountTotal);
+        var quantityTotal = 0;
+        for (var lineItem : this.lineItems) {
+            lineItem.lineAmount = lineItem.price.multiply(BigDecimal.valueOf(lineItem.quantity));
+            lineItem.priceText = NumberUtils.getNumberEnFormat(lineItem.price);
+            lineItem.lineAmountText = NumberUtils.getNumberEnFormat(lineItem.lineAmount);
+            if(lineItem.combo){
+                for (var combo : lineItem.itemCombos) {
+                    quantityTotal = quantityTotal + combo.quantity;
+                    combo.priceText = NumberUtils.getNumberEnFormat(combo.price);
+                }
+            }else quantityTotal = quantityTotal + lineItem.quantity;
+        }
+        this.totalTextVnd = NumberUtils.readNumber(this.total);
+        this.totalQuantity = quantityTotal;
+
     }
 }

@@ -32,8 +32,8 @@ public class ComboController {
         return comboService.filter(filter);
     }
     @PostMapping
-    public ComboRespone create(@RequestBody CreateComboRequest request,@RequestParam MultipartFile image) throws IOException {
-        return comboService.create(request ,image);
+    public ComboRespone create(@RequestBody CreateComboRequest request) throws IOException {
+        return comboService.create(request);
     }
     @PutMapping("/{id}")
     public ComboRespone update(@RequestBody CreateComboRequest request, @PathVariable("id") int id){

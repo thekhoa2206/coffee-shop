@@ -60,7 +60,7 @@ const AutocompleteInfinite = React.forwardRef<AutocompleteInfiniteRef, AutoCompl
     uniqKey = "id",
     fetchDataSource,
     onQueryChange,
-    placeholder = t("component:filter.search"),
+    placeholder = "Tìm kiếm",
     label,
     getOptionLabel,
     emptyComponent,

@@ -9,7 +9,6 @@ import com.hust.coffeeshop.models.dto.combo.response.ComboItemResponse;
 import com.hust.coffeeshop.models.dto.combo.response.ComboRespone;
 import com.hust.coffeeshop.models.dto.item.request.ItemRequest;
 import com.hust.coffeeshop.models.dto.item.response.ItemRepsone;
-import com.hust.coffeeshop.models.dto.variant.request.CreateVariantRequest;
 import com.hust.coffeeshop.models.dto.variant.request.VariantComboRequest;
 import com.hust.coffeeshop.models.dto.variant.response.VariantRepsone;
 import com.hust.coffeeshop.models.entity.*;
@@ -24,7 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -62,7 +60,7 @@ public class ComboServiceImpl implements ComboService {
     }
 
     @Override
-    public ComboRespone create(CreateComboRequest request, MultipartFile image) throws IOException {
+    public ComboRespone create(CreateComboRequest request) throws IOException {
         if (request.getName() == null) throw new ErrorException("Tên combo không được để trống");
         Combo combo = new Combo();
         combo.setName(request.getName());
@@ -76,12 +74,12 @@ public class ComboServiceImpl implements ComboService {
         if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
             Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
         }
-        Path file = CURRENT_FOLDER.resolve(staticPath)
-                .resolve(imagePath).resolve(image.getOriginalFilename());
-        try (OutputStream os = Files.newOutputStream(file)) {
-            os.write(image.getBytes());
-        }
-        combo.setImageUrl(imagePath.resolve(image.getOriginalFilename()).toString());
+//        Path file = CURRENT_FOLDER.resolve(staticPath)
+//                .resolve(imagePath).resolve(image.getOriginalFilename());
+//        try (OutputStream os = Files.newOutputStream(file)) {
+//            os.write(image.getBytes());
+//        }
+//        combo.setImageUrl(imagePath.resolve(image.getOriginalFilename()).toString());
         if (request.getCategoryId() != 0)
             combo.setCategoryId(request.getCategoryId());
         combo.setModifiedOn(0);
@@ -147,12 +145,8 @@ public class ComboServiceImpl implements ComboService {
             category = categoryRepository.findById(request.getCategoryId()).get();
         }
         var comboRespone = mapper.map(comboNew, ComboRespone.class);
-        List<ItemRepsone> itemRepsones = new ArrayList<>();
-        var categoryResponse = mapper.map(category, CategoryResponse.class);
-
         List<ComboItem> comboItems = comboItemRepository.findComboItemByComboId(id);
         updateVariant(request.getVarianIds(),comboItems,id);
-        categoryResponse.set();
         comboRespone.setCategory(category);
         return comboRespone;
     }

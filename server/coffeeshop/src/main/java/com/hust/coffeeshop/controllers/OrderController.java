@@ -2,23 +2,25 @@ package com.hust.coffeeshop.controllers;
 
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.order.*;
+import com.hust.coffeeshop.models.exception.BaseException;
 import com.hust.coffeeshop.services.OrderService;
 import freemarker.template.TemplateException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @RestController
 @RequestMapping(value = "/api/orders")
 @CrossOrigin("http://localhost:3000")
-public class OrderController {
+public class OrderController extends BaseException {
     private final OrderService orderService;
 
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
     @GetMapping
-    public PagingListResponse<OrderResponse> filter(OrderFilterRequest filter){
+    public PagingListResponse<OrderResponse> filter(OrderFilterRequest filter) throws ParseException {
         return orderService.filter(filter);
     }
 

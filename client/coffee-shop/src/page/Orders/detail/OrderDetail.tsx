@@ -18,7 +18,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { CustomerResponse } from "services/CustomerService";
-import { OrderItemRequest, OrderRequest } from "services/OrderService";
+import { OrderItemRequest, OrderPrintFormFilter, OrderRequest } from "services/OrderService";
 import OrderService from "services/OrderService/OrderService";
 import { ProductIngredientResponse, ProductVariantResponse } from "services/ProductService";
 import { VariantFilterRequest } from "services/VariantService";
@@ -40,6 +40,8 @@ import Dialog from "components/Dialog/Dialog";
 import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
 import useModal from "components/Modal/useModal";
 import Select from "components/Select/Index";
+import PrintiIframe from "components/PrintiIframe";
+import PrintUtils from "components/PrintiIframe/PrintUtils";
 
 export interface OrderDetailProps extends WithStyles<typeof styles> { }
 const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
@@ -62,6 +64,8 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
     const { id } = useParams<{ id: string }>();
     const { closeModal, confirm, openModal } = useModal();
     const [openMenuCreateOrder, setOpenMenuCreateOrder] = useState(false);
+    const refPrint = React.useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         initData();
     }, [id])
@@ -69,6 +73,28 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
         reset();
         set((prev) => ({ ...prev, context: "detail" }));
     }, [])
+
+    const printOrder = () => {
+        try {
+            let htmlContent = "";
+            if (order) {
+                let printFormRequest: OrderPrintFormFilter = {
+                    orderId: order.id,
+                }
+                OrderService.printForm(printFormRequest).then((res) => {
+                    if (res && res.data) {
+                        if (res.data.htmlContent) {
+                            htmlContent += res.data.htmlContent;
+                        }
+                    }
+                    PrintUtils.print(htmlContent);
+                })
+            }
+        } catch (error) {
+
+        }
+    }
+
     const initData = async () => {
         let res = await OrderService.getById(id);
         if (res.data) {
@@ -94,6 +120,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                     if (li.combo) {
                         if (variantRes.data.data) {
                             variantRes.data.data.map((v) => {
+                                let combo = li.orderItemComboResponses?.find((co) => v.id === co.variantId && li.id === co.orderItemId);
                                 let ingredients = v.ingredients.map((ig) => {
                                     let ingredientRq: ProductIngredientResponse = {
                                         id: ig.id || 0,
@@ -108,18 +135,21 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                     }
                                     return ingredientRq;
                                 })
-                                variants.push({
-                                    id: v.id,
-                                    available: v.available,
-                                    createdBy: v.createdBy,
-                                    createdOn: v.createdOn,
-                                    ingredients: ingredients,
-                                    modifiedBy: v.modifiedBy,
-                                    modifiedOn: v.modifiedOn,
-                                    name: v.name,
-                                    price: v.price,
-                                    productItemId: v.itemId,
-                                });
+                                if (combo) {
+                                    variants.push({
+                                        id: v.id,
+                                        available: v.available,
+                                        createdBy: v.createdBy,
+                                        createdOn: v.createdOn,
+                                        ingredients: ingredients,
+                                        modifiedBy: v.modifiedBy,
+                                        modifiedOn: v.modifiedOn,
+                                        name: combo?.name,
+                                        price: combo?.price,
+                                        productItemId: v.itemId,
+                                        quantity: combo?.quantity,
+                                    });
+                                }
                             })
                         }
                     }
@@ -173,9 +203,11 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
     const renderOrderStatus = (status?: number) => {
         switch (status) {
             case OrderStatus.DRAFT:
-                return <Chip className="info" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
+                return <Chip className="default" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
             case OrderStatus.WAITING_DELIVERY:
                 return <Chip className="warning" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
+            case OrderStatus.IN_PROGRESS:
+                return <Chip className="info" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
             case OrderStatus.COMPLETED:
                 return <Chip className="success" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
             case OrderStatus.DELETED:
@@ -222,7 +254,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                             {order?.status && renderOrderStatus(order.status)}
                         </Box>
                         <Box display="flex" alignItems="center" style={{ marginTop: 10 }}>
-                            <Button startIcon={<PrintIcon />} color="inherit" variant="text" onClick={() => { }}>In</Button>
+                            <Button startIcon={<PrintIcon />} color="inherit" variant="text" onClick={() => { printOrder() }}>In</Button>
                             <Button startIcon={<PaymentOutlined />} color="inherit" variant="text" onClick={() => {
                                 openModal(ConfirmDialog, {
                                     confirmButtonText: "Xác nhận",
@@ -264,17 +296,61 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                 disableRestoreFocus
                             >
                                 <MenuItem
-
                                     onClick={() => { history.push(`/admin/orders/${id}/edit`) }}
                                 >
                                     <PencilIcon style={{ color: "#adadad", marginRight: 10 }} /> Sửa
                                 </MenuItem>
                                 <MenuItem
                                     onClick={() => {
-
+                                        setOpenMenuCreateOrder(false);
+                                        if (order?.status !== OrderStatus.DRAFT) {
+                                            SnackbarUtils.error("Đơn hàng không thể hủy");
+                                            return;
+                                        }
+                                        openModal(ConfirmDialog, {
+                                            title: "Hủy đơn hàng",
+                                            message: "Bạn có chắc chắn muốn hủy đơn hàng này không? Thao tác không thể khôi phục.",
+                                            isDelete: true,
+                                            deleteButtonText: "Hủy đơn",
+                                            cancelButtonText: "Thoát"
+                                        }).result.then(async (res) => {
+                                            if (res) {
+                                                try {
+                                                    let res = await OrderService.updateStatus(id, OrderStatus.DELETED);
+                                                    if (res.data) {
+                                                        SnackbarUtils.success("Đơn hàng đã hủy thành công");
+                                                        set((prev) => ({
+                                                            ...prev,
+                                                            order: res.data,
+                                                        }))
+                                                    }
+                                                } catch (error) {
+                                                    SnackbarUtils.error(getMessageError(error));
+                                                }
+                                            }
+                                        })
                                     }}
                                 >
                                     <OrderCancelIcon style={{ color: "#adadad", marginRight: 10 }} /> Hủy
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={async () => {
+                                        setOpenMenuCreateOrder(false);
+                                        try {
+                                            let res = await OrderService.updateStatus(id, OrderStatus.IN_PROGRESS);
+                                            if (res.data) {
+                                                SnackbarUtils.success("Đơn hàng đang được thực hiện");
+                                                set((prev) => ({
+                                                    ...prev,
+                                                    order: res.data,
+                                                }))
+                                            }
+                                        } catch (error) {
+                                            SnackbarUtils.error(getMessageError(error));
+                                        }
+                                    }}
+                                >
+                                    <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Đang thực hiện
                                 </MenuItem>
                                 <MenuItem
                                     onClick={async () => {
@@ -448,6 +524,10 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                     </Grid>
                 </Grid>
             </Box>
+            <PrintiIframe iframeId="printOrderDetailForm">
+                <div ref={refPrint}></div>
+            </PrintiIframe>
+
         </>
     );
 };

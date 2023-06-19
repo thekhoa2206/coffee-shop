@@ -1,29 +1,25 @@
-import { Box, Typography, withStyles } from "@material-ui/core";
+import { Box, IconButton, Typography } from "@material-ui/core";
 import Button from "components/Button";
-import TextField from "components/TextField";
-import React, { useState, useEffect } from "react";
-import { useCookies } from "react-cookie";
-import { connect } from "react-redux";
-import AccountService from "services/AccountService";
-import { MenuState } from "store/Menu/types";
-import { AppState } from "store/store";
-import { colorGradient, colorInk, colorPaper, colorPink } from "theme/palette";
-import {
-  getCookie,
-  getMessageError,
-  setCookie,
-  SnackbarErrorProp,
-} from "utilities";
-import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
-import styles from "./Login.styles";
-import { LoginProps } from "./Login.types";
-import background from "../../images/login.jpg";
 import Image from "components/Image";
 import Popper from "components/Popper";
+import TextField from "components/TextField";
+import React, { useState } from "react";
+import { useCookies } from "react-cookie";
+import AccountService from "services/AccountService";
+import { colorPaper } from "theme/palette";
+import {
+  getMessageError
+} from "utilities";
+import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
+import background from "../../images/login.jpg";
+import { LoginProps } from "./Login.types";
+import EyeIcon from "components/SVG/EyeIcon";
+import EyeSlashIcon from "components/SVG/EyeSlashIcon";
 
 export const Login = (props: LoginProps) => {
   const [username, setUsername] = useState<string>();
   const [password, setPassword] = useState<string>();
+  const [isShow, setIsShow] = useState<boolean>(false);
   const [cookies, setCookie] = useCookies();
   const handleChangeUsername = (e: any) => {
     setUsername(e.target.value);
@@ -91,7 +87,7 @@ export const Login = (props: LoginProps) => {
             </Box>
             <Box>
               <TextField
-                type="password"
+                type={isShow ?  "text" : "password"}
                 size="medium"
                 style={{
                   width: 400,
@@ -100,6 +96,11 @@ export const Login = (props: LoginProps) => {
                 }}
                 placeholder="Mật khẩu"
                 onChange={handleChangePassword}
+                InputProps={{
+                  endAdornment: <IconButton style={{background: colorPaper.main}} onClick={() => {setIsShow(!isShow)}}>
+                    {isShow ? <EyeIcon /> : <EyeSlashIcon/>}
+                  </IconButton>,
+                }}
               />
             </Box>
             <Box>

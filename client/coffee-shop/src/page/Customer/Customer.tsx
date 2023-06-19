@@ -1,4 +1,4 @@
-import { Box, Typography, withStyles } from "@material-ui/core";
+import { Box, IconButton, Typography, withStyles } from "@material-ui/core";
 import { AddCircleOutline } from "@material-ui/icons";
 import Button from "components/Button";
 import Chip from "components/Chip/Chip.component";
@@ -18,7 +18,7 @@ import { CustomerFilterRequest, CustomerResponse } from "services/CustomerServic
 import CustomerService from "services/CustomerService/CustomerService";
 import { AppState } from "store/store";
 import {
-  formatDateUTCToLocalDateString
+  formatDateUTCToLocalDateString, getMessageError
 } from "utilities";
 import {
   getNameAndDatePredefined
@@ -34,6 +34,11 @@ import {
   getCustomerQuickFilterLabel
 } from "./Filter/CustomerFilter.constant";
 import { DialogAddCustomer } from "./DialogAddCustomer/DialogAddCustomer";
+import { DialogEditCustomer } from "./DialogAddCustomer/DialogEditCustomer";
+import { CloseIcon } from "components/SVG";
+import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
+import useModal from "components/Modal/useModal";
+import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
 
 const Customer = (props: CustomerProps & PropsFromRedux) => {
   const { classes, authState } = props;
@@ -41,8 +46,10 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
   const queryParams = useQueryParams();
   const [loading, setLoading] = useState<boolean>(true);
   const [openDialogAddCustomer, setOpenDialogAddCustomer] = useState(false);
+  const [openDialogEditCustomer, setOpenDialogCustomer] = useState(false);
   const [selected, setSelected] = useState<CustomerResponse>();
   const [tagsFilterItem, setTagsFilterItem] = useState<TagFilterItemType[]>([]);
+  const { closeModal, confirm, openModal } = useModal();
   const [data, setData] = useState<DataResult>({
     data: [],
     total: 0,
@@ -113,24 +120,26 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
   }
   const initData = async (filters: CustomerFilterRequest) => {
     let res = await CustomerService.filter(filters);
-    if(res.data)setData({data: res.data.data?.map((item, index) => {
-      return {
-        stt: index + 1,
-        createdBy: item.createdBy,
-        createdOn: item.createdOn,
-        dob: item.dob,
-        id: item.id,
-        modifiedBy: item.modifiedBy,
-        modifiedOn: item.modifiedOn,
-        name: item.name,
-        phoneNumber: item.phoneNumber,
-        sex: item.sex,
-        status: item.status,
-      }
-    }) || [], total: res.data.metadata?.total || 0 })
+    if (res.data) setData({
+      data: res.data.data?.map((item, index) => {
+        return {
+          stt: index + 1,
+          createdBy: item.createdBy,
+          createdOn: item.createdOn,
+          dob: item.dob,
+          id: item.id,
+          modifiedBy: item.modifiedBy,
+          modifiedOn: item.modifiedOn,
+          name: item.name,
+          phoneNumber: item.phoneNumber,
+          sex: item.sex,
+          status: item.status,
+        }
+      }) || [], total: res.data.metadata?.total || 0
+    })
     setLoading(false)
   };
-  
+
   // const onSubmitFilter = (filter: ICustomerQuickFilter) => {
   //   filter.page = 1;
   //   setFilters(filter);
@@ -175,7 +184,7 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
               color="primary"
               startIcon={<AddCircleOutline />}
               onClick={() => {
-                setOpenDialogAddCustomer(true);
+                setOpenDialogCustomer(true);
               }}
             >
               {"Thêm khách hàng khác"}
@@ -187,7 +196,7 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
             <Box className={classes.filterAndSearchBox}>
               <SearchBox
                 placeholder={"Tìm kiếm khách hàng bằng tên, sđt, mã khách hàng"}
-                onSubmit={(e, value) => {handleSearch(value)}}
+                onSubmit={(e, value) => { handleSearch(value) }}
                 value={null}
                 onBlur={(value: any) => {
                   if (value !== filters.query) handleSearch(value);
@@ -209,7 +218,7 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
                   stickyHeader
                   tableDrillDown
                   stickyHeaderTop={52}
-                  onRowClick={(e, data) => {setSelected(data); setOpenDialogAddCustomer(true)}}
+                  onRowClick={(e, data) => { setSelected(data); setOpenDialogAddCustomer(true) }}
                   disablePaging={false}
                 >
                   <GridColumn
@@ -230,7 +239,7 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
                       return (
                         <>
                           <Typography>
-                            {"KH" +dataItem.stt}
+                            {"KH" + dataItem.stt}
                           </Typography>
                         </>
                       );
@@ -296,22 +305,6 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
                       );
                     }}
                   </GridColumn>
-                  <GridColumn
-                    field="createdOn"
-                    title={getCustomerQuickFilterLabel(
-                      CustomerQuickFilterOptions.MODIFIED_ON
-                    )}
-                    width={100}
-                    align="left"
-                  >
-                    {({ dataItem }: CellTemplateProps) => {
-                      return (
-                        <>
-                          <Chip variant="outlined" size="small" label="Đang hoạt động" className="success" />
-                        </>
-                      );
-                    }}
-                  </GridColumn>
                 </SapoGrid>
               ) : (
                 <NoResultsComponent
@@ -323,11 +316,16 @@ const Customer = (props: CustomerProps & PropsFromRedux) => {
           )}
         </Box>
       </Box>
-      <DialogAddCustomer open={openDialogAddCustomer} onClose={() => setOpenDialogAddCustomer(false)} initData={() => {
-          initData(filters);
-        }}
+      <DialogEditCustomer open={openDialogAddCustomer} onClose={() => setOpenDialogAddCustomer(false)} initData={() => {
+        initData(filters);
+      }}
         customer={selected}
- />
+
+      />
+      <DialogAddCustomer open={openDialogEditCustomer} onClose={() => setOpenDialogCustomer(false)} initData={() => {
+        initData(filters);
+      }} />
+
     </>
   );
 };

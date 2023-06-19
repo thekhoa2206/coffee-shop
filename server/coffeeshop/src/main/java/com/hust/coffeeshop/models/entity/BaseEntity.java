@@ -22,11 +22,11 @@ public class BaseEntity {
     private long modifiedOn;
 
     @Column(name = "created_by")
-    private Integer createdBy;
+    private String createdBy;
 
 
     @Column(name = "modified_by")
-    private Integer modifiedBy;
+    private String modifiedBy;
 
     public void setCreatedOn(){
         this.createdOn = CommonCode.getTimestamp();

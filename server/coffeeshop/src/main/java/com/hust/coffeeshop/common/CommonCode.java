@@ -28,6 +28,20 @@ public class CommonCode
         code = code + String.valueOf(ranNum);
         return code;
     }
+    public  static String GenerateCodeWarehouse(){
+        String code = "NK";
+        Random rand = new Random();
+        int ranNum = rand.nextInt((99999 - 10000) + 1) + 10000;
+        code = code + String.valueOf(ranNum);
+        return code;
+    }
+    public  static String GenerateCodeexport(){
+        String code = "XK";
+        Random rand = new Random();
+        int ranNum = rand.nextInt((99999 - 10000) + 1) + 10000;
+        code = code + String.valueOf(ranNum);
+        return code;
+    }
     public static long getTimestamp() {
         ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
         return Date.from(now.toInstant()).getTime() ;
@@ -37,9 +51,9 @@ public class CommonCode
         password = encoder.encode(password);
         return password;
     }
-    public static long getMilliSeconds( String myDate) throws ParseException {
+    public static long getMilliSeconds( String myDate, String pattern) throws ParseException {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern == null ? "yyyy/MM/dd HH:mm:ss": pattern);
         Date date = sdf.parse(myDate);
         long millis = date.getTime();
         return millis;

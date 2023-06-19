@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/api/customers")
-@CrossOrigin
+@CrossOrigin("http://localhost:3000")
 public class CustomerController extends BaseController{
     private final CustomerService customerService;
     private final UserRepository userRepository;
@@ -43,7 +43,7 @@ public class CustomerController extends BaseController{
         return customerService.update(request, id);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id){
          customerService.delete(id);
     }
