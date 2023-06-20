@@ -18,10 +18,8 @@ public interface ItemIngredientRepository  extends JpaRepository<ItemIngredient,
     List<ItemIngredient>  findItemIngredientByIngredientId( int ingredientId);
     @Query(value = "SELECT item_ingredient.* FROM item_ingredient WHERE item_id = ?1 ", nativeQuery = true)
     List<ItemIngredient> findItemIngredientByItemId(int  itemId);
-
     @Query(value = "SELECT item_ingredient.* FROM item_ingredient WHERE variant_id = ?1 AND item_id = ?2 ", nativeQuery = true)
     List<ItemIngredient> findItemIngredientByVariantIdAndItemId(int  variantId, int  itemId);
-
     @Query(value = "SELECT item_ingredient.* FROM item_ingredient WHERE variant_id in (?1)", nativeQuery = true)
     List<ItemIngredient> findItemIngredientByVariantIds(List<Integer> variantIds);
 
