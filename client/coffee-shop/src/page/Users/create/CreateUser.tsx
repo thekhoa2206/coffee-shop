@@ -54,6 +54,9 @@ import { AccountCircleRounded } from "@material-ui/icons";
 import { RoleItem } from "../../../utilities/RoleGroup";
 import { DialogAddRole } from "../components/DialogAddRole";
 import UsersService from "services/UsersService/UsersService";
+import EyeIcon from "components/SVG/EyeIcon";
+import EyeSlashIcon from "components/SVG/EyeSlashIcon";
+import { colorPaper } from "theme/palette";
 export interface CreateItemProps extends WithStyles<typeof styles> {}
 const CreateUser = (props: CreateItemProps & PropsFromRedux) => {
   const { classes, authState } = props;
@@ -61,6 +64,7 @@ const CreateUser = (props: CreateItemProps & PropsFromRedux) => {
   const [querySearchCustomer, setQuerySearchCustomer] = useState("");
   const [role, setRole] = useState<RoleResponse | undefined | null>();
   const [userRequest, setUserRequest] = useState<UserRequest>();
+  const [isShow, setIsShow] = useState<boolean>(false);
   const [variants, setVariants] = useState<VariantRequest[]>([
     { id: 1, name: "", price: 0 },
   ]);
@@ -169,6 +173,11 @@ const CreateUser = (props: CreateItemProps & PropsFromRedux) => {
                           password: e.target.value,
                         });
                       }}
+                      InputProps={{
+                        endAdornment: <IconButton style={{background: colorPaper.main}} onClick={() => {setIsShow(!isShow)}}>
+                          {isShow ? <EyeIcon /> : <EyeSlashIcon/>}
+                        </IconButton>,
+                      }}
                     />
                     <TextField
                       style={{ marginLeft: 30, width: 320 }}
@@ -183,6 +192,11 @@ const CreateUser = (props: CreateItemProps & PropsFromRedux) => {
                           ...userRequest,
                           confimPassWord: e.target.value,
                         });
+                      }}
+                      InputProps={{
+                        endAdornment: <IconButton style={{background: colorPaper.main}} onClick={() => {setIsShow(!isShow)}}>
+                          {isShow ? <EyeIcon /> : <EyeSlashIcon/>}
+                        </IconButton>,
                       }}
                     />
                   </Box>
