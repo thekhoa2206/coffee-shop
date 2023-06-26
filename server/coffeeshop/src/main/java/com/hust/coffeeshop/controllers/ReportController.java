@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/test")
+@RequestMapping(value = "/api/report/inventory")
 @CrossOrigin("http://localhost:3000")
 public class ReportController {
     private final InventoryService inventoryService;
