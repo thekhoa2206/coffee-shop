@@ -8,4 +8,6 @@ import lombok.Setter;
 public class ReportInventoryRequest {
     private long startDate;
     private long endDate;
+    private int page;
+    private int limit;
 }

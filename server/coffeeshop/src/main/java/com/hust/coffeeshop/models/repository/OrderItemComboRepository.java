@@ -1,5 +1,6 @@
 package com.hust.coffeeshop.models.repository;
 
+import com.hust.coffeeshop.models.entity.ItemIngredient;
 import com.hust.coffeeshop.models.entity.OrderItem;
 import com.hust.coffeeshop.models.entity.OrderItemCombo;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,6 @@ public interface OrderItemComboRepository extends JpaRepository<OrderItemCombo, 
 
     @Query(value = "SELECT order_item_combo.* FROM order_item_combo WHERE order_item_id= ?1 AND status = 1", nativeQuery = true)
     List<OrderItemCombo> findOrderItemComboByOrderItemId(int orderItemId);
+    @Query(value = "SELECT  order_item_combo.* FROM order_item_combo WHERE  variant_id=?1 AND  created_on>=?2 AND created_on<=?3  ", nativeQuery = true)
+    List<OrderItemCombo>  findItemIngredientByIngredientId(int variantId, long startDate, long endDate);
 }
