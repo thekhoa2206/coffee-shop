@@ -12,4 +12,6 @@ import java.util.List;
 public interface StocktakingRepository extends JpaRepository<Stocktaking, Integer>, JpaSpecificationExecutor<Stocktaking> {
     @Query(value = "SELECT stocktakings.* FROM stocktakings WHERE created_on>=?1 AND created_on<=?2 AND type =?3 ", nativeQuery = true)
     List<Stocktaking> stocktakingByType( long startDate, long endDate, String type);
+    @Query(value = "SELECT stocktakings.* FROM stocktakings WHERE created_on>=?1 AND created_on<=?2 AND ingredient_id =?3 ", nativeQuery = true)
+    Stocktaking stocktakingByIngerdentId( long startDate, long endDate, int ingredient_id );
 }
