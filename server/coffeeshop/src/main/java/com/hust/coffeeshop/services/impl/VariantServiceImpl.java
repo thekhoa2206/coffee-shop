@@ -6,6 +6,7 @@ import com.hust.coffeeshop.models.dto.variant.VariantFilterRequest;
 import com.hust.coffeeshop.models.dto.variant.response.VariantRepsone;
 import com.hust.coffeeshop.models.entity.ComboItem;
 import com.hust.coffeeshop.models.entity.Variant;
+import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
 import com.hust.coffeeshop.services.IngredientService;
 import com.hust.coffeeshop.services.ProductService;
@@ -107,6 +108,17 @@ public class VariantServiceImpl implements VariantService {
         return new PagingListResponse<>(
                 variantRepsones,
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results != null ? results.getTotalElements() : 0));
+    }
+    @Override
+    public VariantRepsone getById(int id){
+        if(id == 0){
+            throw new ErrorException("Id không được để trống!");
+        }
+        var variant = variantRepository.findById(id);
+        if(!variant.isPresent()){
+            throw new ErrorException("Không tìm thấy variant");
+        }
+        return mapperVariantResponse(variant.get());
     }
 
     private VariantRepsone mapperVariantResponse(Variant variant){

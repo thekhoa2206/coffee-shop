@@ -1,5 +1,6 @@
 package com.hust.coffeeshop.models.repository;
 
+import com.hust.coffeeshop.models.dto.reportOrder.ReportCustomerResponse;
 import com.hust.coffeeshop.models.entity.Order;
 import com.hust.coffeeshop.models.entity.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,7 @@ public interface OrderRepository  extends JpaRepository<Order, Integer>, JpaSpec
 
     @Query(value = "SELECT id FROM orders  ORDER BY id DESC  LIMIT 1;", nativeQuery = true)
     Integer getLastOrderId();
+
+    @Query(value = "SELECT * FROM orders group by customer_id;", nativeQuery = true)
+    List<Order> getOrderByCustomer();
 }
