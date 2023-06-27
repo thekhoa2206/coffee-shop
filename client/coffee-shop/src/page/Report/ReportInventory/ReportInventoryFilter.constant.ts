@@ -34,3 +34,29 @@ export const getReportInventoryQuickFilterLabel = (key: string) => {
       return "";
   }
 };
+
+export const ReportInventoryDetailQuickFilterOptions = {
+  AMOUTCHARGEINUNIT: "amountChargeInUnit",
+  CREATEON: "createdOn",
+  OBJECTID: "objectId",
+  NAME: "name",
+  CODE: "code",
+  TYPE: "type",
+  NOTE: "notes",
+};
+export const getReportInventoryDetailQuickFilterLabel = (key: string) => {
+  switch (key) {
+    case ReportInventoryDetailQuickFilterOptions.CODE:
+      return `Mã tham chiếu`;
+    case ReportInventoryDetailQuickFilterOptions.AMOUTCHARGEINUNIT:
+      return `Số lượng thay đổi`;
+    case ReportInventoryDetailQuickFilterOptions.TYPE:
+      return `Loại chứng từ`;
+    case ReportInventoryDetailQuickFilterOptions.CREATEON:
+      return `Thời gian`;
+    case ReportInventoryDetailQuickFilterOptions.NOTE:
+      return `ghi chú`;
+    default:
+      return "";
+  }
+};

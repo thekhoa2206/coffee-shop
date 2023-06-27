@@ -6,7 +6,7 @@ import useStyles from "./ReportInventory.styles";
 import { ReportInventoryProps } from "./ReportInventory.types";
 import { DataResult, GridPageChangeEvent } from "components/SapoGrid/SapoGrid.type";
 import { useHistory } from "react-router-dom";
-import { ReportInventoryRequest } from "services/InventoryService/types";
+import { IOInventoryFilter, InventoryFilterModel, ReportInventoryRequest } from "services/InventoryService/types";
 import InventoryService from "services/InventoryService/InventoryService";
 import LoadingAuth from "components/Loading/LoadingAuth";
 import SapoGrid from "components/SapoGrid/SapoGrid";
@@ -14,10 +14,15 @@ import { GridColumn } from "components/SapoGrid/GridColumn/GridColumn";
 import { ReportInventoryQuickFilterOptions, getReportInventoryQuickFilterLabel } from "./ReportInventoryFilter.constant";
 import NoResultsComponent from "components/NoResults/NoResultsComponent";
 import { CellTemplateProps } from "components/SapoGridSticky";
-import { formatDateUTC, formatMoney } from "utilities";
+import { formatDateTime, formatDateUTC, formatMoney } from "utilities";
 import DatePicker from "components/DatePicker/DatePicker.component";
 import FilterDatePredefined from "components/SapoFilter/FilterItemsV2/FilterItems/FilterDatePredefined/FilterDatePredefined";
-import { DateRangesPredefineType, convertPredefinedToDate, getNamePredefinedDate } from "utilities/DateRangesPredefine";
+import { DateRangesPredefineType, convertPredefinedToDate, getNameAndDatePredefined, getNamePredefinedDate } from "utilities/DateRangesPredefine";
+import { cloneDeep } from "lodash";
+import QueryUtils from "utilities/QueryUtils";
+import Button from "components/Button";
+import ReportInventoryDeatail from "./detail/ReportInventoryDeatail";
+import { FormatItalic } from "@material-ui/icons";
 
 const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
   const { classes, authState } = props;
@@ -27,36 +32,37 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
   });
   const history = useHistory();
   // Không hiểu tại sao useQueryParams không dùng đk
-  const currentFilter = props.history.location.search as string;
   const dataFromQuery: any = {};
   const [loading, setLoading] = useState<boolean>(true);
   const getDefaultQuery = () => {
-    for (let searchFilter of currentFilter.slice(1).split("&")) {
-      const data = searchFilter.split("=");
-      dataFromQuery[data[0]] = decodeURIComponent(data[1]);
-    }
-    if(filters.createdOnPredefined){
+    if(filters?.createdOnPredefined){
     let newDateCreatedOn = convertPredefinedToDate(filters.createdOnPredefined);
-    const initFilter: ReportInventoryRequest = {
-      page: Number(dataFromQuery["page"]) || 1,
-      limit: Number(dataFromQuery["limit"]) || undefined,
+    const initFilter: IOInventoryFilter = {
       startDate : formatDateUTC(newDateCreatedOn.startDate, false),
       endDate :formatDateUTC(newDateCreatedOn.endDate, true),
     }
-
-
     return initFilter;
   };
   };
-  const [filters, setFilters] = useState<ReportInventoryRequest>({
-    ...getDefaultQuery(),
+  const [filterModel, setFilterModel] = useState<InventoryFilterModel | null>({
+    createdOnPredefined:"today",
+  });
+  const [filters, setFilters] = useState<IOInventoryFilter>({
+    createdOnPredefined:"today"
   });
   useEffect(() => {
     let filters = getDefaultQuery();
     initData(filters);
   }, [location.search]);
-  const initData = async (filters: ReportInventoryRequest) => {
-    let res = await InventoryService.filter(filters);
+
+  const initData = async (filters?: IOInventoryFilter) => {
+    let _filters = cloneDeep(filters);
+    if (_filters?.createdOnPredefined) {
+        let newDateCreatedOn = convertPredefinedToDate(_filters?.createdOnPredefined);
+        _filters.startDate = formatDateUTC(newDateCreatedOn.startDate, false);
+        _filters.endDate = formatDateUTC(newDateCreatedOn.endDate, true);
+    }
+    let res = await InventoryService.filter(_filters);
     if (res.data)
       setData({
         data:
@@ -64,7 +70,7 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
             return {
               stt: index + 1,
               ingredientName: inventory.ingredientName,
-              ingredientId: inventory.ingredientId,
+              id: inventory.ingredientId,
               startAmount: inventory.startAmount,
               endAmount: inventory.endAmount,
               amountDecrease: inventory.amountDecrease,
@@ -93,9 +99,10 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
   return (
     <>
       <Box className={classes.container}>
-        <Box className={classes.header}>
-        <FilterDatePredefined
-                    label={"Ngày tạo phiếu"}
+        <Box style={{marginBottom:24}}>
+          <Box display="flex" style={{marginTop:24,marginBottom:50}}>
+            <FilterDatePredefined
+                    label={"Thời gian"}
                     placeholder={"Chọn ngày tạo"}
                     ranges={[
                         {
@@ -123,9 +130,9 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
                             label: getNamePredefinedDate(DateRangesPredefineType.LAST_MONTH),
                         },
                     ]}
-                    endDate={filters.endDate}
-                    startDate={filters.startDate}
-                    predefinedDate={filters.createdOnPredefined}
+                    endDate={filterModel?.endDate}
+                    startDate={filterModel?.startDate}
+                    predefinedDate={filters?.createdOnPredefined}
                     onSubmit={(predefinedDate, dateRanges) => {
                         let _startDate: any = null;
                         let _endDate: any = null;
@@ -142,11 +149,29 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
                             endDate: _endDate ? formatDateUTC(_endDate, true) : undefined,
                             createdOnPredefined: _predefinedDate || undefined,
                         }));
+                        setFilterModel((prev) => ({
+                          ...prev,
+                          startDate: dateRanges?.startDate,
+                          endDate: dateRanges?.endDate,
+                          createdOnPredefined: _predefinedDate || undefined,
+                      }));
+
                     }}
                 />
-        </Box>
+        <Button variant="outlined" color="primary" style={{height:40,marginTop:24,marginLeft:24}}
+         onClick={()=>initData(filters)}>Xem báo cáo</Button>
+            </Box>
+            <Box style={{marginTop:"-45px"}}>
+            {filterModel?.createdOnPredefined ? 
+            <Typography style={{fontStyle:"italic",color:"#747C87"}}>Thời gian xem: {getNameAndDatePredefined(filterModel.createdOnPredefined)}</Typography> : 
+            <Box>
+              <Typography style={{fontStyle:"italic",color:"#747C87"}}>Thời gian xem: {filterModel?.endDate ? formatDateTime(filterModel.endDate, "DD-MM-YYYY HH:mm") : "---"} - {filterModel?.startDate ? formatDateTime(filterModel.startDate, "DD-MM-YYYY HH:mm") : "---"} </Typography> 
+            </Box>
+            
+            }
+            </Box>
+           </Box>
         <Box className={classes.listBox}>
-
           {loading ? (
             <LoadingAuth />
           ) : (
@@ -162,7 +187,7 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
                       stickyHeader
                       tableDrillDown
                       stickyHeaderTop={52}
-                      onRowClick={(e, data) => { history.push(`/admin/exports/${data.id}/edit`) }}
+                      onRowClick={(e, data) => {history.push(`/admin/report/inventory/${data.id}`)}}
                       disablePaging={false}
                     >
                       <GridColumn
@@ -297,6 +322,7 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
                         }}
                       </GridColumn>
                     </SapoGrid>
+             
                   ))
               ) : (
                 <NoResultsComponent

@@ -1,5 +1,5 @@
 
-import { Metadata } from "services/types";
+import { BaseFilter, Metadata } from "services/types";
 
 export type ReportInventoryResponse = {
      ingredientName : string;
@@ -33,4 +33,34 @@ export type ListReportInventoryResponse = {
     data?: ReportInventoryResponse[];
     metadata?: Metadata;
 }
+export interface IOInventoryFilter extends BaseFilter{
+    ids?: string;
+    statuses?: string;
+    paymentStatus?: string;
+    startDate?: string;
+    endDate?: string;
+    createdOnPredefined?: string;
+}
+export type InventoryFilterModel = {
+    startDate?: Date | null;
+    endDate?: Date | null;
+    createdOnPredefined?: string;
 
+}
+export type ReportInventoryDetailResponse = {
+    ingredientName?: string;
+    stockEvents :StockEvents;
+}
+export type StockEvents = {
+    data?: StockEvent[];
+    metadata?: Metadata;
+}
+export type StockEvent = {
+    amountChargeInUnit?: string;
+    createdOn?:number;
+    objectId?:number;
+    name?:string;
+    code?:string;
+    type?:string;
+    notes?:string;
+}

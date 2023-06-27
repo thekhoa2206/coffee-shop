@@ -40,6 +40,7 @@ const EditUser = React.lazy(() => import("./page/Users/update"));
 
 
 const ReportInventory = React.lazy(() => import("./page/Report/ReportInventory"));
+const ReportInventoryDetail = React.lazy(() => import("./page/Report/ReportInventory/detail"));
 const ReportOrder = React.lazy(() => import("./page/Report/ReportOrder"));
 export const LAYOUT_ROUTES: Route[] = [
   {
@@ -354,7 +355,19 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: "Báo cáo kho",
-      linkTo: "",
+      linkTo: "admin/report/inventory",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/report/inventory/:id",
+    component: ReportInventoryDetail,
+    extract: true,
+    header: {
+      title: "Báo cáo chi tiết kho",
+      linkTo: "admin/report/inventory",
       showNoti: false,
       withSubtitle: false,
     },

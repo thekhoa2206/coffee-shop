@@ -2,8 +2,12 @@ package com.hust.coffeeshop.services.impl;
 
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.report.inventory.request.ReportInventoryRequest;
+import com.hust.coffeeshop.models.dto.report.inventory.response.ReportInventoryDetailResponse;
 import com.hust.coffeeshop.models.dto.report.inventory.response.ReportInventoryResponse;
+import com.hust.coffeeshop.models.dto.report.inventory.response.StockEventsResponse;
 import com.hust.coffeeshop.models.entity.Ingredient;
+import com.hust.coffeeshop.models.entity.StocktakingIngredient;
+import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
 import com.hust.coffeeshop.services.InventoryService;
 import lombok.val;
@@ -25,8 +29,9 @@ public class InventoryServiceImpl implements InventoryService {
     private final IngredientRepository ingredientRepository;
     private final StocktakingRepository stocktakingRepository;
     private final StockUnitRepository stockUnitRepository;
+    private final OrderRepository orderRepository;
 
-    public InventoryServiceImpl(StocktakingIngredientRepository stocktakingIngredientRepository, OrderItemRepository orderItemRepository, OrderItemComboRepository orderItemComboRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, StocktakingRepository stocktakingRepository, StockUnitRepository stockUnitRepository) {
+    public InventoryServiceImpl(StocktakingIngredientRepository stocktakingIngredientRepository, OrderItemRepository orderItemRepository, OrderItemComboRepository orderItemComboRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, StocktakingRepository stocktakingRepository, StockUnitRepository stockUnitRepository, OrderRepository orderRepository) {
         this.stocktakingIngredientRepository = stocktakingIngredientRepository;
         this.orderItemRepository = orderItemRepository;
         this.orderItemComboRepository = orderItemComboRepository;
@@ -34,6 +39,7 @@ public class InventoryServiceImpl implements InventoryService {
         this.ingredientRepository = ingredientRepository;
         this.stocktakingRepository = stocktakingRepository;
         this.stockUnitRepository = stockUnitRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Override
@@ -117,5 +123,89 @@ public class InventoryServiceImpl implements InventoryService {
         return new PagingListResponse<>(
                 reportInventoryResponses,
                 new PagingListResponse.Metadata(request.getPage(), request.getLimit(), results.getTotalElements()));
+    }
+    @Override
+    public ReportInventoryDetailResponse reportInventoryDetail(ReportInventoryRequest request, int id) {
+        val ingredient= ingredientRepository.findById(id);
+        if (ingredient.get() == null) throw new ErrorException("không có nguyên liệu");
+        //phiếu
+        val stocktakings = stocktakingIngredientRepository.findItemIngredientByIngredientId(id,request.getStartDate(),request.getEndDate());
+        ReportInventoryDetailResponse reportInventoryDetailResponse = new ReportInventoryDetailResponse();
+        reportInventoryDetailResponse.setStockEvents(stockEventsResponses(request,stocktakings,id));
+        reportInventoryDetailResponse.setIngredientName(ingredient.get().getName());
+        return reportInventoryDetailResponse;
+    }
+
+    public PagingListResponse<StockEventsResponse> stockEventsResponses(ReportInventoryRequest request, List<StocktakingIngredient> stocktakings,int id ) {
+
+        List<StockEventsResponse> stockEventsResponses = new ArrayList<>();
+        for(val s : stocktakings){
+            val data = stocktakingRepository.findById(s.getId());
+            StockEventsResponse stockEventsResponse = new StockEventsResponse();
+            stockEventsResponse.setCode(data.get().getCode());
+            stockEventsResponse.setCreatedOn(data.get().getCreatedOn());
+            stockEventsResponse.setName(data.get().getName());
+            stockEventsResponse.setNote(data.get().getDescription());
+            //loại phiếu
+            // trạng thái không phải huỷ
+            if(data.get().getStatus() != 3){
+                if(data.get().getType().equals("import")){
+                    stockEventsResponse.setType("Phiếu Nhập kho");
+                    stockEventsResponse.setAmountChargeInUnit("+"+s.getQuantity());
+                }
+                else {
+                    stockEventsResponse.setType("Phiếu Xuất kho");
+                    stockEventsResponse.setAmountChargeInUnit("-"+s.getQuantity());
+                }
+            }
+            else {
+                if(data.get().getType().equals("import")){
+                    stockEventsResponse.setType(" Huỷ phiếu nhập kho");
+                    stockEventsResponse.setAmountChargeInUnit("-"+s.getQuantity());
+                }
+                else {
+                    stockEventsResponse.setType("Huỷ phiếu xuất kho");
+                    stockEventsResponse.setAmountChargeInUnit("+"+s.getQuantity());
+                }
+            }
+            stockEventsResponses.add(stockEventsResponse);
+        }
+        //đơn hàng
+        val itemIngredient = itemIngredientRepository.findItemIngredientByIngredientId(id,request.getStartDate(),request.getEndDate());
+        if(itemIngredient.size()!= 0){
+            for (val i : itemIngredient){
+                val itemOrders = orderItemRepository.findOrderItemByIngredientId(i.getVariantId(),request.getStartDate(),request.getEndDate());
+                for(val itemOrder : itemOrders){
+                    val order = orderRepository.findById(itemOrder.getId());
+                    StockEventsResponse stockEventsResponse = new StockEventsResponse();
+                    if(order.get() != null){
+                        stockEventsResponse.setCode(order.get().getCode());
+                        stockEventsResponse.setObjectId(order.get().getId());
+                        stockEventsResponse.setNote(order.get().getNote());
+                        Integer amountChargeInUnit = i.getAmountConsume() * itemOrder.getQuantity();
+                        //nếu là phiếu huỷ
+                        if(order.get().getStatus() == 4)
+                        {
+                            stockEventsResponse.setType("Huỷ đơn hàng");
+                            stockEventsResponse.setAmountChargeInUnit("+" + amountChargeInUnit);
+                        }
+                        else {
+                            stockEventsResponse.setType("Đơn hàng");
+                            stockEventsResponse.setAmountChargeInUnit("-" + amountChargeInUnit);
+                        }
+                        stockEventsResponses.add(stockEventsResponse);
+                    }
+                }
+            }
+        }
+        Pageable pageable = PageRequest.of(
+                request.getPage() - 1,
+                request.getLimit(),
+                Sort.by(Sort.Direction.DESC, "id"));
+
+        return new PagingListResponse<>(
+                stockEventsResponses,
+                new PagingListResponse.Metadata(request.getPage(), request.getLimit(),stockEventsResponses.size() ));
+
     }
 }

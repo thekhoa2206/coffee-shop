@@ -134,9 +134,7 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
         })
         setLoading(false)
     };
-
-
-    const handlePageChange = (e: GridPageChangeEvent) => {
+     const handlePageChange = (e: GridPageChangeEvent) => {
         setLoading(true)
         const page = e.page;
         const newParams: Record<string, any> = {
