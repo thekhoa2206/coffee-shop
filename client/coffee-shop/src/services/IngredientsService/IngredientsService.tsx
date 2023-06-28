@@ -14,7 +14,7 @@ class IngredientsService {
     static async getById(id: string): Promise<AxiosResponse<IngredientResponse>> {
         return axios.get(`/ingredient/${id}`, { ...getAxiosConfig()});
     }
-    static async delete(id: string): Promise<AxiosResponse<IngredientResponse>> {
+    static async delete(id?: number): Promise<AxiosResponse<IngredientResponse>> {
         return axios.delete(`/ingredient/${id}`, { ...getAxiosConfig()});
     }
 }

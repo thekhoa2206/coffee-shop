@@ -14,10 +14,10 @@ import { GridColumn } from "components/SapoGrid/GridColumn/GridColumn";
 import { ReportInventoryDetailQuickFilterOptions, ReportInventoryQuickFilterOptions, getReportInventoryDetailQuickFilterLabel, getReportInventoryQuickFilterLabel } from "../ReportInventoryFilter.constant";
 import NoResultsComponent from "components/NoResults/NoResultsComponent";
 import { CellTemplateProps } from "components/SapoGridSticky";
-import { formatDateUTC, formatDateUTCToLocalDateString, formatMoney } from "utilities";
+import { formatDateTime, formatDateUTC, formatDateUTCToLocalDateString, formatMoney } from "utilities";
 import DatePicker from "components/DatePicker/DatePicker.component";
 import FilterDatePredefined from "components/SapoFilter/FilterItemsV2/FilterItems/FilterDatePredefined/FilterDatePredefined";
-import { DateRangesPredefineType, convertPredefinedToDate, getNamePredefinedDate } from "utilities/DateRangesPredefine";
+import { DateRangesPredefineType, convertPredefinedToDate, getNameAndDatePredefined, getNamePredefinedDate } from "utilities/DateRangesPredefine";
 import { cloneDeep } from "lodash";
 import QueryUtils from "utilities/QueryUtils";
 import Button from "components/Button";
@@ -102,17 +102,26 @@ const ReportInventoryDeatail = (props: ReportDetailInventoryProps & PropsFromRed
   const handlePageChange = (e: GridPageChangeEvent) => {
     setLoading(true);
     const page = e.page;
-    // const newParams: Record<string, any> = {
-    //   ...Object.fromEntries(queryParams),
-    //   page: page.page,
-    //   limit: page.pageSize,
-    // };
     setFilters((prev) => ({ ...prev, limit: page.pageSize, page: page.page }));
   };
+  const handlePush = (id: number,type:string)=>{
+    if(type.includes("Đơn hàng") || type.includes("Huỷ đơn hàng")){
+      window.open(`/admin/orders/${id}`, '_blank');
+    }
+    else{
+      if(type.includes("Phiếu Nhập kho")|| type.includes("Huỷ phiếu nhập kho")){
+        window.open(`/admin/receipts/${id}/edit`, '_blank');
+      }
+      else{
+        window.open(`/admin/exports/${id}/edit`);
+      }
+    }
+ }
   return (
     <>
       <Box className={classes.container}>
-        <Box className={classes.header}>
+      <Box style={{ marginBottom: 24 }}>
+        <Box display="flex" style={{ marginTop: 24, marginBottom: 50 }}>
         <FilterDatePredefined
                     label={"Ngày tạo phiếu"}
                     placeholder={"Chọn ngày tạo"}
@@ -170,9 +179,19 @@ const ReportInventoryDeatail = (props: ReportDetailInventoryProps & PropsFromRed
 
                     }}
                 />
-        </Box>
-        <Button
+                        <Button
          onClick={()=>initData(filters)}>Xem báo cáo</Button>
+        </Box>
+
+                   <Box style={{ marginTop: "-45px" }}>
+            {filterModel?.createdOnPredefined ?
+              <Typography style={{ fontStyle: "italic", color: "#747C87" }}>Thời gian xem: {getNameAndDatePredefined(filterModel.createdOnPredefined)}</Typography> :
+              <Box>
+                <Typography style={{ fontStyle: "italic", color: "#747C87" }}>Thời gian xem: {filterModel?.endDate ? formatDateTime(filterModel.endDate, "DD-MM-YYYY HH:mm") : "---"} - {filterModel?.startDate ? formatDateTime(filterModel.startDate, "DD-MM-YYYY HH:mm") : "---"} </Typography>
+              </Box>
+            }
+          </Box>
+          </Box>
         <Box className={classes.listBox}>
           {loading ? (
             <LoadingAuth />
@@ -189,7 +208,7 @@ const ReportInventoryDeatail = (props: ReportDetailInventoryProps & PropsFromRed
                       stickyHeader
                       tableDrillDown
                       stickyHeaderTop={52}
-                      onRowClick={(e, data) => { history.push(`/admin/exports/${data.objectId}/edit`) }}
+                      onRowClick={(e, data) => { handlePush(data.objectId,data.type)}}
                       disablePaging={false}
                     >
                       <GridColumn

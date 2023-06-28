@@ -142,6 +142,7 @@ public class InventoryServiceImpl implements InventoryService {
         for(val s : stocktakings){
             val data = stocktakingRepository.findById(s.getId());
             StockEventsResponse stockEventsResponse = new StockEventsResponse();
+            stockEventsResponse.setObjectId(data.get().getId());
             stockEventsResponse.setCode(data.get().getCode());
             stockEventsResponse.setCreatedOn(data.get().getCreatedOn());
             stockEventsResponse.setName(data.get().getName());

@@ -19,11 +19,7 @@ import DatePicker from "components/DatePicker/DatePicker.component";
 import FilterDatePredefined from "components/SapoFilter/FilterItemsV2/FilterItems/FilterDatePredefined/FilterDatePredefined";
 import { DateRangesPredefineType, convertPredefinedToDate, getNameAndDatePredefined, getNamePredefinedDate } from "utilities/DateRangesPredefine";
 import { cloneDeep } from "lodash";
-import QueryUtils from "utilities/QueryUtils";
 import Button from "components/Button";
-import ReportInventoryDeatail from "./detail/ReportInventoryDeatail";
-import { FormatItalic } from "@material-ui/icons";
-
 const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
   const { classes, authState } = props;
   const [data, setData] = useState<DataResult>({
@@ -35,20 +31,20 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
   const dataFromQuery: any = {};
   const [loading, setLoading] = useState<boolean>(true);
   const getDefaultQuery = () => {
-    if(filters?.createdOnPredefined){
-    let newDateCreatedOn = convertPredefinedToDate(filters.createdOnPredefined);
-    const initFilter: IOInventoryFilter = {
-      startDate : formatDateUTC(newDateCreatedOn.startDate, false),
-      endDate :formatDateUTC(newDateCreatedOn.endDate, true),
-    }
-    return initFilter;
-  };
+    if (filters?.createdOnPredefined) {
+      let newDateCreatedOn = convertPredefinedToDate(filters.createdOnPredefined);
+      const initFilter: IOInventoryFilter = {
+        startDate: formatDateUTC(newDateCreatedOn.startDate, false),
+        endDate: formatDateUTC(newDateCreatedOn.endDate, true),
+      }
+      return initFilter;
+    };
   };
   const [filterModel, setFilterModel] = useState<InventoryFilterModel | null>({
-    createdOnPredefined:"today",
+    createdOnPredefined: "today",
   });
   const [filters, setFilters] = useState<IOInventoryFilter>({
-    createdOnPredefined:"today"
+    createdOnPredefined: "today"
   });
   useEffect(() => {
     let filters = getDefaultQuery();
@@ -58,9 +54,9 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
   const initData = async (filters?: IOInventoryFilter) => {
     let _filters = cloneDeep(filters);
     if (_filters?.createdOnPredefined) {
-        let newDateCreatedOn = convertPredefinedToDate(_filters?.createdOnPredefined);
-        _filters.startDate = formatDateUTC(newDateCreatedOn.startDate, false);
-        _filters.endDate = formatDateUTC(newDateCreatedOn.endDate, true);
+      let newDateCreatedOn = convertPredefinedToDate(_filters?.createdOnPredefined);
+      _filters.startDate = formatDateUTC(newDateCreatedOn.startDate, false);
+      _filters.endDate = formatDateUTC(newDateCreatedOn.endDate, true);
     }
     let res = await InventoryService.filter(_filters);
     if (res.data)
@@ -96,81 +92,81 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
     // };
     setFilters((prev) => ({ ...prev, limit: page.pageSize, page: page.page }));
   };
+
   return (
     <>
       <Box className={classes.container}>
-        <Box style={{marginBottom:24}}>
-          <Box display="flex" style={{marginTop:24,marginBottom:50}}>
+        <Box style={{ marginBottom: 24 }}>
+          <Box display="flex" style={{ marginTop: 24, marginBottom: 50 }}>
             <FilterDatePredefined
-                    label={"Thời gian"}
-                    placeholder={"Chọn ngày tạo"}
-                    ranges={[
-                        {
-                            key: DateRangesPredefineType.TODAY,
-                            label: getNamePredefinedDate(DateRangesPredefineType.TODAY),
-                        },
-                        {
-                            key: DateRangesPredefineType.YESTERDAY,
-                            label: getNamePredefinedDate(DateRangesPredefineType.YESTERDAY),
-                        },
-                        {
-                            key: DateRangesPredefineType.THIS_WEEK,
-                            label: getNamePredefinedDate(DateRangesPredefineType.THIS_WEEK),
-                        },
-                        {
-                            key: DateRangesPredefineType.LAST_WEEK,
-                            label: getNamePredefinedDate(DateRangesPredefineType.LAST_WEEK),
-                        },
-                        {
-                            key: DateRangesPredefineType.THIS_MONTH,
-                            label: getNamePredefinedDate(DateRangesPredefineType.THIS_MONTH),
-                        },
-                        {
-                            key: DateRangesPredefineType.LAST_MONTH,
-                            label: getNamePredefinedDate(DateRangesPredefineType.LAST_MONTH),
-                        },
-                    ]}
-                    endDate={filterModel?.endDate}
-                    startDate={filterModel?.startDate}
-                    predefinedDate={filters?.createdOnPredefined}
-                    onSubmit={(predefinedDate, dateRanges) => {
-                        let _startDate: any = null;
-                        let _endDate: any = null;
-                        let _predefinedDate = "";
-                        if (predefinedDate) {
-                            _predefinedDate = predefinedDate;
-                        } else if (dateRanges) {
-                            _startDate = dateRanges.startDate;
-                            _endDate = dateRanges.endDate;
-                        }
-                        setFilters((prev) => ({
-                            ...prev,
-                            startDate: _startDate ? formatDateUTC(_startDate, false) : undefined,
-                            endDate: _endDate ? formatDateUTC(_endDate, true) : undefined,
-                            createdOnPredefined: _predefinedDate || undefined,
-                        }));
-                        setFilterModel((prev) => ({
-                          ...prev,
-                          startDate: dateRanges?.startDate,
-                          endDate: dateRanges?.endDate,
-                          createdOnPredefined: _predefinedDate || undefined,
-                      }));
+              label={"Thời gian"}
+              placeholder={"Chọn ngày tạo"}
+              ranges={[
+                {
+                  key: DateRangesPredefineType.TODAY,
+                  label: getNamePredefinedDate(DateRangesPredefineType.TODAY),
+                },
+                {
+                  key: DateRangesPredefineType.YESTERDAY,
+                  label: getNamePredefinedDate(DateRangesPredefineType.YESTERDAY),
+                },
+                {
+                  key: DateRangesPredefineType.THIS_WEEK,
+                  label: getNamePredefinedDate(DateRangesPredefineType.THIS_WEEK),
+                },
+                {
+                  key: DateRangesPredefineType.LAST_WEEK,
+                  label: getNamePredefinedDate(DateRangesPredefineType.LAST_WEEK),
+                },
+                {
+                  key: DateRangesPredefineType.THIS_MONTH,
+                  label: getNamePredefinedDate(DateRangesPredefineType.THIS_MONTH),
+                },
+                {
+                  key: DateRangesPredefineType.LAST_MONTH,
+                  label: getNamePredefinedDate(DateRangesPredefineType.LAST_MONTH),
+                },
+              ]}
+              endDate={filterModel?.endDate}
+              startDate={filterModel?.startDate}
+              predefinedDate={filters?.createdOnPredefined}
+              onSubmit={(predefinedDate, dateRanges) => {
+                let _startDate: any = null;
+                let _endDate: any = null;
+                let _predefinedDate = "";
+                if (predefinedDate) {
+                  _predefinedDate = predefinedDate;
+                } else if (dateRanges) {
+                  _startDate = dateRanges.startDate;
+                  _endDate = dateRanges.endDate;
+                }
+                setFilters((prev) => ({
+                  ...prev,
+                  startDate: _startDate ? formatDateUTC(_startDate, false) : undefined,
+                  endDate: _endDate ? formatDateUTC(_endDate, true) : undefined,
+                  createdOnPredefined: _predefinedDate || undefined,
+                }));
+                setFilterModel((prev) => ({
+                  ...prev,
+                  startDate: dateRanges?.startDate,
+                  endDate: dateRanges?.endDate,
+                  createdOnPredefined: _predefinedDate || undefined,
+                }));
 
-                    }}
-                />
-        <Button variant="outlined" color="primary" style={{height:40,marginTop:24,marginLeft:24}}
-         onClick={()=>initData(filters)}>Xem báo cáo</Button>
-            </Box>
-            <Box style={{marginTop:"-45px"}}>
-            {filterModel?.createdOnPredefined ? 
-            <Typography style={{fontStyle:"italic",color:"#747C87"}}>Thời gian xem: {getNameAndDatePredefined(filterModel.createdOnPredefined)}</Typography> : 
-            <Box>
-              <Typography style={{fontStyle:"italic",color:"#747C87"}}>Thời gian xem: {filterModel?.endDate ? formatDateTime(filterModel.endDate, "DD-MM-YYYY HH:mm") : "---"} - {filterModel?.startDate ? formatDateTime(filterModel.startDate, "DD-MM-YYYY HH:mm") : "---"} </Typography> 
-            </Box>
-            
+              }}
+            />
+            <Button variant="outlined" color="primary" style={{ height: 40, marginTop: 24, marginLeft: 24 }}
+              onClick={() => initData(filters)}>Xem báo cáo</Button>
+          </Box>
+          <Box style={{ marginTop: "-45px" }}>
+            {filterModel?.createdOnPredefined ?
+              <Typography style={{ fontStyle: "italic", color: "#747C87" }}>Thời gian xem: {getNameAndDatePredefined(filterModel.createdOnPredefined)}</Typography> :
+              <Box>
+                <Typography style={{ fontStyle: "italic", color: "#747C87" }}>Thời gian xem: {filterModel?.endDate ? formatDateTime(filterModel.endDate, "DD-MM-YYYY HH:mm") : "---"} - {filterModel?.startDate ? formatDateTime(filterModel.startDate, "DD-MM-YYYY HH:mm") : "---"} </Typography>
+              </Box>
             }
-            </Box>
-           </Box>
+          </Box>
+        </Box>
         <Box className={classes.listBox}>
           {loading ? (
             <LoadingAuth />
@@ -187,7 +183,7 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
                       stickyHeader
                       tableDrillDown
                       stickyHeaderTop={52}
-                      onRowClick={(e, data) => {history.push(`/admin/report/inventory/${data.id}`)}}
+                      onRowClick={(e, data) => { history.push(`/admin/report/inventory/${data.id}`) }}
                       disablePaging={false}
                     >
                       <GridColumn
@@ -256,7 +252,7 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
                         width={100}
                         align="right"
                       >
-                                   {({ dataItem }: CellTemplateProps) => {
+                        {({ dataItem }: CellTemplateProps) => {
                           return (
                             <>
                               <Typography>
@@ -274,7 +270,7 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
                         width={100}
                         align="right"
                       >
-                                   {({ dataItem }: CellTemplateProps) => {
+                        {({ dataItem }: CellTemplateProps) => {
                           return (
                             <>
                               <Typography>
@@ -292,7 +288,7 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
                         width={100}
                         align="right"
                       >
-                                   {({ dataItem }: CellTemplateProps) => {
+                        {({ dataItem }: CellTemplateProps) => {
                           return (
                             <>
                               <Typography>
@@ -322,7 +318,7 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
                         }}
                       </GridColumn>
                     </SapoGrid>
-             
+
                   ))
               ) : (
                 <NoResultsComponent

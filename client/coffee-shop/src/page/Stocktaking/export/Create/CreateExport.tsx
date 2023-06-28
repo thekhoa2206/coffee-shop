@@ -79,6 +79,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
   const [variants, setVariants] = useState<VariantRequest[]>([
     { id: 1, name: "", price: 0 },
   ]);
+  const [ingredient, setIngredient] = useState<IngredientResponse[]>();
   const [stockUnits, setStockUnits] = useState<StockUnitResponse[]>();
   const [toltalMoeny, settoltalMoeny] = useState<number>();
   const [stocktakingIngredientRequest, setStocktakingIngredientRequest] =
@@ -177,6 +178,36 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
     }
     return total;
   };
+  const handleWarring = ( quantity: number,id?:number)=>{
+    debugger
+    let ingredients=  ingredient?.filter((x)=>x.id===id);
+    const data = ingredients?.reduce((t, v) => {
+   const {...rest } = v;
+   t = rest;
+   return t;
+ }, {});
+ let test = data?.quantity ||0;
+ let ingredientMoneys =data?.exportPrice ||0;
+   if(test < quantity) {
+    updateIngredient({
+    ingredientId: data?.id,
+     name: data?.name,
+     quantity: test,
+    ingredientMoney: ingredientMoneys,
+    totalMoney: test*ingredientMoneys,
+    })
+   }
+   else{
+    updateIngredient({
+      ingredientId: data?.id,
+       name: data?.name,
+       quantity:quantity ,
+      ingredientMoney: ingredientMoneys,
+      totalMoney: test*ingredientMoneys,
+      })
+   }
+  }
+
   return (
     <>
       <Box className={classes.container}>
@@ -232,6 +263,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                           let res = await IngredientsService.filter(filter);
                           const dataSource = {} as DataSource;
                           if (res.data.data) {
+                            setIngredient(res.data.data);
                             dataSource.data = res.data.data;
                             dataSource.metaData = {
                               totalPage: Math.ceil(
@@ -310,10 +342,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                               <NumberInputTextField
                                 value={data.quantity}
                                 onChange={(value: any) => {
-                                  updateIngredient({
-                                    ...data,
-                                    quantity: value.target.value as number,
-                                  });
+                                  handleWarring(value.target.value as number,data?.ingredientId)
                                 }}
                                 name={"quantity"}
                                 style={{
@@ -326,6 +355,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                               <NumberInputTextField
                                 value={data.ingredientMoney}
                                 onChange={(value: any) => {
+                                  
                                   updateIngredient({
                                     ...data,
                                     ingredientMoney: value.target
@@ -420,13 +450,12 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
           </Paper>
         
         </Grid>
-      </Box>
-      <Box
+        <Box
         style={{
           display: "flex",
           marginBottom: "100px",
-          marginLeft: "1165px",
-          marginTop: "16px",
+          marginLeft: "871px",
+          marginTop: "30px",
         }}
       >
  
@@ -459,6 +488,8 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
          Xuất kho
         </Button>
       </Box>
+      </Box>
+ 
     </>
   );
 };

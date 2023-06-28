@@ -26,6 +26,9 @@ import {
 } from "./Ingredients.type";
 import { DialogAddIngredient } from "./component/DialogAddIngredient";
 import { DialogEditIngredient } from "./component/DialogEditIngredient";
+import { IngredientsStatus } from "./utils/IngredientContants";
+import Chip from "components/Chip/Chip.component";
+import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 
 const Ingredients = (props: IngredientProps & PropsFromRedux) => {
     const { classes, authState } = props;
@@ -91,6 +94,10 @@ const Ingredients = (props: IngredientProps & PropsFromRedux) => {
                 }
             }) || [], total: res.data.metadata?.total || 0
         })
+        if(data.data.filter((x)=>x.quantity <10))
+        {
+            SnackbarUtils.error(`Có nguyên liệu sắp hết hoặc đã hết!`);
+        }
         setLoading(false)
     };
 
@@ -117,6 +124,60 @@ const Ingredients = (props: IngredientProps & PropsFromRedux) => {
         setFilters((prev) => ({ ...prev, query: value?.trim() }))
         changeQueryString(newFilters);
     };
+    
+  const renderStatus = (quantity: number) => {
+    let test = 0;
+    if(quantity >=10) {
+         test = 1
+    }
+    if(quantity <=10 && quantity >0) {
+         test = 2
+    }
+    if(quantity <=0 ) {
+         test = 3
+    }
+
+    switch (test) {
+      case IngredientsStatus.STOCKING:
+        return (
+          <Chip
+            className="info"
+            variant="outlined"
+            color="primary"
+            size="medium"
+            label={IngredientsStatus.getName(test)}
+          />
+        );
+      case IngredientsStatus.OUT_OF_STOCK:
+        return (
+          <Chip
+            className="warning"
+            variant="outlined"
+            size="medium"
+            color="inherit"
+            label={IngredientsStatus.getName(test)}
+          />
+        );
+      case IngredientsStatus.DELETED:
+        return (
+          <Chip
+            className="danger"
+            size="medium"
+            style={{
+                background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
+                borderColor: "#ff4d4d",
+                boxShadow: "inset 0 1px 0 0 #ff4d4",
+                color: "#fff",
+                marginRight: "10px",
+
+              }}
+            label={IngredientsStatus.getName(test)}
+          />
+        );
+      default:
+        return "";
+    }
+  };
     return (
         <>
             <Box className={classes.container}>
@@ -205,15 +266,24 @@ const Ingredients = (props: IngredientProps & PropsFromRedux) => {
                                         title={getIngredientsQuickFilterLabel(
                                             IngredientsQuickFilterOptions.QUANTITY
                                         )}
-                                        width={150}
+                                        width={100}
                                         align="left"
-                                    />
+                                    > 
+                                    {({ dataItem }: CellTemplateProps) => {
+                                        return (
+                                            <>
+                                                <Typography>
+                                                    {dataItem.quantity || 0}
+                                                </Typography>
+                                            </>
+                                        );
+                                    }}</GridColumn>
                                     <GridColumn
                                         field="unit"
                                         title={getIngredientsQuickFilterLabel(
                                             IngredientsQuickFilterOptions.UNIT
                                         )}
-                                        width={150}
+                                        width={80}
                                         align="left"
                                     >
                                         {({ dataItem }: CellTemplateProps) => {
@@ -267,22 +337,20 @@ const Ingredients = (props: IngredientProps & PropsFromRedux) => {
                                         }}
                                     </GridColumn>
                                     <GridColumn
-                                        field="createdOn"
+                                        field="status"
                                         title={getIngredientsQuickFilterLabel(
-                                            IngredientsQuickFilterOptions.MODIFIED_ON
+                                            IngredientsQuickFilterOptions.STATUS
                                         )}
                                         width={100}
-                                        align="left"
+                                        align="center"
                                     >
                                         {({ dataItem }: CellTemplateProps) => {
                                             return (
                                                 <>
                                                     <Typography>
-                                                        {formatDateUTCToLocalDateString(
-                                                            dataItem.createdOn,
-                                                            false,
-                                                            "DD/MM/YYYY"
-                                                        )}
+                                                        {renderStatus(
+                                                            dataItem.quantity,
+                                                            )}
                                                     </Typography>
                                                 </>
                                             );

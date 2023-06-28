@@ -66,7 +66,7 @@ import { check } from "prettier";
 import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
 import useModal from "components/Modal/useModal";
 
-export interface CreateReceiptProps extends WithStyles<typeof styles> {}
+export interface CreateReceiptProps extends WithStyles<typeof styles> { }
 const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
   const { classes, authState } = props;
   const [categories, setCategories] = useState<CategoryResponse[]>();
@@ -83,16 +83,16 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
   const [toltalMoeny, settoltalMoeny] = useState<number>();
   const [stocktakingIngredientRequest, setStocktakingIngredientRequest] =
     useState<StocktakingIngredientRequest[]>([]);
-    const { closeModal, confirm, openModal } = useModal();
+  const { closeModal, confirm, openModal } = useModal();
 
   const history = useHistory();
   const updateIngredient = (ingredient: StocktakingIngredientRequest) => {
     let datatNews = stocktakingIngredientRequest.map((v) => {
       if (v.ingredientId === ingredient.ingredientId) {
-       let toltalMoeny = ingredient.ingredientMoney * ingredient.quantity
+        let toltalMoeny = ingredient.ingredientMoney * ingredient.quantity
         return {
           ...ingredient,
-          totalMoney:toltalMoeny,
+          totalMoney: toltalMoeny,
         };
       } else return v;
     });
@@ -122,7 +122,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
             return {
               ...v,
               quantity: v.quantity + 1,
-              totalMoney: v.quantity*v.ingredientMoney,
+              totalMoney: v.quantity * v.ingredientMoney,
             };
           } else return { ...(v || []), ingredient };
         });
@@ -140,12 +140,12 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
     }
   };
 
-  const handleCreateRecpit = async (status:number) => {
+  const handleCreateRecpit = async (status: number) => {
     if (!receiptRequest?.name) {
       SnackbarUtils.error(`Tên phiếu không được để trống!`);
       return;
     }
-    if (!stocktakingIngredientRequest || stocktakingIngredientRequest.length ===0) {
+    if (!stocktakingIngredientRequest || stocktakingIngredientRequest.length === 0) {
       SnackbarUtils.error(`Chưa chọn phần nguyên liệu `);
       return;
     }
@@ -154,9 +154,9 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
       type: "import",
       totalMoney: sumMoeny(),
       object: stocktakingIngredientRequest,
-      status:status,
-      payment:checked,
-      description:note
+      status: status,
+      payment: checked,
+      description: note
     };
     try {
       let res = await StocktakingService.create(requet);
@@ -236,7 +236,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                             dataSource.metaData = {
                               totalPage: Math.ceil(
                                 (res.data.metadata?.total || 0) /
-                                  (filter.limit || 0)
+                                (filter.limit || 0)
                               ),
                               totalItems: res.data.metadata?.total || 0,
                             };
@@ -271,7 +271,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                             name: ingredient.name ? ingredient.name : "",
                             quantity: 1,
                             ingredientMoney: 1000,
-                            totalMoney:1000,
+                            totalMoney: 1000,
                           });
                         }}
                         value={null}
@@ -369,105 +369,108 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                           </TableBody>
                         ))}
                     </Table>
-                    <Box style={{ margin: "auto", padding: "24px",marginLeft:"680px",display:"flex" }}>
-                    <Typography style={{fontWeight: 500}}>Tổng tiền:</Typography>
-                    <Typography style={{fontWeight: 500}}>{formatNumberDecimal(sumMoeny())}</Typography>
-                    <Typography style={{fontWeight: 500}}>đ</Typography>
+                    <Box style={{ margin: "auto", padding: "24px", marginLeft: "680px", display: "flex" }}>
+                      <Typography style={{ fontWeight: 500 }}>Tổng tiền:</Typography>
+                      <Typography style={{ fontWeight: 500 }}>{formatNumberDecimal(sumMoeny())}</Typography>
+                      <Typography style={{ fontWeight: 500 }}>đ</Typography>
                     </Box>
                     {!(
                       stocktakingIngredientRequest &&
                       stocktakingIngredientRequest.length > 0
                     ) && (
-                      <Box style={{ margin: "auto", padding: "24px" }}>
-                        <BoxNoDataComponent width="150px" />
-                      </Box>
-                    )}
+                        <Box style={{ margin: "auto", padding: "24px" }}>
+                          <BoxNoDataComponent width="150px" />
+                        </Box>
+                      )}
                   </Box>
                 </Box>
               </Box>
             </Box>
           </Paper>
-          
-          <Paper className={classes.wrapperBoxInfo} style={{display:"flex"}}>
-          <Grid  item xs={8}>
-            <Box className={classes.boxContentPaper}>
-              <Typography style={{ fontWeight: 500 }}>Ghi chú</Typography>
-              <Grid item xs={2}>
-              <Box style={{ width: 600 }}>
-              <TextareaAutosize
-                        height={60}
-                        onChange={(e: any) => {
-                          setNote( e.target.value as any,
-                          );
-                        }}
-                        value={note}
-                      />
-                      </Box>
-              </Grid>
-            </Box>
+
+          <Paper className={classes.wrapperBoxInfo} style={{ display: "flex" }}>
+            <Grid item xs={8}>
+              <Box className={classes.boxContentPaper}>
+                <Typography style={{ fontWeight: 500 }}>Ghi chú</Typography>
+                <Grid item xs={2}>
+                  <Box style={{ width: 600 }}>
+                    <TextareaAutosize
+                      height={60}
+                      onChange={(e: any) => {
+                        setNote(e.target.value as any,
+                        );
+                      }}
+                      value={note}
+                    />
+                  </Box>
+                </Grid>
+              </Box>
             </Grid>
-          <Grid  item xs={4}>
-          <Box className={classes.boxContentPaper} style={{display:"flex",marginLeft:120}}>
-              <Typography style={{ fontWeight: 500 }}>Thanh toán</Typography>
-              <Grid item xs={2}>
-                <Switch
-                checked={checked}
-                onChange={handleChange}
-                ></Switch>
-              </Grid>
-            </Box>
-          </Grid>
+            <Grid item xs={4}>
+              <Box className={classes.boxContentPaper} style={{ display: "flex", marginLeft: 120 }}>
+                <Typography style={{ fontWeight: 500 }}>Thanh toán</Typography>
+                <Grid item xs={2}>
+                  <Switch
+                    checked={checked}
+                    onChange={handleChange}
+                  ></Switch>
+                </Grid>
+              </Box>
+            </Grid>
           </Paper>
-        
+
         </Grid>
-      </Box>
-      <Box
-        style={{
-          display: "flex",
-          marginBottom: "100px",
-          marginLeft: "950px",
-          marginTop: "16px",
-        }}
-      >
- 
-        <Button variant="outlined" color="secondary">
-          Hủy
-        </Button>
-        <Button
-          variant="outlined"
-          color="primary"
-          style={{ marginLeft: "16px" }}
-          onClick={() => {
-            handleCreateRecpit(1);
-          }}
-        >
-          Đặt hàng
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ marginLeft: "16px" }}
-          onClick={() => {
-            if(!checked){
-              openModal(ConfirmDialog, {
-                confirmButtonText: "Xác nhận",
-                message: "Bạn chưa thanh toán phiếu,bạn có muốn tiếp tục đặt hàng và nhập kho không?",
-                title: "Thanh toán phiếu nhập kho",
-                cancelButtonText: "Thoát",
-            }).result.then((res) => {
-                if (res) {
-                  handleCreateRecpit(1);;
+        <Box>
+          <Box
+            style={{
+              display: "flex",
+              marginBottom: "100px",
+              marginLeft: "657px",
+              marginTop: "30px",
+            }}
+          >
+
+            <Button variant="outlined" color="secondary" onClick={()=>history.push(`/admin/receipts`)}>
+              Hủy
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              style={{ marginLeft: "16px" }}
+              onClick={() => {
+                handleCreateRecpit(1);
+              }}
+            >
+              Đặt hàng
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginLeft: "16px" }}
+              onClick={() => {
+                if (!checked) {
+                  openModal(ConfirmDialog, {
+                    confirmButtonText: "Xác nhận",
+                    message: "Bạn chưa thanh toán phiếu,bạn có muốn tiếp tục đặt hàng và nhập kho không?",
+                    title: "Thanh toán phiếu nhập kho",
+                    cancelButtonText: "Thoát",
+                  }).result.then((res) => {
+                    if (res) {
+                      handleCreateRecpit(2);;
+                    }
+                  })
+                } else {
+                  handleCreateRecpit(2)
                 }
-            })
-          }else{
-            handleCreateRecpit(2)
-          }
-        
-        }}
-        >
-          Đặt hàng và Nhập kho
-        </Button>
+
+              }}
+            >
+              Đặt hàng và Nhập kho
+            </Button>
+          </Box>
+        </Box>
       </Box>
+
     </>
   );
 };

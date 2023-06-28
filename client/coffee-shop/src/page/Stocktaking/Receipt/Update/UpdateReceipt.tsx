@@ -714,9 +714,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
               </Paper>
             </Grid>
           )}
-      </Box>
-
-      {receipt?.type.includes("import") ?
+                {receipt?.type.includes("import") ?
         (
           // phiếu nhập kho 
           <Box>
@@ -730,8 +728,8 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                         style={{
                           display: "flex",
                           marginBottom: "100px",
-                          marginLeft: "1030px",
-                          marginTop: "16px",
+                          marginLeft: "740px",
+                          marginTop: "30px",
                         }}
                       >
                         <Button variant="outlined" style={{
@@ -797,9 +795,9 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                           display: "flex",
                           marginBottom: "100px",
                           // marginLeft: "160px",
-                          marginTop: "16px",
+                          marginTop: "30px",
                           float: "right",
-                          marginRight: 300
+                          marginRight: 8
                         }}
                       >
                         <Button variant="outlined" color="secondary"
@@ -809,8 +807,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                             boxShadow: "inset 0 1px 0 0 #ff4d4",
                             color: "#fff",
                             float: "left"
-
-                          }}
+                           }}
                           onClick={() => {
 
                             openModal(ConfirmDialog, {
@@ -844,9 +841,10 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
             style={{
               display: "flex",
               marginBottom: "100px",
-              marginTop: "16px",
-              marginLeft: 1249,
-              
+              // marginLeft: "160px",
+              marginTop: "30px",
+              float: "right",
+              marginRight: 8
             }}
           >
             <Button variant="outlined" color="secondary" style={{
@@ -875,6 +873,9 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
           </Box>
          
         )}
+      </Box>
+
+
     </>
   );
 };
