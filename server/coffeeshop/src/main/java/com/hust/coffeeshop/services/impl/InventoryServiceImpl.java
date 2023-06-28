@@ -49,7 +49,7 @@ public class InventoryServiceImpl implements InventoryService {
                 request.getLimit(),
                 Sort.by(Sort.Direction.DESC, "id"));
         Page<Ingredient> results;
-        results = ingredientRepository.findByDate(request.getStartDate(),request.getEndDate(),pageable);
+        results = ingredientRepository.findAll(pageable);
         List<ReportInventoryResponse>  reportInventoryResponses = new ArrayList<>();
         for (val i : results){
             // số lượng bán
@@ -93,7 +93,7 @@ public class InventoryServiceImpl implements InventoryService {
             val imports = stocktakingRepository.stocktakingByType(request.getStartDate(),request.getEndDate(),"import");
             for (  val n:imports){
                 Integer countImport = 0;
-                countImport = stocktakingIngredientRepository.CountIngredient(n.getId(),i.getId(),request.getStartDate(),request.getEndDate());
+                countImport = stocktakingIngredientRepository.CountIngredient(i.getId(),n.getId(),request.getStartDate(),request.getEndDate());
                 if(countImport !=null){
                 amountIncrease += countImport;}
             }
@@ -101,7 +101,7 @@ public class InventoryServiceImpl implements InventoryService {
             val exports = stocktakingRepository.stocktakingByType(request.getStartDate(),request.getEndDate(),"export");
             for (  val n:exports){
                 Integer countImport = 0;
-                countImport = stocktakingIngredientRepository.CountIngredient(n.getId(),i.getId(),request.getStartDate(),request.getEndDate());
+                countImport = stocktakingIngredientRepository.CountIngredient(i.getId(),n.getId(),request.getStartDate(),request.getEndDate());
                 if(countImport !=null){
                 amountPurchase += countImport;}
             }

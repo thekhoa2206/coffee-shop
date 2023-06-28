@@ -52,7 +52,6 @@ public class CommonCode
         return password;
     }
     public static long getMilliSeconds( String myDate, String pattern) throws ParseException {
-
         SimpleDateFormat sdf = new SimpleDateFormat(pattern == null ? "yyyy/MM/dd HH:mm:ss": pattern);
         Date date = sdf.parse(myDate);
         long millis = date.getTime();

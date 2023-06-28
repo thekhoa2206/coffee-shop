@@ -94,7 +94,8 @@ const Ingredients = (props: IngredientProps & PropsFromRedux) => {
                 }
             }) || [], total: res.data.metadata?.total || 0
         })
-        if(data.data.filter((x)=>x.quantity <10))
+        let data1 =data.data.filter((x)=>x.quantity <10)
+        if(data1 && data1.length>0)
         {
             SnackbarUtils.error(`Có nguyên liệu sắp hết hoặc đã hết!`);
         }
