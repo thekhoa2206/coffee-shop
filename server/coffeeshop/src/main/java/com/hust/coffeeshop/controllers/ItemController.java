@@ -11,7 +11,14 @@ import com.hust.coffeeshop.models.dto.user.request.CreateUserRequest;
 import com.hust.coffeeshop.models.dto.user.response.UserResponse;
 import com.hust.coffeeshop.models.exception.BaseException;
 import com.hust.coffeeshop.services.ItemService;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 @RestController
 @RequestMapping(value = "/api/item")
@@ -47,4 +54,14 @@ public class ItemController extends BaseException {
     public void delete(@PathVariable("id") int id){
         itemService.delete(id);
     }
+    @GetMapping(value = "/image", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getImage() throws IOException {
+        InputStream in = getClass()
+                .getResourceAsStream("/image.jpg");
+        byte[] bytes = ByteBuffer.allocate(8).putLong(dbFile.get().getSize()).array();
+
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
+                .body(imageBytes);
+    }
+
 }

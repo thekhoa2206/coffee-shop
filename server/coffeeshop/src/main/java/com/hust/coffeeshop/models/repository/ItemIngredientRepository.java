@@ -16,8 +16,8 @@ public interface ItemIngredientRepository  extends JpaRepository<ItemIngredient,
     ItemIngredient findItemIngredientByItemIdAndIngredientId(int  itemId, int ingredientId);
     @Query(value = "SELECT item_ingredient.* FROM item_ingredient WHERE  ingredient_id=?1 AND  created_on>=?2 AND created_on<=?3", nativeQuery = true)
     List<ItemIngredient>  findItemIngredientByIngredientId( int ingredientId,long startDate,long endDate);
-    @Query(value = "SELECT item_ingredient.* FROM item_ingredient WHERE item_id = ?1 ", nativeQuery = true)
-    List<ItemIngredient> findItemIngredientByItemId(int  itemId);
+    @Query(value = "SELECT item_ingredient.* FROM item_ingredient WHERE variant_id = ?1 ", nativeQuery = true)
+    List<ItemIngredient> findItemIngredientByVariantId(int  variantId);
     @Query(value = "SELECT item_ingredient.* FROM item_ingredient WHERE variant_id = ?1 AND item_id = ?2 ", nativeQuery = true)
     List<ItemIngredient> findItemIngredientByVariantIdAndItemId(int  variantId, int  itemId);
     @Query(value = "SELECT item_ingredient.* FROM item_ingredient WHERE variant_id in (?1)", nativeQuery = true)

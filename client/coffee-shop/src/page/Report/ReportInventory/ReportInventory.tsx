@@ -20,6 +20,7 @@ import FilterDatePredefined from "components/SapoFilter/FilterItemsV2/FilterItem
 import { DateRangesPredefineType, convertPredefinedToDate, getNameAndDatePredefined, getNamePredefinedDate } from "utilities/DateRangesPredefine";
 import { cloneDeep } from "lodash";
 import Button from "components/Button";
+import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
   const { classes, authState } = props;
   const [data, setData] = useState<DataResult>({
@@ -79,6 +80,7 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
           }) || [],
         total: res.data.metadata?.total || 0,
       });
+      SnackbarUtils.success("Cập nhập báo cáo thàng công");
     setLoading(false);
   };
 
@@ -155,7 +157,7 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
 
               }}
             />
-            <Button variant="outlined" color="primary" style={{ height: 40, marginTop: 24, marginLeft: 24 }}
+            <Button variant="contained" color="primary" style={{ height: 40, marginTop: 24, marginLeft: 24 }}
               onClick={() => initData(filters)}>Xem báo cáo</Button>
           </Box>
           <Box style={{ marginTop: "-45px" }}>

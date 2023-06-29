@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,8 +44,9 @@ public class OrderServiceImpl implements OrderService {
     private final VariantRepository variantRepository;
     private final IngredientService ingredientService;
     private final OrderItemComboRepository orderItemComboRepository;
+    private final InventoryLogRepository inventoryLogRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService, OrderItemComboRepository orderItemComboRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService, OrderItemComboRepository orderItemComboRepository, InventoryLogRepository inventoryLogRepository) {
         this.orderRepository = orderRepository;
         this.filterRepository = filterRepository;
         this.mapper = mapper;
@@ -60,6 +60,7 @@ public class OrderServiceImpl implements OrderService {
         this.variantRepository = variantRepository;
         this.ingredientService = ingredientService;
         this.orderItemComboRepository = orderItemComboRepository;
+        this.inventoryLogRepository = inventoryLogRepository;
     }
 
     /*
@@ -195,6 +196,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(rollbackOn = Exception.class)
     public OrderResponse create(OrderRequest request) {
         Order order = new Order();
+        InventoryLog inventoryLog = new InventoryLog();
         if (request.getOrderItemRequest() == null || request.getOrderItemRequest().size() == 0)
             throw new ErrorException("Đơn hàng phải có ít nhất 1 sp");
 
@@ -216,7 +218,6 @@ public class OrderServiceImpl implements OrderService {
         order.setDiscountTotal(request.getDiscountTotal() != null ? request.getDiscountTotal() : BigDecimal.ZERO);
         order.setTotal(request.getTotal());
         order.setPaymentStatus(CommonStatus.PaymentStatus.UNPAID);
-
         order = orderRepository.save(order);
         for (var item : request.getOrderItemRequest()) {
             var lineItem = mapper.map(item, OrderItem.class);
@@ -228,7 +229,6 @@ public class OrderServiceImpl implements OrderService {
             lineItem.setModifiedBy("admin");
             lineItem.setStatus(CommonStatus.OrderItemStatus.ACTIVE);
             lineItem = orderItemRepository.save(lineItem);
-
             if(lineItem.isCombo()){
                 var combo = comboRepository.findById(lineItem.getProductId());
                 if (!combo.isPresent() || combo == null) throw new ErrorException("Không tìm thấy combo!");
@@ -608,6 +608,12 @@ public class OrderServiceImpl implements OrderService {
         order.get().setModifiedOn();
         orderRepository.save(order.get());
         var orderResponse = mapperOrderResponse(order.get());
+        if(status ==CommonStatus.OrderStatus.IN_PROGRESS) {
+            saveinventory(orderResponse, status);
+        }
+        if(status ==CommonStatus.OrderStatus.DELETED){
+            saveinventory(orderResponse,status);
+        }
         return orderResponse;
     }
 
@@ -677,6 +683,90 @@ public class OrderServiceImpl implements OrderService {
         model.setForPrintForm();
         return model;
     }
-
+    private void saveinventory(OrderResponse order,int status) {
+        if(order.getOrderItemResponses().size()>0){
+            for(val oderItem : order.getOrderItemResponses())
+            {
+                if(oderItem.isCombo()){
+                    for (val dataCombo :oderItem.getOrderItemComboResponses()){
+                        val itemIngredient = itemIngredientRepository.findItemIngredientByVariantId(dataCombo.getVariantId());
+                        for(val dataIngredient : itemIngredient){
+                            val ingredient = ingredientRepository.findById(dataIngredient.getIngredientId());
+                            Integer changerAmount  = 0;
+                            changerAmount = dataIngredient.getAmountConsume()*dataCombo.getQuantity();
+                            if(status != CommonStatus.OrderStatus.DELETED){
+                                InventoryLog inventoryLog = new InventoryLog();
+                                //lưu vào bảng log kho
+                                inventoryLog.setCode(order.getCode());
+                                inventoryLog.setObjectId(order.getId());
+                                inventoryLog.setNote(order.getNote());
+                                inventoryLog.setCreatedOn(CommonCode.getTimestamp());
+                                inventoryLog.setModifiedOn(0);
+                                inventoryLog.setType("order");
+                                inventoryLog.setIngredientId(ingredient.get().getId());
+                                inventoryLog.setStockRemain(ingredient.get().getQuantity());
+                            inventoryLog.setAmountChargeInUnit("+"+changerAmount);
+                            inventoryLog.setStatus(1);
+                            inventoryLogRepository.save(inventoryLog);
+                            }
+                            else {
+                                InventoryLog inventoryLog = new InventoryLog();
+                                //lưu vào bảng log kho
+                                inventoryLog.setCode(order.getCode());
+                                inventoryLog.setObjectId(order.getId());
+                                inventoryLog.setNote(order.getNote());
+                                inventoryLog.setCreatedOn(CommonCode.getTimestamp());
+                                inventoryLog.setModifiedOn(0);
+                                inventoryLog.setType("order");
+                                inventoryLog.setIngredientId(ingredient.get().getId());
+                                inventoryLog.setStockRemain(ingredient.get().getQuantity());
+                                inventoryLog.setAmountChargeInUnit("-"+changerAmount);
+                                inventoryLog.setStatus(2);
+                                inventoryLogRepository.save(inventoryLog);
+                            }
+                        }
+                    }
+                }
+                else {
+                    val itemIngredient = itemIngredientRepository.findItemIngredientByVariantId(oderItem.getProductId());
+                    for(val dataIngredient : itemIngredient){
+                        val ingredient = ingredientRepository.findById(dataIngredient.getIngredientId());
+                        Integer changerAmount  = 0;
+                        changerAmount = dataIngredient.getAmountConsume()*oderItem.getQuantity();
+                        if(status != CommonStatus.OrderStatus.DELETED){
+                            InventoryLog inventoryLog = new InventoryLog();
+                            //lưu vào bảng log kho
+                            inventoryLog.setCode(order.getCode());
+                            inventoryLog.setObjectId(order.getId());
+                            inventoryLog.setNote(order.getNote());
+                            inventoryLog.setCreatedOn(CommonCode.getTimestamp());
+                            inventoryLog.setModifiedOn(0);
+                            inventoryLog.setType("order");
+                            inventoryLog.setIngredientId(ingredient.get().getId());
+                            inventoryLog.setStockRemain(ingredient.get().getQuantity());
+                            inventoryLog.setAmountChargeInUnit("+"+changerAmount);
+                            inventoryLog.setStatus(1);
+                            inventoryLogRepository.save(inventoryLog);
+                        }
+                        else {
+                            InventoryLog inventoryLog = new InventoryLog();
+                            //lưu vào bảng log kho
+                            inventoryLog.setCode(order.getCode());
+                            inventoryLog.setObjectId(order.getId());
+                            inventoryLog.setNote(order.getNote());
+                            inventoryLog.setCreatedOn(CommonCode.getTimestamp());
+                            inventoryLog.setModifiedOn(0);
+                            inventoryLog.setType("order");
+                            inventoryLog.setIngredientId(ingredient.get().getId());
+                            inventoryLog.setStockRemain(ingredient.get().getQuantity());
+                            inventoryLog.setAmountChargeInUnit("-"+changerAmount);
+                            inventoryLog.setStatus(2);
+                            inventoryLogRepository.save(inventoryLog);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 

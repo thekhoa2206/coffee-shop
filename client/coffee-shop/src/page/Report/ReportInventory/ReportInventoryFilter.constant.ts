@@ -21,11 +21,11 @@ export const getReportInventoryQuickFilterLabel = (key: string) => {
     case ReportInventoryQuickFilterOptions.ENDAMOUNT:
       return `Số lượng cuối kỳ`;
     case ReportInventoryQuickFilterOptions.AMOUNTDECREASE:
-      return `Bán`;
+      return `Số lượng bán`;
     case ReportInventoryQuickFilterOptions.AMOUNTINCREASE:
-      return `nhập`;
+      return `Nhập`;
     case ReportInventoryQuickFilterOptions.AMOUNTPUSRCHASE:
-      return `xuất`;
+      return `Xuất`;
     case ReportInventoryQuickFilterOptions.UNITNAME:
       return `Đơn vị `;
       case ReportInventoryQuickFilterOptions.TOTALCODE:
@@ -43,6 +43,7 @@ export const ReportInventoryDetailQuickFilterOptions = {
   CODE: "code",
   TYPE: "type",
   NOTE: "notes",
+  STOCKREMAIN:"stockRemain"
 };
 export const getReportInventoryDetailQuickFilterLabel = (key: string) => {
   switch (key) {
@@ -56,6 +57,8 @@ export const getReportInventoryDetailQuickFilterLabel = (key: string) => {
       return `Thời gian`;
     case ReportInventoryDetailQuickFilterOptions.NOTE:
       return `ghi chú`;
+      case ReportInventoryDetailQuickFilterOptions.STOCKREMAIN:
+        return `Tồn cuối`;
     default:
       return "";
   }
