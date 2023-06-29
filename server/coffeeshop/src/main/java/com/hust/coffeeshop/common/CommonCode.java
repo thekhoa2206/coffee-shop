@@ -59,4 +59,11 @@ public class CommonCode
         return millis;
     }
 
+    public static String getStringDate(Date myDate, String pattern) throws ParseException {
+
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern == null ? "yyyy/MM/dd HH:mm:ss": pattern);
+        String date = sdf.format(myDate);
+        return date;
+    }
+
 }

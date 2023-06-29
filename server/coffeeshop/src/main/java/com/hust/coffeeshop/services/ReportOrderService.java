@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ReportOrderService {
     List<ReportProductResponse> reportTopProducts(ReportProductFilter filter) throws ParseException;
-    ReportRevenueResponse reportRevenue(ReportFilterRequest filterRequest) throws ParseException;
+    List<ReportRevenueResponse> reportRevenue(ReportFilterRequest filterRequest) throws ParseException;
     PagingListResponse<ReportCustomerResponse> reportTopCustomer(ReportFilterRequest filterRequest) throws ParseException;
 }

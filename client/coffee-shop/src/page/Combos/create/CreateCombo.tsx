@@ -106,7 +106,6 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
     setVariantComboRequest(variantsNew);
   };
   const addVariant = (variant: VariantComboRequest, item: ItemResponses) => {
-    debugger;
     if (variantComboRequest.length > 0) {
       let variantOld = variantComboRequest.find(
         (v) => v.variantId === variant.variantId
@@ -278,7 +277,6 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
                           )}
                           placeholder="Tìm kiếm mặt hàng"
                           onChange={(item: ItemResponses) => {
-                            debugger;
                             addVariant(
                               {
                                 variantId: item.variants.id,

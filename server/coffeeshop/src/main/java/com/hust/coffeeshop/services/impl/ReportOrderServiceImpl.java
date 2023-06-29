@@ -1,8 +1,10 @@
 package com.hust.coffeeshop.services.impl;
 
+import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.order.OrderFilterRequest;
 import com.hust.coffeeshop.models.dto.reportOrder.*;
+import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.OrderItemComboRepository;
 import com.hust.coffeeshop.models.repository.OrderItemRepository;
 import com.hust.coffeeshop.models.repository.OrderRepository;
@@ -51,8 +53,15 @@ public class ReportOrderServiceImpl implements ReportOrderService {
                     for (var orderItem : order.getOrderItemResponses()) {
                         if (orderItem.isCombo() && orderItem.getOrderItemComboResponses() != null && orderItem.getOrderItemComboResponses().size() > 0) {
                             for (var variant: orderItem.getOrderItemComboResponses()) {
-                               var response = setNewVariant(variant.getVariantId(), variant.getQuantity(), variant.getPrice());
-                                responses.put(variant.getVariantId(), response);
+                               if(responses.get(variant.getVariantId()) == null){
+                                   var response = setNewVariant(variant.getVariantId(), variant.getQuantity()*orderItem.getQuantity(), variant.getPrice());
+                                   responses.put(variant.getVariantId(), response);
+                               }else{
+                                   var response = responses.get(variant.getVariantId());
+                                   response.setTotalRevenue(response.getTotalRevenue().add(order.getTotal()));
+                                   response.setTotalQuantity(response.getTotalQuantity() + orderItem.getQuantity()* variant.getQuantity());
+                                   responses.replace(orderItem.getProductId(), response);
+                               }
                             }
                         } else {
                             if (responses.get(orderItem.getProductId()) == null) {
@@ -77,33 +86,48 @@ public class ReportOrderServiceImpl implements ReportOrderService {
                 }
             });
         }
-        return reportProductResponses.subList(0, reportProductResponses.size() > filterRequest.getTop() ?  filterRequest.getTop() - 1 : 0);
+        if(reportProductResponses.size() >0){
+
+        }
+        return reportProductResponses.subList(0, reportProductResponses.size() > filterRequest.getTop() ?  filterRequest.getTop() - 1 : reportProductResponses.size());
     }
 
     private ReportProductResponse setNewVariant(int variantId, int quantity, BigDecimal price){
         ReportProductResponse response = new ReportProductResponse();
         var variantResponse = variantService.getById(variantId);
         response.setVariant(variantResponse);
-        response.setTotalRevenue(price);
+        response.setTotalRevenue(price.multiply(BigDecimal.valueOf(quantity)));
         response.setTotalQuantity(quantity);
         return response;
     }
 
     //	- Thống kê doanh thu đơn hàng
     @Override
-    public ReportRevenueResponse reportRevenue(ReportFilterRequest filterRequest) throws ParseException {
+    public List<ReportRevenueResponse> reportRevenue(ReportFilterRequest filterRequest) throws ParseException {
         OrderFilterRequest filter = new OrderFilterRequest();
-        filter.setCreatedOnMax(filterRequest.getCreatedOnMax());
-        filter.setCreatedOnMin(filterRequest.getCreatedOnMin());
-        ReportRevenueResponse response = new ReportRevenueResponse();
-        var result = orderService.filter(filter);
-        if (result.getMetadata().getTotal() != 0) {
-            for (var order : result.getData()) {
-                response.setTotalRevenue(response.getTotalRevenue().add(order.getTotal()));
-                response.setTotalDiscount(response.getTotalDiscount().add(order.getDiscountTotal()));
-            }
+        List<ReportRevenueResponse> reportRevenueResponses = new ArrayList<>();
+        if(filterRequest.getCreatedOnMax() == null || filterRequest.getCreatedOnMin() == null){
+            return new ArrayList<>(Arrays.asList(new ReportRevenueResponse()));
         }
-        return response;
+        long createdOnMax = CommonCode.getMilliSeconds(filterRequest.getCreatedOnMax(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
+        long createdOnMin = CommonCode.getMilliSeconds(filterRequest.getCreatedOnMin(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
+        for (var i = createdOnMin; i < createdOnMax; i += 86400000) {
+            filter.setCreatedOnMax(CommonCode.getStringDate(new Date(i + 86400000), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+            filter.setCreatedOnMin(CommonCode.getStringDate(new Date(i), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+            ReportRevenueResponse response = new ReportRevenueResponse();
+            var result = orderService.filter(filter);
+            if (result.getMetadata().getTotal() != 0) {
+                for (var order : result.getData()) {
+                    response.setTotalRevenue(response.getTotalRevenue().add(order.getTotal()));
+                    response.setTotalDiscount(response.getTotalDiscount().add(order.getDiscountTotal()));
+                }
+            }
+            response.setDate(CommonCode.getStringDate(new Date(i), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+            reportRevenueResponses.add(response);
+        }
+
+
+        return reportRevenueResponses;
     }
 
     //	- Thống kê top khách hàng

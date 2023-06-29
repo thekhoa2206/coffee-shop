@@ -1,8 +1,7 @@
 package com.hust.coffeeshop.controllers;
 
 import com.hust.coffeeshop.models.dto.PagingListResponse;
-import com.hust.coffeeshop.models.dto.reportOrder.ReportCustomerResponse;
-import com.hust.coffeeshop.models.dto.reportOrder.ReportFilterRequest;
+import com.hust.coffeeshop.models.dto.reportOrder.*;
 import com.hust.coffeeshop.services.ReportOrderService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/reports/order")
@@ -27,8 +27,18 @@ public class ReportOrderController {
         this.orderService = orderService;
     }
 
-    @GetMapping
+    @GetMapping("/customers")
     public PagingListResponse<ReportCustomerResponse> reportTopCustomer(ReportFilterRequest filterRequest) throws ParseException {
         return orderService.reportTopCustomer(filterRequest);
+    }
+
+    @GetMapping("/revenues")
+    public List<ReportRevenueResponse> reportRevenue(ReportFilterRequest filterRequest) throws ParseException {
+        return orderService.reportRevenue(filterRequest);
+    }
+
+    @GetMapping("/products")
+    public List<ReportProductResponse> reportTopProducts(ReportProductFilter filterRequest) throws ParseException {
+        return orderService.reportTopProducts(filterRequest);
     }
 }

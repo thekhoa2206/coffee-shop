@@ -55,7 +55,6 @@ export const convertStartEndDateToString = (startDate: Date, endDate: Date) => {
 
 export const getNameAndDatePredefined = (key: string) => {
   let date = convertPredefinedToDate(key);
-  debugger
   let dateRangeString = convertStartEndDateToString(date.startDate, date.endDate);
   let a = `${getNamePredefinedDate(key)} `;
   switch (key) {

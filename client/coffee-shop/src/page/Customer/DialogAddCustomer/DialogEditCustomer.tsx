@@ -48,7 +48,6 @@ export const DialogEditCustomer = (props: DialogAddCustomerProps) => {
        }
   };
   const handleDeleteCustommer = async () =>{
-    debugger
     try {
       let res = await CustomerService.delete(props.customer?.id);
       if (res) {
