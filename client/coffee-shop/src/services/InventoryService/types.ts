@@ -63,4 +63,5 @@ export type StockEvent = {
     code?:string;
     type?:string;
     notes?:string;
+    stockRemain?:string;
 }

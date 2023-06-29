@@ -23,6 +23,7 @@ import QueryUtils from "utilities/QueryUtils";
 import Button from "components/Button";
 import { ReportDetailInventoryProps } from "./ReportDetailInventory.types";
 import { log } from "console";
+import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 
 const ReportInventoryDeatail = (props: ReportDetailInventoryProps & PropsFromRedux) => {
   const { classes, authState,filter} = props;
@@ -91,11 +92,12 @@ const ReportInventoryDeatail = (props: ReportDetailInventoryProps & PropsFromRed
               code: inventory.code,
               type: inventory.type,
               notes: inventory.notes,
-
+              stockRemain:inventory.stockRemain
             };
           }) || [],
         total: res.data.stockEvents.metadata?.total || 0,
       });
+      SnackbarUtils.success("Cập nhập báo cáo thàng công");
     setLoading(false);
   };
 
@@ -121,6 +123,9 @@ const ReportInventoryDeatail = (props: ReportDetailInventoryProps & PropsFromRed
     <>
       <Box className={classes.container}>
       <Box style={{ marginBottom: 24 }}>
+      <Box style={{ marginTop: 24, marginBottom: 12 }}>
+          <Typography variant="h3" style={{}}>Nguyên Liệu: {ingredientName? ingredientName : "--"} </Typography>
+              </Box>
         <Box display="flex" style={{ marginTop: 24, marginBottom: 50 }}>
         <FilterDatePredefined
                     label={"Ngày tạo phiếu"}
@@ -179,7 +184,7 @@ const ReportInventoryDeatail = (props: ReportDetailInventoryProps & PropsFromRed
 
                     }}
                 />
-                        <Button
+                        <Button variant="contained" color="primary" style={{ height: 40, marginTop: 24, marginLeft: 24 }}
          onClick={()=>initData(filters)}>Xem báo cáo</Button>
         </Box>
 
@@ -282,13 +287,22 @@ const ReportInventoryDeatail = (props: ReportDetailInventoryProps & PropsFromRed
                         }}
                       </GridColumn>
                       <GridColumn
-                        field="note"
+                        field="stockRemain"
                         title={getReportInventoryDetailQuickFilterLabel(
-                          ReportInventoryDetailQuickFilterOptions.NOTE
+                          ReportInventoryDetailQuickFilterOptions.STOCKREMAIN
                         )}
                         width={60}
-                        align="left"
-                      ></GridColumn>
+                        align="right"
+                      >
+                        {({ dataItem }: CellTemplateProps) => {
+                        return (
+                          <>
+                            <Typography>
+                              {dataItem.stockRemain || 0}
+                            </Typography>
+                          </>
+                        );}}
+                      </GridColumn>
                     </SapoGrid>
                   ))
               ) : (

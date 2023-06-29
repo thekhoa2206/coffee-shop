@@ -1,3 +1,4 @@
+import { type } from "os";
 import { CategoryResponse } from "services/CategoryService";
 import { IngredientResponse } from "services/IngredientsService";
 import { StockUnitResponse } from "services/StockUnitService";
@@ -95,4 +96,11 @@ export type IngredientItemResponse = {
     modifiedOn?: Date;
     modifiedBy?: number;
     stockUnitResponse?: StockUnitResponse;
+}
+export type FileResponse={
+    id?: number;
+    fileName?:string;
+    fileUrl?:string;
+    path?:string;
+    size?:number;
 }

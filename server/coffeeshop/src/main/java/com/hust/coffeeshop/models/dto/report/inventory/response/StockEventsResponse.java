@@ -10,8 +10,8 @@ public class StockEventsResponse {
    private String amountChargeInUnit;
    private long createdOn;
    private int objectId;
-   private String name;
    private String code;
    private String type;
    private String note;
+   private int stockRemain;
 }
