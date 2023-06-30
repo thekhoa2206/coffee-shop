@@ -508,7 +508,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                 <Box className={classes.boxContentPaper} style={{}}>
 
                   {imageUrl ? (
-                    <Image src={imageUrl || ""} style={{ height: 290, width: 308, marginLeft: 0, marginBottom: 10 }} />
+                    <Image src={imageUrl || ""} style={{ height: 290, width: 290, marginLeft: 0, marginBottom: 10 }} />
                   ) : (
                     <AvatarDefaultIcon style={{ height: 120, width: 120, marginLeft: 100, marginBottom: 40 }} />
                   )}

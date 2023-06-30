@@ -160,7 +160,7 @@ const ItemDetail = (props: CreateItemProps & PropsFromRedux) => {
                             <Box className={classes.boxContentPaper} style={{}}>
 
                                 {itemResponse?.imageUrl ? (
-                                    <Image src={itemResponse.imageUrl || ""} style={{ height: 150, width: 150, }} />
+                                    <Image src={itemResponse.imageUrl || ""} style={{ height: 255, width: 290, }} />
                                 ) : (
                                     <AvatarDefaultIcon style={{ height: 120, width: 120, marginLeft: 100, marginBottom: 40 }} />
                                 )}
