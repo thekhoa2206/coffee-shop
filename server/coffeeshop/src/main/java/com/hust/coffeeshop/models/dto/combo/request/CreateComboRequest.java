@@ -16,6 +16,7 @@ public class CreateComboRequest {
     private String description;
     private BigDecimal discountPercentage;
     private BigDecimal price;
+    private String imageUrl;
     private List<VariantComboRequest> varianIds;
     private int categoryId;
 }

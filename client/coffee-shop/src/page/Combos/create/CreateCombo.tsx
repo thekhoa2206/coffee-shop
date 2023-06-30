@@ -54,7 +54,10 @@ import { CreateComboRequest } from "services/ComboService/types";
 import ModalStack from "components/Modal/ModalStack";
 import { VariantComboRequest } from "services/ComboService/types";
 import ComboService from "services/ComboService/ComboService";
-export interface CreateConboProps extends WithStyles<typeof styles> {}
+import { useDropzone } from "react-dropzone";
+import AvatarDefaultIcon from "components/SVG/AvatarDefaultIcon";
+import Image from "components/Image";
+export interface CreateConboProps extends WithStyles<typeof styles> { }
 const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
   const { classes, authState } = props;
   const [categories, setCategories] = useState<CategoryResponse[]>();
@@ -71,6 +74,50 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
     VariantComboRequest[]
   >([]);
   const history = useHistory();
+  const [imageUrl, setImageUrl] = useState<string>();
+  const [fileImport, setFileImport] = React.useState<File[] | null>();
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      if (fileImport) {
+        if (acceptedFiles.length > 0) {
+          acceptedFiles.map((item) => {
+            setImageUrl(URL.createObjectURL(item))
+            fileImport.push(item);
+          })
+        }
+      } else {
+        setFileImport(acceptedFiles);
+        acceptedFiles.map((item) => {
+          setImageUrl(URL.createObjectURL(item))
+        })
+      }
+    },
+  });
+  const handleUploadFile = () => {
+    if (fileImport) {
+      if (fileImport.length === 0) {
+        SnackbarUtils.error("File upload không được để trống!");
+        return;
+      }
+      const data = new FormData();
+      fileImport?.map((item) => {
+        data.append("files", item);
+
+      });
+      try {
+        ItemsService.uploadImg(data)
+          .then((res) => {
+            setFileImport(undefined)
+            setImageUrl(`http://localhost:8888/api/item/image/view/${res.data.id}`)
+          })
+          .catch((e) => {
+            SnackbarUtils.error(getMessageError(e));
+          });
+      } catch (error) {
+        SnackbarUtils.error(getMessageError(error));
+      }
+    }
+  }
   useEffect(() => {
     initCategory();
     initItme();
@@ -98,7 +145,7 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
     setVariantComboRequest(variantNews);
   };
 
- 
+
   const deleteVarinat = (variant: VariantComboRequest) => {
     let variantsNew = variantComboRequest.filter(
       (v) => v.variantId !== variant.variantId
@@ -143,11 +190,12 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
       SnackbarUtils.error(`Tên combo không được để trống!`);
       return;
     }
-
+    handleUploadFile()
     let requet: CreateComboRequest = {
       ...comboRequest,
       categoryId: category?.id || 0,
       varianIds: variantComboRequest,
+      imageUrl: imageUrl,
     };
     try {
       let res = await ComboService.create(requet);
@@ -246,7 +294,7 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
                               dataSource.metaData = {
                                 totalPage: Math.ceil(
                                   (res.data.metadata?.total || 0) /
-                                    (filter.limit || 0)
+                                  (filter.limit || 0)
                                 ),
                                 totalItems: res.data.metadata?.total || 0,
                               };
@@ -283,7 +331,7 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
                                 quantity: 1,
                                 price: item.variants.price,
                                 name: item.name + "-" + item.variants.name,
-                                comboitemId:0,
+                                comboitemId: 0,
                               },
                               item
                             );
@@ -366,10 +414,10 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
                       {!(
                         variantComboRequest && variantComboRequest.length > 0
                       ) && (
-                        <Box style={{ margin: "auto", padding: "24px" }}>
-                          <BoxNoDataComponent width="150px" />
-                        </Box>
-                      )}
+                          <Box style={{ margin: "auto", padding: "24px" }}>
+                            <BoxNoDataComponent width="150px" />
+                          </Box>
+                        )}
                     </Box>
                   </Box>
                 </Box>
@@ -381,7 +429,7 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
               <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                 Tùy chọn Combo
               </Typography>
-              
+
               <Box
                 className={classes.boxContentPaper}
                 style={{ height: "350px" }}
@@ -391,7 +439,7 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
                     label="Giảm giá mặt hàng"
                     placeholder="Nhập giá trị giảm giá"
                     style={{ marginTop: "16px" }}
-                    onChange={(e) => {}}
+                    onChange={(e) => { }}
                     fullWidth
                     name={"discount"}
                   />
@@ -430,30 +478,55 @@ const CreateCombo = (props: CreateConboProps & PropsFromRedux) => {
                 </Grid>
               </Box>
             </Paper>
+            <Paper className={classes.wrapperBoxInfo}>
+              <Box style={{ padding: "12px 12px" }}>
+                <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
+                  Hình đại diện
+                </Typography>
+                <Box className={classes.boxContentPaper} style={{}}>
+
+                  {imageUrl ? (
+                    <Image src={imageUrl || ""} style={{ height: 290, width: 308, marginLeft: 0, marginBottom: 10 }} />
+                  ) : (
+                    <AvatarDefaultIcon style={{ height: 120, width: 120, marginLeft: 100, marginBottom: 40 }} />
+                  )}
+                </Box>
+                <Box>
+                  <Button variant="outlined" color="secondary" style={{ marginLeft: 35, width: 250 }}>
+                    <Box {...getRootProps({ className: classes.dragDropFile })}>
+                      <Typography style={{ marginLeft: 10, color: "#0088FF" }} >
+                        Upload file
+                      </Typography>
+                    </Box>
+                    <input {...getInputProps()} multiple={true} type="file" />
+                  </Button>
+                </Box>
+              </Box>
+            </Paper>
           </Grid>
         </Grid>
-      </Box>
-      <Box
-        style={{
-          display: "flex",
-          marginBottom: "100px",
-          marginLeft: "1150px",
-          marginTop: "16px",
-        }}
-      >
-        <Button variant="outlined" color="primary">
-          Hủy
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ marginLeft: "16px" }}
-          onClick={() => {
-            handleCreateCombo();
+        <Box
+          style={{
+            display: "flex",
+            marginBottom: "24px",
+            marginLeft: "880px",
+            marginTop: "16px",
           }}
         >
-          Lưu
-        </Button>
+          <Button variant="outlined" color="primary" onClick={() => history.push(`/admin/combos`)}>
+            Hủy
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ marginLeft: "16px" }}
+            onClick={() => {
+              handleCreateCombo();
+            }}
+          >
+            Lưu
+          </Button>
+        </Box>
       </Box>
     </>
   );

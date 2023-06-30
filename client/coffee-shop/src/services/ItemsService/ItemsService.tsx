@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { getAxiosConfig } from "../config";
-import { ListItemResponse, ItemFilterRequest, ItemRequest, ItemResponse } from "./types";
+import { ListItemResponse, ItemFilterRequest, ItemRequest, ItemResponse, FileResponse } from "./types";
 class ItemsService {
     static async filter(filter?: ItemFilterRequest): Promise<AxiosResponse<ListItemResponse>> {
         return axios.get(`/item`, { ...getAxiosConfig(), params: filter});
@@ -16,6 +16,15 @@ class ItemsService {
     }
     static async update(request: ItemRequest, id: string): Promise<AxiosResponse<ItemResponse>> {
         return axios.put(`/item/${id}`,request, { ...getAxiosConfig()});
+    }
+    static async uploadImg(data?: FormData): Promise<AxiosResponse<FileResponse>> {
+        return axios.post("/item/image",data,{
+            ...getAxiosConfig(),
+            headers: {
+              ...getAxiosConfig().headers,
+              "Content-Type": "multipart/form-data",
+            },
+          });
     }
 }
 export default ItemsService;

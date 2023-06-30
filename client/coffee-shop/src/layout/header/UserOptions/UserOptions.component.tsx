@@ -25,13 +25,6 @@ function UserOptions(props: UserOptionsProp) {
 
   return (
     <Fragment>
-      <Link
-        className={classes.option}
-        href={"/admin/information"}
-        target="_blank"
-      >
-        <Options svg={<UserIcon  />} title={"Thông tin cá nhân"} />
-      </Link>
       <Link className={classes.option} onClick={logOut}>
         <Options svg={<LogoutIcon  />} title={"Đăng xuất"} />
       </Link>

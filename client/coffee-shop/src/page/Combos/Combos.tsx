@@ -30,6 +30,7 @@ import {
 } from "./Combofillter.constant";
 import { formatDateUTCToLocalDateString } from "utilities";
 import NoResultsComponent from "components/NoResults/NoResultsComponent";
+import Avatar from "react-avatar";
 
 const Combos = (props: CombosProps & PropsFromRedux) => {
   const { classes, authState } = props;
@@ -91,7 +92,7 @@ const Combos = (props: CombosProps & PropsFromRedux) => {
               discount: combo.discountPercentage,
               imageUrl: combo.imageUrl,
               description: combo.description,
-              price:combo.price,
+              price: combo.price,
             };
           }) || [],
         total: res.data.metadata?.total || 0,
@@ -170,7 +171,7 @@ const Combos = (props: CombosProps & PropsFromRedux) => {
                 stickyHeader
                 tableDrillDown
                 stickyHeaderTop={52}
-                onRowClick={(e, data) => { history.push(`/admin/combos/${data.id}`)}}
+                onRowClick={(e, data) => { history.push(`/admin/combos/${data.id}`) }}
                 disablePaging={false}
               >
                 <GridColumn
@@ -190,38 +191,14 @@ const Combos = (props: CombosProps & PropsFromRedux) => {
                   {({ dataItem }: CellTemplateProps) => {
                     return (
                       <>
-                        {dataItem.imageUrl ? (
-                          <Image src={dataItem.imageUrl} />
-                        ) : (
-                          <Box
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              background: "#E8EAEB",
-                              borderRadius: "6px",
-                            }}
-                          ></Box>
-                        )}
+                        {dataItem.imageUrl ? <Image src={dataItem.imageUrl} style={{ width: "50px", height: "50px" ,borderRadius: "6px"}} /> :
+                          <Box style={{ width: "50px", height: "50px", background: "#E8EAEB", borderRadius: "6px" }}>
+                            <Avatar size="50" color="#B1AFAF"  round="6px"  name={dataItem.name} maxInitials={2} />
+                          </Box>}
                       </>
                     );
                   }}
                 </GridColumn>
-                {/* <GridColumn
-                  field="code"
-                  title={getCombosQuickFilterLabel(
-                    CombosQuickFilterOptions.CODE
-                  )}
-                  width={150}
-                  align="left"
-                >
-                  {({ dataItem }: CellTemplateProps) => {
-                    return (
-                      <>
-                        <Typography>{"IT" + dataItem.stt}</Typography>
-                      </>
-                    );
-                  }}
-                </GridColumn> */}
                 <GridColumn
                   field="name"
                   title={getCombosQuickFilterLabel(

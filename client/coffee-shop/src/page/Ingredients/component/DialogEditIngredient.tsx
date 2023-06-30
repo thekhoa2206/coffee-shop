@@ -1,9 +1,11 @@
 import { Box, Grid, MenuItem, Typography } from "@material-ui/core";
+import Button from "components/Button";
 import Dialog from "components/Dialog";
 import NumberInputTextField from "components/NumberInput/NumberInputTextField";
 import Select from "components/Select/Index";
 import TextField from "components/TextField";
 import React, { Fragment, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { IngredientRequest, IngredientResponse } from "services/IngredientsService";
 import IngredientsService from "services/IngredientsService/IngredientsService";
 import { StockUnitResponse } from "services/StockUnitService";
@@ -31,7 +33,7 @@ export const DialogEditIngredient = (props: DialogAddIngredientProps) => {
             })
         }
     }, [props.ingredient])
-
+    const history = useHistory();
     useEffect(() => {
         initUnit();
     }, [])
@@ -77,6 +79,18 @@ export const DialogEditIngredient = (props: DialogAddIngredientProps) => {
             }
         }
     };
+    const handleDeleteIngredient = async () =>{
+        debugger
+        try {
+          let res = await IngredientsService.delete(props.ingredient?.id);
+          if (res) {
+            SnackbarUtils.success("Xoá phiếu nhập kho thành công");
+            history.push(`/admin/customers`)
+          }
+        } catch (error) {
+          SnackbarUtils.error(getMessageError(error));
+        }
+      }
     return (
         <Fragment>
             <Dialog
@@ -88,6 +102,28 @@ export const DialogEditIngredient = (props: DialogAddIngredientProps) => {
                 minWidthPaper="790px"
                 DialogTitleProps={{
                     dividerBottom: true
+                }}
+                DialogActionProps={{
+                renderActions: () => (
+                    <Box display="flex">
+                      <Button  variant="outlined"    style={{
+                                      background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
+                                      borderColor: "#ff4d4d",
+                                      boxShadow: "inset 0 1px 0 0 #ff4d4",
+                                      color: "#fff",
+                                      marginRight: "10px",
+          
+                                    }} onClick={() => handleDeleteIngredient()}>
+                        Xoá              </Button>
+           
+                      <Button btnType="destruction"  variant="outlined" style={{ marginRight: "10px",}} onClick={() => onClose()}>
+                        Thoát
+                      </Button>
+                      <Button  variant="contained" color="primary"  onClick={() => handleAddCustomer()}>
+                      Lưu
+                      </Button>
+                    </Box>
+                  ),
                 }}
                 children={
                     <Box padding={"16px"}>

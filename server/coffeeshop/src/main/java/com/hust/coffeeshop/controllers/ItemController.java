@@ -1,26 +1,32 @@
 package com.hust.coffeeshop.controllers;
 
+import com.hust.coffeeshop.models.dto.FileResponse;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
-import com.hust.coffeeshop.models.dto.customer.CustomerFilterRequest;
-import com.hust.coffeeshop.models.dto.customer.CustomerRequest;
-import com.hust.coffeeshop.models.dto.customer.CustomerResponse;
 import com.hust.coffeeshop.models.dto.item.request.CreateItemRequest;
 import com.hust.coffeeshop.models.dto.item.request.ItemRequest;
 import com.hust.coffeeshop.models.dto.item.response.ItemRepsone;
-import com.hust.coffeeshop.models.dto.user.request.CreateUserRequest;
-import com.hust.coffeeshop.models.dto.user.response.UserResponse;
 import com.hust.coffeeshop.models.exception.BaseException;
+import com.hust.coffeeshop.services.FileStorageService;
 import com.hust.coffeeshop.services.ItemService;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 @RestController
 @RequestMapping(value = "/api/item")
 @CrossOrigin("http://localhost:3000")
 public class ItemController extends BaseException {
     private final ItemService itemService;
+    private final FileStorageService fileStorageService;
 
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, FileStorageService fileStorageService) {
         this.itemService = itemService;
+        this.fileStorageService = fileStorageService;
     }
 
     @GetMapping("/{id}")
@@ -47,4 +53,13 @@ public class ItemController extends BaseException {
     public void delete(@PathVariable("id") int id){
         itemService.delete(id);
     }
+    @PostMapping(value = "/image")
+    public FileResponse uploadFile(@RequestParam("files") MultipartFile[] files )throws IOException {
+       return fileStorageService.uploadFile(files);
+    }
+    @GetMapping(value = "/image/view/{id}")
+    public ResponseEntity<byte[]>  viewFile(@PathVariable int id)  throws IOException{
+        return fileStorageService.getImage(id);
+    }
+
 }

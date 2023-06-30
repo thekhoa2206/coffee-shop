@@ -46,7 +46,6 @@ public class StockUnitServiceImpl implements StockUnitService {
         stockUnit.setName(request.getName());
         stockUnit.setCreatedOn();
         stockUnit.setModifiedOn();
-
         stockUnit = stockUnitRepository.save(stockUnit);
         var stockUnitResponse = modelMapper.map(stockUnit, StockUnitResponse.class);
         stockUnitResponse.set();

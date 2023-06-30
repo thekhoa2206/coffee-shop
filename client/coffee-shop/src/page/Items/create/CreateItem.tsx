@@ -11,7 +11,7 @@ import { DataSource } from "components/Select/types";
 import TextField from "components/TextField";
 import TextareaAutosize from "components/TextField/TextareaAutosize/TextareaAutosize";
 import _ from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { CategoryResponse } from "services/CategoryService";
 import CategoryService from "services/CategoryService/CategoryService";
@@ -27,6 +27,9 @@ import { useHistory } from "react-router-dom";
 import Select from "components/Select/Index";
 import StockUnitService from "services/StockUnitService/StockUnitService";
 import { StockUnitResponse } from "services/StockUnitService";
+import AvatarDefaultIcon from "components/SVG/AvatarDefaultIcon";
+import Image from "components/Image";
+import { useDropzone } from "react-dropzone";
 export interface CreateItemProps extends WithStyles<typeof styles> {
 
 }
@@ -37,8 +40,57 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
     const [itemRequest, setItemRequest] = useState<ItemRequest>();
     const [variants, setVariants] = useState<VariantRequest[]>([{ id: 1, name: "", price: 0 }]);
     const [stockUnits, setStockUnits] = useState<StockUnitResponse[]>();
+    const [imageUrl, setImageUrl] = useState<string>();
+    const [fileImport, setFileImport] = React.useState<File[] | null>();
     const history = useHistory();
+    const { getRootProps, getInputProps } = useDropzone({
+        onDrop: (acceptedFiles) => {
+            if (fileImport) {
+                if (acceptedFiles.length > 0) {
+                    acceptedFiles.map((item) => {
+                        setImageUrl(URL.createObjectURL(item))
+                        fileImport.push(item);
+                    })
+                }
+            } else {
+                setFileImport(acceptedFiles);
+                acceptedFiles.map((item) => {
+                    setImageUrl(URL.createObjectURL(item))
+                })
+            }
+        },
+    });
+    const handleUploadFile = () => {
+        if (fileImport) {
+            if (fileImport.length === 0) {
+                SnackbarUtils.error("File upload không được để trống!");
+                return;
+            }
+            const data = new FormData();
+            fileImport?.map((item) => {
+                data.append("files", item);
+
+            });
+            try {
+                ItemsService.uploadImg(data)
+                    .then((res) => {
+                        console.log("oke", res);
+
+                        SnackbarUtils.success("tạo ảnh thành công");
+                        setFileImport(undefined)
+                        setImageUrl(`http://localhost:8888/api/item/image/view/${res.data.id}`)
+                    })
+                    .catch((e) => {
+                        SnackbarUtils.error(getMessageError(e));
+                    });
+            } catch (error) {
+                SnackbarUtils.error(getMessageError(error));
+            }
+        }
+    }
     useEffect(() => {
+
+
         initCategory();
     }, [])
     const initCategory = async () => {
@@ -54,7 +106,7 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
                 let ingredient = v.ingredients?.find((ig) => (ig.ingredientId === item.ingredientId));
                 if (ingredient) {
                     return {
-                        
+
                         ...v,
                         ingredients: v.ingredients?.map((ig) => {
                             if (ig.ingredientId === item.ingredientId) {
@@ -75,7 +127,7 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
                     ...v,
                     ingredients: v.ingredients?.filter((i) => i.ingredientId !== item.ingredientId)
                 };
-            }else return v;
+            } else return v;
         })
         setVariants(variantsNew);
     }
@@ -132,8 +184,10 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
         }
     }
     const handleCreateItem = async () => {
+        debugger
+        handleUploadFile()
         variants.forEach((item) => {
-            if(!item.name){
+            if (!item.name) {
                 SnackbarUtils.error(`Tên phiên bản ${item.id} không được để trống!`);
                 return;
             }
@@ -365,13 +419,39 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
                                 </Grid>
                             </Box>
                         </Paper>
+                        <Paper className={classes.wrapperBoxInfo}>
+                            <Box style={{ padding: "12px 12px" }}>
+                                <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
+                                    Hình đại diện
+                                </Typography>
+                                <Box className={classes.boxContentPaper} style={{}}>
+
+                                    {imageUrl ? (
+                                        <Image src={imageUrl || ""} style={{ height: 290, width: 308, marginLeft: 0, marginBottom: 10 }} />
+                                    ) : (
+                                        <AvatarDefaultIcon style={{ height: 120, width: 120, marginLeft: 100, marginBottom: 40 }} />
+                                    )}
+                                </Box>
+                                <Box>
+                                    <Button variant="outlined" color="secondary" style={{ marginLeft: 35, width: 250 }}>
+                                        <Box {...getRootProps({ className: classes.dragDropFile })}>
+                                            <Typography style={{ marginLeft: 10, color: "#0088FF" }} >
+                                                Upload file
+                                            </Typography>
+                                        </Box>
+                                        <input {...getInputProps()} multiple={true} type="file" />
+                                    </Button>
+                                </Box>
+                            </Box>
+                        </Paper>
                     </Grid>
                 </Grid>
+                <Box style={{ display: "flex", marginBottom: "24px", marginLeft: "830px", marginTop: "16px" }}>
+                    <Button variant="outlined" color="primary">Hủy</Button>
+                    <Button variant="contained" color="primary" style={{ marginLeft: "16px" }} onClick={() => { handleCreateItem(); }}>Tạo mặt hàng</Button>
+                </Box>
             </Box>
-            <Box style={{ display: "flex", marginBottom: "100px", marginLeft: "1150px", marginTop: "16px" }}>
-                <Button variant="outlined" color="primary">Hủy</Button>
-                <Button variant="contained" color="primary" style={{ marginLeft: "16px" }} onClick={() => { handleCreateItem(); }}>Lưu</Button>
-            </Box>
+
         </>
     );
 };

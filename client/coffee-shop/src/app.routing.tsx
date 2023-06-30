@@ -40,6 +40,7 @@ const EditUser = React.lazy(() => import("./page/Users/update"));
 
 
 const ReportInventory = React.lazy(() => import("./page/Report/ReportInventory"));
+const ReportInventoryDetail = React.lazy(() => import("./page/Report/ReportInventory/detail"));
 const ReportOrder = React.lazy(() => import("./page/Report/ReportOrder"));
 export const LAYOUT_ROUTES: Route[] = [
   {
@@ -88,7 +89,7 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: "Khách hàng",
-      linkTo: "/admin/customers",
+      linkTo: "",
       showNoti: false,
       withSubtitle: false,
     },
@@ -100,7 +101,7 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: "Nguyên liệu",
-      linkTo: "/admin/ingredients",
+      linkTo: "",
       showNoti: false,
       withSubtitle: false,
     },
@@ -112,7 +113,7 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: "Danh sách phiếu nhập kho ",
-      linkTo: "/admin/receipts",
+      linkTo: "",
       showNoti: false,
       withSubtitle: false,
     },
@@ -172,7 +173,7 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: "Danh sách phiếu xuất kho ",
-      linkTo: "/admin",
+      linkTo: "",
       showNoti: false,
       withSubtitle: false,
     },
@@ -196,7 +197,7 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: "Mặt hàng",
-      linkTo: "/admin/items",
+      linkTo: "",
       showNoti: false,
       withSubtitle: false,
     },
@@ -269,7 +270,7 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: "Đơn hàng",
-      linkTo: "/admin/orders",
+      linkTo: "",
       showNoti: false,
       withSubtitle: false,
     },
@@ -317,7 +318,7 @@ let MAIN_ROUTES = (): Route[] => [
     extract: true,
     header: {
       title: "Nhân viên",
-      linkTo: "/admin/users",
+      linkTo: "",
       showNoti: false,
       withSubtitle: false,
     },
@@ -355,6 +356,18 @@ let MAIN_ROUTES = (): Route[] => [
     header: {
       title: "Báo cáo kho",
       linkTo: "",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [AccountRole.ADMIN],
+  },
+  {
+    path: "/report/inventory/:id",
+    component: ReportInventoryDetail,
+    extract: true,
+    header: {
+      title: "Báo cáo chi tiết kho",
+      linkTo: "/admin/report/inventory",
       showNoti: false,
       withSubtitle: false,
     },
