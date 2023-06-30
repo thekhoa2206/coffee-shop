@@ -38,6 +38,7 @@ import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 import { useOrderStore } from "../store/store";
 import styles from "./CreateOrder.styles";
 import { TableLineItem } from "./components/TableLineItem";
+import Avatar from "react-avatar";
 export interface CreateOrderProps extends WithStyles<typeof styles> {}
 const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
   const { classes, authState } = props;
@@ -211,7 +212,11 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                       <Box style={{ width: "10%" }}>
                         <Box style={{ marginLeft: 10 }}>
                           {option.imageUrl ? (
-                            <Image src={option.imageUrl} />
+                            <Image src={option.imageUrl}  style={{
+                              width: "40px",
+                              height: "40px",
+                              borderRadius: "6px"
+                            }} />
                           ) : (
                             <Box
                               style={{
@@ -220,7 +225,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                                 background: "#E8EAEB",
                                 borderRadius: "6px",
                               }}
-                            ></Box>
+                            > <Avatar size="40" color="#B1AFAF" round="6px"  name={option.name}  maxInitials={2} /></Box>
                           )}
                         </Box>
                       </Box>

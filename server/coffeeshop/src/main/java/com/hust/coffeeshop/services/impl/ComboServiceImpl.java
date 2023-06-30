@@ -69,17 +69,7 @@ public class ComboServiceImpl implements ComboService {
         combo.setCreatedOn(CommonCode.getTimestamp());
         combo.setDescription(request.getDescription());
         combo.setDiscountPercentage(request.getDiscountPercentage());
-        Path staticPath = Paths.get("static");
-        Path imagePath = Paths.get("images");
-        if (!Files.exists(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath))) {
-            Files.createDirectories(CURRENT_FOLDER.resolve(staticPath).resolve(imagePath));
-        }
-//        Path file = CURRENT_FOLDER.resolve(staticPath)
-//                .resolve(imagePath).resolve(image.getOriginalFilename());
-//        try (OutputStream os = Files.newOutputStream(file)) {
-//            os.write(image.getBytes());
-//        }
-//        combo.setImageUrl(imagePath.resolve(image.getOriginalFilename()).toString());
+        combo.setImageUrl(request.getImageUrl());
         if (request.getCategoryId() != 0)
             combo.setCategoryId(request.getCategoryId());
         combo.setModifiedOn(0);
@@ -136,7 +126,7 @@ public class ComboServiceImpl implements ComboService {
         if (request.getDescription() != null) combo.get().setDescription(request.getDescription());
         if (request.getDiscountPercentage() != null) combo.get().setDiscountPercentage(request.getDiscountPercentage());
         combo.get().setPrice(request.getPrice() != null ? request.getPrice() : BigDecimal.ZERO);
-//        if (request.getImageUrl() != null) combo.get().setImageUrl(request.getImageUrl());
+        if (request.getImageUrl() != null) combo.get().setImageUrl(request.getImageUrl());
         combo.get().setModifiedOn(CommonCode.getTimestamp());
         combo.get().setCategoryId(request.getCategoryId());
         var comboNew = comboRepository.save(combo.get());

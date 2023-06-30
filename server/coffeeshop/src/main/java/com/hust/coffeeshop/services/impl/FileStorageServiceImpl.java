@@ -2,6 +2,7 @@ package com.hust.coffeeshop.services.impl;
 
 import com.hust.coffeeshop.common.FileDownloadUtil;
 import com.hust.coffeeshop.models.dto.FileResponse;
+import com.hust.coffeeshop.models.dto.customer.CustomerResponse;
 import com.hust.coffeeshop.models.entity.File;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.FileRepository;
@@ -39,30 +40,43 @@ private final FileRepository fileRepository;
         this.fileRepository = fileRepository;
     }
     @Override
-    public FileResponse uploadFile(MultipartFile file) throws IOException {
-        // lấy tên file
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        if(!file.getContentType().equals("image/jpeg")) throw new ErrorException("file không đúng định dạng image/jpeg");
-        // Check nếu tên file trống báo lỗi
-        if (fileName.contains("..")) {
-            throw new ErrorException("Tên file chứa path không hợp lệ" + fileName);
-        }
-        File fileNew = new File();
-        fileNew.setName(fileName);
-        fileNew.setSize(file.getSize());
-        fileNew.setType(file.getContentType());
-        //Chuyển file cần lưu vào folder lưu trữ
-        file.transferTo(new java.io.File(
-                sourceFile + file.getOriginalFilename()));
-         val dbFile = fileRepository.save(fileNew);
-        String fileUrL = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/file/view"+dbFile.getId())
-                .toUriString();
+    public FileResponse uploadFile(MultipartFile[] files) throws IOException {
         FileResponse fileResponse = new FileResponse();
-        fileResponse.setFileUrl(fileUrL);
-        fileResponse.setId(dbFile.getId());
-        fileResponse.setFileName(fileName);
-        return fileResponse;
+        for(val file : files) {
+            // lấy tên file
+            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+            if (!file.getContentType().equals("image/jpeg"))
+                throw new ErrorException("file không đúng định dạng image/jpeg");
+            // Check nếu tên file trống báo lỗi
+            if (fileName.contains("..")) {
+                throw new ErrorException("Tên file chứa path không hợp lệ" + fileName);
+            }
+            File fileNew = new File();
+            fileNew.setName(fileName);
+            fileNew.setSize(file.getSize());
+            fileNew.setPath(file.getOriginalFilename());
+            fileNew.setType(file.getContentType());
+            //Chuyển file cần lưu vào folder lưu trữ
+            file.transferTo(new java.io.File(
+                    sourceFile + file.getOriginalFilename()));
+
+            try {
+                val dbFile = fileRepository.save(fileNew);
+                String fileUrL = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/file/view" + dbFile.getId())
+                        .toUriString();
+
+                fileResponse.setFileUrl(fileUrL);
+                fileResponse.setId(dbFile.getId());
+                fileResponse.setFileName(fileName);
+            } catch (Exception e) {
+                throw new ErrorException("lưu file hàng thất bại");
+            }
+
+
+        }
+            return fileResponse;
+
     }
     @Override
     public ResponseEntity<byte[]> getImage (int id) throws IOException {

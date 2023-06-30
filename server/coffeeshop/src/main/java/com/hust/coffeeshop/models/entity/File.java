@@ -20,8 +20,6 @@ public class File {
     private String path;
     @Column(name = "type")
     private String type;
-    @Column(name = "item_id")
-    private int itemId ;
     @Column(name = "size")
     private long size ;
 }

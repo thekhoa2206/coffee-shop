@@ -53,6 +53,9 @@ import {
   CreateComboRequest,
   VariantComboRequest,
 } from "services/ComboService/types";
+import Image from "components/Image";
+import AvatarDefaultIcon from "components/SVG/AvatarDefaultIcon";
+import { useDropzone } from "react-dropzone";
 export interface UpdateComboProps extends WithStyles<typeof styles> { }
 const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
   const { classes, authState } = props;
@@ -68,6 +71,50 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
   const [stockUnits, setStockUnits] = useState<StockUnitResponse[]>();
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
+  const [imageUrl, setImageUrl] = useState<string>();
+  const [fileImport, setFileImport] = React.useState<File[] | null>();
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      if (fileImport) {
+        if (acceptedFiles.length > 0) {
+          acceptedFiles.map((item) => {
+            setImageUrl(URL.createObjectURL(item))
+            fileImport.push(item);
+          })
+        }
+      } else {
+        setFileImport(acceptedFiles);
+        acceptedFiles.map((item) => {
+          setImageUrl(URL.createObjectURL(item))
+        })
+      }
+    },
+  });
+  const handleUploadFile = () => {
+    if (fileImport) {
+      if (fileImport.length === 0) {
+        SnackbarUtils.error("File upload không được để trống!");
+        return;
+      }
+      const data = new FormData();
+      fileImport?.map((item) => {
+        data.append("files", item);
+
+      });
+      try {
+        ItemsService.uploadImg(data)
+          .then((res) => {
+            setFileImport(undefined)
+            setImageUrl(`http://localhost:8888/api/item/image/view/${res.data.id}`)
+          })
+          .catch((e) => {
+            SnackbarUtils.error(getMessageError(e));
+          });
+      } catch (error) {
+        SnackbarUtils.error(getMessageError(error));
+      }
+    }
+  }
   useEffect(() => {
     initCategory();
   }, []);
@@ -84,7 +131,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
     let res = await ComboService.getById(id);
     if (res.data) {
       let combo = res.data;
-     let comboRq: CreateComboRequest = {
+      let comboRq: CreateComboRequest = {
         name: combo.name,
         imageUrl: combo.imageUrl,
         description: combo.description,
@@ -93,120 +140,27 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
         categoryId: 0,
         varianIds: [],
       }
-      let variantComboRequests : VariantComboRequest[] = [];
+      let variantComboRequests: VariantComboRequest[] = [];
       combo.items?.map((v) => {
         v.item?.variants.map((x) => {
-         let vq: VariantComboRequest = {
-           variantId: x.id,
-           quantity: v.quantity ? v.quantity : 0,
-           price: x.price,
-           name: v.item?.name + "-" + x.name,
-           comboitemId:v.comboitemId? v.comboitemId : 0
-         };
-         variantComboRequests.push(vq);
-       });
-     });
-      
-      comboRq.varianIds =  variantComboRequests;
+          let vq: VariantComboRequest = {
+            variantId: x.id,
+            quantity: v.quantity ? v.quantity : 0,
+            price: x.price,
+            name: v.item?.name + "-" + x.name,
+            comboitemId: v.comboitemId ? v.comboitemId : 0
+          };
+          variantComboRequests.push(vq);
+        });
+      });
+
+      comboRq.varianIds = variantComboRequests;
       setCategory(combo.category);
       setComboRequest(comboRq)
       setVariantComboRequest(variantComboRequests);
-      
+
     }
   };
-
-  const updateIngredients = (
-    item: IngredientItemRequest,
-    variant: VariantRequest
-  ) => {
-    let variantNews = variants.map((v) => {
-      if (v.id === variant.id) {
-        let ingredient = v.ingredients?.find(
-          (ig) => ig.ingredientId === item.ingredientId
-        );
-        if (ingredient) {
-          return {
-            ...v,
-            ingredients: v.ingredients?.map((ig) => {
-              if (ig.ingredientId === item.ingredientId) {
-                return item;
-              } else return ig;
-            }),
-          };
-        } else return v;
-      } else return v;
-    });
-    setVariants(variantNews);
-  };
-
-  const deleteIngredients = (
-    item: IngredientItemRequest,
-    variant: VariantRequest
-  ) => {
-    let variantsNew = variants.map((v) => {
-      if (v.id === variant.id) {
-        return {
-          ...v,
-          ingredients: v.ingredients?.filter(
-            (i) => i.ingredientId !== item.ingredientId
-          ),
-        };
-      } else return v;
-    });
-    setVariants(variantsNew);
-  };
-
-  const addIngredients = (
-    item: IngredientItemRequest,
-    variant: VariantRequest
-  ) => {
-    let variantNews = variants.map((v) => {
-      if (v.id === variant.id) {
-        let ingredient = v.ingredients?.find(
-          (ig) => ig.ingredientId === item.ingredientId
-        );
-        if (ingredient) {
-          return {
-            ...v,
-            ingredients: v.ingredients?.map((ig) => {
-              if (ig.ingredientId === item.ingredientId) {
-                return { ...ig, amountConsume: ig.amountConsume + 1 };
-              } else return ig;
-            }),
-          };
-        } else
-          return {
-            ...v,
-            ingredients: [...(v.ingredients || []), item],
-          };
-      } else return v;
-    });
-    setVariants(variantNews);
-  };
-
-  const addVariants = () => {
-    let idMax = Math.max.apply(
-      null,
-      variants.map((item) => item.id)
-    );
-    setVariants([...variants, { id: idMax + 1, name: "", price: 0 }]);
-  };
-
-  const deleVariants = (variant: VariantRequest) => {
-    setVariants([...variants.filter((v) => v.id !== variant.id)]);
-  };
-  const updateVariants = (variant: VariantRequest) => {
-    setVariants([
-      ...variants.map((v) => {
-        if (v.id !== variant.id) {
-          return v;
-        } else {
-          return variant;
-        }
-      }),
-    ]);
-  };
-
   useEffect(() => {
     initUnit();
   }, []);
@@ -242,7 +196,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
             return {
               ...v,
               quantity: v.quantity + 1,
-              comboitemId:v.comboitemId,
+              comboitemId: v.comboitemId,
             };
           } else return { ...(v || []), variant };
         });
@@ -257,26 +211,19 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
     }
   };
   const handleUpdateCombo = async () => {
-    // variants.forEach((item) => {
-    //   if (!itemRequest?.variantRequest?.find((vq) => vq.id == item.id)) {
-    //     item.id = 0;
-    //   }
-    //   if (!item.name) {
-    //     SnackbarUtils.error(`Tên phiên bản ${item.id} không được để trống!`);
-    //     return;
-    //   }
-    // });
+    handleUploadFile()
     let requet: CreateComboRequest = {
       ...comboRequest,
       categoryId: category?.id || 0,
       varianIds: variantComboRequest,
+      imageUrl: imageUrl ? imageUrl : comboRequest?.imageUrl,
     };
 
     try {
       let res = await ComboService.update(requet, id);
       if (res.data) {
         SnackbarUtils.success("Cập nhật combo thành công");
-        history.push(`/admin/combo/${res.data.id}`);
+        history.push(`/admin/combos/${res.data.id}`);
       }
     } catch (error) {
       SnackbarUtils.error(getMessageError(error));
@@ -369,7 +316,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                               dataSource.metaData = {
                                 totalPage: Math.ceil(
                                   (res.data.metadata?.total || 0) /
-                                    (filter.limit || 0)
+                                  (filter.limit || 0)
                                 ),
                                 totalItems: res.data.metadata?.total || 0,
                               };
@@ -406,7 +353,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                                 quantity: 1,
                                 price: item.variants.price,
                                 name: item.name + "-" + item.variants.name,
-                                comboitemId:0
+                                comboitemId: 0
                               },
                               item
                             );
@@ -489,10 +436,10 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                       {!(
                         variantComboRequest && variantComboRequest.length > 0
                       ) && (
-                        <Box style={{ margin: "auto", padding: "24px" }}>
-                          <BoxNoDataComponent width="150px" />
-                        </Box>
-                      )}
+                          <Box style={{ margin: "auto", padding: "24px" }}>
+                            <BoxNoDataComponent width="150px" />
+                          </Box>
+                        )}
                     </Box>
                   </Box>
                 </Box>
@@ -513,7 +460,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                     label="Giảm giá mặt hàng"
                     placeholder="Nhập giá trị giảm giá"
                     style={{ marginTop: "16px" }}
-                    onChange={(e) => {}}
+                    onChange={(e) => { }}
                     fullWidth
                     name={"discount"}
                     value={comboRequest?.discountPercentage ?? 0}
@@ -533,7 +480,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                         }
                       }}
                       placeholder="Tìm kiếm"
-                      placeholderSelect= {category? category.name :"Chọn nhóm mặt hàng"}
+                      placeholderSelect={category ? category.name : "Chọn nhóm mặt hàng"}
                       inputSearchClassRoot={classes.inputCategory}
                     />
                   </Box>
@@ -541,7 +488,7 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                     <TextareaAutosize
                       label="Mô tả"
                       height={60}
-                      value={comboRequest?.description} 
+                      value={comboRequest?.description}
                       onChange={(e: any) => {
                         setComboRequest({
                           ...comboRequest,
@@ -553,31 +500,57 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
                 </Grid>
               </Box>
             </Paper>
+            <Paper className={classes.wrapperBoxInfo}>
+              <Box style={{ padding: "12px 12px" }}>
+                <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
+                  Hình đại diện
+                </Typography>
+                <Box className={classes.boxContentPaper} style={{}}>
+
+                  {imageUrl ? (
+                    <Image src={imageUrl || ""} style={{ height: 290, width: 308, marginLeft: 0, marginBottom: 10 }} />
+                  ) : (
+                    <AvatarDefaultIcon style={{ height: 120, width: 120, marginLeft: 100, marginBottom: 40 }} />
+                  )}
+                </Box>
+                <Box>
+                  <Button variant="outlined" color="secondary" style={{ marginLeft: 35, width: 250 }}>
+                    <Box {...getRootProps({ className: classes.dragDropFile })}>
+                      <Typography style={{ marginLeft: 10, color: "#0088FF" }} >
+                        Upload file
+                      </Typography>
+                    </Box>
+                    <input {...getInputProps()} multiple={true} type="file" />
+                  </Button>
+                </Box>
+              </Box>
+            </Paper>
           </Grid>
         </Grid>
-      </Box>
-      <Box
-        style={{
-          display: "flex",
-          marginBottom: "100px",
-          marginLeft: "1150px",
-          marginTop: "16px",
-        }}
-      >
-        <Button variant="outlined" color="primary">
-          Hủy
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ marginLeft: "16px" }}
-          onClick={() => {
-            handleUpdateCombo();
+        <Box
+          style={{
+            display: "flex",
+            marginBottom: "24px",
+            marginLeft: "880px",
+            marginTop: "16px",
           }}
         >
-          Lưu
-        </Button>
+          <Button variant="outlined" color="primary" onClick={() => history.push(`/admin/combos`)}>
+            Hủy
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ marginLeft: "16px" }}
+            onClick={() => {
+              handleUpdateCombo();
+            }}
+          >
+            Lưu
+          </Button>
+        </Box>
       </Box>
+
     </>
   );
 };
