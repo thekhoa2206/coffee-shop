@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserService {
             var userNew = userRepository.save(user);
             userResponse = mapper.map(userNew, UserResponse.class);
             userResponse.setRole(role1.getName());
+            userResponse.setScopes(role1.getScopes());
         } catch (Exception e) {
             throw new ErrorException("Tạo nhân viên thất bại");
         }
@@ -109,6 +110,7 @@ public class UserServiceImpl implements UserService {
          val userResponse = mapper.map(users.get(), UserResponse.class);
         for(val r:users.get().getRoles()){
             userResponse.setRole(r.getName());
+            userResponse.setScopes(r.getScopes());
         }
          return userResponse;
     }

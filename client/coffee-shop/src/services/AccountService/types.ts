@@ -20,6 +20,7 @@ export type UserResponse = {
 export type RolesResponse = {
   id: number;
   code: string;
+  scopes: string;
   createdOn?: string;
   createdBy?: string;
   modifiedOn?: string;
@@ -95,6 +96,7 @@ export type RoleResponse = {
   note?: string;
   name?: string;
   code?: string;
+  scopes?: string;
 }
 
 export type ListRoleResponse = {

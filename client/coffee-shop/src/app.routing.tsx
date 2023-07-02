@@ -4,6 +4,7 @@ import MainLayoutComponent from "layout/main/MainLayout";
 import { AccountRole } from "utilities/AccountRole";
 import UpdateReceipt from "page/Stocktaking/Receipt/Update/UpdateReceipt";
 import Users from "page/Users/Users";
+import { RolePermissionGroup } from "utilities/RoleGroup";
 
 const CustomerList = React.lazy(() => import("./page/Customer"));
 const IngredientList = React.lazy(() => import("./page/Ingredients"));
@@ -93,7 +94,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.CUSTOMER],
   },
   {
     path: "/ingredients",
@@ -105,7 +106,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.INGRADIENT],
   },
   {
     path: "/receipts",
@@ -117,7 +118,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.INVENTORY],
   },
   {
     path: "/receipts/create",
@@ -129,7 +130,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.INVENTORY],
   },
   {
     path: "/items/create",
@@ -141,7 +142,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.PRODUCT],
   },
   {
     path: "/receipts/:id/edit",
@@ -153,7 +154,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.INVENTORY],
   },
   {
     path: "/exports/:id/edit",
@@ -165,7 +166,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.INVENTORY],
   },
   {
     path: "/exports",
@@ -177,7 +178,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.INVENTORY],
   },
   {
     path: "/exports/create",
@@ -189,7 +190,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.INVENTORY],
   },
   {
     path: "/items",
@@ -201,7 +202,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.PRODUCT],
   },
   {
     path: "/items/:id",
@@ -213,7 +214,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.PRODUCT],
   },
   {
     path: "/items/:id/edit",
@@ -225,7 +226,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.PRODUCT],
   },
   {
     path: "/combos",
@@ -237,7 +238,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.PRODUCT],
   },
   {
     path: "/combos/create",
@@ -249,7 +250,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.PRODUCT],
   },
   {
     path: "/combos/:id",
@@ -261,7 +262,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.PRODUCT],
   },
 
   {
@@ -274,7 +275,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.ORDER],
   },
   {
     path: "/orders/create",
@@ -286,7 +287,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.ORDER],
   },
   {
     path: "/orders/:id",
@@ -298,7 +299,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.ORDER],
   },
   {
     path: "/orders/:id/edit",
@@ -310,7 +311,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.ORDER],
   },
   {
     path: "/users",
@@ -322,7 +323,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.USER],
   },
   {
     path: "/users/create",
@@ -334,7 +335,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.USER],
   },
   {
     path: "/users/:id/edit",
@@ -346,7 +347,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.USER],
   },
 
   {
@@ -359,7 +360,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.REPORT],
   },
   {
     path: "/report/inventory/:id",
@@ -371,7 +372,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.REPORT],
   },
   {
     path: "/report/order",
@@ -383,7 +384,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [AccountRole.ADMIN],
+    authorities: [RolePermissionGroup.REPORT],
   },
 ];
 export default MAIN_ROUTES;

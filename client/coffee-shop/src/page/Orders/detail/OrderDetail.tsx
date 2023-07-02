@@ -255,7 +255,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                         </Box>
                         <Box display="flex" alignItems="center" style={{ marginTop: 10 }}>
                             <Button startIcon={<PrintIcon />} color="inherit" variant="text" onClick={() => { printOrder() }}>In</Button>
-                            <Button startIcon={<PaymentOutlined />} color="inherit" variant="text" onClick={() => {
+                            <Button disabled={order?.paymentStatus === PaymentStatus.PAID} startIcon={<PaymentOutlined />} color="inherit" variant="text" onClick={() => {
                                 openModal(ConfirmDialog, {
                                     confirmButtonText: "Xác nhận",
                                     message: "Bạn có muốn thanh toán đơn hàng này không?",

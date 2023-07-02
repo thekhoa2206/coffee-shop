@@ -48,6 +48,7 @@ public class RoleServiceImpl implements RoleService {
         role.setName(request.getName());
         role.setCode(CommonCode.GenerateCodeRole());
         role.setCreatedOn(CommonCode.getTimestamp());
+        role.setScopes(request.getScopes());
         RoleResponse roleResponse = null;
         try {
             var roleNew = roleRepository.save(role);

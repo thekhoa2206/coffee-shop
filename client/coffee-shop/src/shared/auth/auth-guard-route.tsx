@@ -86,7 +86,7 @@ export const hasAnyAuthority = (authorities: string[], hasAnyAuthorities: string
     if (hasAnyAuthorities.length === 0) {
       return true;
     }
-    if (authorities.length === 1 && authorities[0] === "ADMIN") {
+    if (authorities.length === 1 && authorities[0] === "full") {
       return true;
     }
     return hasAnyAuthorities.some((auth) => authorities.includes(auth));

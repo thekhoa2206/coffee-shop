@@ -8,4 +8,5 @@ import lombok.Setter;
 @Getter
 public class RoleResponse extends BaseResponse {
     private String name;
+    private String scopes;
 }

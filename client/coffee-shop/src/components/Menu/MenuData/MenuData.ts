@@ -14,6 +14,7 @@ import {
   MenuCustomerIcon,
 } from "../../SVG";
 import { MenuItem } from "./MenuData.types";
+import { RolePermissionGroup } from "utilities/RoleGroup";
 
 const useGenMenuData = () => {
   const state = useSelector((state: AppState) => state);
@@ -152,12 +153,12 @@ const useGenMenuData = () => {
   const genMenuData = () => {
     let listMenu: MenuItem[] = [];
     listMenu.push(genMenuDashboard());
-    listMenu.push(genMenuOrder());
-    listMenu.push(genMenuCustomer());
-    listMenu.push(genMenuProduct());
-    listMenu.push(genMenuInventory());
-    listMenu.push(genMenuUser());
-    listMenu.push(genMenuReport())
+    if(hasPermission([RolePermissionGroup.ORDER], auth.user))  listMenu.push(genMenuOrder());
+    if(hasPermission([RolePermissionGroup.CUSTOMER], auth.user))  listMenu.push(genMenuCustomer());
+    if(hasPermission([RolePermissionGroup.PRODUCT], auth.user))  listMenu.push(genMenuProduct());
+    if(hasPermission([RolePermissionGroup.INVENTORY, RolePermissionGroup.INGRADIENT], auth.user))  listMenu.push(genMenuInventory());
+    if(hasPermission([RolePermissionGroup.USER], auth.user))  listMenu.push(genMenuUser());
+    if(hasPermission([RolePermissionGroup.REPORT], auth.user)) listMenu.push(genMenuReport())
     return listMenu;
   };
   const genSapoMenu = async () => {

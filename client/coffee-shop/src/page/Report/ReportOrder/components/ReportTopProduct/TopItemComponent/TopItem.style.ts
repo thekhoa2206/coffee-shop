@@ -4,7 +4,7 @@ const styles = (theme: Theme) =>
   createStyles({
     root: {
       display: "inline-flex",
-      width: "90%",
+      width: "92%",
       padding: "10px 16px",
       alignItems: "center",
       "@media (min-width: 1920px)": {

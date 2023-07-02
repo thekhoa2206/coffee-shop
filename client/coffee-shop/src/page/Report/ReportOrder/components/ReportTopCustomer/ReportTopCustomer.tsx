@@ -54,8 +54,8 @@ const ReportTopCustomer = (props: ReportTopCustomerProps) => {
         }
         setFilter({
             ...filter,
-            created_on_min: startDate,
-            created_on_max: endDate,
+            createdOnMin: startDate,
+            createdOnMax: endDate,
         });
     };
 

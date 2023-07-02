@@ -24,6 +24,7 @@ public class UserResponse extends BaseResponse {
     public static class RoleResponse extends BaseResponse{
         private String code;
         private String name;
+        private String scopes;
         private String status;
     }
 }

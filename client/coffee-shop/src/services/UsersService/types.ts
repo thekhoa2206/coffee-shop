@@ -7,7 +7,7 @@ export type UserResponse = {
     id: number;
     name: string;
     username: string;
-    phoneNumber: number;
+    phoneNumber: string;
     email?: string;
     passWord:string;
     status: number;
@@ -16,6 +16,7 @@ export type UserResponse = {
     createdBy?: string;
     modifiedOn?: string;
     modifiedBy?: string;
+    scopes?: string;
 }
 
 
@@ -35,7 +36,7 @@ export type ListUserResponse = {
 export type UserRequest = {
     name?: string;
     username?: string;
-    phoneNumber?: number;
+    phoneNumber?: string;
     email?: string;
     password?:string;
     roleId?: number;

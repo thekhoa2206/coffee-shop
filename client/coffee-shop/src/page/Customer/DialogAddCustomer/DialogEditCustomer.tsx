@@ -16,7 +16,7 @@ export const DialogEditCustomer = (props: DialogAddCustomerProps) => {
   const { open, onClose, initData } = props;
   const [customer, setcustomer] = useState<CustomerRequest>();
   useEffect(() => {
-    if(props.customer){
+    if (props.customer) {
       setcustomer({
         dob: props.customer?.dob,
         name: props.customer.name,
@@ -24,7 +24,7 @@ export const DialogEditCustomer = (props: DialogAddCustomerProps) => {
         sex: props.customer.sex,
       })
     }
-  },[props.customer])
+  }, [props.customer])
   const history = useHistory();
   const handleAddCustomer = () => {
     let customerAdd: CustomerRequest = {
@@ -32,7 +32,7 @@ export const DialogEditCustomer = (props: DialogAddCustomerProps) => {
     };
     if (customer) {
 
-        CustomerService.update(customerAdd, props.customer?.id)
+      CustomerService.update(customerAdd, props.customer?.id)
         .then(async (res) => {
           if (res) {
             onClose();
@@ -45,9 +45,9 @@ export const DialogEditCustomer = (props: DialogAddCustomerProps) => {
         .catch((err) => {
           SnackbarUtils.error(getMessageError(err));
         });
-       }
+    }
   };
-  const handleDeleteCustommer = async () =>{
+  const handleDeleteCustommer = async () => {
     try {
       let res = await CustomerService.delete(props.customer?.id);
       if (res) {
@@ -72,48 +72,48 @@ export const DialogEditCustomer = (props: DialogAddCustomerProps) => {
           dividerBottom: true
         }}
         DialogActionProps={{
-        renderActions: () => (
-          <Box display="flex">
-            <Button  variant="outlined"    style={{
-                            background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
-                            borderColor: "#ff4d4d",
-                            boxShadow: "inset 0 1px 0 0 #ff4d4",
-                            color: "#fff",
-                            marginRight: "10px",
+          renderActions: () => (
+            <Box display="flex">
+              <Button variant="outlined" style={{
+                background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
+                borderColor: "#ff4d4d",
+                boxShadow: "inset 0 1px 0 0 #ff4d4",
+                color: "#fff",
+                marginRight: "10px",
 
-                          }} onClick={() => handleDeleteCustommer()}>
-              Xoá              </Button>
- 
-            <Button btnType="destruction"  variant="outlined" style={{ marginRight: "10px",}} onClick={() => onClose()}>
-              Thoát
-            </Button>
-            <Button  variant="contained" color="primary"  onClick={() => handleAddCustomer()}>
-            Lưu
-            </Button>
-          </Box>
-        ),
-      }}
-        
+              }} onClick={() => handleDeleteCustommer()}>
+                Xoá              </Button>
+
+              <Button btnType="destruction" variant="outlined" style={{ marginRight: "10px", }} onClick={() => onClose()}>
+                Thoát
+              </Button>
+              <Button variant="contained" color="primary" onClick={() => handleAddCustomer()}>
+                Lưu
+              </Button>
+            </Box>
+          ),
+        }}
+
         children={
           <Box padding={"16px"}>
             <Grid container xs={12} spacing={2}>
               <Grid item xs={6}>
-                <TextField 
-                label="Tên khách hàng" 
-                placeholder="Nhập tên khách hàng..." 
-                fullWidth 
-                required 
-                value={customer?.name}
-                onChange={(e: any) => {setcustomer({...customer, name: e.target.value })}}/>
+                <TextField
+                  label="Tên khách hàng"
+                  placeholder="Nhập tên khách hàng..."
+                  fullWidth
+                  required
+                  value={customer?.name}
+                  onChange={(e: any) => { setcustomer({ ...customer, name: e.target.value }) }} />
               </Grid>
               <Grid item xs={6}>
-                <TextField 
-                label="Số điện thoại" 
-                placeholder="Nhập số điện thoại..." 
-                fullWidth 
-                required 
-                value={customer?.phoneNumber}
-                onChange={(e: any) => {setcustomer({...customer, phoneNumber: e.target.value })}}/>
+                <TextField
+                  label="Số điện thoại"
+                  placeholder="Nhập số điện thoại..."
+                  fullWidth
+                  required
+                  value={customer?.phoneNumber}
+                  onChange={(e: any) => { setcustomer({ ...customer, phoneNumber: e.target.value }) }} />
               </Grid>
             </Grid>
             <Grid container xs={12} spacing={2}>
@@ -124,24 +124,24 @@ export const DialogEditCustomer = (props: DialogAddCustomerProps) => {
                   onChange={(date) => {
                     if (date)
                       setcustomer({ ...customer, dob: date });
-                  }} value={customer?.dob} 
-                  
+                  }} value={customer?.dob}
+
                   textFieldProps={{
-                    style: {width: "339px"}
+                    style: { width: "339px" }
                   }}
-                  />
+                />
               </Grid>
               <Grid item xs={6}>
-                <Select  value={customer?.sex} onChange={(value) => {setcustomer({...customer, sex: `${value.target.value }`});}} label="Giới tính" placeholder="Chọn giới tính">
-                    <MenuItem key="male" value="male">
-                      <Typography >Nam</Typography>
-                    </MenuItem>
-                    <MenuItem key="female" value="female">
-                      <Typography >Nữ</Typography>
-                    </MenuItem>
-                    <MenuItem key="other" value="other">
-                      <Typography >Khác</Typography>
-                    </MenuItem>
+                <Select value={customer?.sex} onChange={(value) => { setcustomer({ ...customer, sex: `${value.target.value}` }); }} label="Giới tính" placeholder="Chọn giới tính">
+                  <MenuItem key="male" value="male">
+                    <Typography >Nam</Typography>
+                  </MenuItem>
+                  <MenuItem key="female" value="female">
+                    <Typography >Nữ</Typography>
+                  </MenuItem>
+                  <MenuItem key="other" value="other">
+                    <Typography >Khác</Typography>
+                  </MenuItem>
                 </Select>
               </Grid>
             </Grid>

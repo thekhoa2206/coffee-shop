@@ -27,7 +27,7 @@ const Revenue = (props: RevenueProps) => {
             let newDateCreatedOn = convertPredefinedToDate(filter?.createdOnPredefined);
             filter.createdOnMin = formatDateUTC(newDateCreatedOn.startDate, false);
             filter.createdOnMax = formatDateUTC(newDateCreatedOn.endDate, true);
-          }
+        }
         const res = await ReportOrderService.getRevenues(filter);
         if (res.data) {
             let revenues: DataPoint[] = [{
@@ -39,7 +39,7 @@ const Revenue = (props: RevenueProps) => {
                     key: formatDateUTCToLocalDateString(item.date),
                     value: item.totalRevenue,
                 }
-                if(item.date) revenues.push(revenue);
+                if (item.date) revenues.push(revenue);
             })
             let discounts: DataPoint[] = [{
                 key: "",
@@ -50,9 +50,9 @@ const Revenue = (props: RevenueProps) => {
                     key: formatDateUTCToLocalDateString(item.date),
                     value: item.totalDiscount,
                 }
-                if(item.date) discounts.push(discount);
+                if (item.date) discounts.push(discount);
             })
-            if(revenues && revenues.length > 0){
+            if (revenues && revenues.length > 0) {
                 revenues.push({
                     key: "",
                     value: 0,
@@ -130,12 +130,15 @@ const Revenue = (props: RevenueProps) => {
                     }}
                 />
             </Box>
-            <Button onClick={() => {initData()}} color="primary" style={{marginTop: 15}}>Xem</Button>
+            <Button onClick={() => { initData() }} color="primary" style={{ marginTop: 15 }}>Xem</Button>
         </Box>
         <Box style={{ width: "100%", height: "500px" }}>
-            {data && data.length > 0 ? (<StackedAreaChart data={data} theme="Light" />) : (<Box><Typography>Không có dữ liệu</Typography></Box>)}
+            {data && data.length > 0 ? (<StackedAreaChart data={data} theme="Light" />) : (
+                <Box style={{ width: "100%", height: "500px", background: "#FFFFFF" }}>
+                    <Typography style={{ textAlign: "center", paddingTop: 100 }}>Không có dữ liệu</Typography>
+                </Box>)}
         </Box>
-        <Box style={{height: 10, width: "100%", background: "#FFFFFF", borderRadius: 6}}></Box>
+        <Box style={{ height: 10, width: "100%", background: "#FFFFFF", borderRadius: 6 }}></Box>
     </Fragment>
     );
 };

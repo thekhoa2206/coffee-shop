@@ -128,6 +128,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
       if (res.data) {
         SnackbarUtils.success("Tạo đơn hàng thành công!");
         history.push(`/admin/orders/${res.data.id}`);
+        reset();
       }
     } catch (error) {
       SnackbarUtils.error(getMessageError(error));
