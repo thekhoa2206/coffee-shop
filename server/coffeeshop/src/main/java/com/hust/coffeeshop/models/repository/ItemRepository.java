@@ -13,11 +13,11 @@ import java.util.List;
 public interface ItemRepository  extends JpaRepository<Item, Integer>, JpaSpecificationExecutor<Item> {
     @Query(value = "Select * from item as i " +
             "where status in (?2) " +
-            "and (concat(i.name, '', i.description) like ?1 " +
+            "and lower((concat(i.name, '', i.description)) like lower(?1) " +
             "or exists(Select * from variant as v " +
             "where v.status in (?2) " +
             "and v.item_id = i.id " +
-            "and concat(v.name, '') like ?1 " +
+            "and lower(concat(v.name, '')) like lower(?1) " +
             "    )" +
             ");", nativeQuery = true)
     List<Item> findItemByQuery(String query, List<Integer> statuses);

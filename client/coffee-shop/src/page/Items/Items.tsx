@@ -11,6 +11,7 @@ import SearchBox from "components/SearchBox/SearchBox";
 import useQueryParams from "hocs/useQueryParams";
 import React, { useEffect, useState } from "react";
 import { ConnectedProps, connect } from "react-redux";
+import Avatar from "react-avatar";
 import { useHistory, useLocation } from "react-router-dom";
 import { IngredientFilterRequest, IngredientResponse } from "services/IngredientsService";
 import IngredientsService from "services/IngredientsService/IngredientsService";
@@ -177,15 +178,16 @@ const Items = (props: ItemsProps & PropsFromRedux) => {
                                         title={getItemsQuickFilterLabel(
                                             ItemsQuickFilterOptions.IMAGE_URL
                                         )}
-                                        width={150}
+                                        width={80}
                                         align="left"
                                     >
                                         {({ dataItem }: CellTemplateProps) => {
                                             return (
                                                 <>
                                                     {dataItem.imageUrl ?
-                                                        <Image src={dataItem.imageUrl} /> :
-                                                        <Box style={{ width: "40px", height: "40px", background: "#E8EAEB", borderRadius: "6px" }}>
+                                                        <Image src={dataItem.imageUrl} style={{ width: "50px", height: "50px",borderRadius: "6px" }}/> :
+                                                        <Box style={{ width: "50px", height: "50px", background: "#E8EAEB", borderRadius: "6px" }}>
+                                                                          <Avatar size="50" color="#B1AFAF" round="6px"  name={dataItem.name}  maxInitials={2} />
                                                         </Box>
                                                     }
                                                 </>

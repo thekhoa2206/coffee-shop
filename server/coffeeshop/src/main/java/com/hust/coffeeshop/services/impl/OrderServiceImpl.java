@@ -705,7 +705,7 @@ public class OrderServiceImpl implements OrderService {
                                 inventoryLog.setType("order");
                                 inventoryLog.setIngredientId(ingredient.get().getId());
                                 inventoryLog.setStockRemain(ingredient.get().getQuantity());
-                            inventoryLog.setAmountChargeInUnit("+"+changerAmount);
+                            inventoryLog.setAmountChargeInUnit("-"+changerAmount);
                             inventoryLog.setStatus(1);
                             inventoryLogRepository.save(inventoryLog);
                             }
@@ -720,7 +720,7 @@ public class OrderServiceImpl implements OrderService {
                                 inventoryLog.setType("order");
                                 inventoryLog.setIngredientId(ingredient.get().getId());
                                 inventoryLog.setStockRemain(ingredient.get().getQuantity());
-                                inventoryLog.setAmountChargeInUnit("-"+changerAmount);
+                                inventoryLog.setAmountChargeInUnit("+"+changerAmount);
                                 inventoryLog.setStatus(2);
                                 inventoryLogRepository.save(inventoryLog);
                             }
@@ -744,7 +744,7 @@ public class OrderServiceImpl implements OrderService {
                             inventoryLog.setType("order");
                             inventoryLog.setIngredientId(ingredient.get().getId());
                             inventoryLog.setStockRemain(ingredient.get().getQuantity());
-                            inventoryLog.setAmountChargeInUnit("+"+changerAmount);
+                            inventoryLog.setAmountChargeInUnit("-"+changerAmount);
                             inventoryLog.setStatus(1);
                             inventoryLogRepository.save(inventoryLog);
                         }
@@ -759,7 +759,7 @@ public class OrderServiceImpl implements OrderService {
                             inventoryLog.setType("order");
                             inventoryLog.setIngredientId(ingredient.get().getId());
                             inventoryLog.setStockRemain(ingredient.get().getQuantity());
-                            inventoryLog.setAmountChargeInUnit("-"+changerAmount);
+                            inventoryLog.setAmountChargeInUnit("+"+changerAmount);
                             inventoryLog.setStatus(2);
                             inventoryLogRepository.save(inventoryLog);
                         }

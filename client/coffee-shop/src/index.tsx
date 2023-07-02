@@ -10,6 +10,8 @@ import { CookiesProvider } from "react-cookie";
 import LoadingAuth from "components/Loading/LoadingAuth";
 import { ThemeProvider } from "@material-ui/styles";
 import { createTheme } from "theme";
+import {PolarisVizProvider} from '@shopify/polaris-viz';
+import '@shopify/polaris-viz/build/esm/styles.css';
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
@@ -17,7 +19,9 @@ root.render(
       <PersistGate loading={null} persistor={storeProvider.persistor}>
       <Suspense fallback={<LoadingAuth />}>
           <CookiesProvider>
-              <App />
+              <PolarisVizProvider>
+                <App/>
+              </PolarisVizProvider>
             </CookiesProvider>
         </Suspense>
       </PersistGate>

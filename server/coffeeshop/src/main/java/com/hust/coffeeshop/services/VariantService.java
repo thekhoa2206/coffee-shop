@@ -8,4 +8,5 @@ import com.hust.coffeeshop.models.dto.variant.response.VariantRepsone;
 
 public interface VariantService {
     PagingListResponse<VariantRepsone> filter(VariantFilterRequest filter) ;
+    VariantRepsone getById(int id);
 }

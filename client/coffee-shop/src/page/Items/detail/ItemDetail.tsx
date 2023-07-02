@@ -13,6 +13,8 @@ import { formatDateUTCToLocalDateString, formatMoney } from "utilities";
 import styles from "./ItemDetail.styles";
 import HeaderAction from "components/HeaderAction/HeaderAction";
 import Button from "components/Button";
+import Image from "components/Image";
+import AvatarDefaultIcon from "components/SVG/AvatarDefaultIcon";
 export interface CreateItemProps extends WithStyles<typeof styles> {
 
 }
@@ -112,6 +114,7 @@ const ItemDetail = (props: CreateItemProps & PropsFromRedux) => {
                     </Grid>
                     <Grid item xs={4}>
                         <Paper className={classes.wrapperBoxInfo}>
+   
                             <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                                 Thông tin mặt hàng
                             </Typography>
@@ -148,6 +151,19 @@ const ItemDetail = (props: CreateItemProps & PropsFromRedux) => {
                                         <Grid item xs={6}>{itemResponse?.description ? itemResponse?.description : "---"}</Grid>
                                     </Grid>
                                 </Grid>
+                            </Box>
+                        </Paper>
+                        <Paper className={classes.wrapperBoxInfo}>
+                            <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
+                                Hình đại diện
+                            </Typography>
+                            <Box className={classes.boxContentPaper} style={{}}>
+
+                                {itemResponse?.imageUrl ? (
+                                    <Image src={itemResponse.imageUrl || ""} style={{ height: 255, width: 290, }} />
+                                ) : (
+                                    <AvatarDefaultIcon style={{ height: 120, width: 120, marginLeft: 100, marginBottom: 40 }} />
+                                )}
                             </Box>
                         </Paper>
                     </Grid>

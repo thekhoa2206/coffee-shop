@@ -27,6 +27,9 @@ import { useHistory, useParams } from "react-router-dom";
 import Select from "components/Select/Index";
 import StockUnitService from "services/StockUnitService/StockUnitService";
 import { StockUnitResponse } from "services/StockUnitService";
+import { useDropzone } from "react-dropzone";
+import Image from "components/Image";
+import AvatarDefaultIcon from "components/SVG/AvatarDefaultIcon";
 export interface ItemEditProps extends WithStyles<typeof styles> {
 
 }
@@ -39,6 +42,56 @@ const ItemEdit = (props: ItemEditProps & PropsFromRedux) => {
     const [stockUnits, setStockUnits] = useState<StockUnitResponse[]>();
     const history = useHistory();
     const { id } = useParams<{ id: string }>();
+    const [imageUrl, setImageUrl] = useState<string>();
+    const [fileImport, setFileImport] = React.useState<File[] | null>();
+    const { getRootProps, getInputProps } = useDropzone({
+        onDrop: (acceptedFiles) => {
+            if (fileImport) {
+                if (acceptedFiles.length > 0) {
+                    acceptedFiles.map((item) => {
+                        setImageUrl(URL.createObjectURL(item))
+                        fileImport.push(item);
+
+                    })
+                }
+            } else {
+                setFileImport(acceptedFiles);
+                acceptedFiles.map((item) => {
+                    setImageUrl(URL.createObjectURL(item))
+                })
+            }
+        },
+    });
+    const handleUploadFile = () => {
+        debugger
+        if (fileImport) {
+            if (fileImport.length === 0) {
+                SnackbarUtils.error("File upload không được để trống!");
+                return;
+            }
+            const data = new FormData();
+            fileImport?.map((item) => {
+                debugger
+                data.append("files", item);
+
+            });
+            try {
+                console.log("data", data);
+                ItemsService.uploadImg(data)
+                    .then((res) => {
+                        console.log("oke", res);
+                        SnackbarUtils.success("tạo ảnh thành công");
+                        setFileImport(undefined)
+                        setImageUrl(`http://localhost:8888/api/item/image/view/${res.data.id}`)
+                    })
+                    .catch((e) => {
+                        SnackbarUtils.error(getMessageError(e));
+                    });
+            } catch (error) {
+                SnackbarUtils.error(getMessageError(error));
+            }
+        }
+    }
     useEffect(() => {
         initCategory();
     }, [])
@@ -52,10 +105,11 @@ const ItemEdit = (props: ItemEditProps & PropsFromRedux) => {
         initItem();
     }, [])
     const initItem = async () => {
+
         let res = await ItemsService.getById(id);
         if (res.data) {
             let item = res.data
-            let itemRq: ItemRequest ={
+            let itemRq: ItemRequest = {
                 categoryId: item.category.id,
                 description: item.description,
                 discountPercentage: item.discountPercentage,
@@ -90,7 +144,7 @@ const ItemEdit = (props: ItemEditProps & PropsFromRedux) => {
             setItemRequest(itemRq);
         }
     }
-    
+
     const updateIngredients = (item: IngredientItemRequest, variant: VariantRequest) => {
         let variantNews = variants.map((v) => {
             if (v.id === variant.id) {
@@ -117,7 +171,7 @@ const ItemEdit = (props: ItemEditProps & PropsFromRedux) => {
                     ...v,
                     ingredients: v.ingredients?.filter((i) => i.ingredientId !== item.ingredientId)
                 };
-            }else return v;
+            } else return v;
         })
         setVariants(variantsNew);
     }
@@ -174,11 +228,12 @@ const ItemEdit = (props: ItemEditProps & PropsFromRedux) => {
         }
     }
     const handleUpdateItem = async () => {
+        handleUploadFile();
         variants.forEach((item) => {
-            if(!itemRequest?.variantRequest?.find((vq) => vq.id == item.id)){
+            if (!itemRequest?.variantRequest?.find((vq) => vq.id == item.id)) {
                 item.id = 0;
             }
-            if(!item.name){
+            if (!item.name) {
                 SnackbarUtils.error(`Tên phiên bản ${item.id} không được để trống!`);
                 return;
             }
@@ -188,6 +243,7 @@ const ItemEdit = (props: ItemEditProps & PropsFromRedux) => {
             categoryId: category?.id || 0,
             stockUnitId: 1,
             variantRequest: variants,
+            imageUrl: imageUrl,
         }
 
         try {
@@ -411,13 +467,39 @@ const ItemEdit = (props: ItemEditProps & PropsFromRedux) => {
                                 </Grid>
                             </Box>
                         </Paper>
+                        <Paper className={classes.wrapperBoxInfo}>
+                            <Box style={{ padding: "12px 12px" }}>
+                                <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
+                                    Hình đại diện
+                                </Typography>
+                                <Box className={classes.boxContentPaper} style={{}}>
+
+                                    {imageUrl ? (
+                                        <Image src={imageUrl || ""} style={{ height: 290, width: 290, marginLeft: 0, marginBottom: 10 }} />
+                                    ) : (
+                                        <AvatarDefaultIcon style={{ height: 120, width: 120, marginLeft: 100, marginBottom: 40 }} />
+                                    )}
+                                </Box>
+                                <Box>
+                                    <Button variant="outlined" color="secondary" style={{ marginLeft: 35, width: 250 }}>
+                                        <Box {...getRootProps({ className: classes.dragDropFile })}>
+                                            <Typography style={{ marginLeft: 10, color: "#0088FF" }} >
+                                                Upload file
+                                            </Typography>
+                                        </Box>
+                                        <input {...getInputProps()} multiple={true} type="file" />
+                                    </Button>
+                                </Box>
+                            </Box>
+                        </Paper>
                     </Grid>
                 </Grid>
+                <Box style={{ display: "flex", marginBottom: "24px", marginLeft: "830px", marginTop: "16px" }}>
+                    <Button variant="outlined" color="primary">Hủy</Button>
+                    <Button variant="contained" color="primary" style={{ marginLeft: "16px" }} onClick={() => { handleUpdateItem(); }}>Lưu</Button>
+                </Box>
             </Box>
-            <Box style={{ display: "flex", marginBottom: "100px", marginLeft: "1150px", marginTop: "16px" }}>
-                <Button variant="outlined" color="primary">Hủy</Button>
-                <Button variant="contained" color="primary" style={{ marginLeft: "16px" }} onClick={() => { handleUpdateItem(); }}>Lưu</Button>
-            </Box>
+
         </>
     );
 };

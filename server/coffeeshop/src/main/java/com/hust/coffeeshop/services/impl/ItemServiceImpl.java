@@ -67,7 +67,8 @@ public class ItemServiceImpl implements ItemService {
         Item item = mapper.map(request, Item.class);
         item.setStatus(CommonStatus.CustomerStatus.ACTIVE);
         item.setCreatedOn(CommonCode.getTimestamp());
-        item.setModifiedOn();
+        item.setModifiedOn(0);
+        item.setImageUrl(request.getImageUrl());
         item.setDiscountPercentage(request.getDiscountPercentage());
         StockUnit stockUnit = new StockUnit();
         if (request.getStockUnitId() != 0) {
@@ -147,7 +148,7 @@ public class ItemServiceImpl implements ItemService {
         if (request.getName() != null) item.get().setName(request.getName());
         item.get().setDescription(request.getDescription());
         item.get().setDiscountPercentage(request.getDiscountPercentage());
-
+        if(request.getImageUrl()!=null) item.get().setImageUrl(request.getImageUrl());
         List<Variant> variants = variantRepository.findVariantByItemId(id);
         updateVariant(request.getVariantRequest(), variants, id);
 

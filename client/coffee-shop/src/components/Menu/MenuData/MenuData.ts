@@ -11,6 +11,7 @@ import {
   AccountSettingIcon,
   MenuProductIcon,
   MenuReportIcon,
+  MenuCustomerIcon,
 } from "../../SVG";
 import { MenuItem } from "./MenuData.types";
 
@@ -35,7 +36,7 @@ const useGenMenuData = () => {
   const genMenuUser= () => {
     let menu: MenuItem = {
       id: "user",
-      icon: MenuProductIcon,
+      icon: MenuCustomerIcon,
       title: "Nhân viên",
       path: "/admin/users",
     };

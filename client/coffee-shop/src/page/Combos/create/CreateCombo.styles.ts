@@ -2,6 +2,10 @@ import { createStyles, Theme } from "@material-ui/core";
 import defaultPalette, { colorInk } from "theme/palette";
 const styles = (theme: Theme) =>
     createStyles({
+        dragDropFile: {
+            cursor: "pointer",
+            display: "flex",
+          },
         container: {
             width: "1072px",
             margin: "auto",

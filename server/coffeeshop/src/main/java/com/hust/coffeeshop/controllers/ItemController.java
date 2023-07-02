@@ -54,8 +54,8 @@ public class ItemController extends BaseException {
         itemService.delete(id);
     }
     @PostMapping(value = "/image")
-    public FileResponse uploadFile(@RequestParam("file") MultipartFile file )throws IOException {
-       return fileStorageService.uploadFile(file);
+    public FileResponse uploadFile(@RequestParam("files") MultipartFile[] files )throws IOException {
+       return fileStorageService.uploadFile(files);
     }
     @GetMapping(value = "/image/view/{id}")
     public ResponseEntity<byte[]>  viewFile(@PathVariable int id)  throws IOException{
