@@ -28,7 +28,7 @@ const useGenMenuData = () => {
       id: "dashboard",
       icon: MenuDashboardIcon,
       title: "Tổng quan",
-      path: "/admin",
+      path: "/admin/dashboard",
       checkIsExact: true,
       includePaths: ["", "/admin", "/admin/dashboard"],
     };
