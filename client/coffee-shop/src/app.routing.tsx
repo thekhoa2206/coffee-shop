@@ -38,10 +38,14 @@ const User = React.lazy(() => import("./page/Users"));
 const CreateUser = React.lazy(() => import("./page/Users/create"));
 const EditUser = React.lazy(() => import("./page/Users/update"));
 
-
-const ReportInventory = React.lazy(() => import("./page/Report/ReportInventory"));
-const ReportInventoryDetail = React.lazy(() => import("./page/Report/ReportInventory/detail"));
+const ReportInventory = React.lazy(
+  () => import("./page/Report/ReportInventory")
+);
+const ReportInventoryDetail = React.lazy(
+  () => import("./page/Report/ReportInventory/detail")
+);
 const ReportOrder = React.lazy(() => import("./page/Report/ReportOrder"));
+const Dashboard = React.lazy(() => import("./page/Dashboard"));
 export const LAYOUT_ROUTES: Route[] = [
   {
     path: "/",
@@ -64,9 +68,10 @@ export const LAYOUT_ROUTES: Route[] = [
 
 let MAIN_ROUTES = (): Route[] => [
   {
-    path: "/",
+    path: "/dashboard",
     extract: true,
-    redirect: "/admin/dashboard",
+    component: Dashboard,
+    redirect: "",
     header: {
       title: `Tổng quan`,
       linkTo: "",

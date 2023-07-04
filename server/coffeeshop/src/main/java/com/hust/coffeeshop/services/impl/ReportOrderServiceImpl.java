@@ -125,8 +125,6 @@ public class ReportOrderServiceImpl implements ReportOrderService {
             response.setDate(CommonCode.getStringDate(new Date(i), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
             reportRevenueResponses.add(response);
         }
-
-
         return reportRevenueResponses;
     }
 
