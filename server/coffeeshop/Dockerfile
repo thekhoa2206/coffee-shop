@@ -1,6 +1,9 @@
 
-FROM maven:alpine as build
-RUN mvn clean package
+FROM maven:3.6.0-jdk-11-slim AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package
+
 
 FROM eclipse-temurin:11
 
@@ -8,7 +11,7 @@ LABEL mentainer="Coffee-shop"
 
 WORKDIR /app
 
-COPY target/coffeeshop-0.0.1-SNAPSHOT.jar /app/coffeeshop.jar
+COPY --from=build /home/app/target/coffeeshop-0.0.1-SNAPSHOT.jar /app/coffeeshop.jar
 
 ENTRYPOINT ["java", "-jar", "coffeeshop.jar"]
 
