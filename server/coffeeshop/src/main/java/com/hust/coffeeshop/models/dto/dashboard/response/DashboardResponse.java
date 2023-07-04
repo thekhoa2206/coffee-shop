@@ -25,7 +25,7 @@ public class DashboardResponse {
     // Tổng doanh thu
     private BigDecimal totalRevenue;
     // tiền xuất kho
-    private  BigDecimal exportMoneyl;
+    private  BigDecimal exportMoney;
     // tiền nhập kho
     private BigDecimal importMoney;
 

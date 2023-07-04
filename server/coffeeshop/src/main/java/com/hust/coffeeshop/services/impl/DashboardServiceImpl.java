@@ -139,9 +139,14 @@ public class DashboardServiceImpl implements DashboardService {
         response.setOrderCancel(orderCancel);
         response.setOrderCount(orderCount);
         response.setTotalRevenue(totalSale.add(exportMoney));
+        if(orderCount!=0){
         response.setAverageItemQuantity(countItems/orderCount);
         response.setAverageOrderValue(response.getTotalRevenue().divide(new BigDecimal(orderCount)));
-        response.setExportMoneyl(exportMoney);
+        }else { response.setAverageItemQuantity(0);
+            response.setAverageOrderValue(BigDecimal.ZERO);
+        }
+
+        response.setExportMoney(exportMoney);
         response.setImportMoney(importMoney);
         return response;
     }

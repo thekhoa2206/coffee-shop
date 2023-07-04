@@ -11,18 +11,9 @@ const ReportOrder = (props: ReportOrderProps & PropsFromRedux) => {
   return (
     <Box>
       <Box
-      style={{ margin: "auto", marginTop: 30, width: "90%", height: "500px" }}
+      style={{ margin: "auto", marginTop: 30, width: "90%",marginBottom:24 ,height:"100%"}}
       >
 <DashboardRevenueComponent/>
-      </Box>
-      <Box style={{ margin: "auto", marginTop: 60, width: "90%" }}>
-        <Grid xs={12} container spacing={2}>
-          <Grid xs={6} item>
-
-          </Grid>
-          <Grid xs={6} item>
-          </Grid>
-        </Grid>
       </Box>
     </Box>
   );

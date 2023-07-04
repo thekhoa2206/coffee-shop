@@ -6,7 +6,7 @@ import {
   DashboardResponse,
 } from "./types";
 class DashboardService {
-  static async filter(filter: DashboardRequest): Promise<DashboardResponse> {
+  static async filter(filter: DashboardRequest): Promise<AxiosResponse<DashboardResponse>> {
     return axios.get(`/dashboard`, { ...getAxiosConfig(), params: filter });
   }
   static async reportAggregateRevenue(

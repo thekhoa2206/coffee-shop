@@ -5,7 +5,9 @@ export type DashboardRequest ={
   startDate?: Date | null;
   endDate?: Date | null;
 }
-
+export type DashboardResponses = {
+  data?: DashboardResponse;
+}
 
 export type DashboardResponse = {
    //Số khách hàng
@@ -28,6 +30,10 @@ export type DashboardResponse = {
   exportMoneyl:number;
    // tiền nhập kho
     BigDecimal:number;
+     // tiền xuất kho
+     exportMoney:number;
+     // tiền nhập kho
+     importMoney:number;
 }
 
 export type AggregateRevenueResponse = {
