@@ -2,8 +2,10 @@ package com.hust.coffeeshop.services.impl;
 
 import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.models.dto.dashboard.request.DashboardRequest;
+import com.hust.coffeeshop.models.dto.dashboard.response.AggregateRevenueResponse;
 import com.hust.coffeeshop.models.dto.dashboard.response.DashboardResponse;
 import com.hust.coffeeshop.models.dto.order.OrderFilterRequest;
+import com.hust.coffeeshop.models.dto.reportOrder.ReportRevenueResponse;
 import com.hust.coffeeshop.models.repository.OrderRepository;
 import com.hust.coffeeshop.models.repository.StocktakingRepository;
 import com.hust.coffeeshop.services.DashboardService;
@@ -13,9 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,8 +54,8 @@ public class DashboardServiceImpl implements DashboardService {
         BigDecimal importMoney =  BigDecimal.ZERO;
         //Tổng tiền xuất kho
         BigDecimal exportMoney =  BigDecimal.ZERO;
-        Long startDate= CommonCode.getMilliSeconds(request.getStartDate(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
-        Long endtDate= CommonCode.getMilliSeconds(request.getEndDate(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
+        Long startDate= CommonCode.getMilliSeconds(request.getCreatedOnMin(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
+        Long endtDate= CommonCode.getMilliSeconds(request.getCreatedOnMax(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
         val importData = stocktakingRepository.stocktakingByDate(startDate,endtDate, "import");
         if(!importData.isEmpty()){
             BigDecimal  importMoneys = importData.stream()
@@ -72,8 +72,8 @@ public class DashboardServiceImpl implements DashboardService {
         }
 
         OrderFilterRequest filter = new OrderFilterRequest();
-        filter.setCreatedOnMin( request.getStartDate());
-        filter.setCreatedOnMax(request.getEndDate());
+        filter.setCreatedOnMin( request.getCreatedOnMin());
+        filter.setCreatedOnMax(request.getCreatedOnMax());
         var results = orderService.filter(filter);
         if(results.getMetadata().getTotal() != 0){
             val orderItem = results.getData().stream()
@@ -138,11 +138,59 @@ public class DashboardServiceImpl implements DashboardService {
         response.setTotalSale(totalSale);
         response.setOrderCancel(orderCancel);
         response.setOrderCount(orderCount);
-        response.setTotalRevenue(totalSale.add(importMoney));
+        response.setTotalRevenue(totalSale.add(exportMoney));
         response.setAverageItemQuantity(countItems/orderCount);
         response.setAverageOrderValue(response.getTotalRevenue().divide(new BigDecimal(orderCount)));
         response.setExportMoneyl(exportMoney);
         response.setImportMoney(importMoney);
         return response;
+    }
+    @Override
+    public List<AggregateRevenueResponse> reportAggregateRevenue (DashboardRequest request) throws ParseException {
+        OrderFilterRequest filter = new OrderFilterRequest();
+        if(request.getCreatedOnMax() == null || request.getCreatedOnMin() == null){
+            return new ArrayList<>(Arrays.asList(new AggregateRevenueResponse()));
+        }
+        List<AggregateRevenueResponse> responses = new ArrayList<>();
+        Long startDate= CommonCode.getMilliSeconds(request.getCreatedOnMin(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
+        Long endtDate= CommonCode.getMilliSeconds(request.getCreatedOnMax(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
+        BigDecimal aggregateRevenue = BigDecimal.ZERO;
+        BigDecimal cancelMoney = BigDecimal.ZERO;
+        for (var i = startDate; i < endtDate; i += 86400000) {
+            filter.setCreatedOnMax(CommonCode.getStringDate(new Date(i + 86400000), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+            filter.setCreatedOnMin(CommonCode.getStringDate(new Date(i), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+            filter.setStatuses("3,4");
+            AggregateRevenueResponse response = new AggregateRevenueResponse();
+            var result = orderService.filter(filter);
+            //Đơn hàng thành công
+            var order = result.getData().stream()
+                    .filter(o -> o.getStatus()==3)
+                    .collect(Collectors.toList());
+            if(order.size()>0 && order != null){
+                for (val oderMoney : order){
+                    aggregateRevenue = aggregateRevenue.add(oderMoney.getTotal()) ;
+                }
+            }
+            var cancels =  result.getData().stream()
+                    .filter(o -> o.getStatus()==4)
+                    .collect(Collectors.toList());
+            if(cancels.size()>0 && cancels != null){
+                for (val cancel : cancels){
+                    cancelMoney = cancelMoney.add(cancel.getTotal());
+
+                }
+            }
+            val exports = stocktakingRepository.stocktakingByDate(i,i + 86400000, "import");
+            if(exports.size()>0 && exports != null){
+                for (val export : exports){
+                    aggregateRevenue = aggregateRevenue.add(export.getTotalMoney());
+                }
+            }
+            response.setCancelMoney(cancelMoney);
+            response.setAggregateRevenue(aggregateRevenue);
+            response.setDate(CommonCode.getStringDate(new Date(i), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+            responses.add(response);
+        }
+        return responses;
     }
 }
