@@ -48,6 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = mapper.map(request, Customer.class);
         customer.setStatus(CommonStatus.CustomerStatus.ACTIVE);
         customer.setCreatedOn(CommonCode.getTimestamp());
+        customer.setModifiedOn(0);
         customer.setModifiedBy("admin");
         customer.setCreatedBy("admin");
         CustomerResponse customerResponse = null;
