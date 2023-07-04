@@ -22,7 +22,7 @@ const TopItem = (props: TopItemProps) => {
             </Tooltip>
           </Box>
           <Box className={classes.boxVariantAmount}>
-            <Tooltip title={isStore ? "Số lượng đơn hàng và tổng doanh thu của cửa hàng" : "Số lượng đơn hàng và tổng COD của cửa hàng"} placement="top-start" arrow leaveDelay={1}>
+            <Tooltip title={"Số lượng đơn hàng mà khách đã mua và giá trị"} placement="top-start" arrow leaveDelay={1}>
               <Typography variant="subtitle1" color="textPrimary">
                 {item.quantity}
               </Typography>

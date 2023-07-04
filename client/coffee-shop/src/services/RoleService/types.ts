@@ -25,5 +25,6 @@ export type ListRoleResponse = {
 
 export type RoleResquest= {
  name?: string;
+ scopes?: string;
 }
 

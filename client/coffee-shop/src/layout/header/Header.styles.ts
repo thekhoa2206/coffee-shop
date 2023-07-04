@@ -27,9 +27,9 @@ const styles = (theme: Theme) =>
     helper: {
       display: "flex",
       alignItems: "center",
-      padding: "16px 13px",
+      padding: "10px",
+      marginTop: 0,
       cursor: "pointer",
-      height: "100%",
       "& svg": {
         color: "#A2A8AF",
       },

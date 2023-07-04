@@ -216,7 +216,7 @@ const CreateUser = (props: CreateItemProps & PropsFromRedux) => {
                         });
                       }}
                     />
-                    <NumberInputTextField
+                    <TextField
                       style={{ marginLeft: 30, width: 320 }}
                       name={"quantity"}
                       label=" Số điện thoại "

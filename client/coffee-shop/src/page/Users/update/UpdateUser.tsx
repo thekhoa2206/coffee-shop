@@ -51,7 +51,7 @@ import { RoleResponse } from "services/types";
 import RoleService from "services/RoleService/RoleService";
 import CloseSmallIcon from "components/SVG/CloseSmallIcon";
 import { AccountCircleRounded } from "@material-ui/icons";
-import { RoleItem } from "../../../utilities/RoleGroup";
+import { RoleItem, RolePermissionGroup } from "../../../utilities/RoleGroup";
 import { DialogAddRole } from "../components/DialogAddRole";
 import UsersService from "services/UsersService/UsersService";
 import useModal from "components/Modal/useModal";
@@ -72,7 +72,6 @@ const UpdateUser = (props: UpdateItemProps & PropsFromRedux) => {
   const { closeModal, confirm, openModal } = useModal();
   const [openDialogAddRole, setOpenDialogAddRole] = useState(false);
   const [openPassWord, setOpenPassWord] = useState(false);
-  const [stockUnits, setStockUnits] = useState<StockUnitResponse[]>();
   const history = useHistory();
   const { id } = useParams<{ id: string }>();
 
@@ -131,6 +130,24 @@ const UpdateUser = (props: UpdateItemProps & PropsFromRedux) => {
       SnackbarUtils.error(getMessageError(error));
     }
   };
+
+  const getDetailRoles = () => {
+    if(users && users.scopes){
+      let scopes = users.scopes.split(",");
+      if(scopes.find((i) => i === "full")){
+        return "Tất cả quyền"
+      }else {
+        let roles: string[] = [];
+        scopes.map((sc) => {
+          if(RolePermissionGroup.getName(sc) && RolePermissionGroup.getName(sc).length > 0){
+            roles.push(RolePermissionGroup.getName(sc));
+          }
+        })
+        return roles.join(" , ")
+        
+      }
+    }
+  }
   return (
     <>
       <Box className={classes.container}>
@@ -239,7 +256,7 @@ const UpdateUser = (props: UpdateItemProps & PropsFromRedux) => {
                         });
                       }}
                     />
-                    <NumberInputTextField
+                    <TextField
                       style={{ marginLeft: 30, width: 320 }}
                       name={"quantity"}
                       label=" Số điện thoại "
@@ -267,25 +284,11 @@ const UpdateUser = (props: UpdateItemProps & PropsFromRedux) => {
               <Paper className={classes.wrapperBoxInfo}>
                 <Box
                   className={classes.boxContentPaper}
-                  style={{ padding: "8px 16px", height: 170 }}
+                  style={{ padding: "8px 16px", height: roleName ? "" : 170 }}
                 >
                   <Grid xs={12} style={{ padding: 0 }}>
                     {roleName ? (
-                      <Box style={{ width: 330 }}>
-                        <IconButton
-                          style={{
-                            width: 20,
-                            height: 20,
-                            float: "right",
-                            marginRight: 10,
-                          }}
-                          onClick={() => {
-                            setRoleName("");
-                            setRole(null);
-                          }}
-                        >
-                          <CloseSmallIcon style={{ width: 10, height: 10 }} />
-                        </IconButton>
+                      <Box style={{ width: 330, display: "flex" }}>
                         <Grid xs={12} container>
                           <Grid xs={5} item>
                             Tên quyền
@@ -296,7 +299,32 @@ const UpdateUser = (props: UpdateItemProps & PropsFromRedux) => {
                           <Grid xs={6} item>
                             {roleName ? roleName : role?.name}
                           </Grid>
+                          <Grid xs={5} item>
+                            Chi tiết
+                          </Grid>
+                          <Grid xs={1} item>
+                            :
+                          </Grid>
+                          <Grid xs={6} item>
+                            {getDetailRoles()}
+                          </Grid>
                         </Grid>
+                        
+                        <IconButton
+                          style={{
+                            width: 20,
+                            height: 20,
+                            float: "right",
+                            marginRight: 10,
+                            marginTop: -5,
+                          }}
+                          onClick={() => {
+                            setRoleName("");
+                            setRole(null);
+                          }}
+                        >
+                          <CloseSmallIcon style={{ width: 10, height: 10 }} />
+                        </IconButton>
                       </Box>
                     ) : (
                       <>

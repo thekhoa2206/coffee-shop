@@ -1,6 +1,7 @@
 import { Box, Typography, withStyles } from "@material-ui/core";
 import { AddCircleOutline } from "@material-ui/icons";
 import Button from "components/Button";
+import Chip from "components/Chip/Chip.component";
 import LoadingAuth from "components/Loading/LoadingAuth";
 import NoResultsComponent from "components/NoResults/NoResultsComponent";
 import { GridColumn } from "components/SapoGrid/GridColumn/GridColumn";
@@ -16,26 +17,24 @@ import React, { useEffect, useState } from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import {
-  IngredientFilterRequest,
-  IngredientResponse,
+  IngredientFilterRequest
 } from "services/IngredientsService";
-import { AppState } from "store/store";
-import { formatDateUTCToLocalDateString, formatMoney } from "utilities";
-import QueryUtils from "utilities/QueryUtils";
 import {
   StocktakingReponse,
   StoctakingFilterRequest,
 } from "services/StocktakingService/type";
+import { AppState } from "store/store";
+import { formatDateUTCToLocalDateString } from "utilities";
+import QueryUtils from "utilities/QueryUtils";
 import {
   UserQuickFilterOptions,
   getUserQuickFilterLabel,
 } from "./UserFilter.constant";
-import Chip from "components/Chip/Chip.component";
 
-import { UserProps } from "./User.types";
 import { UserFilterRequest } from "services/UsersService";
 import UsersService from "services/UsersService/UsersService";
 import styles from "./User.styles";
+import { UserProps } from "./User.types";
 
 const User = (props: UserProps & PropsFromRedux) => {
   const { classes, authState} = props;

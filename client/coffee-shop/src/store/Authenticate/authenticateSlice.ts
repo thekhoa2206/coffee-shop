@@ -20,8 +20,11 @@ const initialState: AuthState = {
         let user: UserResponse = res.data;
         if (user) {
           if (user.roleResponses && user.roleResponses.length) {
-            const allPermissions = user.roleResponses.map((role) => role.code).flat();
-            user.authorities = Array.from(new Set(allPermissions));
+            let permission: string[] = [];
+            user.roleResponses.map((role) => {
+              permission = [...permission, ...role.scopes.split(",")]
+            }).flat();
+            user.authorities = Array.from(new Set(permission));
           }
           return user;
         } 

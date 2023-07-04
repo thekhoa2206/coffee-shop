@@ -16,4 +16,5 @@ public class UserResponse  extends BaseResponse {
     private String role;
     private int status;
     private  String passWord;
+    private String scopes;
 }

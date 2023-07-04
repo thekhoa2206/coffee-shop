@@ -7,4 +7,5 @@ import lombok.Setter;
 @Getter
 public class CreateRoleRequest {
     private String name;
+    private String scopes;
 }
