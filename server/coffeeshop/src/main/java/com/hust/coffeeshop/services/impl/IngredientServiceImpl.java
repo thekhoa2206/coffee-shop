@@ -144,6 +144,19 @@ public class IngredientServiceImpl implements IngredientService {
                 }
             }
         }
+        List<Integer> statuses = new ArrayList<>();
+        if(filter.getStatuses() != null){
+            val statusArr = filter.getStatuses().split(",");
+            for (var status: statusArr) {
+                if(status.equals("1")){
+                    statuses.add(1);
+                }
+                if (status.equals("2"))
+                    statuses.add(2);
+            }
+        }else{
+            statuses.add(1);
+        }
         //id
         if (filter.getIds() != null) {
             Filter ids = Filter.builder()
@@ -163,13 +176,13 @@ public class IngredientServiceImpl implements IngredientService {
             filters.add(query);
         }
         //status
-        if (filter.getStatuses() != null && !filter.getStatuses().isEmpty()) {
-            Filter statuses = Filter.builder()
+        if (statuses != null && statuses.size() > 0) {
+            Filter statuses1 = Filter.builder()
                     .field("status")
                     .operator(QueryOperator.IN)
-                    .values(Arrays.asList(filter.getStatuses().split(",")))
+                    .values(statuses.stream().map(i -> i.toString()).collect(Collectors.toList()))
                     .build();
-            filters.add(statuses);
+            filters.add(statuses1);
         }
         Page<Ingredient> results;
         if (filters.size() > 0)
