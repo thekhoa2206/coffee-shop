@@ -40,7 +40,8 @@ public class IngredientController extends BaseException {
         return ingredientService.update(request, id);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
+    @CrossOrigin
     public void delete(@PathVariable("id") int id){
         ingredientService.delete(id);
     }
