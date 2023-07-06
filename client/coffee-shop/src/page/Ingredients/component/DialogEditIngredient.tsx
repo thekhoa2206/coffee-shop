@@ -80,12 +80,11 @@ export const DialogEditIngredient = (props: DialogAddIngredientProps) => {
         }
     };
     const handleDeleteIngredient = async () =>{
-        debugger
         try {
           let res = await IngredientsService.delete(props.ingredient?.id);
           if (res) {
-            SnackbarUtils.success("Xoá phiếu nhập kho thành công");
-            history.push(`/admin/customers`)
+            SnackbarUtils.success("Xoá nguyên liệu thành công");
+            history.push(`/admin/ingredients`)
           }
         } catch (error) {
           SnackbarUtils.error(getMessageError(error));
