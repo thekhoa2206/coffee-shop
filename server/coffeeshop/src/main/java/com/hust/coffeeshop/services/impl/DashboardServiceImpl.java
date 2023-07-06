@@ -167,7 +167,8 @@ public class DashboardServiceImpl implements DashboardService {
         BigDecimal aggregateRevenue = BigDecimal.ZERO;
         BigDecimal cancelMoney = BigDecimal.ZERO;
         BigDecimal total = BigDecimal.ZERO;
-        for (var i = startDate; i < endtDate; i += 86400000) {
+        for (var i = startDate; i < endtDate; i += 86400000)
+        {
             filter.setCreatedOnMax(CommonCode.getStringDate(new Date(i + 86400000), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
             filter.setCreatedOnMin(CommonCode.getStringDate(new Date(i), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
             filter.setStatuses("2,3,4,5");
