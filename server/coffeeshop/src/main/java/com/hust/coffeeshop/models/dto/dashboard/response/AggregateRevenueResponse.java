@@ -9,5 +9,6 @@ import java.math.BigDecimal;
 public class AggregateRevenueResponse {
     private BigDecimal aggregateRevenue;
     private BigDecimal cancelMoney;
-   private String date;
+    private String date;
+    private BigDecimal totlaMoney;
 }

@@ -3,47 +3,29 @@ import {
   Grid,
   IconButton,
   MenuItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
   Typography,
   WithStyles,
   withStyles,
 } from "@material-ui/core";
-import BoxNoDataComponent from "components/BoxNoData/BoxNoData.component";
 import Button from "components/Button";
-import SearchSuggest from "components/Filter/SearchSuggest";
-import NoResultsComponent from "components/NoResults/NoResultsComponent";
 import NumberInputTextField from "components/NumberInput/NumberInputTextField";
 import Paper from "components/Paper/Paper";
 import { CloseIcon, ContactCardIcon, PlusIcon } from "components/SVG";
 import SelectInfinite from "components/Select/SelectInfinite/SelectInfinite";
 import { DataSource } from "components/Select/types";
 import TextField from "components/TextField";
-import TextareaAutosize from "components/TextField/TextareaAutosize/TextareaAutosize";
 import _ from "lodash";
 import React, { useEffect, useState, useCallback } from "react";
 import { ConnectedProps, connect } from "react-redux";
-import { CategoryResponse } from "services/CategoryService";
-import CategoryService from "services/CategoryService/CategoryService";
+
 import {
-  IngredientFilterRequest,
-  IngredientResponse,
-} from "services/IngredientsService";
-import IngredientsService from "services/IngredientsService/IngredientsService";
-import {
-  IngredientItemRequest,
-  ItemRequest,
   VariantRequest,
 } from "services/ItemsService";
 import { AppState } from "store/store";
 import styles from "./CreateUser.styles";
-import ItemsService from "services/ItemsService/ItemsService";
 import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 import { getMessageError } from "utilities";
 import { useHistory } from "react-router-dom";
-import Select from "components/Select/Index";
 import StockUnitService from "services/StockUnitService/StockUnitService";
 import { StockUnitResponse } from "services/StockUnitService";
 import { UserRequest } from "services/UsersService";
@@ -51,7 +33,6 @@ import { RoleResponse } from "services/types";
 import RoleService from "services/RoleService/RoleService";
 import CloseSmallIcon from "components/SVG/CloseSmallIcon";
 import { AccountCircleRounded } from "@material-ui/icons";
-import { RoleItem } from "../../../utilities/RoleGroup";
 import { DialogAddRole } from "../components/DialogAddRole";
 import UsersService from "services/UsersService/UsersService";
 import EyeIcon from "components/SVG/EyeIcon";
@@ -95,19 +76,29 @@ const CreateUser = (props: CreateItemProps & PropsFromRedux) => {
   };
   const handleCreateItem = async () => {
 
-      if (!role?.name) {
+      if (!userRequest?.name) {
         SnackbarUtils.error(`Tên không được để trống `);
+        return;
+      }
+      if (!userRequest?.username) {
+        SnackbarUtils.error(`Tên đăng nhập được để trống `);
+        return;
+      }
+      if (userRequest?.password != userRequest?.confimPassWord) {
+        SnackbarUtils.error(`Mật khẩu và xác nhận mật khẩu phải nhập trùng `);
+        return;
+      }
+      if(role?.id){
+        SnackbarUtils.error(`Quyền không được để trống`);
         return;
       }
 
     let requet: UserRequest = {
       ...userRequest,
-      roleId:role.id
+      roleId:role?.id
     };
 
     try {
-      console.log("tung12",requet);
-      
       let res = await UsersService.create(requet);
       if (res.data) {
         SnackbarUtils.success("Tạo nhân viên thành công");

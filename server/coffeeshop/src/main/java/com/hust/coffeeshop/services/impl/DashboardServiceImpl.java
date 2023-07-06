@@ -14,6 +14,8 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,7 +57,7 @@ public class DashboardServiceImpl implements DashboardService {
         //Tổng tiền xuất kho
         BigDecimal exportMoney =  BigDecimal.ZERO;
         Long startDate= CommonCode.getMilliSeconds(request.getCreatedOnMin(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
-        Long endtDate= CommonCode.getMilliSeconds(request.getCreatedOnMax(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
+        Long endtDate= CommonCode.getMilliSeconds(request.getCreatedOnMax(),"yyyy-MM-dd'T'HH:mm:ss'Z'") +86400000;
         val importData = stocktakingRepository.stocktakingByDate(startDate,endtDate, "import");
         if(!importData.isEmpty()){
             BigDecimal  importMoneys = importData.stream()
@@ -102,7 +104,7 @@ public class DashboardServiceImpl implements DashboardService {
             countItems= countItem + countItemCOmbo;
         }
 
-        filter.setStatuses("3");
+        filter.setStatuses("2,3,5");
         var resultOk = orderService.filter(filter);
         if(resultOk.getMetadata().getTotal() != 0)
         {
@@ -122,7 +124,7 @@ public class DashboardServiceImpl implements DashboardService {
         }
         filter.setStatuses("4");
         var resultCancel = orderService.filter(filter);
-        if(resultOk.getMetadata().getTotal() != 0){
+        if(resultCancel.getMetadata().getTotal() != 0){
             Integer orderCountCancel = resultCancel.getData().stream()
                     .mapToInt(o -> o.getId())
                     .sum();
@@ -141,11 +143,14 @@ public class DashboardServiceImpl implements DashboardService {
         response.setTotalRevenue(totalSale.add(exportMoney));
         if(orderCount!=0){
         response.setAverageItemQuantity(countItems/orderCount);
-        response.setAverageOrderValue(response.getTotalRevenue().divide(new BigDecimal(orderCount)));
-        }else { response.setAverageItemQuantity(0);
+        BigDecimal test = response.getTotalRevenue().divide(new BigDecimal(orderCount),2, RoundingMode.HALF_UP);
+        response.setAverageOrderValue(test);
+        }
+        else
+        {
+            response.setAverageItemQuantity(0);
             response.setAverageOrderValue(BigDecimal.ZERO);
         }
-
         response.setExportMoney(exportMoney);
         response.setImportMoney(importMoney);
         return response;
@@ -161,21 +166,24 @@ public class DashboardServiceImpl implements DashboardService {
         Long endtDate= CommonCode.getMilliSeconds(request.getCreatedOnMax(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
         BigDecimal aggregateRevenue = BigDecimal.ZERO;
         BigDecimal cancelMoney = BigDecimal.ZERO;
+        BigDecimal total = BigDecimal.ZERO;
         for (var i = startDate; i < endtDate; i += 86400000) {
             filter.setCreatedOnMax(CommonCode.getStringDate(new Date(i + 86400000), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
             filter.setCreatedOnMin(CommonCode.getStringDate(new Date(i), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
-            filter.setStatuses("3,4");
+            filter.setStatuses("2,3,4,5");
             AggregateRevenueResponse response = new AggregateRevenueResponse();
             var result = orderService.filter(filter);
             //Đơn hàng thành công
-            var order = result.getData().stream()
-                    .filter(o -> o.getStatus()==3)
-                    .collect(Collectors.toList());
-            if(order.size()>0 && order != null){
-                for (val oderMoney : order){
-                    aggregateRevenue = aggregateRevenue.add(oderMoney.getTotal()) ;
-                }
-            }
+            Integer test = orderRepository.getSumTottalByDate(i,i+86400000);
+            aggregateRevenue= new BigDecimal(test);
+//            var order = result.getData().stream()
+//                    .filter(o -> o.getStatus()!=4)
+//                    .collect(Collectors.toList());
+//            if(order.size()>0 && order != null){
+//                for (val oderMoney : order){
+//                    aggregateRevenue = aggregateRevenue.add(oderMoney.getTotal()) ;
+//                }
+//            }
             var cancels =  result.getData().stream()
                     .filter(o -> o.getStatus()==4)
                     .collect(Collectors.toList());
@@ -185,17 +193,19 @@ public class DashboardServiceImpl implements DashboardService {
 
                 }
             }
-            val exports = stocktakingRepository.stocktakingByDate(i,i + 86400000, "import");
+            val exports = stocktakingRepository.stocktakingByDate(i,i + 86400000, "export");
             if(exports.size()>0 && exports != null){
                 for (val export : exports){
                     aggregateRevenue = aggregateRevenue.add(export.getTotalMoney());
                 }
             }
+            total =  total.add(aggregateRevenue);
             response.setCancelMoney(cancelMoney);
             response.setAggregateRevenue(aggregateRevenue);
             response.setDate(CommonCode.getStringDate(new Date(i), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
             responses.add(response);
         }
+        BigDecimal finals = total;
         return responses;
     }
 }

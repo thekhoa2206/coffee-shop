@@ -62,13 +62,14 @@ public class StocktakingServiceImpl implements StocktakingService {
             if (request.getStatus() == 2) {
                 stocktaking.setStatus(CommonStatus.StockingStatus.WAREHOUSE);
             }
-            if (request.isPayment()) {
-                stocktaking.setPayment(CommonStatus.StockingPayment.ACTIVE);
-            } else {
-                stocktaking.setPayment(CommonStatus.StockingPayment.UNPAID);
-            }
+
         } else {
             stocktaking.setCode(CommonCode.GenerateCodeexport());
+        }
+        if (request.isPayment()) {
+            stocktaking.setPayment(CommonStatus.StockingPayment.ACTIVE);
+        } else {
+            stocktaking.setPayment(CommonStatus.StockingPayment.UNPAID);
         }
         stocktaking.setDescription(request.getDescription());
         stocktaking.setTotalMoney(request.getTotalMoney());

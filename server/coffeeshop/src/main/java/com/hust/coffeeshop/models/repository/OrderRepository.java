@@ -20,6 +20,9 @@ public interface OrderRepository  extends JpaRepository<Order, Integer>, JpaSpec
 
     @Query(value = "SELECT id FROM orders  ORDER BY id DESC  LIMIT 1;", nativeQuery = true)
     Integer getLastOrderId();
+    @Query(value = "SELECT sum(total) FROM orders where created_on>=?1 AND created_on <= ?2 AND status = 3 or status = 5 or\n" +
+            "status=2;", nativeQuery = true)
+    Integer getSumTottalByDate(long startDate, long endDate);
 
     @Query(value = "SELECT * FROM orders group by customer_id;", nativeQuery = true)
     List<Order> getOrderByCustomer();

@@ -48,16 +48,8 @@ const useGenMenuData = () => {
       id: "customer",
       icon: AccountSettingIcon,
       title: "Khách hàng",
-      subMenus: [],
       path: "/admin/customers",
     };
-    menu.subMenus = [
-      {
-        title: "Khách hàng",
-        path: "/admin/customers",
-        typeRoute: "default",
-      },
-    ];
     return menu;
   };
 
@@ -137,16 +129,8 @@ const useGenMenuData = () => {
       id: "order",
       icon: MenuOrderIcon,
       title: "Đơn hàng",
-      subMenus: [],
       path: "/admin/orders",
     };
-    menu.subMenus = [
-      {
-        title: "Đơn hàng",
-        path: "/admin/orders",
-        typeRoute: "default",
-      },
-    ];
     return menu;
   };
 
