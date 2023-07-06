@@ -125,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
             Filter createdOnMax = Filter.builder()
                     .field("createdOn")
                     .operator(QueryOperator.LESS_THAN)
-                    .value(String.valueOf(CommonCode.getMilliSeconds(filter.getCreatedOnMax(), "yyyy-MM-dd'T'HH:mm:ss'Z'")))
+                    .value(String.valueOf(CommonCode.getMilliSeconds(filter.getCreatedOnMax(), "yyyy-MM-dd'T'HH:mm:ss'Z'")+86400000))
                     .build();
             filters.add(createdOnMax);
         }
@@ -257,6 +257,7 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         var orderResponse = mapperOrderResponse(order);
+        saveinventory(orderResponse, CommonStatus.Status.ACTIVE);
         return orderResponse;
     }
 
@@ -608,9 +609,6 @@ public class OrderServiceImpl implements OrderService {
         order.get().setModifiedOn();
         orderRepository.save(order.get());
         var orderResponse = mapperOrderResponse(order.get());
-        if(status ==CommonStatus.OrderStatus.IN_PROGRESS) {
-            saveinventory(orderResponse, status);
-        }
         if(status ==CommonStatus.OrderStatus.DELETED){
             saveinventory(orderResponse,status);
         }

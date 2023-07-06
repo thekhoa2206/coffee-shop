@@ -17,7 +17,7 @@ import WarehouseIcon from "@mui/icons-material/Warehouse";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ReportOrderService from "services/ReportOrderService/ReportOrderService";
 import { ReportFilterRequest } from "services/ReportOrderService";
-import { formatDateUTC, formatDateUTCToLocalDateString } from "utilities";
+import { formatDateUTC, formatDateUTCToLocalDateString, formatMoney } from "utilities";
 import {
   DateRangesPredefineType,
   convertPredefinedToDate,
@@ -31,9 +31,9 @@ const DashboardRevenue = (props: RevenueProps) => {
   const { classes } = props;
   const [data, setData] = useState<DataSeries[]>([]);
   const [dataTop, setDataTop] = useState<DashboardResponse | undefined>();
-  const [filter, setFilter] = useState<DashboardRequest>({
-    createdOnMin: "2023-06-29T17:00:00Z",
-    createdOnMax: "2023-06-17T17:00:00Z",
+  const [filter, setFilter] = useState<DashboardRequest>(
+     {
+      createdOnPredefined: "today"
   });
   useEffect(() => {
     initData();
@@ -101,7 +101,7 @@ const DashboardRevenue = (props: RevenueProps) => {
         setData([
           {
             data: revenues,
-            color: "blue",
+            color: "#7cb5ec",
             name: "Doanh thu",
           },
           {
@@ -229,7 +229,7 @@ const DashboardRevenue = (props: RevenueProps) => {
                   style={{ fontSize: 24, marginTop: 10 }}
                   variant="h6"
                 >
-                  {dataTop?.totalSale ? dataTop.totalSale : 0}đ
+                  {dataTop?.totalSale ? formatMoney(dataTop.totalSale) : 0}đ
                 </Typography>
               </Box>
             </Box>
@@ -250,7 +250,7 @@ const DashboardRevenue = (props: RevenueProps) => {
                   style={{ fontSize: 24, marginTop: 10 }}
                   variant="h6"
                 >
-                  {dataTop?.cancelMoney ? dataTop.cancelMoney : 0}đ
+                  {dataTop?.cancelMoney ? formatMoney(dataTop.cancelMoney) : 0}đ
                 </Typography>
               </Box>
             </Box>
@@ -271,7 +271,7 @@ const DashboardRevenue = (props: RevenueProps) => {
                   style={{ fontSize: 24, marginTop: 10 }}
                   variant="h6"
                 >
-                  {dataTop?.exportMoney ? dataTop.exportMoney : 0}đ
+                  {dataTop?.exportMoney ? formatMoney(dataTop.exportMoney) : 0}đ
                 </Typography>
               </Box>
             </Box>
@@ -292,7 +292,7 @@ const DashboardRevenue = (props: RevenueProps) => {
                   style={{ fontSize: 24, marginTop: 10 }}
                   variant="h6"
                 >
-                  {dataTop?.importMoney ? dataTop.importMoney : 0}đ
+                  {dataTop?.importMoney ? formatMoney(dataTop.importMoney) : 0}đ
                 </Typography>
               </Box>
             </Box>
@@ -313,7 +313,7 @@ const DashboardRevenue = (props: RevenueProps) => {
                   style={{ fontSize: 24, marginTop: 10 }}
                   variant="h6"
                 >
-                  {dataTop?.totalRevenue ? dataTop.totalRevenue : 0}đ
+                  {dataTop?.totalRevenue ? formatMoney(dataTop.totalRevenue) : 0}đ
                 </Typography>
               </Box>
             </Box>
@@ -418,7 +418,7 @@ const DashboardRevenue = (props: RevenueProps) => {
                 TB doanh thu/ hoá đơn
               </Typography>
               <Typography style={{ fontSize: 24, marginTop: 10 }}>
-                {dataTop?.averageOrderValue ? dataTop.averageOrderValue : "--"}
+                {dataTop?.averageOrderValue ? formatMoney(dataTop.averageOrderValue)  : "--"}đ
               </Typography>
             </Box>
           </Grid>
