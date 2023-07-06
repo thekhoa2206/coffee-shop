@@ -1,15 +1,13 @@
 package com.hust.coffeeshop.services.impl;
 
+import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.common.CommonStatus;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientFilterRequest;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientRequest;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientResponse;
 import com.hust.coffeeshop.models.dto.stockunit.StockUnitResponse;
-import com.hust.coffeeshop.models.entity.ComboItem;
-import com.hust.coffeeshop.models.entity.Ingredient;
-import com.hust.coffeeshop.models.entity.ItemIngredient;
-import com.hust.coffeeshop.models.entity.StockUnit;
+import com.hust.coffeeshop.models.entity.*;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
 import com.hust.coffeeshop.services.IngredientService;
@@ -32,13 +30,17 @@ public class IngredientServiceImpl implements IngredientService {
     private final ModelMapper mapper;
     private final FilterRepository filterRepository;
     private final StockUnitRepository stockUnitRepository;
+    private final StocktakingRepository stocktakingRepository;
+    private final InventoryLogRepository inventoryLogRepository;
 
-    public IngredientServiceImpl(IngredientRepository ingredientRepository, ItemIngredientRepository itemIngredientRepository, ModelMapper mapper, FilterRepository filterRepository, StockUnitRepository stockUnitRepository) {
+    public IngredientServiceImpl(IngredientRepository ingredientRepository, ItemIngredientRepository itemIngredientRepository, ModelMapper mapper, FilterRepository filterRepository, StockUnitRepository stockUnitRepository, StocktakingRepository stocktakingRepository, InventoryLogRepository inventoryLogRepository) {
         this.ingredientRepository = ingredientRepository;
         this.itemIngredientRepository = itemIngredientRepository;
         this.mapper = mapper;
         this.filterRepository = filterRepository;
         this.stockUnitRepository = stockUnitRepository;
+        this.stocktakingRepository = stocktakingRepository;
+        this.inventoryLogRepository = inventoryLogRepository;
     }
 
     @Override
@@ -48,8 +50,8 @@ public class IngredientServiceImpl implements IngredientService {
         ingredient.setName(request.getName());
         ingredient.setStatus(CommonStatus.IngredientStatus.ACTIVE);
         ingredient.setExportPrice(request.getExportPrice() != null ? request.getExportPrice() : BigDecimal.ZERO);
-        ingredient.setCreatedOn();
-        ingredient.setModifiedOn();
+        ingredient.setCreatedOn(CommonCode.getTimestamp());
+        ingredient.setModifiedOn(0);
         ingredient.setQuantity(request.getQuantity());
         ingredient.setStockUnitId(request.getStockUnitId());
         StockUnit stockUnit = new StockUnit();
@@ -76,7 +78,7 @@ public class IngredientServiceImpl implements IngredientService {
         ingredient.setName(request.getName());
         ingredient.setExportPrice(request.getExportPrice());
         ingredient.setStockUnitId(request.getStockUnitId());
-        ingredient.setModifiedOn();
+        ingredient.setModifiedOn(0);
         ingredient = ingredientRepository.save(ingredient);
         var ingredientResponse = mapper.map(ingredient, IngredientResponse.class);
         ingredientResponse.set();
@@ -87,9 +89,36 @@ public class IngredientServiceImpl implements IngredientService {
     public void delete(int id) {
         if (id == 0) throw new ErrorException("Không có thông tin nguyên liệu");
         var ingredient = ingredientRepository.findById(id).get();
-        ingredient.setModifiedOn();
+        ingredient.setModifiedOn(0);
         ingredient.setStatus(CommonStatus.IngredientStatus.DELETED);
         ingredientRepository.save(ingredient);
+        BigDecimal money = BigDecimal.ZERO;
+        money = ingredient.getExportPrice().multiply(BigDecimal.valueOf(ingredient.getQuantity()));
+        Stocktaking stocktaking = new Stocktaking();
+        stocktaking.setCode(CommonCode.GenerateCodeexport());
+        stocktaking.setStatus(2);
+        stocktaking.setName("Xoá nguyên liệu"+ ingredient.getName());
+        stocktaking.setTotalMoney(money);
+        stocktaking.setCreatedOn(CommonCode.getTimestamp());
+        stocktaking.setPayment(1);
+        stocktaking.setType("export");
+        stocktaking.setDescription("Xoá nguyên liệu");
+        stocktaking.setModifiedOn(0);
+        var stoctaking= stocktakingRepository.save(stocktaking);
+
+        InventoryLog inventoryLog = new InventoryLog();
+        //lưu vào bảng log kho
+        inventoryLog.setCode(stoctaking.getCode());
+        inventoryLog.setObjectId(stoctaking.getId());
+        inventoryLog.setNote(stoctaking.getDescription());
+        inventoryLog.setCreatedOn(CommonCode.getTimestamp());
+        inventoryLog.setModifiedOn(0);
+        inventoryLog.setType("export");
+        inventoryLog.setIngredientId(ingredient.getId());
+        inventoryLog.setStockRemain(0);
+        inventoryLog.setAmountChargeInUnit("-"+ingredient.getQuantity());
+        inventoryLog.setStatus(2);
+        inventoryLogRepository.save(inventoryLog);
     }
 
 
@@ -104,7 +133,6 @@ public class IngredientServiceImpl implements IngredientService {
             var stockUnitResponse = mapper.map(stockUnit, StockUnitResponse.class);
             ingredientResponse.setStockUnitResponse(stockUnitResponse);
         }
-        ingredientResponse.set();
         return ingredientResponse;
     }
 

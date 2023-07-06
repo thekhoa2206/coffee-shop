@@ -27,7 +27,7 @@ public class ReportInventoryController {
         if(request.getEndDate() != null && request.getStartDate() != null){
        Long startDate= CommonCode.getMilliSeconds(request.getStartDate(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
        Long endtDate= CommonCode.getMilliSeconds(request.getEndDate(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
-       requests.setEndDate(endtDate);
+       requests.setEndDate(endtDate+86400000);
         requests.setStartDate(startDate);
         }else {
             requests.setEndDate(0);
@@ -41,7 +41,7 @@ public class ReportInventoryController {
         if(request.getEndDate() != null && request.getStartDate() != null){
             Long startDate= CommonCode.getMilliSeconds(request.getStartDate(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
             Long endtDate= CommonCode.getMilliSeconds(request.getEndDate(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
-            requests.setEndDate(endtDate);
+            requests.setEndDate(endtDate+86400000);
             requests.setStartDate(startDate);
         }else {
             requests.setEndDate(0);

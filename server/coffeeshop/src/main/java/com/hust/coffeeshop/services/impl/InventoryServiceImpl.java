@@ -54,8 +54,7 @@ public class InventoryServiceImpl implements InventoryService {
                 request.getPage() - 1,
                 request.getLimit(),
                 Sort.by(Sort.Direction.DESC, "id"));
-        Page<InventoryLog> results;
-        results = inventoryLogRepository.findInventoryLogByDate(request.getStartDate(), request.getEndDate(), pageable);
+        val results = inventoryLogRepository.findInventoryLogByDate1(request.getStartDate(), request.getEndDate());
         List<ReportInventoryResponse> reportInventoryResponses = new ArrayList<>();
         List<Integer> IngredientId = results.stream()
                 .map(o -> o.getIngredientId())
@@ -129,7 +128,7 @@ public class InventoryServiceImpl implements InventoryService {
         }
         return new PagingListResponse<>(
                 reportInventoryResponses,
-                new PagingListResponse.Metadata(request.getPage(), request.getLimit(), results.getTotalElements()));
+                new PagingListResponse.Metadata(request.getPage(), request.getLimit(), targetIngredientId.size()));
     }
 
     @Override
@@ -147,8 +146,7 @@ public class InventoryServiceImpl implements InventoryService {
                 request.getPage() - 1,
                 request.getLimit(),
                 Sort.by(Sort.Direction.DESC, "id"));
-        Page<InventoryLog> results;
-        results = inventoryLogRepository.findInventoryLogByIngredientId(id,request.getStartDate(), request.getEndDate(), pageable);
+       val results = inventoryLogRepository.findInventoryLogByIngredientId(id,request.getStartDate(), request.getEndDate());
         List<StockEventsResponse> stockEventsResponses = new ArrayList<>();
         for (val data : results) {
             StockEventsResponse stockEventsResponse = new StockEventsResponse();
@@ -187,7 +185,7 @@ public class InventoryServiceImpl implements InventoryService {
         }
         return new PagingListResponse<>(
                 stockEventsResponses,
-                new PagingListResponse.Metadata(request.getPage(), request.getLimit(), results.getTotalElements()));
+                new PagingListResponse.Metadata(request.getPage(), request.getLimit(), results.size()));
 
     }
 }

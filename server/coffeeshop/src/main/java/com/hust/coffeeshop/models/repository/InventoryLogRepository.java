@@ -8,13 +8,18 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface InventoryLogRepository extends JpaRepository<InventoryLog, Integer>, JpaSpecificationExecutor<InventoryLog> {
     @Query(value = "SELECT inventory_log.* FROM inventory_log WHERE object_id=?1 AND ingredient_id =?2", nativeQuery = true)
    InventoryLog findInventoryLogByObjectId(int objectId,int ingredientId);
+    @Query(value = "SELECT inventory_log.* FROM inventory_log  WHERE created_on>=?1 AND created_on<=?2", nativeQuery = true)
+    List<InventoryLog> findInventoryLogByDate1(long startDate, long endDate);
 
-    @Query(value = "SELECT inventory_log.* FROM inventory_log  WHERE created_on>= ?1 AND created_on<= ?2", nativeQuery = true)
-    Page<InventoryLog> findInventoryLogByDate(long startDate, long enDate, Pageable var2);
+    @Query(value = "SELECT inventory_log.* FROM inventory_log  WHERE created_on>=?1 AND created_on<=?2", nativeQuery = true)
+    Page<InventoryLog> findInventoryLogByDate(long startDate, long endDate, Pageable var2);
+
     @Query(value = "SELECT inventory_log.* FROM inventory_log  WHERE ingredient_id=?1 AND created_on>=?2 AND created_on<=?3", nativeQuery = true)
-    Page<InventoryLog> findInventoryLogByIngredientId(int ingredientId,long startDate,long enDate, Pageable var2);
+    List<InventoryLog> findInventoryLogByIngredientId(int ingredientId,long startDate,long endDate);
 }
