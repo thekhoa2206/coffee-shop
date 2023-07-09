@@ -18,6 +18,7 @@ export type CustomerRequest = {
   phoneNumber?: string;
   dob?: Date;
   sex?: string;
+  type?:string;
 }
 
 export type CustomerResponse = {

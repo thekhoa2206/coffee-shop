@@ -25,6 +25,9 @@ public class Customer extends BaseEntity{
     @Column(name = "sex")
     private String sex;
 
+    @Column(name = "type")
+    private String type;
+
     @Column(name = "status")
     private int status;
 }

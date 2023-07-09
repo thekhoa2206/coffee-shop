@@ -31,4 +31,6 @@ public class Stocktaking extends BaseEntity{
     private BigDecimal totalMoney;
     @Column(name = "description")
     private String description;
+    @Column(name = "partner")
+    private String partner;
 }

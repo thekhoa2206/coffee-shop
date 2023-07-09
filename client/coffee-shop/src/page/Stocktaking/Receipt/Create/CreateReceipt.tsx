@@ -17,13 +17,13 @@ import SearchSuggest from "components/Filter/SearchSuggest";
 import NoResultsComponent from "components/NoResults/NoResultsComponent";
 import NumberInputTextField from "components/NumberInput/NumberInputTextField";
 import Paper from "components/Paper/Paper";
-import { CloseIcon, PlusIcon } from "components/SVG";
+import { CloseIcon, ContactCardIcon, PlusIcon } from "components/SVG";
 import SelectInfinite from "components/Select/SelectInfinite/SelectInfinite";
 import { DataSource } from "components/Select/types";
 import TextField from "components/TextField";
 import TextareaAutosize from "components/TextField/TextareaAutosize/TextareaAutosize";
 import _ from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { CategoryResponse } from "services/CategoryService";
 import CategoryService from "services/CategoryService/CategoryService";
@@ -59,21 +59,28 @@ import {
   StocktakingIngredientRequest,
 } from "services/StocktakingService";
 import StocktakingService from "services/StocktakingService/StocktakingService";
-import { log } from "console";
-import { render } from "react-dom";
 import Switch from "components/Switch/Switch.component";
 import { check } from "prettier";
 import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
 import useModal from "components/Modal/useModal";
+import { DialogAddCustomer } from "page/Customer/DialogAddCustomer/DialogAddCustomer";
+import CloseSmallIcon from "components/SVG/CloseSmallIcon";
+import { CustomerResponse } from "services/CustomerService";
+import CustomerService from "services/CustomerService/CustomerService";
+import { AccountCircleRounded } from "@material-ui/icons";
+import { DialogAddPartner } from "../components/DialogAddPartner";
 
-export interface CreateReceiptProps extends WithStyles<typeof styles> { }
+export interface CreateReceiptProps extends WithStyles<typeof styles> {}
 const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
   const { classes, authState } = props;
   const [categories, setCategories] = useState<CategoryResponse[]>();
   const [category, setCategory] = useState<
     CategoryResponse | undefined | null
   >();
+  const [querySearchCustomer, setQuerySearchCustomer] = useState("");
+  const [partner, setPartner] = useState<CustomerResponse | undefined | null>();
   const [itemRequest, setItemRequest] = useState<ItemRequest>();
+  const [openDialogEditCustomer, setOpenDialogCustomer] = useState(false);
   const [receiptRequest, setReceiptRequest] =
     useState<CreateStocktakingRequest>();
   const [variants, setVariants] = useState<VariantRequest[]>([
@@ -89,7 +96,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
   const updateIngredient = (ingredient: StocktakingIngredientRequest) => {
     let datatNews = stocktakingIngredientRequest.map((v) => {
       if (v.ingredientId === ingredient.ingredientId) {
-        let toltalMoeny = ingredient.ingredientMoney * ingredient.quantity
+        let toltalMoeny = ingredient.ingredientMoney * ingredient.quantity;
         return {
           ...ingredient,
           totalMoney: toltalMoeny,
@@ -104,6 +111,12 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
   };
+  const handleChangeCustomer = useCallback(
+    (customer: CustomerResponse | null) => {
+      setPartner(customer);
+    },
+    []
+  );
   const deleteVarinat = (ingredient: StocktakingIngredientRequest) => {
     let datatdelete = stocktakingIngredientRequest.filter(
       (v) => v.ingredientId !== ingredient.ingredientId
@@ -145,7 +158,10 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
       SnackbarUtils.error(`Tên phiếu không được để trống!`);
       return;
     }
-    if (!stocktakingIngredientRequest || stocktakingIngredientRequest.length === 0) {
+    if (
+      !stocktakingIngredientRequest ||
+      stocktakingIngredientRequest.length === 0
+    ) {
       SnackbarUtils.error(`Chưa chọn phần nguyên liệu `);
       return;
     }
@@ -156,7 +172,8 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
       object: stocktakingIngredientRequest,
       status: status,
       payment: checked,
-      description: note
+      description: note,
+      partner:partner?.name
     };
     try {
       let res = await StocktakingService.create(requet);
@@ -170,7 +187,10 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
   };
   const sumMoeny = () => {
     let total = 0;
-    if (stocktakingIngredientRequest && stocktakingIngredientRequest.length > 0) {
+    if (
+      stocktakingIngredientRequest &&
+      stocktakingIngredientRequest.length > 0
+    ) {
       stocktakingIngredientRequest.map((x) => {
         total += x.totalMoney || 0;
       });
@@ -192,24 +212,128 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
               </Grid>
             </Box>
           </Paper>
-          <Paper className={classes.wrapperBoxInfo}>
-            <Box className={classes.boxContentPaper}>
-              <Typography style={{ fontWeight: 500 }}>Tên phiếu</Typography>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  // value={variant.name}
-                  onChange={(e: any) => {
-                    setReceiptRequest({
-                      ...receiptRequest,
-                      name: e.target.value as any,
-                    });
-                  }}
-                  placeholder="Nhập tên phiếu"
-                />
-              </Grid>
-            </Box>
-          </Paper>
+          <Box style={{ display: "flex", width: "100%" }}>
+            <Paper className={classes.wrapperBoxInfo} style={{ width: "47%" }}>
+              <Box className={classes.boxContentPaper}>
+                <Typography style={{ fontWeight: 500 }}>Tên phiếu</Typography>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    // value={variant.name}
+                    onChange={(e: any) => {
+                      setReceiptRequest({
+                        ...receiptRequest,
+                        name: e.target.value as any,
+                      });
+                    }}
+                    placeholder="Nhập tên phiếu"
+                  />
+                </Grid>
+              </Box>
+            </Paper>
+            <Paper
+              className={classes.wrapperBoxInfo}
+              style={{ width: "47%", marginLeft: 63 }}
+            >
+              <Box className={classes.boxContentPaper}>
+                <Typography style={{ fontWeight: 500 }}>Đối tác</Typography>
+                <Grid xs={12} style={{ padding: 0 }}>
+                  {partner ? (
+                    <Box style={{ width: 330 }}>
+                      <IconButton
+                        style={{
+                          width: 20,
+                          height: 20,
+                          float: "right",
+                          marginRight: 10,
+                        }}
+                        onClick={() => {
+                          setPartner(null);
+                        }}
+                      >
+                        <CloseSmallIcon style={{ width: 10, height: 10 }} />
+                      </IconButton>
+                      <Grid xs={12} container>
+                        <Grid xs={6} item>
+                          {partner.name}
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  ) : (
+                    <>
+                      <SelectInfinite
+                        placeholder="Tìm kiếm đối tác"
+                        value={null}
+                        onChange={handleChangeCustomer}
+                        getOptionLabel={(e) => e.name}
+                        fetchDataSource={async (filter: any) => {
+                          let limit = 10;
+                          try {
+                            filter["statuses.in"] = "active";
+                            filter.condition_type = "must";
+                            if (
+                              !filter["query.contains"] ||
+                              filter["query.contains"].length === 0
+                            ) {
+                              delete filter["query.contains"];
+                            }
+                            let res = await CustomerService.filter(filter);
+                            let dataSource = {} as DataSource;
+                            dataSource.data = res.data.data || [];
+                            dataSource.metaData = {
+                              totalPage: Math.ceil(
+                                (res.data.metadata?.total || 0) / limit
+                              ),
+                              totalItems: res.data.metadata?.total || 0,
+                            };
+                            return Promise.resolve(dataSource);
+                          } catch (error) {}
+                        }}
+                        onQueryChange={(filter) => {
+                          let dataSourceFilter = {} as any;
+                          dataSourceFilter["query.contains"] = filter.query;
+                          setQuerySearchCustomer(filter.query);
+                          dataSourceFilter.page = filter.page ?? 1;
+                          dataSourceFilter.limit = 10;
+                          return dataSourceFilter;
+                        }}
+                        textCreate={"Thêm mới đối tác"}
+                        createable
+                        onClickCreate={() => {
+                          setOpenDialogCustomer(true);
+                        }}
+                        renderOption={(option) => (
+                          <Box>
+                            {option.type === "partner" ? (
+                              <MenuItem>
+                                <AccountCircleRounded className="icon" />
+                                <Box>
+                                  <Typography noWrap>{option.name}</Typography>
+                                </Box>
+                              </MenuItem>
+                            ) : (
+                              <MenuItem>
+                                <AccountCircleRounded className="icon" />
+                                <Box>
+                                  <Typography noWrap>{option.name}</Typography>
+                                </Box>
+                              </MenuItem>
+                            )}
+                          </Box>
+                        )}
+                        maxHeight={300}
+                      />
+                      <Box style={{ textAlign: "center" }}>
+                        <Typography style={{ color: "#A3A8AF", marginTop: 6 }}>
+                          Chưa có thông tin đối tác
+                        </Typography>
+                      </Box>
+                    </>
+                  )}
+                </Grid>
+              </Box>
+            </Paper>
+          </Box>
           <Paper className={classes.wrapperBoxInfo}>
             <Box className={classes.boxContentPaper}>
               <Box
@@ -236,7 +360,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                             dataSource.metaData = {
                               totalPage: Math.ceil(
                                 (res.data.metadata?.total || 0) /
-                                (filter.limit || 0)
+                                  (filter.limit || 0)
                               ),
                               totalItems: res.data.metadata?.total || 0,
                             };
@@ -369,19 +493,30 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                           </TableBody>
                         ))}
                     </Table>
-                    <Box style={{ margin: "auto", padding: "24px", marginLeft: "680px", display: "flex" }}>
-                      <Typography style={{ fontWeight: 500 }}>Tổng tiền:</Typography>
-                      <Typography style={{ fontWeight: 500 }}>{formatNumberDecimal(sumMoeny())}</Typography>
+                    <Box
+                      style={{
+                        margin: "auto",
+                        padding: "24px",
+                        marginLeft: "680px",
+                        display: "flex",
+                      }}
+                    >
+                      <Typography style={{ fontWeight: 500 }}>
+                        Tổng tiền:
+                      </Typography>
+                      <Typography style={{ fontWeight: 500 }}>
+                        {formatNumberDecimal(sumMoeny())}
+                      </Typography>
                       <Typography style={{ fontWeight: 500 }}>đ</Typography>
                     </Box>
                     {!(
                       stocktakingIngredientRequest &&
                       stocktakingIngredientRequest.length > 0
                     ) && (
-                        <Box style={{ margin: "auto", padding: "24px" }}>
-                          <BoxNoDataComponent width="150px" />
-                        </Box>
-                      )}
+                      <Box style={{ margin: "auto", padding: "24px" }}>
+                        <BoxNoDataComponent width="150px" />
+                      </Box>
+                    )}
                   </Box>
                 </Box>
               </Box>
@@ -397,8 +532,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                     <TextareaAutosize
                       height={60}
                       onChange={(e: any) => {
-                        setNote(e.target.value as any,
-                        );
+                        setNote(e.target.value as any);
                       }}
                       value={note}
                     />
@@ -407,18 +541,17 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
               </Box>
             </Grid>
             <Grid item xs={4}>
-              <Box className={classes.boxContentPaper} style={{ display: "flex", marginLeft: 120 }}>
+              <Box
+                className={classes.boxContentPaper}
+                style={{ display: "flex", marginLeft: 120 }}
+              >
                 <Typography style={{ fontWeight: 500 }}>Thanh toán</Typography>
                 <Grid item xs={2}>
-                  <Switch
-                    checked={checked}
-                    onChange={handleChange}
-                  ></Switch>
+                  <Switch checked={checked} onChange={handleChange}></Switch>
                 </Grid>
               </Box>
             </Grid>
           </Paper>
-
         </Grid>
         <Box>
           <Box
@@ -429,8 +562,11 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
               marginTop: "30px",
             }}
           >
-
-            <Button variant="outlined" color="secondary" onClick={()=>history.push(`/admin/receipts`)}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => history.push(`/admin/receipts`)}
+            >
               Hủy
             </Button>
             <Button
@@ -451,18 +587,18 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                 if (!checked) {
                   openModal(ConfirmDialog, {
                     confirmButtonText: "Xác nhận",
-                    message: "Bạn chưa thanh toán phiếu,bạn có muốn tiếp tục đặt hàng và nhập kho không?",
+                    message:
+                      "Bạn chưa thanh toán phiếu,bạn có muốn tiếp tục đặt hàng và nhập kho không?",
                     title: "Thanh toán phiếu nhập kho",
                     cancelButtonText: "Thoát",
                   }).result.then((res) => {
                     if (res) {
-                      handleCreateRecpit(2);;
+                      handleCreateRecpit(2);
                     }
-                  })
+                  });
                 } else {
-                  handleCreateRecpit(2)
+                  handleCreateRecpit(2);
                 }
-
               }}
             >
               Đặt hàng và Nhập kho
@@ -470,11 +606,13 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
           </Box>
         </Box>
       </Box>
-
+      <DialogAddPartner
+        open={openDialogEditCustomer}
+        onClose={() => setOpenDialogCustomer(false)}
+      />
     </>
   );
 };
-
 
 const mapStateToProps = (state: AppState) => ({
   menuState: state.menu,

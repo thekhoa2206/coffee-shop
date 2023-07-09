@@ -122,6 +122,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
         object: [],
         status: receipt.status,
         payment: checked,
+        partner:receipt.partner
       };
       let stocktakingIngredientRequests: StocktakingIngredientRequest[] = [];
       let ojject = receipt.object.map((v) => {

@@ -77,6 +77,7 @@ public class StocktakingServiceImpl implements StocktakingService {
         stocktaking.setModifiedOn(0);
         stocktaking.setTotalMoney(request.getTotalMoney());
         stocktaking.setType(request.getType());
+        stocktaking.setPartner(request.getPartner());
         var stocktakingNew = stocktakingRepository.save(stocktaking);
         //lưu vào bảng mapping với nguyên liệu
         List<StocktakingIngredient> stocktakingIngredients = new ArrayList<>();
@@ -161,6 +162,7 @@ public class StocktakingServiceImpl implements StocktakingService {
         if (request.getDescription() != null) data.setDescription(request.getDescription());
         data.setTotalMoney(request.getTotalMoney());
         data.setModifiedOn(CommonCode.getTimestamp());
+        if (request.getPartner() != null)data.setPartner(request.getPartner());
         if (request.getStatus() == 1) {
             data.setStatus(CommonStatus.StockingStatus.ORDER);
         }
