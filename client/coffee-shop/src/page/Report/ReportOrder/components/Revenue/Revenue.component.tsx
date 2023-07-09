@@ -2,7 +2,7 @@ import { Box, Typography, withStyles } from "@material-ui/core";
 import React, { Fragment, useEffect, useState } from "react";
 import styles from "./Revenue.styles";
 import { RevenueProps } from "./Revenue.types";
-import { DataPoint, DataSeries, StackedAreaChart } from "@shopify/polaris-viz";
+import { BarChart, DataPoint, DataSeries, StackedAreaChart } from "@shopify/polaris-viz";
 import ReportOrderService from "services/ReportOrderService/ReportOrderService";
 import { ReportFilterRequest } from "services/ReportOrderService";
 import { formatDateUTC, formatDateUTCToLocalDateString } from "utilities";
@@ -133,7 +133,7 @@ const Revenue = (props: RevenueProps) => {
             <Button onClick={() => { initData() }} color="primary" style={{ marginTop: 15 }}>Xem</Button>
         </Box>
         <Box style={{ width: "100%", height: "500px" }}>
-            {data && data.length > 0 ? (<StackedAreaChart data={data} theme="Light" />) : (
+            {data && data.length > 0 ? (<BarChart data={data} theme="Light" />) : (
                 <Box style={{ width: "100%", height: "500px", background: "#FFFFFF" }}>
                     <Typography style={{ textAlign: "center", paddingTop: 100 }}>Không có dữ liệu</Typography>
                 </Box>)}

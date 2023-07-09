@@ -14,7 +14,7 @@ import { CloseIcon, ContactCardIcon, PlusIcon } from "components/SVG";
 import SelectInfinite from "components/Select/SelectInfinite/SelectInfinite";
 import { DataSource } from "components/Select/types";
 import TextField from "components/TextField";
-import _ from "lodash";
+import _, { isNil } from "lodash";
 import React, { useEffect, useState, useCallback } from "react";
 import { ConnectedProps, connect } from "react-redux";
 
@@ -88,7 +88,7 @@ const CreateUser = (props: CreateItemProps & PropsFromRedux) => {
         SnackbarUtils.error(`Mật khẩu và xác nhận mật khẩu phải nhập trùng `);
         return;
       }
-      if(role?.id){
+      if(isNil(role?.id)){
         SnackbarUtils.error(`Quyền không được để trống`);
         return;
       }
