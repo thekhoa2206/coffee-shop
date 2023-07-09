@@ -1,5 +1,6 @@
 package com.hust.coffeeshop.services.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hust.coffeeshop.common.*;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientFilterRequest;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -45,8 +47,9 @@ public class OrderServiceImpl implements OrderService {
     private final IngredientService ingredientService;
     private final OrderItemComboRepository orderItemComboRepository;
     private final InventoryLogRepository inventoryLogRepository;
+    private final RedisTemplate template;
 
-    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService, OrderItemComboRepository orderItemComboRepository, InventoryLogRepository inventoryLogRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService, OrderItemComboRepository orderItemComboRepository, InventoryLogRepository inventoryLogRepository, RedisTemplate template) {
         this.orderRepository = orderRepository;
         this.filterRepository = filterRepository;
         this.mapper = mapper;
@@ -61,6 +64,7 @@ public class OrderServiceImpl implements OrderService {
         this.ingredientService = ingredientService;
         this.orderItemComboRepository = orderItemComboRepository;
         this.inventoryLogRepository = inventoryLogRepository;
+        this.template = template;
     }
 
     /*
@@ -149,10 +153,18 @@ public class OrderServiceImpl implements OrderService {
         Page<Order> results = null;
         List<OrderResponse> orderResponses = new ArrayList<>();
         try {
+            ObjectMapper om = new ObjectMapper();
+            var key = CommonCode.getMd5(om.writeValueAsString(filter));
+            System.out.println(template.opsForHash().get(key, 1));
+
+            if(template.opsForHash().get(key, 1) == null){
             if (filters.size() > 0)
                 results = orderRepository.findAll(filterRepository.getSpecificationFromFilters(filters), pageable);
             else results = orderRepository.findAll(pageable);
-
+                template.opsForHash().put(key, 1, results);
+            }else {
+                results = (Page<Order>) template.opsForHash().get(key, 1);
+            }
             for (val item : results.getContent()) {
                 var orderResponse = mapperOrderResponse(item);
                 orderResponses.add(orderResponse);
