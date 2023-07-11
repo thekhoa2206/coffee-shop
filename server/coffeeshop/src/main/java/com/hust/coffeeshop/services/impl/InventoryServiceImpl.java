@@ -26,25 +26,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
-    private final StocktakingIngredientRepository stocktakingIngredientRepository;
-    private final OrderItemRepository orderItemRepository;
-    private final OrderItemComboRepository orderItemComboRepository;
-    private final ItemIngredientRepository itemIngredientRepository;
     private final IngredientRepository ingredientRepository;
-    private final StocktakingRepository stocktakingRepository;
     private final StockUnitRepository stockUnitRepository;
-    private final OrderRepository orderRepository;
     private final InventoryLogRepository inventoryLogRepository;
 
-    public InventoryServiceImpl(StocktakingIngredientRepository stocktakingIngredientRepository, OrderItemRepository orderItemRepository, OrderItemComboRepository orderItemComboRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, StocktakingRepository stocktakingRepository, StockUnitRepository stockUnitRepository, OrderRepository orderRepository, InventoryLogRepository inventoryLogRepository) {
-        this.stocktakingIngredientRepository = stocktakingIngredientRepository;
-        this.orderItemRepository = orderItemRepository;
-        this.orderItemComboRepository = orderItemComboRepository;
-        this.itemIngredientRepository = itemIngredientRepository;
+    public InventoryServiceImpl(IngredientRepository ingredientRepository, StockUnitRepository stockUnitRepository,InventoryLogRepository inventoryLogRepository) {
         this.ingredientRepository = ingredientRepository;
-        this.stocktakingRepository = stocktakingRepository;
         this.stockUnitRepository = stockUnitRepository;
-        this.orderRepository = orderRepository;
         this.inventoryLogRepository = inventoryLogRepository;
     }
 

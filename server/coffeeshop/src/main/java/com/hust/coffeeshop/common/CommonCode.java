@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.*;
-
+//Các hàm generateCode và hàm xử lý ngày
 public class CommonCode
 {
     private static final List<DateTimeFormatter> DATE_FORMATS = Arrays.asList(
@@ -66,21 +66,5 @@ public class CommonCode
         SimpleDateFormat sdf = new SimpleDateFormat(pattern == null ? "yyyy/MM/dd HH:mm:ss": pattern);
         String date = sdf.format(myDate);
         return date;
-    }
-    public static String getMd5(String input)
-    {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(input.getBytes());
-            BigInteger no = new BigInteger(1, messageDigest);
-            String hashtext = no.toString(16);
-            while (hashtext.length() < 32) {
-                hashtext = "0" + hashtext;
-            }
-            return hashtext;
-        }
-        catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

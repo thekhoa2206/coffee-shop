@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.Properties;
-
+/*
+* - Cấu hình spring jpa cho ứng dụng
+* */
 @Configuration
 @EnableTransactionManagement
 public class JPAConfiguration {

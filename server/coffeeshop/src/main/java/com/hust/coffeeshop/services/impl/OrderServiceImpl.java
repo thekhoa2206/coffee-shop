@@ -165,6 +165,7 @@ public class OrderServiceImpl implements OrderService {
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results != null ? results.getTotalElements() : 0));
     }
 
+    //Hàm mapper order => orderResponse để trả về
     private OrderResponse mapperOrderResponse(Order order) {
         val orderResponse = mapper.map(order, OrderResponse.class);
         var customer = customerService.getById(order.getCustomerId());
@@ -192,6 +193,7 @@ public class OrderServiceImpl implements OrderService {
         return orderResponse;
     }
 
+    //Hàm tạo đơn hàng
     @Override
     @Transactional(rollbackOn = Exception.class)
     public OrderResponse create(OrderRequest request) {
@@ -314,6 +316,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    //Hàm get đơn hàng bằng Id
     @Override
     public OrderResponse getById(int id) {
         if (id == 0) throw new ErrorException("Không có id đơn hàng");
@@ -324,6 +327,7 @@ public class OrderServiceImpl implements OrderService {
         return orderResponse;
     }
 
+    //Hàm Thanh toán cho đơn hàng
     @Override
     public OrderResponse addPayment(int id) {
         if (id == 0) throw new ErrorException("Không có id đơn hàng");
@@ -344,6 +348,7 @@ public class OrderServiceImpl implements OrderService {
         return orderResponse;
     }
 
+    //Hàm cập nhật đơn hàng
     @Override
     @Transactional
     public OrderResponse update(OrderRequest request, int id) {
@@ -369,6 +374,7 @@ public class OrderServiceImpl implements OrderService {
         return orderResponse;
     }
 
+    //Hàm cập nhật lineItem cho đơn hàng
     @Transactional
     public List<OrderItemResponse> setOrderItems(List<OrderItemRequest> requests, int orderId) {
         /*
@@ -615,6 +621,7 @@ public class OrderServiceImpl implements OrderService {
         return orderResponse;
     }
 
+    //Hàm in đơn hàng
     @Override
     public OrderPrintForm getPrintForm(PrintOrderRequest printOrder) throws IOException, TemplateException {
         String htmlContent = null;
@@ -630,6 +637,7 @@ public class OrderServiceImpl implements OrderService {
         return new OrderPrintForm(printOrder.getOrderId(), htmlContent);
     }
 
+    //Hàm map dữ liệu từ order => orderModel để in đơn hàng
     private OrderPrintModel mapperOrderPrintModel(Order order) {
         OrderPrintModel model = new OrderPrintModel();
         model.setCode(order.getCode());
@@ -681,6 +689,8 @@ public class OrderServiceImpl implements OrderService {
         model.setForPrintForm();
         return model;
     }
+
+    //Hàm save and log inventory
     private void saveinventory(OrderResponse order,int status) {
         if(order.getOrderItemResponses().size()>0){
             for(val oderItem : order.getOrderItemResponses())

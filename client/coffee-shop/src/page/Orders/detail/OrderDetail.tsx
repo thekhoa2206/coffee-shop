@@ -255,18 +255,20 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                         </Box>
                         <Box display="flex" alignItems="center" style={{ marginTop: 10 }}>
                             <Button startIcon={<PrintIcon />} color="inherit" variant="text" onClick={() => { printOrder() }}>In</Button>
-                            <Button disabled={order?.paymentStatus === PaymentStatus.PAID} startIcon={<PaymentOutlined />} color="inherit" variant="text" onClick={() => {
-                                openModal(ConfirmDialog, {
-                                    confirmButtonText: "Xác nhận",
-                                    message: "Bạn có muốn thanh toán đơn hàng này không?",
-                                    title: "Thanh toán đơn hàng",
-                                    cancelButtonText: "Thoát",
-                                }).result.then((res) => {
-                                    if (res) {
-                                        addPayment();
-                                    }
-                                })
-                            }}>Thanh toán</Button>
+                            {!order?.paymentStatus || order?.paymentStatus !== PaymentStatus.PAID && 
+                                <Button startIcon={<PaymentOutlined />} color="inherit" variant="text" onClick={() => {
+                                    openModal(ConfirmDialog, {
+                                        confirmButtonText: "Xác nhận",
+                                        message: "Bạn có muốn thanh toán đơn hàng này không?",
+                                        title: "Thanh toán đơn hàng",
+                                        cancelButtonText: "Thoát",
+                                    }).result.then((res) => {
+                                        if (res) {
+                                            addPayment();
+                                        }
+                                    })
+                                }}>Thanh toán</Button>
+                            }
                             <ButtonGroup style={{ background: "#eff3f3" }} variant="text">
                                 <Button
                                     variant="text"
@@ -295,11 +297,13 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                 }}
                                 disableRestoreFocus
                             >
-                                <MenuItem
+                                {(order?.paymentStatus || order?.paymentStatus !== PaymentStatus.PAID)  && order?.status === OrderStatus.DRAFT &&
+                                    <MenuItem
                                     onClick={() => { history.push(`/admin/orders/${id}/edit`) }}
                                 >
                                     <PencilIcon style={{ color: "#adadad", marginRight: 10 }} /> Sửa
                                 </MenuItem>
+                                }
                                 <MenuItem
                                     onClick={() => {
                                         setOpenMenuCreateOrder(false);
@@ -333,45 +337,48 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                 >
                                     <OrderCancelIcon style={{ color: "#adadad", marginRight: 10 }} /> Hủy
                                 </MenuItem>
-                                <MenuItem
-                                    onClick={async () => {
-                                        setOpenMenuCreateOrder(false);
-                                        try {
-                                            let res = await OrderService.updateStatus(id, OrderStatus.IN_PROGRESS);
-                                            if (res.data) {
-                                                SnackbarUtils.success("Đơn hàng đang được thực hiện");
-                                                set((prev) => ({
-                                                    ...prev,
-                                                    order: res.data,
-                                                }))
+                                {(order?.status !== OrderStatus.COMPLETED && (order?.paymentStatus && order?.paymentStatus === PaymentStatus.PAID)) &&
+                                    <MenuItem
+                                        onClick={async () => {
+                                            setOpenMenuCreateOrder(false);
+                                            try {
+                                                let res = await OrderService.updateStatus(id, OrderStatus.IN_PROGRESS);
+                                                if (res.data) {
+                                                    SnackbarUtils.success("Đơn hàng đang được thực hiện");
+                                                    set((prev) => ({
+                                                        ...prev,
+                                                        order: res.data,
+                                                    }))
+                                                }
+                                            } catch (error) {
+                                                SnackbarUtils.error(getMessageError(error));
                                             }
-                                        } catch (error) {
-                                            SnackbarUtils.error(getMessageError(error));
-                                        }
-                                    }}
-                                >
-                                    <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Đang thực hiện
-                                </MenuItem>
-                                <MenuItem
-                                    onClick={async () => {
-                                        setOpenMenuCreateOrder(false);
-                                        try {
-                                            let res = await OrderService.updateStatus(id, OrderStatus.WAITING_DELIVERY);
-                                            if (res.data) {
-                                                SnackbarUtils.success("Đơn hàng đã chuyển sang trạng thái chờ lấy đồ");
-                                                set((prev) => ({
-                                                    ...prev,
-                                                    order: res.data,
-                                                }))
+                                        }}
+                                    >
+                                        <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Đang thực hiện
+                                    </MenuItem>
+                                }
+                                {(order?.status !== OrderStatus.COMPLETED && (order?.paymentStatus && order?.paymentStatus === PaymentStatus.PAID)) &&
+                                    <MenuItem
+                                        onClick={async () => {
+                                            setOpenMenuCreateOrder(false);
+                                            try {
+                                                let res = await OrderService.updateStatus(id, OrderStatus.WAITING_DELIVERY);
+                                                if (res.data) {
+                                                    SnackbarUtils.success("Đơn hàng đã chuyển sang trạng thái chờ lấy đồ");
+                                                    set((prev) => ({
+                                                        ...prev,
+                                                        order: res.data,
+                                                    }))
+                                                }
+                                            } catch (error) {
+                                                SnackbarUtils.error(getMessageError(error));
                                             }
-                                        } catch (error) {
-                                            SnackbarUtils.error(getMessageError(error));
-                                        }
-                                    }}
-                                >
-                                    <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Chờ lấy đồ
-                                </MenuItem>
-                                <MenuItem
+                                        }}
+                                    >
+                                        <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Chờ lấy đồ
+                                    </MenuItem>}
+                                {(order?.status !== OrderStatus.COMPLETED && (order?.paymentStatus && order?.paymentStatus === PaymentStatus.PAID)) && <MenuItem
                                     onClick={async () => {
                                         setOpenMenuCreateOrder(false);
                                         try {
@@ -389,7 +396,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                     }}
                                 >
                                     <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Hoàn thành
-                                </MenuItem>
+                                </MenuItem>}
                             </Menu>
                         </Box>
                     </Grid>

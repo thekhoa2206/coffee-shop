@@ -291,7 +291,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Transactional(rollbackOn = Exception.class)
-     void updateVariant(List<CreateVariantRequest> variantRequests, List<Variant> variants, int itemId) {
+    public void updateVariant(List<CreateVariantRequest> variantRequests, List<Variant> variants, int itemId) {
         List<Variant> variantNews = new ArrayList<>();
 
         if (variants != null) {
@@ -338,7 +338,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Transactional(rollbackOn = Exception.class)
-     void updateIngredients(List<IngredientCreateItemRequest> ingredientItemRequests, List<ItemIngredient> itemIngredients, int itemId, int variantId) {
+    public void updateIngredients(List<IngredientCreateItemRequest> ingredientItemRequests, List<ItemIngredient> itemIngredients, int itemId, int variantId) {
         List<ItemIngredient> itemIngredientNews = new ArrayList<>();
         //Xóa nguyên liệu
         if (ingredientItemRequests == null && itemIngredients != null) {
