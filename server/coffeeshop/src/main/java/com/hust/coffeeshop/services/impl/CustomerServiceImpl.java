@@ -50,6 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setModifiedOn(0);
         customer.setModifiedBy("admin");
         customer.setCreatedBy("admin");
+        customer.setType(request.getType());
         CustomerResponse customerResponse = null;
         try {
             var customerNew = customerRepository.save(customer);
