@@ -27,6 +27,7 @@ export const DialogAddPartner = (props: DialogAddCustomerProps) => {
   const handleAddCustomer = () => {
     let customerAdd: CustomerRequest = {
       ...customer,
+      type:"partner"
     };
     if (customer) {
        CustomerService.create(customerAdd)

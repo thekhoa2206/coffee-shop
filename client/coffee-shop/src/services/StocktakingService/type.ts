@@ -44,6 +44,8 @@ export type CreateStocktakingRequest = {
   payment?:boolean;
   status?: number;
   partner?:string;
+  createdBy?: string;
+  modifiedBy?: string;
 };
 
 export type StocktakingIngredientRequest = {

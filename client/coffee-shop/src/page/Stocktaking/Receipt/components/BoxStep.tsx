@@ -29,7 +29,7 @@ const BoxStep = memo((props: BoxStepProps & PropsFromRedux) => {
             },
             {
                 label: stock?.status === ReeceiptStatus.DELETED ? "Huỷ phiếu" : "Nhập kho",
-                time: stock?.createdOn ? formatDateTime(stock?.createdOn) : "",
+                time: stock?.modifiedOn ? formatDateTime(stock?.modifiedOn) : "",
             },
         ],
         [stock]

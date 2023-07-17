@@ -175,16 +175,16 @@ public class DashboardServiceImpl implements DashboardService {
             AggregateRevenueResponse response = new AggregateRevenueResponse();
             var result = orderService.filter(filter);
             //Đơn hàng thành công
-            Integer test = orderRepository.getSumTottalByDate(i,i+86400000);
-            aggregateRevenue= new BigDecimal(test);
-//            var order = result.getData().stream()
-//                    .filter(o -> o.getStatus()!=4)
-//                    .collect(Collectors.toList());
-//            if(order.size()>0 && order != null){
-//                for (val oderMoney : order){
-//                    aggregateRevenue = aggregateRevenue.add(oderMoney.getTotal()) ;
-//                }
-//            }
+//            Integer test = orderRepository.getSumTottalByDate(i,i+86400000);
+//            aggregateRevenue= new BigDecimal(test);
+            var order = result.getData().stream()
+                    .filter(o -> o.getStatus()!=4)
+                    .collect(Collectors.toList());
+            if(order.size()>0 && order != null){
+                for (val oderMoney : order){
+                    aggregateRevenue = aggregateRevenue.add(oderMoney.getTotal()) ;
+                }
+            }
             var cancels =  result.getData().stream()
                     .filter(o -> o.getStatus()==4)
                     .collect(Collectors.toList());

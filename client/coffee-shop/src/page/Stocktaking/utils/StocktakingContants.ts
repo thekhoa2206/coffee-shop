@@ -31,14 +31,14 @@ export const ExportStatus = {
 };
 
 export const PaymentStatus = {
-    UNPAID: 1,
-    PAID: 2,
-    getName: (status?: number) => {
-        switch (status) {
-            case PaymentStatus.UNPAID:
+    TRUE: true,
+    FALSE: false,
+    getName: (payment?: boolean) => {
+        switch (payment) {
+            case PaymentStatus.TRUE:
+                return `Đã thanh toán `;
+            case PaymentStatus.FALSE:
                 return `Chưa thanh toán`;
-            case PaymentStatus.PAID:
-                return `Đã thanh toán`;
             default:
                 return "Chưa thanh toán";
         }

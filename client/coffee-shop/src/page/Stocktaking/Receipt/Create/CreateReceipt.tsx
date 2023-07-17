@@ -173,7 +173,9 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
       status: status,
       payment: checked,
       description: note,
-      partner:partner?.name
+      partner:partner?.name,
+      createdBy:authState.user.username,
+      modifiedBy:authState.user.username,
     };
     try {
       let res = await StocktakingService.create(requet);
@@ -213,7 +215,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
             </Box>
           </Paper>
           <Box style={{ display: "flex", width: "100%" }}>
-            <Paper className={classes.wrapperBoxInfo} style={{ width: "47%" }}>
+            <Paper className={classes.wrapperBoxInfo} style={{ width: "50%" }}>
               <Box className={classes.boxContentPaper}>
                 <Typography style={{ fontWeight: 500 }}>Tên phiếu</Typography>
                 <Grid item xs={12}>
@@ -233,7 +235,7 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
             </Paper>
             <Paper
               className={classes.wrapperBoxInfo}
-              style={{ width: "47%", marginLeft: 63 }}
+              style={{ width: "50%", marginLeft: 20 }}
             >
               <Box className={classes.boxContentPaper}>
                 <Typography style={{ fontWeight: 500 }}>Đối tác</Typography>
@@ -251,11 +253,11 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                           setPartner(null);
                         }}
                       >
-                        <CloseSmallIcon style={{ width: 10, height: 10 }} />
+                        <CloseSmallIcon style={{width: 15, height: 15, marginTop:45, marginRight:170 }} />
                       </IconButton>
                       <Grid xs={12} container>
                         <Grid xs={6} item>
-                          {partner.name}
+                        <Typography style={{fontSize:20, marginLeft:12}} >{partner.name}</Typography>
                         </Grid>
                       </Grid>
                     </Box>
@@ -305,19 +307,29 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
                         renderOption={(option) => (
                           <Box>
                             {option.type === "partner" ? (
+                              <Box>
+                                <MenuItem value="" disabled>
+                                <em>Đối tác</em>
+                              </MenuItem>
                               <MenuItem>
                                 <AccountCircleRounded className="icon" />
                                 <Box>
                                   <Typography noWrap>{option.name}</Typography>
                                 </Box>
                               </MenuItem>
+                              </Box>
                             ) : (
+                              <Box>
+                                <MenuItem value="" disabled>
+                                <em>Khách hàng</em>
+                              </MenuItem>
                               <MenuItem>
                                 <AccountCircleRounded className="icon" />
                                 <Box>
                                   <Typography noWrap>{option.name}</Typography>
                                 </Box>
                               </MenuItem>
+                              </Box>
                             )}
                           </Box>
                         )}

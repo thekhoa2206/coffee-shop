@@ -16,5 +16,7 @@ public class CreateStocktakingRequest {
     private boolean payment;
     private int status;
     private String partner;
+    private String createdBy;
+    private String modifiedBy;
     List<StocktakingIngredientRequest> object;
 }
