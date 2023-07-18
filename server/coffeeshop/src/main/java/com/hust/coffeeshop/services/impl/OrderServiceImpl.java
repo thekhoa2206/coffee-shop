@@ -125,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
             Filter createdOnMax = Filter.builder()
                     .field("createdOn")
                     .operator(QueryOperator.LESS_THAN)
-                    .value(String.valueOf(CommonCode.getMilliSeconds(filter.getCreatedOnMax(), "yyyy-MM-dd'T'HH:mm:ss'Z'")+86400000))
+                    .value(String.valueOf(CommonCode.getMilliSeconds(filter.getCreatedOnMax(), "yyyy-MM-dd'T'HH:mm:ss'Z'")))
                     .build();
             filters.add(createdOnMax);
         }
