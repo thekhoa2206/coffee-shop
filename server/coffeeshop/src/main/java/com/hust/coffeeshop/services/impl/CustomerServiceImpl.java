@@ -44,13 +44,13 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerResponse create(CustomerRequest request) {
         if (request.getName() == null) throw new ErrorException("Tên khách hàng không được để trống");
         if (request.getPhoneNumber() == null) throw new ErrorException("Số điện thoại khách hàng không được để trống");
-
         Customer customer = mapper.map(request, Customer.class);
         customer.setStatus(CommonStatus.CustomerStatus.ACTIVE);
         customer.setCreatedOn(CommonCode.getTimestamp());
-        customer.setModifiedOn(0);
+        customer.setModifiedOn(CommonCode.getTimestamp());
         customer.setModifiedBy("admin");
         customer.setCreatedBy("admin");
+        customer.setType(request.getType());
         CustomerResponse customerResponse = null;
         try {
             var customerNew = customerRepository.save(customer);
@@ -60,7 +60,6 @@ public class CustomerServiceImpl implements CustomerService {
         }
         return customerResponse;
     }
-
     //api update
     @Override
     public CustomerResponse update(CustomerRequest request, int id) {

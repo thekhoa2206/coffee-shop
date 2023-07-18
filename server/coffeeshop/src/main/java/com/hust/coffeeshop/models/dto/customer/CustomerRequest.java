@@ -11,4 +11,5 @@ public class CustomerRequest {
     private String phoneNumber;
     private Date dob;
     private String sex;
+    private String type;
 }

@@ -3,14 +3,14 @@ import Dialog from "components/Dialog";
 import TextField from "components/TextField";
 import React, { Fragment, useState, useEffect } from "react";
 import { CustomerRequest } from "services/CustomerService";
-import { DialogAddCustomerProps } from "./DialogAddCustomer.types";
 import DatePicker from "components/DatePicker/DatePicker.component";
 import Select from "components/Select/Index";
 import CustomerService from "services/CustomerService/CustomerService";
 import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 import { getMessageError } from "utilities";
+import { DialogAddCustomerProps } from "page/Customer/DialogAddCustomer/DialogAddCustomer.types";
 
-export const DialogAddCustomer = (props: DialogAddCustomerProps) => {
+export const DialogAddPartner = (props: DialogAddCustomerProps) => {
   const { open, onClose, initData } = props;
   const [customer, setcustomer] = useState<CustomerRequest>();
   useEffect(() => {
@@ -20,13 +20,14 @@ export const DialogAddCustomer = (props: DialogAddCustomerProps) => {
         name: props.customer.name,
         phoneNumber: props.customer.phoneNumber,
         sex: props.customer.sex,
-        type:"customer"
+        type:"partner"
       })
     }
   },[props.customer])
   const handleAddCustomer = () => {
     let customerAdd: CustomerRequest = {
       ...customer,
+      type:"partner"
     };
     if (customer) {
        CustomerService.create(customerAdd)
@@ -35,7 +36,7 @@ export const DialogAddCustomer = (props: DialogAddCustomerProps) => {
             onClose();
             if (res.data) {
               if (initData) initData(res.data);
-              SnackbarUtils.success("Tạo mới khách hàng thành công!");
+              SnackbarUtils.success("Tạo mới đối tác thành công!");
             }
           }
         })
@@ -50,7 +51,7 @@ export const DialogAddCustomer = (props: DialogAddCustomerProps) => {
       <Dialog
         open={open}
         onClose={onClose}
-        title={"Thêm mới khách hàng"}
+        title={"Thêm mới đối tác"}
         onOk={handleAddCustomer}
         textOk={"Lưu"}
         minWidthPaper="790px"
@@ -64,8 +65,8 @@ export const DialogAddCustomer = (props: DialogAddCustomerProps) => {
             <Grid container xs={12} spacing={2}>
               <Grid item xs={6}>
                 <TextField 
-                label="Tên khách hàng" 
-                placeholder="Nhập tên khách hàng..." 
+                label="Tên đối tác" 
+                placeholder="Nhập tên đối tác..." 
                 fullWidth 
                 required 
                 value={customer?.name}
@@ -81,36 +82,7 @@ export const DialogAddCustomer = (props: DialogAddCustomerProps) => {
                 onChange={(e: any) => {setcustomer({...customer, phoneNumber: e.target.value })}}/>
               </Grid>
             </Grid>
-            <Grid container xs={12} spacing={2}>
-              <Grid item xs={6}>
-                <DatePicker
-                  label="Ngày sinh"
-                  lastValue={customer?.dob}
-                  onChange={(date) => {
-                    if (date)
-                      setcustomer({ ...customer, dob: date });
-                  }} value={customer?.dob} 
-                  
-                  textFieldProps={{
-                    style: {width: "339px"}
-                  }}
-                  />
-              </Grid>
-              <Grid item xs={6}>
-                <Select  value={customer?.sex} onChange={(value) => {setcustomer({...customer, sex: `${value.target.value }`});}} label="Giới tính" placeholder="Chọn giới tính">
-                    <MenuItem key="male" value="male">
-                      <Typography >Nam</Typography>
-                    </MenuItem>
-                    <MenuItem key="female" value="female">
-                      <Typography >Nữ</Typography>
-                    </MenuItem>
-                    <MenuItem key="other" value="other">
-                      <Typography >Khác</Typography>
-                    </MenuItem>
-                </Select>
-              </Grid>
-            </Grid>
-            <Grid item xs={6}>
+            {/* <Grid item xs={6}>
                 <Select  value={customer?.type} onChange={(value) => {setcustomer({...customer, type: `${value.target.value }`});}} label="Giới tính" placeholder="Chọn giới tính">
                     <MenuItem key="male" value="male">
                       <Typography >khách hàng</Typography>
@@ -119,7 +91,7 @@ export const DialogAddCustomer = (props: DialogAddCustomerProps) => {
                       <Typography >Đối tác</Typography>
                     </MenuItem>
                 </Select>
-              </Grid>
+              </Grid> */}
           </Box>
         }
       />

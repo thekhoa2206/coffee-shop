@@ -14,4 +14,5 @@ public class CustomerResponse extends BaseResponse {
     private Date dob;
     private int status;
     private String sex;
+    private String type;
 }

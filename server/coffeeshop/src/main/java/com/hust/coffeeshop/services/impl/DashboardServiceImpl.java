@@ -74,8 +74,8 @@ public class DashboardServiceImpl implements DashboardService {
         }
 
         OrderFilterRequest filter = new OrderFilterRequest();
-        filter.setCreatedOnMin( request.getCreatedOnMin());
-        filter.setCreatedOnMax(request.getCreatedOnMax());
+        filter.setCreatedOnMax(CommonCode.getStringDate(new Date( endtDate), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
+        filter.setCreatedOnMin(CommonCode.getStringDate(new Date( startDate), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
         var results = orderService.filter(filter);
         if(results.getMetadata().getTotal() != 0){
             val orderItem = results.getData().stream()
@@ -164,27 +164,27 @@ public class DashboardServiceImpl implements DashboardService {
         List<AggregateRevenueResponse> responses = new ArrayList<>();
         Long startDate= CommonCode.getMilliSeconds(request.getCreatedOnMin(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
         Long endtDate= CommonCode.getMilliSeconds(request.getCreatedOnMax(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
-        BigDecimal aggregateRevenue = BigDecimal.ZERO;
-        BigDecimal cancelMoney = BigDecimal.ZERO;
         BigDecimal total = BigDecimal.ZERO;
         for (var i = startDate; i < endtDate; i += 86400000)
         {
+            BigDecimal aggregateRevenue = BigDecimal.ZERO;
+            BigDecimal cancelMoney = BigDecimal.ZERO;
             filter.setCreatedOnMax(CommonCode.getStringDate(new Date(i + 86400000), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
             filter.setCreatedOnMin(CommonCode.getStringDate(new Date(i), "yyyy-MM-dd'T'HH:mm:ss'Z'"));
             filter.setStatuses("2,3,4,5");
             AggregateRevenueResponse response = new AggregateRevenueResponse();
             var result = orderService.filter(filter);
             //Đơn hàng thành công
-            Integer test = orderRepository.getSumTottalByDate(i,i+86400000);
-            aggregateRevenue= new BigDecimal(test);
-//            var order = result.getData().stream()
-//                    .filter(o -> o.getStatus()!=4)
-//                    .collect(Collectors.toList());
-//            if(order.size()>0 && order != null){
-//                for (val oderMoney : order){
-//                    aggregateRevenue = aggregateRevenue.add(oderMoney.getTotal()) ;
-//                }
-//            }
+//            Integer test = orderRepository.getSumTottalByDate(i,i+86400000);
+//            aggregateRevenue= new BigDecimal(test);
+            var order = result.getData().stream()
+                    .filter(o -> o.getStatus()!=4)
+                    .collect(Collectors.toList());
+            if(order.size()>0 && order != null){
+                for (val oderMoney : order){
+                    aggregateRevenue = aggregateRevenue.add(oderMoney.getTotal()) ;
+                }
+            }
             var cancels =  result.getData().stream()
                     .filter(o -> o.getStatus()==4)
                     .collect(Collectors.toList());

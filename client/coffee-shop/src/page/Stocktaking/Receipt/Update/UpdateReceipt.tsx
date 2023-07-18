@@ -23,7 +23,7 @@ import { DataSource } from "components/Select/types";
 import TextField from "components/TextField";
 import TextareaAutosize from "components/TextField/TextareaAutosize/TextareaAutosize";
 import _ from "lodash";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { CategoryResponse } from "services/CategoryService";
 import CategoryService from "services/CategoryService/CategoryService";
@@ -63,13 +63,18 @@ import StocktakingService from "services/StocktakingService/StocktakingService";
 import { log } from "console";
 import { render } from "react-dom";
 import Switch from "components/Switch/Switch.component";
-import { check } from "prettier";
 import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
 import useModal from "components/Modal/useModal";
 import { receiveMessageOnPort } from "worker_threads";
 import { type } from "os";
-import { StockingType } from "page/Stocktaking/utils/StocktakingContants";
+import { PaymentStatus, ReeceiptStatus, StockingType } from "page/Stocktaking/utils/StocktakingContants";
 import BoxStep from "../components/BoxStep";
+import CloseSmallIcon from "components/SVG/CloseSmallIcon";
+import { CustomerResponse } from "services/CustomerService";
+import CustomerService from "services/CustomerService/CustomerService";
+import { AccountCircleRounded } from "@material-ui/icons";
+import { DialogAddPartner } from "../components/DialogAddPartner";
+import Chip from "components/Chip/Chip.component";
 
 export interface UpdateReceiptProps extends WithStyles<typeof styles> { }
 const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
@@ -82,10 +87,19 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
   const [variants, setVariants] = useState<VariantRequest[]>([
     { id: 1, name: "", price: 0 },
   ]);
+  const handleChangeCustomer = useCallback(
+    (customer: CustomerResponse | null) => {
+      setPartner(customer);
+    },
+    []
+  );
+  const [querySearchCustomer, setQuerySearchCustomer] = useState("");
+  const [partner, setPartner] = useState<CustomerResponse | undefined | null>();
   const [stockUnits, setStockUnits] = useState<StockUnitResponse[]>();
   const [toltalMoeny, settoltalMoeny] = useState<number>();
   const [stocktakingIngredientRequest, setStocktakingIngredientRequest] =
     useState<StocktakingIngredientRequest[]>([]);
+  const [openDialogEditCustomer, setOpenDialogCustomer] = useState(false);
   const { closeModal, confirm, openModal } = useModal();
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
@@ -110,6 +124,30 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
   useEffect(() => {
     initReceipt();
   }, []);
+  const renderReceiptPayment = (payment: boolean) => {
+    switch (payment) {
+      case PaymentStatus.TRUE:
+        return (
+          <Chip
+            className="info"
+            variant="default"
+            size="small"
+            label={PaymentStatus.getName(payment)}
+          />
+        );
+      case PaymentStatus.FALSE:
+        return (
+          <Chip
+            className="warning"
+            variant="default"
+            size="small"
+            label={PaymentStatus.getName(payment)}
+          />
+        );
+      default:
+        return "";
+    }
+  };
   const initReceipt = async () => {
     let res = await StocktakingService.getById(id);
     if (res.data) {
@@ -122,6 +160,7 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
         object: [],
         status: receipt.status,
         payment: checked,
+        partner: receipt.partner
       };
       let stocktakingIngredientRequests: StocktakingIngredientRequest[] = [];
       let ojject = receipt.object.map((v) => {
@@ -138,6 +177,10 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
       receiptRq.object = stocktakingIngredientRequests;
       setStocktakingIngredientRequest(stocktakingIngredientRequests);
       setReceiptRequest(receiptRq);
+      let data : CustomerResponse = {
+        name:receipt.partner
+      }
+      setPartner(data);
       setReceipt(receipt);
       {
         receipt.payment === 2 ? setChecked(true) : setChecked(false);
@@ -218,10 +261,11 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
       let res = await StocktakingService.delete(id);
       if (res) {
         SnackbarUtils.success("Xoá phiếu nhập kho thành công");
-        {receipt?.type.includes("import")?history.push(`/admin/receipts`)
-        :history.push(`/admin/exports`)
-      }
-        
+        {
+          receipt?.type.includes("import") ? history.push(`/admin/receipts`)
+          : history.push(`/admin/exports`)
+        }
+
       }
     } catch (error) {
       SnackbarUtils.error(getMessageError(error));
@@ -284,19 +328,140 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                   </Grid>
                 </Box>
               </Paper>
-              <Paper className={classes.wrapperBoxInfo}>
-                <Box className={classes.boxContentPaper}>
-                  <Typography style={{ fontWeight: 500 }}>Tên phiếu</Typography>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      value={receipt.name}
-                      placeholder="Nhập tên phiếu"
-                      disabled
-                    />
-                  </Grid>
-                </Box>
-              </Paper>
+              <Box style={{ display: "flex", width: "100%" }}>
+                <Paper className={classes.wrapperBoxInfo} style={{ width: "50%" }}>
+                  <Box className={classes.boxContentPaper}>
+                    <Typography style={{ fontWeight: 500 }}>Tên phiếu</Typography>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        value={receipt.name}
+                        onChange={(e: any) => {
+                          setReceiptRequest({
+                            ...receiptRequest,
+                            name: e.target.value as any,
+                          });
+                        }}
+                        placeholder="Nhập tên phiếu"
+                      />
+                    </Grid>
+                  </Box>
+                </Paper>
+                <Paper
+                  className={classes.wrapperBoxInfo}
+                  style={{ width: "50%", marginLeft: 20 }}
+                >
+                  <Box className={classes.boxContentPaper}>
+                    <Typography style={{ fontWeight: 500 }}>Đối tác</Typography>
+                    <Grid xs={12} style={{ padding: 0 }}>
+                      {partner ? (
+                        <Box style={{ width: 330 }}>
+                          <IconButton
+                            style={{
+                              width: 20,
+                              height: 20,
+                              float: "right",
+                              marginRight: 10,
+                             
+                            }}
+                            onClick={() => {
+                              setPartner(null);
+                            }}
+                          >
+                            <CloseSmallIcon style={{ width: 15, height: 15, marginTop:45, marginRight:170 }} />
+                          </IconButton>
+                          <Grid xs={12} container>
+                            <Grid xs={6} item>
+                              <Typography style={{fontSize:20, marginLeft:12}} >{partner.name}</Typography>
+                              
+                            </Grid>
+                          </Grid>
+                        </Box>
+                      ) : (
+                        <>
+                          <SelectInfinite
+                            placeholder="Tìm kiếm đối tác"
+                            value={null}
+                            onChange={handleChangeCustomer}
+                            getOptionLabel={(e) => e.name}
+                            fetchDataSource={async (filter: any) => {
+                              let limit = 10;
+                              try {
+                                filter["statuses.in"] = "active";
+                                filter.condition_type = "must";
+                                if (
+                                  !filter["query.contains"] ||
+                                  filter["query.contains"].length === 0
+                                ) {
+                                  delete filter["query.contains"];
+                                }
+                                let res = await CustomerService.filter(filter);
+                                let dataSource = {} as DataSource;
+                                dataSource.data = res.data.data || [];
+                                dataSource.metaData = {
+                                  totalPage: Math.ceil(
+                                    (res.data.metadata?.total || 0) / limit
+                                  ),
+                                  totalItems: res.data.metadata?.total || 0,
+                                };
+                                return Promise.resolve(dataSource);
+                              } catch (error) { }
+                            }}
+                            onQueryChange={(filter) => {
+                              let dataSourceFilter = {} as any;
+                              dataSourceFilter["query.contains"] = filter.query;
+                              setQuerySearchCustomer(filter.query);
+                              dataSourceFilter.page = filter.page ?? 1;
+                              dataSourceFilter.limit = 10;
+                              return dataSourceFilter;
+                            }}
+                            textCreate={"Thêm mới đối tác"}
+                            createable
+                            onClickCreate={() => {
+                              setOpenDialogCustomer(true);
+                            }}
+                            renderOption={(option) => (
+                              <Box>
+                                {option.type === "partner" ? (
+                                  <Box>
+                                    <MenuItem value="" disabled>
+                                      <em>Đối tác</em>
+                                    </MenuItem>
+                                    <MenuItem>
+                                      <AccountCircleRounded className="icon" />
+                                      <Box>
+                                        <Typography noWrap>{option.name}</Typography>
+                                      </Box>
+                                    </MenuItem>
+                                  </Box>
+                                ) : (
+                                  <Box>
+                                    <MenuItem value="" disabled>
+                                      <em>Khách hàng</em>
+                                    </MenuItem>
+                                    <MenuItem>
+                                      <AccountCircleRounded className="icon" />
+                                      <Box>
+                                        <Typography noWrap>{option.name}</Typography>
+                                      </Box>
+                                    </MenuItem>
+                                  </Box>
+                                )}
+                              </Box>
+                            )}
+                            maxHeight={300}
+                          />
+                          <Box style={{ textAlign: "center" }}>
+                            <Typography style={{ color: "#A3A8AF", marginTop: 6 }}>
+                              Chưa có thông tin đối tác
+                            </Typography>
+                          </Box>
+                        </>
+                      )}
+                    </Grid>
+                  </Box>
+                </Paper>
+              </Box>
               <Paper className={classes.wrapperBoxInfo}>
                 <Box className={classes.boxContentPaper}>
                   <Box
@@ -519,14 +684,10 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                     </Typography>
 
                     <Grid item xs={2}>
-                      {checked ? (
-                        <Switch checked={checked} disabled></Switch>
-                      ) : (
-                        <Switch
+                      <Switch
                           checked={checked}
                           onChange={handleChange}
                         ></Switch>
-                      )}
                     </Grid>
                   </Box>
                 </Grid>
@@ -542,7 +703,8 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                   </Grid>
                 </Box>
               </Paper>
-              <Paper className={classes.wrapperBoxInfo}>
+              <Box style={{ display: "flex", width: "100%" }}>
+              <Paper className={classes.wrapperBoxInfo} style={{ width: "50%"}}>
                 <Box className={classes.boxContentPaper}>
                   <Typography style={{ fontWeight: 500 }}>Tên phiếu</Typography>
                   <Grid item xs={12}>
@@ -550,6 +712,15 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                   </Grid>
                 </Box>
               </Paper>
+              <Paper className={classes.wrapperBoxInfo}  style={{ width: "50%", marginLeft: 20 }}>
+                <Box className={classes.boxContentPaper}>
+                  <Typography style={{ fontWeight: 500 }}>Đối tác</Typography>
+                  <Grid item xs={12}>
+                    <TextField fullWidth value={receipt?.partner} disabled />
+                  </Grid>
+                </Box>
+              </Paper>
+              </Box>
               <Paper className={classes.wrapperBoxInfo}>
                 <Box className={classes.boxContentPaper}>
                   <Box
@@ -699,182 +870,207 @@ const UpdateReceipt = (props: UpdateReceiptProps & PropsFromRedux) => {
                 <Grid item xs={4}>
                   <Box
                     className={classes.boxContentPaper}
-                    style={{ display: "flex", marginLeft: 120 }}
+                    style={{ display: "flex", marginLeft: 40,marginTop: 12}}
                   >
                     <Typography style={{ fontWeight: 500 }}>
                       Thanh toán
                     </Typography>
-                    <Grid item xs={2}>
-
-
-                      <Switch checked={checked} onChange={handleChange}></Switch>
+                    <Grid item xs={2} style={{ marginLeft: 24 }}>
+                    <Typography>{renderReceiptPayment(checked)}</Typography>
                     </Grid>
                   </Box>
+                  <Box
+                    className={classes.boxContentPaper}
+                    style={{ display: "flex", marginLeft: 40,marginTop: "-20px"}}
+                  >
+                    <Typography style={{ fontWeight: 500 }}>
+                      Nhân viên tạo phiếu
+                    </Typography>
+                    <Grid item xs={2} style={{ marginLeft: 24 }}>
+                    <Typography>{receipt?.createdBy}</Typography>
+                    </Grid>
+                  </Box>
+                  {receipt?.status=== 3 ?
+                  <Box
+                    className={classes.boxContentPaper}
+                    style={{ display: "flex", marginLeft: 40,marginTop: "-20px"}}
+                  >
+                    <Typography style={{ fontWeight: 500 }}>
+                      Nhân viên huỷ phiếu
+                    </Typography>
+                    <Grid item xs={2} style={{ marginLeft: 24 }}>
+                    <Typography>{receipt?.modifiedBy}</Typography>
+                    </Grid>
+                  </Box>
+                  : ""}
                 </Grid>
               </Paper>
             </Grid>
           )}
-                {receipt?.type.includes("import") ?
-        (
-          // phiếu nhập kho 
-          <Box>
-            {receipt.status && receipt.status === 3 ? ("") :
-              (
-                <Box>
-                  {receipt.status === 1 ?
-                    //trường hợp phiếu nhập hàng đang đặt hàng
-                    (
-                      <Box
-                        style={{
-                          display: "flex",
-                          marginBottom: "100px",
-                          marginLeft: "740px",
-                          marginTop: "30px",
-                        }}
-                      >
-                        <Button variant="outlined" style={{
-                          background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
-                          borderColor: "#ff4d4d",
-                          boxShadow: "inset 0 1px 0 0 #ff4d4",
-                          color: "#fff"
-                        }}
-                          onClick={() => {
-                            openModal(ConfirmDialog, {
-                              confirmButtonText: "Huỷ phiếu",
-                              message:
-                                "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
-                              title: "Huỷ phiếu nhập kho",
-                              cancelButtonText: "Thoát",
-                            }).result.then((res) => {
-                              if (res) {
-                                handleDeleteReceipt();
-                              }
-                            });
-                          }}
-                        >
-                          Hủy phiếu
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          style={{ marginLeft: "16px" }}
-                          onClick={() => handleUpdateRecpit(1)
-                          }
-                        >
-                          Lưu
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          style={{ marginLeft: "16px" }}
-                          onClick={() => {
-                            if (!checked) {
-                              openModal(ConfirmDialog, {
-                                confirmButtonText: "Xác nhận",
-                                message:
-                                  "Bạn chưa thanh toán phiếu,bạn có muốn tiếp tục nhập kho không?",
-                                title: "Thanh toán phiếu nhập kho",
-                                cancelButtonText: "Thoát",
-                              }).result.then((res) => {
-                                if (res) {
-                                  handleUpdateRecpit(2);
-                                }
-                              });
-                            } else {
-                              handleUpdateRecpit(2);
-                            }
-                          }}
-                        >
-                          Nhập kho
-                        </Button>
-                      </Box>
-                    ) : (
-                      //trường hợp là phiếu nhập hàng đã Nhập kho 
-                      <Box
-                        style={{
-                          display: "flex",
-                          marginBottom: "100px",
-                          // marginLeft: "160px",
-                          marginTop: "30px",
-                          float: "right",
-                          marginRight: 8
-                        }}
-                      >
-                        <Button variant="outlined" color="secondary"
+        {receipt?.type.includes("import") ?
+          (
+            // phiếu nhập kho 
+            <Box>
+              {receipt.status && receipt.status === 3 ? ("") :
+                (
+                  <Box>
+                    {receipt.status === 1 ?
+                      //trường hợp phiếu nhập hàng đang đặt hàng
+                      (
+                        <Box
                           style={{
+                            display: "flex",
+                            marginBottom: "100px",
+                            marginLeft: "740px",
+                            marginTop: "30px",
+                          }}
+                        >
+                          <Button variant="outlined" style={{
                             background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
                             borderColor: "#ff4d4d",
                             boxShadow: "inset 0 1px 0 0 #ff4d4",
-                            color: "#fff",
-                            float: "left"
-                           }}
-                          onClick={() => {
-
-                            openModal(ConfirmDialog, {
-                              confirmButtonText: "Huỷ phiếu",
-                              message:
-                                "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
-                              title: "Huỷ phiếu nhập kho",
-                              cancelButtonText: "Thoát",
-                            }).result.then((res) => {
-                              if (res) {
-                                handleDeleteReceipt();
+                            color: "#fff"
+                          }}
+                            onClick={() => {
+                              openModal(ConfirmDialog, {
+                                confirmButtonText: "Huỷ phiếu",
+                                message:
+                                  "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
+                                title: "Huỷ phiếu nhập kho",
+                                cancelButtonText: "Thoát",
+                              }).result.then((res) => {
+                                if (res) {
+                                  handleDeleteReceipt();
+                                }
+                              });
+                            }}
+                          >
+                            Hủy phiếu
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            color="primary"
+                            style={{ marginLeft: "16px" }}
+                            onClick={() => handleUpdateRecpit(1)
+                            }
+                          >
+                            Lưu
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            style={{ marginLeft: "16px" }}
+                            onClick={() => {
+                              if (!checked) {
+                                openModal(ConfirmDialog, {
+                                  confirmButtonText: "Xác nhận",
+                                  message:
+                                    "Bạn chưa thanh toán phiếu,bạn có muốn tiếp tục nhập kho không?",
+                                  title: "Thanh toán phiếu nhập kho",
+                                  cancelButtonText: "Thoát",
+                                }).result.then((res) => {
+                                  if (res) {
+                                    handleUpdateRecpit(2);
+                                  }
+                                });
+                              } else {
+                                handleUpdateRecpit(2);
                               }
-                            });
+                            }}
+                          >
+                            Nhập kho
+                          </Button>
+                        </Box>
+                      ) : (
+                        //trường hợp là phiếu nhập hàng đã Nhập kho 
+                        <Box
+                          style={{
+                            display: "flex",
+                            marginBottom: "100px",
+                            // marginLeft: "160px",
+                            marginTop: "30px",
+                            float: "right",
+                            marginRight: 8
                           }}
                         >
-                          Hủy phiếu
-                        </Button>
-                      </Box>
-                    )}
-                </Box>)}
+                          <Button variant="outlined" color="secondary"
+                            style={{
+                              background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
+                              borderColor: "#ff4d4d",
+                              boxShadow: "inset 0 1px 0 0 #ff4d4",
+                              color: "#fff",
+                              float: "left"
+                            }}
+                            onClick={() => {
 
-          </Box>
-        ) : (
-          // Phiếu xuất
-          <Box>
-            
-            {//Huỷ phiếu
-            receipt?.status===3 ? "": 
-            //Phiếu xuất kho
-            <Box
-            style={{
-              display: "flex",
-              marginBottom: "100px",
-              // marginLeft: "160px",
-              marginTop: "30px",
-              float: "right",
-              marginRight: 8
-            }}
-          >
-            <Button variant="outlined" color="secondary" style={{
-              background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
-              borderColor: "#ff4d4d",
-              boxShadow: "inset 0 1px 0 0 #ff4d4",
-              color: "#fff",
-            }}
-              onClick={() => {
-                openModal(ConfirmDialog, {
-                  confirmButtonText: "Huỷ phiếu",
-                  message:
-                    "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
-                  title: "Huỷ phiếu",
-                  cancelButtonText: "Thoát",
-                }).result.then((res) => {
-                  if (res) {
-                    handleDeleteReceipt();
-                  }
-                });
-              }}
-            >
-              Hủy phiếu
-            </Button>
-          </Box>}
-          </Box>
-         
-        )}
+                              openModal(ConfirmDialog, {
+                                confirmButtonText: "Huỷ phiếu",
+                                message:
+                                  "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
+                                title: "Huỷ phiếu nhập kho",
+                                cancelButtonText: "Thoát",
+                              }).result.then((res) => {
+                                if (res) {
+                                  handleDeleteReceipt();
+                                }
+                              });
+                            }}
+                          >
+                            Hủy phiếu
+                          </Button>
+                        </Box>
+                      )}
+                  </Box>)}
+
+            </Box>
+          ) : (
+            // Phiếu xuất
+            <Box>
+
+              {//Huỷ phiếu
+                receipt?.status === 3 ? "" :
+                  //Phiếu xuất kho
+                  <Box
+                    style={{
+                      display: "flex",
+                      marginBottom: "100px",
+                      // marginLeft: "160px",
+                      marginTop: "30px",
+                      float: "right",
+                      marginRight: 8
+                    }}
+                  >
+                    <Button variant="outlined" color="secondary" style={{
+                      background: "linear-gradient(180deg,#ff4d4d,#ff4d4d)",
+                      borderColor: "#ff4d4d",
+                      boxShadow: "inset 0 1px 0 0 #ff4d4",
+                      color: "#fff",
+                    }}
+                      onClick={() => {
+                        openModal(ConfirmDialog, {
+                          confirmButtonText: "Huỷ phiếu",
+                          message:
+                            "Bạn có muốn huỷ phiếu không? Thao tác này không thể hoàn tác",
+                          title: "Huỷ phiếu",
+                          cancelButtonText: "Thoát",
+                        }).result.then((res) => {
+                          if (res) {
+                            handleDeleteReceipt();
+                          }
+                        });
+                      }}
+                    >
+                      Hủy phiếu
+                    </Button>
+                  </Box>}
+            </Box>
+
+          )}
       </Box>
-
+      <DialogAddPartner
+        open={openDialogEditCustomer}
+        onClose={() => setOpenDialogCustomer(false)}
+      />
 
     </>
   );
@@ -887,4 +1083,3 @@ const mapStateToProps = (state: AppState) => ({
 const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
 export default connect(mapStateToProps, {})(withStyles(styles)(UpdateReceipt));
- 
