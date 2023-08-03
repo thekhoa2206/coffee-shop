@@ -21,6 +21,7 @@ import { IOOrderFilter, OrderFilter, OrderFilterModel } from "services/OrderServ
 import OrderService from "services/OrderService/OrderService";
 import { AppState } from "store/store";
 import {
+    convertDateUTCToLocalDate,
     formatDateUTC,
     formatDateUTCToLocalDateString, formatMoney
 } from "utilities";

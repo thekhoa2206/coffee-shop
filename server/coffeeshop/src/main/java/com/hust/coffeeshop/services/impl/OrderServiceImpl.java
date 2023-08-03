@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -118,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
             Filter createdOnMin = Filter.builder()
                     .field("createdOn")
                     .operator(QueryOperator.GREATER_THAN)
-                    .value(String.valueOf(CommonCode.getMilliSeconds(filter.getCreatedOnMin(), "yyyy-MM-dd'T'HH:mm:ss'Z'")))
+                    .value(String.valueOf((CommonCode.getMilliSeconds(filter.getCreatedOnMin(), "yyyy-MM-dd'T'HH:mm:ss'Z'") + 25200000)))
                     .build();
             filters.add(createdOnMin);
         }
@@ -126,7 +127,7 @@ public class OrderServiceImpl implements OrderService {
             Filter createdOnMax = Filter.builder()
                     .field("createdOn")
                     .operator(QueryOperator.LESS_THAN)
-                    .value(String.valueOf(CommonCode.getMilliSeconds(filter.getCreatedOnMax(), "yyyy-MM-dd'T'HH:mm:ss'Z'")))
+                    .value(String.valueOf((CommonCode.getMilliSeconds(filter.getCreatedOnMax(), "yyyy-MM-dd'T'HH:mm:ss'Z'") + 25200000)))
                     .build();
             filters.add(createdOnMax);
         }
@@ -135,7 +136,7 @@ public class OrderServiceImpl implements OrderService {
             Filter modifiedOn = Filter.builder()
                     .field("modifiedOn")
                     .operator(QueryOperator.GREATER_THAN)
-                    .value(String.valueOf(CommonCode.getMilliSeconds(filter.getModifiedOnMin(), "yyyy-MM-dd'T'HH:mm:ss'Z'")))
+                    .value(String.valueOf((CommonCode.getMilliSeconds(filter.getModifiedOnMin(), "yyyy-MM-dd'T'HH:mm:ss'Z'")  + 25200000)))
                     .build();
             filters.add(modifiedOn);
         }
@@ -143,10 +144,11 @@ public class OrderServiceImpl implements OrderService {
             Filter modifiedOn = Filter.builder()
                     .field("modifiedOn")
                     .operator(QueryOperator.LESS_THAN)
-                    .value(String.valueOf(CommonCode.getMilliSeconds(filter.getModifiedOnMax(), "yyyy-MM-dd'T'HH:mm:ss'Z'")))
+                    .value(String.valueOf((CommonCode.getMilliSeconds(filter.getModifiedOnMax(), "yyyy-MM-dd'T'HH:mm:ss'Z'")+ 25200000)))
                     .build();
             filters.add(modifiedOn);
         }
+
         Page<Order> results = null;
         List<OrderResponse> orderResponses = new ArrayList<>();
         try {

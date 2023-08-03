@@ -67,7 +67,11 @@ const ReportTopCustomer = (props: ReportTopCustomerProps) => {
         initData();
     }, [filter])
     const initData = async () => {
-        let res = await ReportOrderService.getReportTopCustomer(filter);
+        let res = await ReportOrderService.getReportTopCustomer({
+            ...filter,
+            createdOnMin: formatDateUTC(filter.createdOnMin, false),
+            createdOnMax: formatDateUTC(filter.createdOnMax, true),
+        });
         if (res.data) {
             if (res.data) {
                 setLoading(false)
@@ -75,6 +79,28 @@ const ReportTopCustomer = (props: ReportTopCustomerProps) => {
             }
         }
     }
+
+    const formatDateUTC = (
+        date?: Date | string | null,
+        isEndDate: boolean = false,
+        format: string = "YYYY-MM-DDTHH:mm:ss[Z]"
+      ) => {
+        if (date) {
+          let dateUtc;
+          if (typeof date === "string") {
+            dateUtc = moment(date, "YYYY-MM-DD").utc();
+          } else {
+            // format date theo chuẩn  ISO string (YYYY-MM-DD) sau đó chuyển về dạng UTC
+            dateUtc = moment(moment(date).format("YYYY-MM-DD")).utc();
+          }
+          if (isEndDate) {
+            // cộng 1 ngày trừ 1s để lấy 16:59:59 của ngày hôm đó tức là 23:59:59
+            return dateUtc.add(1, "days").subtract(1, "seconds").format(format);
+          }
+          return dateUtc.format(format);
+        }
+        return "";
+      }
     return <Fragment>
         <Box className={classes.root} borderRadius="3px" style={{ marginTop: 30, marginBottom: 50 }}>
             <Box className="box-title" style={{display: "flex", marginLeft: 20}}>
