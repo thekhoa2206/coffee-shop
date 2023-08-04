@@ -67,7 +67,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
   );
     useEffect(() => {
       reset();
-      set((prev) => ({ ...prev, context: "create" }));
+      set((prev) => ({ ...prev, context: "create", code: null }));
     }, [])
   const totalLineAmount = () => {
     let total = 0;
@@ -92,6 +92,10 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
     }
     if (!customer) {
       SnackbarUtils.error("Thông tin khách hàng không được để trống");
+      return;
+    }
+    if (code && code.includes("DON")) {
+      SnackbarUtils.error("Mã đơn hàng không được có tiền tố DON");
       return;
     }
     let orderLineItems: OrderItemRequest[] = [];

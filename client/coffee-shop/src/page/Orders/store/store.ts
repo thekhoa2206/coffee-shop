@@ -29,7 +29,7 @@ export const useOrderStore = create<OrderStore>((set) => ({
     ...initOrderStore,
     set: set,
     reset: () => {
-        set((prev) => ({...initOrderStore}))
+        set({...initOrderStore, code: undefined})
     },
     addLineItem: (product) => {
         set((prev) => {

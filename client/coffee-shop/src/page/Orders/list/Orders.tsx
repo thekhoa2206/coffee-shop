@@ -37,6 +37,7 @@ import { cloneDeep, toString } from "lodash";
 import { TagFilterItemType } from "components/TagFilterItem/TagFilterItem.types";
 import { convertPredefinedToDate } from "utilities/DateRangesPredefine";
 import { OrderFilterHelpers } from "./components/OrderFilterHelpers";
+import { useOrderStore } from "../store/store";
 
 const Orders = (props: OrdersProps & PropsFromRedux) => {
     const { classes, authState } = props;
@@ -48,6 +49,9 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
         data: [],
         total: 0,
     });
+    const {
+        reset,
+      } = useOrderStore();
     const [openFilter, setOpenFilter] = useState<boolean>(false);
     const history = useHistory();
     const getDefaultQuery = () => {
@@ -199,6 +203,7 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                             color="primary"
                             startIcon={<AddCircleOutline />}
                             onClick={() => {
+                                reset();
                                 history.push("/admin/orders/create");
                             }}
                         >
