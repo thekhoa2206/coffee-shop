@@ -5,7 +5,7 @@ import com.hust.coffeeshop.models.dto.variant.request.CreateVariantRequest;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 

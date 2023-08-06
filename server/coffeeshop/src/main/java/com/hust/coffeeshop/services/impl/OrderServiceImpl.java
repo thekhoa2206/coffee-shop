@@ -13,6 +13,7 @@ import com.hust.coffeeshop.services.IngredientService;
 import com.hust.coffeeshop.services.OrderService;
 import com.hust.coffeeshop.services.ProductService;
 import freemarker.template.TemplateException;
+import jakarta.transaction.Transactional;
 import lombok.val;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;

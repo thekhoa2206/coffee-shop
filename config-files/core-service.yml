@@ -1,0 +1,11 @@
+server:
+  port: 9002
+hello:
+  message: "Core Service"
+
+spring:
+  datasource:
+    driver-class-name: "com.mysql.cj.jdbc.Driver"
+    username: "root"
+    password: "123456"
+    url: "jdbc:mysql://localhost:3306/coffee-shop?createDatabaseIfNotExist=false"

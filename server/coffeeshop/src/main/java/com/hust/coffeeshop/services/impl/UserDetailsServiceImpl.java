@@ -5,6 +5,7 @@ import com.hust.coffeeshop.models.dto.security.UserSecurity;
 import com.hust.coffeeshop.models.entity.User;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.SneakyThrows;
 import lombok.val;
 import org.modelmapper.ModelMapper;
@@ -14,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

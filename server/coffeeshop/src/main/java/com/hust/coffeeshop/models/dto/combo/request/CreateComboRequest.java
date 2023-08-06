@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Column;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 

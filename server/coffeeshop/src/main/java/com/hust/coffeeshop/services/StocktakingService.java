@@ -6,7 +6,7 @@ import com.hust.coffeeshop.models.dto.stocktaking.request.CreateStocktakingReque
 import com.hust.coffeeshop.models.dto.item.request.ItemRequest;
 import com.hust.coffeeshop.models.dto.stocktaking.request.StoctakingFilterRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface StocktakingService {
     StocktakingReponse create(CreateStocktakingRequest request, HttpServletRequest requestHttp);

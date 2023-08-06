@@ -14,7 +14,7 @@ import com.hust.coffeeshop.services.StocktakingService;
 import com.hust.coffeeshop.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/api/stocktaking")

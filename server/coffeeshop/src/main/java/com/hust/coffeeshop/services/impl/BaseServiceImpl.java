@@ -6,7 +6,7 @@ import com.hust.coffeeshop.models.repository.UserRepository;
 import com.hust.coffeeshop.services.BaseService;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class BaseServiceImpl implements BaseService {

@@ -5,6 +5,7 @@ import com.hust.coffeeshop.models.entity.User;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.exception.ErrorMessage;
 import com.hust.coffeeshop.models.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.val;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -6,7 +6,7 @@ import com.hust.coffeeshop.models.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 

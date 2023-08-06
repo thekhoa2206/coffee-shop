@@ -2,10 +2,11 @@ package com.hust.coffeeshop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 import java.io.File;
 import java.util.Date;
-
+@EnableDiscoveryClient
 @SpringBootApplication
 public class CoffeeshopApplication {
 
