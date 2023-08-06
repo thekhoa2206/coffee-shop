@@ -17,6 +17,7 @@ export const getAxiosConfig = (): AxiosRequestConfig => {
       },
       headers: {
         "Authorization": jwt ? jwt : "",
+        "Access-Control-Allow-Origin": "http://localhost:8888",
       },
     };
   };

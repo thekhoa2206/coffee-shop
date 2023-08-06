@@ -319,16 +319,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    //Hàm get đơn hàng bằng Id
-    @Override
-    public OrderResponse getById(int id) {
-        if (id == 0) throw new ErrorException("Không có id đơn hàng");
-        var order = orderRepository.findById(id);
-        if (!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
-        var orderResponse = mapperOrderResponse(order.get());
-
-        return orderResponse;
-    }
 
     //Hàm Thanh toán cho đơn hàng
     @Override
@@ -623,76 +613,6 @@ public class OrderServiceImpl implements OrderService {
         }
         return orderResponse;
     }
-
-    //Hàm in đơn hàng
-    @Override
-    public OrderPrintForm getPrintForm(PrintOrderRequest printOrder) throws IOException, TemplateException {
-        String htmlContent = null;
-        if (printOrder.getOrderId() != 0) {
-            val printSample = PrintSample.CONTENT_HTML;
-            val order = orderRepository.findById(printOrder.getOrderId());
-            if (order != null && printSample != null) {
-                val orderPrintModel = mapperOrderPrintModel(order.get());
-                orderPrintModel.setForPrintForm();
-                htmlContent = PrintUtils.process(printSample, orderPrintModel, PrintVariableMap.ORDER);
-            }
-        }
-        return new OrderPrintForm(printOrder.getOrderId(), htmlContent);
-    }
-
-    //Hàm map dữ liệu từ order => orderModel để in đơn hàng
-    private OrderPrintModel mapperOrderPrintModel(Order order) {
-        OrderPrintModel model = new OrderPrintModel();
-        model.setCode(order.getCode());
-        model.setCreatedOn(order.getCreatedOn());
-        model.setCreatedOn(order.getModifiedOn());
-        model.setDiscountTotal(order.getDiscountTotal());
-        model.setTotal(order.getTotal());
-        model.setNote(order.getNote());
-        model.setPaymentStatus(order.getPaymentStatus());
-        model.setStatus(order.getStatus());
-        var customer = customerService.getById(order.getCustomerId());
-        if (customer != null) {
-            OrderPrintModel.CustomerPrintModel customerPrintModel = new OrderPrintModel.CustomerPrintModel();
-            customerPrintModel.setId(customer.getId());
-            customerPrintModel.setName(customer.getName());
-            customerPrintModel.setPhone(customer.getPhoneNumber());
-            model.setCustomer(customerPrintModel);
-        }
-        var lineItems = orderItemRepository.findOrderItemByOrderId(order.getId());
-        if (lineItems != null) {
-            List<OrderPrintModel.OrderItemPrintModel> itemModels = new ArrayList<>();
-            for (var lineItem : lineItems) {
-                OrderPrintModel.OrderItemPrintModel itemModel = new OrderPrintModel.OrderItemPrintModel();
-                itemModel.setId(lineItem.getId());
-                itemModel.setLineAmount(lineItem.getPrice().multiply(BigDecimal.valueOf(lineItem.getQuantity())));
-                itemModel.setCombo(lineItem.isCombo());
-                itemModel.setProductId(lineItem.getProductId());
-                itemModel.setQuantity(lineItem.getQuantity());
-                itemModel.setPrice(lineItem.getPrice());
-                itemModel.setStatus(lineItem.getStatus());
-                itemModel.setName(lineItem.getName());
-                if(itemModel.isCombo()){
-                    List<OrderPrintModel.OrderVariantComboPrintModel> variantModels = new ArrayList<>();
-                    var itemCombos = orderItemComboRepository.findOrderItemComboByOrderItemId(itemModel.getId());
-                    for (var itemCombo: itemCombos) {
-                        OrderPrintModel.OrderVariantComboPrintModel variantModel = new OrderPrintModel.OrderVariantComboPrintModel();
-                        variantModel.setId(itemCombo.getId());
-                        variantModel.setPrice(itemCombo.getPrice());
-                        variantModel.setName(itemCombo.getName());
-                        variantModel.setQuantity(itemCombo.getQuantity());
-                        variantModels.add(variantModel);
-                    }
-                    itemModel.setItemCombos(variantModels);
-                }
-                itemModels.add(itemModel);
-            }
-            model.setLineItems(itemModels);
-        }
-        model.setForPrintForm();
-        return model;
-    }
-
     //Hàm save and log inventory
     private void saveinventory(OrderResponse order,int status) {
         if(order.getOrderItemResponses().size()>0){

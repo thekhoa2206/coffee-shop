@@ -14,13 +14,11 @@ public interface OrderService {
     //hàm create order
     OrderResponse create(OrderRequest orderRequest);
 
-    OrderResponse getById(int id);
+//    OrderResponse getById(int id);
 
     OrderResponse addPayment(int id);
 
     OrderResponse update(OrderRequest orderRequest, int id);
 
     OrderResponse updateStatus(int id, int status);
-
-    OrderPrintForm getPrintForm(PrintOrderRequest printOrder) throws IOException, TemplateException;
 }

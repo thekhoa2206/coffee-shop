@@ -19,20 +19,20 @@ public class OrderController extends BaseException {
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
-    @GetMapping
-    public PagingListResponse<OrderResponse> filter(OrderFilterRequest filter) throws ParseException {
-        return orderService.filter(filter);
-    }
+//    @GetMapping
+//    public PagingListResponse<OrderResponse> filter(OrderFilterRequest filter) throws ParseException {
+//        return orderService.filter(filter);
+//    }
 
     @PostMapping
     public OrderResponse create(@RequestBody OrderRequest request){
         return orderService.create(request);
     }
 
-    @GetMapping(value = "/{id}")
-    public OrderResponse getById(@PathVariable("id") int id){
-        return orderService.getById(id);
-    }
+//    @GetMapping(value = "/{id}")
+//    public OrderResponse getById(@PathVariable("id") int id){
+//        return orderService.getById(id);
+//    }
 
     @PutMapping(value = "/{id}/payment")
     public OrderResponse addPayment(@PathVariable("id") int id){
@@ -50,8 +50,8 @@ public class OrderController extends BaseException {
     }
 
 
-    @GetMapping(value = "/print_forms")
-    public OrderPrintForm printForm(PrintOrderRequest input) throws TemplateException, IOException {
-        return orderService.getPrintForm(input);
-    }
+//    @GetMapping(value = "/print_forms")
+//    public OrderPrintForm printForm(PrintOrderRequest input) throws TemplateException, IOException {
+//        return orderService.getPrintForm(input);
+//    }
 }

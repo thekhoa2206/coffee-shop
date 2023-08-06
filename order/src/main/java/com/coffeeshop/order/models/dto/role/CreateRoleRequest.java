@@ -1,0 +1,11 @@
+package com.coffeeshop.order.models.dto.role;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
+public class CreateRoleRequest {
+    private String name;
+    private String scopes;
+}
