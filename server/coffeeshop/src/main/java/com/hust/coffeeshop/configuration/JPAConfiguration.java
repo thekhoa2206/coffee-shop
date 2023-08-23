@@ -37,9 +37,9 @@ public class JPAConfiguration {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
         dataSource.setDriverClassName(driverClass);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
-        dataSource.setUrl(url);
+        dataSource.setUsername("website3_root");
+        dataSource.setPassword("khoa123456@");
+        dataSource.setUrl("jdbc:mysql://103.200.23.98:3306/website3_coffee-shop?createDatabaseIfNotExist=false");
 
         return dataSource;
     }

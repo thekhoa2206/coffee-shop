@@ -13,14 +13,14 @@ services:
       coffee-net:
     restart: on-failure
 
-#  order-service:
-#    container_name: order-service
-#    build:
-#      context: ./order/
-#      dockerfile: Dockerfile
-#    networks:
-#      coffee-net:
-#    restart: on-failure
+  order-service:
+    container_name: order-service
+    build:
+      context: ./order/
+      dockerfile: Dockerfile
+    networks:
+      coffee-net:
+    restart: on-failure
 
 
   gateway-service:
