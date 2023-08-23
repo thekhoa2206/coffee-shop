@@ -1,18 +1,15 @@
-
-FROM maven:3.6.0-jdk-11-slim AS build
+FROM maven:3.8.3-openjdk-17 AS build
 COPY src /home/app/src
 COPY pom.xml /home/app
 RUN mvn -f /home/app/pom.xml clean package
 
 
-FROM eclipse-temurin:11
+FROM openjdk:17-oracle
 
-LABEL mentainer="Coffee-shop"
+LABEL mentainer="core-service"
 
 WORKDIR /app
 
-COPY --from=build /home/app/target/coffeeshop-0.0.1-SNAPSHOT.jar /app/coffeeshop.jar
+COPY --from=build /home/app/target/core-service.jar /app/core-service.jar
 
-ENTRYPOINT ["java", "-jar", "coffeeshop.jar"]
-
-#Build java mvn clean package
+ENTRYPOINT ["java", "-jar", "core-service.jar"]

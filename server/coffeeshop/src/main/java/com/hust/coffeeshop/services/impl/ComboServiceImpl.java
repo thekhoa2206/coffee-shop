@@ -294,4 +294,9 @@ public class ComboServiceImpl implements ComboService {
             }
         }
     }
+
+    @Override
+    public List<ComboItem> getComboItemByComboIds(List<Integer> comboIds){
+        return comboItemRepository.findComboItemByComboIds(comboIds);
+    }
 }

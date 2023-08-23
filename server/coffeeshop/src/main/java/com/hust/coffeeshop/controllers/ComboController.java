@@ -1,15 +1,19 @@
 package com.hust.coffeeshop.controllers;
 
 import com.hust.coffeeshop.models.dto.PagingListResponse;
+import com.hust.coffeeshop.models.dto.combo.ComboFilter;
 import com.hust.coffeeshop.models.dto.combo.request.CreateComboRequest;
 import com.hust.coffeeshop.models.dto.combo.response.ComboRespone;
 import com.hust.coffeeshop.models.dto.item.request.ItemRequest;
 import com.hust.coffeeshop.models.dto.item.response.ItemRepsone;
+import com.hust.coffeeshop.models.entity.Combo;
+import com.hust.coffeeshop.models.entity.ComboItem;
 import com.hust.coffeeshop.services.ComboService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/combo")
@@ -43,5 +47,8 @@ public class ComboController {
     public void delete(@PathVariable("id") int id){
         comboService.delete(id);
     }
-
+    @GetMapping("combo_item")
+    public List<ComboItem> getComboItemByComboIds(ComboFilter filter){
+       return  comboService.getComboItemByComboIds(filter.getIds());
+    }
 }

@@ -3,11 +3,13 @@ package com.hust.coffeeshop;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.kafka.annotation.EnableKafka;
 
 import java.io.File;
 import java.util.Date;
 @EnableDiscoveryClient
 @SpringBootApplication
+@EnableKafka
 public class CoffeeshopApplication {
 
 	public static void main(String[] args) {

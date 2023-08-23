@@ -1,28 +1,58 @@
-version: "3.8"
+version: "3.3"
 
 services:
-  mysqldb:
-    container_name: mysqldb
-    image: mysql
-    ports:
-      - "8084:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: coffee-shop
-    networks:
-      springboot-mysql-net:
 
-  server:
-    container_name: server
+  eureka-server:
+    container_name: eureka-server
     build:
-      context: ./server/coffeeshop/
+      context: ./server-eureka/
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      coffee-net:
+    restart: on-failure
+
+#  order-service:
+#    container_name: order-service
+#    build:
+#      context: ./order/
+#      dockerfile: Dockerfile
+#    networks:
+#      coffee-net:
+#    restart: on-failure
+
+
+  gateway-service:
+    container_name: gateway-service
+    build:
+      context: ./gatewayservice/
       dockerfile: Dockerfile
     ports:
       - "8888:8888"
-    depends_on:
-      - mysqldb
     networks:
-      springboot-mysql-net:
+      coffee-net:
+    restart: on-failure
+
+  config-server:
+    container_name: config-server
+    build:
+      context: ./config-server/
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+    networks:
+      coffee-net:
+    restart: on-failure
+
+
+  core-service:
+    container_name: core-service
+    build:
+      context: ./server/coffeeshop/
+      dockerfile: Dockerfile
+    networks:
+      coffee-net:
     restart: on-failure
 
   client:
@@ -32,12 +62,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    depends_on:
-      - mysqldb
     networks:
-      springboot-mysql-net:
+      coffee-net:
     restart: on-failure
+
 networks:
-  springboot-mysql-net:
+  coffee-net:
 
 

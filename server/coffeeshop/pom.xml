@@ -114,6 +114,13 @@
 			<artifactId>jaxb-api</artifactId>
 			<version>2.1</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka -->
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+			<version>3.0.9</version>
+		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>org.springframework.boot</groupId>-->
 <!--			<artifactId>spring-boot-starter-data-redis</artifactId>-->
@@ -150,6 +157,7 @@
 	</dependencyManagement>
 
 	<build>
+		<finalName>core-service</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

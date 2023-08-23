@@ -1,16 +1,25 @@
 package com.coffeeshop.order.services.impl;
 
+import com.coffeeshop.order.clients.ComboClient;
 import com.coffeeshop.order.clients.CustomerClient;
+import com.coffeeshop.order.clients.VariantClient;
 import com.coffeeshop.order.common.*;
 import com.coffeeshop.order.models.dto.PagingListResponse;
+import com.coffeeshop.order.models.dto.combo.ComboFilter;
 import com.coffeeshop.order.models.dto.order.*;
-import com.coffeeshop.order.models.entity.Order;
+import com.coffeeshop.order.models.dto.variant.VariantFilterRequest;
+import com.coffeeshop.order.models.entity.*;
 import com.coffeeshop.order.models.exception.ErrorException;
 import com.coffeeshop.order.models.repository.*;
 import com.coffeeshop.order.services.OrderService;
+import com.google.gson.Gson;
 import freemarker.template.TemplateException;
+import jakarta.transaction.Transactional;
 import lombok.val;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,13 +41,24 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final OrderItemComboRepository orderItemComboRepository;
     private final CustomerClient customerClient;
-    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, OrderItemComboRepository orderItemComboRepository, CustomerClient customerClient) {
+    private final VariantClient variantClient;
+
+    private final ComboClient comboClient;
+//    @Autowired
+//    private  CustomKafkaTemplate customKafkaTemplate;
+
+    private final OrderLogRepository orderLogRepository;
+    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, OrderItemComboRepository orderItemComboRepository, CustomerClient customerClient, VariantClient variantClient, ComboClient comboClient, OrderLogRepository orderLogRepository) {
         this.orderRepository = orderRepository;
         this.filterRepository = filterRepository;
         this.mapper = mapper;
         this.orderItemRepository = orderItemRepository;
         this.orderItemComboRepository = orderItemComboRepository;
         this.customerClient = customerClient;
+        this.variantClient = variantClient;
+        this.comboClient = comboClient;
+//        this.customKafkaTemplate = customKafkaTemplate;
+        this.orderLogRepository = orderLogRepository;
     }
 
     @Override
@@ -273,4 +293,139 @@ public class OrderServiceImpl implements OrderService {
 
         return orderResponse;
     }
+
+    //Hàm check có thể bán trừ kho
+    private void checkAvailable(OrderItemRequest request) {
+        if (request.isCombo()) {
+            var combo = comboClient.getById(request.getProductId());
+            if (combo == null) throw new ErrorException("Không tìm thấy combo!");
+            ComboFilter filter = new ComboFilter();
+            filter.setIds(new ArrayList<>(Arrays.asList(combo.getId())));
+            var comboItems = comboClient.getComboItemByComboIds(filter);
+            if (comboItems != null || comboItems.size() > 0) {
+                var variantIds = comboItems.stream().map(ComboItem::getVariantId).collect(Collectors.toList());
+                if (variantIds != null && variantIds.size() > 0) {
+                    setIngredient(variantIds, request);
+                } else {
+                    throw new ErrorException("Không tìm thấy phiên bản mặt hàng!");
+                }
+            } else {
+                throw new ErrorException("Không tìm thấy combo!");
+            }
+        } else {
+            var variantId = request.getProductId();
+            List<Integer> variantIds = new ArrayList<>();
+            variantIds.add(variantId);
+            setIngredient(variantIds, request);
+        }
+    }
+    //Hàm tạo đơn hàng
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public OrderResponse create(OrderRequest request) {
+        Order order = new Order();
+        if (request.getOrderItemRequest() == null || request.getOrderItemRequest().size() == 0)
+            throw new ErrorException("Đơn hàng phải có ít nhất 1 sp");
+
+        if (request.getCustomerId() == 0)
+            throw new ErrorException("Khách hàng không được để trống");
+
+
+        var lastId = orderRepository.getLastOrderId();
+        if (request.getCode() == null)
+            order.setCode("DON" + (lastId + 1));
+        else order.setCode(request.getCode());
+        order.setStatus(CommonStatus.OrderStatus.DRAFT);
+        order.setCreatedOn();
+        order.setModifiedOn();
+        order.setCreatedBy("admin");
+        order.setModifiedBy("admin");
+        order.setCustomerId(request.getCustomerId());
+        order.setNote(request.getNote());
+        order.setDiscountTotal(request.getDiscountTotal() != null ? request.getDiscountTotal() : BigDecimal.ZERO);
+        order.setTotal(request.getTotal());
+        order.setPaymentStatus(CommonStatus.PaymentStatus.UNPAID);
+        order = orderRepository.save(order);
+        for (var item : request.getOrderItemRequest()) {
+            var lineItem = mapper.map(item, OrderItem.class);
+            lineItem.setOrderId(order.getId());
+            checkAvailable(item);
+            lineItem.setCreatedOn();
+            lineItem.setModifiedOn();
+            lineItem.setCreatedBy("admin");
+            lineItem.setModifiedBy("admin");
+            lineItem.setStatus(CommonStatus.OrderItemStatus.ACTIVE);
+            lineItem = orderItemRepository.save(lineItem);
+            if(lineItem.isCombo()){
+                var combo = comboClient.getById(lineItem.getProductId());
+                if (combo == null) throw new ErrorException("Không tìm thấy combo!");
+                ComboFilter filter = new ComboFilter();
+                filter.setIds(new ArrayList<>(Arrays.asList(combo.getId())));
+                var comboItems = comboClient.getComboItemByComboIds(filter);
+                if (comboItems != null || comboItems.size() > 0) {
+                    var variantIds = comboItems.stream().map(ComboItem::getVariantId).collect(Collectors.toList());
+                    var variantFilter = new VariantFilterRequest();
+                    variantFilter.setIds(variantIds);
+                    var variants = variantClient.filter(variantFilter);
+                    for (var comboItem : comboItems) {
+                        var variant = variants.getData().stream().filter(v -> v.getId() == comboItem.getVariantId()).collect(Collectors.toList()).stream().findFirst().orElse(null);
+                        OrderItemCombo orderItemCombo = new OrderItemCombo();
+                        orderItemCombo.setOrderId(order.getId());
+                        orderItemCombo.setOrderItemId(lineItem.getId());
+                        orderItemCombo.setName(variant.getName());
+                        orderItemCombo.setPrice(variant.getPrice());
+                        orderItemCombo.setQuantity(comboItem.getQuantity() * lineItem.getQuantity());
+                        orderItemCombo.setStatus(CommonStatus.Status.ACTIVE);
+                        orderItemCombo.setCreatedOn();
+                        orderItemCombo.setModifiedOn();
+                        orderItemCombo.setCreatedBy("admin");
+                        orderItemCombo.setModifiedBy("admin");
+                        orderItemCombo.setVariantId(variant.getId());
+                        orderItemCombo.setComboItemId(comboItem.getId());
+                        orderItemComboRepository.save(orderItemCombo);
+                    }
+                }
+            }
+        }
+        Gson gson = new Gson();
+        var orderLog = new OrderLog();
+        orderLog.setData(gson.toJson(order));
+        orderLog.setModifiedOn();
+        orderLog.setCreatedOn();
+        orderLog.setAction(Action.CREATE_ORDER.name());
+        orderLog.setActor(1);
+        orderLogRepository.save(orderLog);
+//        customKafkaTemplate.send("order", "create_order", gson.toJson(order));
+        var orderResponse = mapperOrderResponse(order);
+        //saveinventory(orderResponse, CommonStatus.Status.ACTIVE);
+        return orderResponse;
+    }
+
+    private void setIngredient(List<Integer> variantIds, OrderItemRequest request) {
+//        var itemIngredients = itemIngredientRepository.findItemIngredientByVariantIds(variantIds);
+//        var itemIngredientIds = itemIngredients.stream().map(ItemIngredient::getIngredientId).collect(Collectors.toList());
+//        var ingredients = ingredientRepository.findByIds(itemIngredientIds);
+//        if (ingredients != null && ingredients.size() > 0) {
+//            for (var ingredient : ingredients) {
+//                var itemIngredient = itemIngredients
+//                        .stream()
+//                        .filter(i -> i.getIngredientId() == ingredient.getId())
+//                        .collect(Collectors.toList())
+//                        .stream()
+//                        .findFirst()
+//                        .orElse(null);
+//                if (itemIngredient != null) {
+//                    //số lượng, khối lượng bán đi
+//                    var amount = request.getQuantity() * itemIngredient.getAmountConsume();
+//                    if (ingredient.getQuantity() - amount < 0)
+//                        throw new ErrorException("Nguyên liệu không đủ số lượng, khối lượng có thể bán!");
+//                    ingredient.setQuantity(ingredient.getQuantity() - amount);
+//                    ingredientRepository.save(ingredient);
+//                } else {
+//                    throw new ErrorException("Không tìm thấy phiên bản mặt hàng!");
+//                }
+//            }
+//        }
+    }
+
 }

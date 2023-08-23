@@ -1,10 +1,7 @@
 package com.coffeeshop.order.controllers;
 
 import com.coffeeshop.order.models.dto.PagingListResponse;
-import com.coffeeshop.order.models.dto.order.OrderFilterRequest;
-import com.coffeeshop.order.models.dto.order.OrderPrintForm;
-import com.coffeeshop.order.models.dto.order.OrderResponse;
-import com.coffeeshop.order.models.dto.order.PrintOrderRequest;
+import com.coffeeshop.order.models.dto.order.*;
 import com.coffeeshop.order.models.exception.BaseException;
 import com.coffeeshop.order.services.OrderService;
 import freemarker.template.TemplateException;
@@ -42,5 +39,10 @@ public class OrderController extends BaseException {
     @GetMapping(value = "/{id}")
     public OrderResponse getById(@PathVariable("id") int id){
         return orderService.getById(id);
+    }
+
+    @PostMapping
+    public OrderResponse create(@RequestBody OrderRequest request){
+        return orderService.create(request);
     }
 }

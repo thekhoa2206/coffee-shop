@@ -1,10 +1,7 @@
 package com.coffeeshop.order.services;
 
 import com.coffeeshop.order.models.dto.PagingListResponse;
-import com.coffeeshop.order.models.dto.order.OrderFilterRequest;
-import com.coffeeshop.order.models.dto.order.OrderPrintForm;
-import com.coffeeshop.order.models.dto.order.OrderResponse;
-import com.coffeeshop.order.models.dto.order.PrintOrderRequest;
+import com.coffeeshop.order.models.dto.order.*;
 import freemarker.template.TemplateException;
 
 import java.io.IOException;
@@ -19,4 +16,5 @@ public interface OrderService {
     OrderResponse updateStatus(int id, int status);
 
     OrderResponse getById(int id);
+    OrderResponse create(OrderRequest orderRequest);
 }
