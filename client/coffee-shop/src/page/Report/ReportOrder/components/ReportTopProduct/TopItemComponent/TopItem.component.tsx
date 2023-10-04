@@ -15,7 +15,7 @@ const TopItem = (props: TopItemProps) => {
       {item ? (
         <Fragment>
           <Box className={classes.boxVariantName}>
-            <Tooltip title={item.variant?.name} placement="top-start" arrow leaveDelay={1}>
+            <Tooltip title={item.variant?.name || ""} placement="top-start" arrow leaveDelay={1}>
               <Typography variant="subtitle1" noWrap style={{ maxWidth: "100%" }} color="textPrimary">
                 {item.variant?.name}
               </Typography>

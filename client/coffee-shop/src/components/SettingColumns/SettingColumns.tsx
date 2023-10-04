@@ -226,7 +226,7 @@ const SettingColumns = (props: SettingColumnsProps) => {
                             />
                           </FormGroup>
                           <Tooltip
-                            title={t("component:settingColumn.moveMouse")}
+                            title={t("component:settingColumn.moveMouse") || ""}
                             placement="left-start"
                             arrow
                             classes={{ tooltip: classes.dragableTooltip }}

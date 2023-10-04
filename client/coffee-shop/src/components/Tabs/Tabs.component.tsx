@@ -5,7 +5,7 @@ import { TabsProps } from "./Tabs.types";
 
 
 const Tabs = withStyles(styles)((props: TabsProps) => {
-  return <MuiTabs indicatorColor="primary" textColor="primary" variant="scrollable" {...props} />;
+  return <></>;
 });
 
 export default Tabs;

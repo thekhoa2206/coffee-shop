@@ -101,7 +101,7 @@ const FilterItemDragDrop = (props: FilterItemProps) => {
                 </IconButton>
               ) : sortMode && isDragDropItem ? (
                 <Tooltip
-                  title={t("component:settingColumn.moveMouse")}
+                  title={t("component:settingColumn.moveMouse") || ""} 
                   placement="left-start"
                   arrow
                   classes={{ tooltip: classes.dragableTooltip }}

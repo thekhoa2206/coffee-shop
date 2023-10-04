@@ -45,7 +45,7 @@ function SapoGridHeaderV2(props: SapoGridHeaderProps) {
           >
             <Box display="flex" alignItems="center">
               {settingable && (
-                <Tooltip title={t("Điều chỉnh cột hiển thị")} placement="top-start" arrow={true}>
+                <Tooltip title={t("Điều chỉnh cột hiển thị") || ""} placement="top-start" arrow={true}>
                   <IconButton component="span" onClick={() => toogleSettings && toogleSettings()} size="medium">
                     <SettingIcon style={{ color: colorInk.base40 }} />
                   </IconButton>

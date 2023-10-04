@@ -155,7 +155,7 @@ const Ingredients = (props: IngredientProps & PropsFromRedux) => {
             className="warning"
             variant="outlined"
             size="medium"
-            color="inherit"
+            
             label={IngredientsStatus.getName(test)}
           />
         );
