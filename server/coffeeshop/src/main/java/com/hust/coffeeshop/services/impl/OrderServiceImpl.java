@@ -1,6 +1,5 @@
 package com.hust.coffeeshop.services.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hust.coffeeshop.common.*;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientFilterRequest;
@@ -27,7 +26,6 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,8 +45,10 @@ public class OrderServiceImpl implements OrderService {
     private final IngredientService ingredientService;
     private final OrderItemComboRepository orderItemComboRepository;
     private final InventoryLogRepository inventoryLogRepository;
+    private final TableOrderRepository tableOrderRepository;
+    private final TableRepository tableRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService, OrderItemComboRepository orderItemComboRepository, InventoryLogRepository inventoryLogRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService, OrderItemComboRepository orderItemComboRepository, InventoryLogRepository inventoryLogRepository, TableOrderRepository tableOrderRepository, TableRepository tableRepository) {
         this.orderRepository = orderRepository;
         this.filterRepository = filterRepository;
         this.mapper = mapper;
@@ -63,6 +63,8 @@ public class OrderServiceImpl implements OrderService {
         this.ingredientService = ingredientService;
         this.orderItemComboRepository = orderItemComboRepository;
         this.inventoryLogRepository = inventoryLogRepository;
+        this.tableOrderRepository = tableOrderRepository;
+        this.tableRepository = tableRepository;
     }
 
     /*
@@ -223,6 +225,24 @@ public class OrderServiceImpl implements OrderService {
         order.setTotal(request.getTotal());
         order.setPaymentStatus(CommonStatus.PaymentStatus.UNPAID);
         order = orderRepository.save(order);
+        if(request.getTableIds().size()>0){
+            for(val tableId : request.getTableIds()){
+                TableOrder tableOrder = new TableOrder();
+                tableOrder.setOrder_Id(order.getId());
+                tableOrder.setTable_id(tableId);
+                tableOrder.setStatus(CommonStatus.Status.ACTIVE);
+                tableOrder.setCreatedOn(CommonCode.getTimestamp());
+                tableOrder.setModifiedOn(0);
+                val table =  tableRepository.findById(tableId);
+                if (!table.isPresent() || table == null ||table.get().getStatus() ==1) throw new ErrorException("Không tìm thấy bàn trống!");
+                    table.get().setStatus(CommonStatus.Status.ACTIVE);
+                try {
+                     tableOrderRepository.save(tableOrder);
+                } catch (Exception e) {
+                    throw new ErrorException("Tạo đơn hàng vào bàn thất bại");
+                }
+            }
+        }
         for (var item : request.getOrderItemRequest()) {
             var lineItem = mapper.map(item, OrderItem.class);
             lineItem.setOrderId(order.getId());

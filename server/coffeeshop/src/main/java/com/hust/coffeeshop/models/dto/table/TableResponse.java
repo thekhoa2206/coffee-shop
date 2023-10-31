@@ -9,4 +9,5 @@ import lombok.Setter;
 public class TableResponse extends BaseResponse {
     private String name;
     private int status;
+    private int orderId;
 }

@@ -3,16 +3,13 @@ package com.hust.coffeeshop.services.impl;
 import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.common.CommonStatus;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
-import com.hust.coffeeshop.models.dto.stockunit.StockUnitResponse;
+import com.hust.coffeeshop.models.dto.order.OrderResponse;
 import com.hust.coffeeshop.models.dto.table.TableFilterRequest;
 import com.hust.coffeeshop.models.dto.table.TableRequest;
 import com.hust.coffeeshop.models.dto.table.TableResponse;
 import com.hust.coffeeshop.models.entity.Table;
 import com.hust.coffeeshop.models.exception.ErrorException;
-import com.hust.coffeeshop.models.repository.Filter;
-import com.hust.coffeeshop.models.repository.FilterRepository;
-import com.hust.coffeeshop.models.repository.QueryOperator;
-import com.hust.coffeeshop.models.repository.TableRepository;
+import com.hust.coffeeshop.models.repository.*;
 import com.hust.coffeeshop.services.TableService;
 import lombok.val;
 import org.modelmapper.ModelMapper;
@@ -32,11 +29,15 @@ public class TableServiceImpl implements TableService {
     private final ModelMapper mapper;
     private final TableRepository tableRepository;
     private final FilterRepository filterRepository;
+    private final TableOrderRepository tableOrderRepository;
+    private final OrderRepository orderRepository;
 
-    public TableServiceImpl(ModelMapper mapper, TableRepository tableRepository, FilterRepository filterRepository) {
+    public TableServiceImpl(ModelMapper mapper, TableRepository tableRepository, FilterRepository filterRepository, TableOrderRepository tableOrderRepository, OrderRepository orderRepository) {
         this.mapper = mapper;
         this.tableRepository = tableRepository;
         this.filterRepository = filterRepository;
+        this.tableOrderRepository = tableOrderRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Override
@@ -59,14 +60,15 @@ public class TableServiceImpl implements TableService {
     @Override
     public TableResponse getbyid(int id) {
         val table = tableRepository.findById(id);
-        if(!table.isPresent()) throw  new ErrorException("không tìm kiếm thấy bàn");
-
         TableResponse tableResponse = null;
-
         tableResponse = mapper.map(table.get(), TableResponse.class);
-
+        if(!table.isPresent()) throw  new ErrorException("không tìm kiếm thấy bàn");
+        if(table.get().getStatus() ==1) {
+            val tableOrders = tableOrderRepository.findByTableId(id);
+                if(tableOrders == null) throw  new ErrorException("không tìm kiếm thấy đơn trên cùng bàn");
+                tableResponse.setOrderId(tableOrders.getOrder_Id());
+            }
         return tableResponse;
-
     }
     @Override
     public TableResponse update(TableRequest request,int id) {
