@@ -3,6 +3,7 @@ package com.hust.coffeeshop.services.impl;
 import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.common.CommonStatus;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
+import com.hust.coffeeshop.models.dto.stockunit.StockUnitResponse;
 import com.hust.coffeeshop.models.dto.table.TableFilterRequest;
 import com.hust.coffeeshop.models.dto.table.TableRequest;
 import com.hust.coffeeshop.models.dto.table.TableResponse;
@@ -52,6 +53,18 @@ public class TableServiceImpl implements TableService {
         } catch (Exception e) {
             throw new ErrorException("Tạo khách hàng thất bại");
         }
+        return tableResponse;
+
+    }
+    @Override
+    public TableResponse getbyid(int id) {
+        val table = tableRepository.findById(id);
+        if(!table.isPresent()) throw  new ErrorException("không tìm kiếm thấy bàn");
+
+        TableResponse tableResponse = null;
+
+        tableResponse = mapper.map(table.get(), TableResponse.class);
+
         return tableResponse;
 
     }
@@ -126,7 +139,11 @@ public class TableServiceImpl implements TableService {
             results = tableRepository.findAll(filterRepository.getSpecificationFromFilters(filters), pageable);
         else results = tableRepository.findAll(pageable);
         List<TableResponse> tableResponses = new ArrayList<>();
-
+        for (val tables : results.getContent()
+        ) {
+            val tableResponse = mapper.map(tables, TableResponse.class);
+            tableResponses.add(tableResponse);
+        }
 
         return new PagingListResponse<>(
                 tableResponses,

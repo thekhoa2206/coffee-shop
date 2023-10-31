@@ -25,7 +25,10 @@ public class TableController {
     public PagingListResponse<TableResponse> filter(TableFilterRequest filter){
         return tableService.filter(filter);
     }
-
+    @GetMapping("/{id}")
+    public TableResponse getbyId(@PathVariable("id") int id){
+        return tableService.getbyid( id);
+    }
     @PostMapping
     public TableResponse create(@RequestBody TableRequest request){
         return tableService.create(request);
