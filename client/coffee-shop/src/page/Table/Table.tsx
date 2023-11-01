@@ -1,6 +1,5 @@
 import { Box, Typography, withStyles } from "@material-ui/core";
 import { AddCircleOutline } from "@material-ui/icons";
-import Button from "components/Button";
 import Chip from "components/Chip/Chip.component";
 import LoadingAuth from "components/Loading/LoadingAuth";
 import NoResultsComponent from "components/NoResults/NoResultsComponent";
@@ -30,12 +29,13 @@ import {
   UserQuickFilterOptions,
   getUserQuickFilterLabel,
 } from "./Table.constant";
-
+import Paper from '@mui/material/Paper';
 import { UserFilterRequest } from "services/UsersService";
 import UsersService from "services/UsersService/UsersService";
 import styles from "./Table.styles";
 import { UserProps } from "./Table.types";
-
+import TableService, { TableFilterRequest } from "services/TableService";
+import {Button, Frame, Modal, TextContainer} from '@shopify/polaris';
 const User = (props: UserProps & PropsFromRedux) => {
   const { classes, authState} = props;
   const location = useLocation();
@@ -77,11 +77,11 @@ const User = (props: UserProps & PropsFromRedux) => {
     });
   };
   useEffect(() => {
-    document.title = "Danh sách nguyên liệu";
+    document.title = "Danh sách bàn";
   }, []);
 
-  const initData = async (filters: UserFilterRequest) => {
-    let res = await UsersService.filter(filters);
+  const initData = async (filters: TableFilterRequest) => {
+    let res = await TableService.filter(filters);
     if (res.data)
       setData({
         data:
@@ -95,9 +95,7 @@ const User = (props: UserProps & PropsFromRedux) => {
               modifiedOn: user.modifiedOn,
               name: user.name,
               status: user.status,
-              userName:user.username,
-              roleName:user.role,
-              passWord:user.passWord,
+              tableId: user.tableId
             };
           }) || [],
         total: res.data.metadata?.total || 0,
@@ -156,29 +154,28 @@ const User = (props: UserProps & PropsFromRedux) => {
 
   return (
     <>
-      <Box className={classes.container}>
+      <Box className={classes.container} style={{height:"100px"}}>
         <Box className={classes.header}>
           <Box className={classes.headerItem} display="flex">
             {""}
           </Box>
           <Box className={classes.headerItem}>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddCircleOutline />}
-              onClick={() => {
-                history.push("/admin/users/create");
-              }}
+            {/* <Button
+            //  variant="primary"
+            //   startIcon={<AddCircleOutline />}
+            //   onClick={() => {
+            //     history.push("/admin/users/create");
+            //   }}
             >
               {"Thêm mới nhân viên"}
-            </Button>
+            </Button> */}
           </Box>
         </Box>
         <Box className={classes.listBox}>
           <Box className={classes.utilities}>
             <Box className={classes.filterAndSearchBox}>
               <SearchBox
-                placeholder={"Tìm kiếm nguyên liệu ..."}
+                placeholder={"Tìm kiếm thông tin bàn..."}
                 onSubmit={(e, value) => {
                   handleSearch(value);
                 }}
@@ -196,94 +193,12 @@ const User = (props: UserProps & PropsFromRedux) => {
             <React.Fragment>
               {data.total > 0 ? (
                 (console.log("66", data),
-                (
-                  <SapoGrid
-                    data={data}
-                    page={filters?.page}
-                    pageSize={filters?.limit}
-                    onPageChange={handlePageChange}
-                    stickyHeader
-                    tableDrillDown
-                    stickyHeaderTop={52}
-                    onRowClick={(e, data) => { history.push(`/admin/users/${data.id}/edit`)}}
-                    disablePaging={false}
-                  >
-                    <GridColumn
-                      field="stt"
-                      title={"STT"}
-                      width={80}
-                      align="center"
-                    />
-                    <GridColumn
-                      field="code"
-                      title={getUserQuickFilterLabel(
-                        UserQuickFilterOptions.CODE
-                      )}
-                      width={150}
-                      align="left"
-                    >
-                        {({ dataItem }: CellTemplateProps) => {
-                      return (
-                        <>
-                          <Typography>
-                            {"NV" + dataItem.stt}
-                          </Typography>
-                        </>
-                      );
-                    }}
-                    </GridColumn>
-                    <GridColumn
-                      field="name"
-                      title={getUserQuickFilterLabel(
-                        UserQuickFilterOptions.NAME
-                      )}
-                      width={150}
-                      align="left"
-                    />
-                                 <GridColumn
-                      field="roleName"
-                      title={getUserQuickFilterLabel(
-                        UserQuickFilterOptions.ROLE
-                      )}
-                      width={150}
-                      align="left"
-                    />
-                    <GridColumn
-                      field="createdOn"
-                      title={getUserQuickFilterLabel(
-                        UserQuickFilterOptions.CREATED_ON
-                      )}
-                      width={100}
-                      align="left"
-                    >
-                      {({ dataItem }: CellTemplateProps) => {
-                        return (
-                          <>
-                            <Typography>
-                              {formatDateUTCToLocalDateString(
-                                dataItem.createdOn,
-                                false,
-                                "DD/MM/YYYY"
-                              )}
-                            </Typography>
-                          </>
-                        );
-                      }}
-                    </GridColumn>
-                    <GridColumn
-                      field="modifedOn"
-                      title={getUserQuickFilterLabel(
-                        UserQuickFilterOptions.STATUS
-                      )}
-                      width={100}
-                      align="left"
-                    >
-                      {({ dataItem }: CellTemplateProps) => {
-                        return renderUserStatus(dataItem.status);
-                      }}
-                    </GridColumn>
-                  </SapoGrid>
-                ))
+                data.data.map((x)=>(
+                  <Paper elevation={3} >
+                  <Box>{x.name}</Box> 
+                  </Paper>
+                  ))
+                )
               ) : (
                 <NoResultsComponent
                   message={"Không tìm thấy kết quả"}

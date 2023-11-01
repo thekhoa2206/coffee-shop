@@ -1,21 +1,21 @@
 import axios, { AxiosResponse } from "axios";
 import { getAxiosConfig } from "../config";
-import { ListUserResponse, UserFilterRequest, UserRequest, UserResponse } from "./types";
+import { ListTableResponse, TableFilterRequest, TableRequest, TableResponse } from "./types";
 class UsersService {
-    static async filter(filter?: UserFilterRequest): Promise<AxiosResponse<ListUserResponse>> {
-        return axios.get(`/user`, { ...getAxiosConfig(), params: filter});
+    static async filter(filter?: TableFilterRequest): Promise<AxiosResponse<ListTableResponse>> {
+        return axios.get(`/table`, { ...getAxiosConfig(), params: filter});
     }
-    static async getById(id?: string): Promise<AxiosResponse<UserResponse>> {
-        return axios.get(`/user/${id}`, { ...getAxiosConfig()});
+    static async getById(id?: string): Promise<AxiosResponse<TableResponse>> {
+        return axios.get(`/table/${id}`, { ...getAxiosConfig()});
     }
-    static async delete(id: string): Promise<AxiosResponse<UserResponse>> {
-        return axios.delete(`/user/${id}`, { ...getAxiosConfig()});
+    static async delete(id: string): Promise<AxiosResponse<TableResponse>> {
+        return axios.delete(`/table/${id}`, { ...getAxiosConfig()});
     }
-    static async create(request: UserRequest): Promise<AxiosResponse<UserResponse>> {
-        return axios.post(`/user`,request, { ...getAxiosConfig()});
+    static async create(request: TableRequest): Promise<AxiosResponse<TableResponse>> {
+        return axios.post(`/table`,request, { ...getAxiosConfig()});
     }
-    static async update(request: UserRequest, id: string): Promise<AxiosResponse<UserResponse>> {
-        return axios.put(`/user/${id}`,request, { ...getAxiosConfig()});
+    static async update(request: TableRequest, id: string): Promise<AxiosResponse<TableResponse>> {
+        return axios.put(`/table/${id}`,request, { ...getAxiosConfig()});
     }
 }
 export default UsersService;

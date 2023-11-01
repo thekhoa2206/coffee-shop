@@ -3,24 +3,19 @@ import { IngredientResponse } from "services/IngredientsService";
 import { StockUnitResponse } from "services/StockUnitService";
 import { Metadata } from "services/types";
 
-export type Table = {
+export type TableResponse = {
     id: number;
     name: string;
-    username: string;
-    phoneNumber: string;
-    email?: string;
-    passWord:string;
     status: number;
-    role: string;
+    tableId: number;
     createdOn?: string;
     createdBy?: string;
     modifiedOn?: string;
     modifiedBy?: string;
-    scopes?: string;
 }
 
 
-export type UserFilterRequest = {
+export type TableFilterRequest = {
     ids?: number[];
     query?: string;
     page?: number;
@@ -28,17 +23,12 @@ export type UserFilterRequest = {
     statuses?: string;
 }
 
-export type ListUserResponse = {
-    data?: UserResponse[];
+export type ListTableResponse = {
+    data?: TableResponse[];
     metadata?: Metadata;
 }
 
-export type UserRequest = {
+export type TableRequest = {
     name?: string;
-    username?: string;
-    phoneNumber?: string;
-    email?: string;
-    password?:string;
-    roleId?: number;
-    confimPassWord?:number;
+    status?: number;
 }
