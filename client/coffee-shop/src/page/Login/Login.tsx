@@ -27,7 +27,8 @@ export const Login = (props: LoginProps) => {
   const handleChangePassword = (e: any) => {
     setPassword(e.target.value);
   };
-  const handleLogin = async () => {
+  const handleLogin = async (e:any) => {
+    debugger
     try {
       let res = await AccountService.login({
         username: username,
@@ -53,10 +54,18 @@ export const Login = (props: LoginProps) => {
   //         window.location.href = `admin/dashboard`
   //     }
   // })
+ const handleKeyPress = (event:any) => {
+  debugger
+    if(event.key === 'Enter'){
+      handleLogin(event);
+    }
+  }
+
   return (
-    <Box style={{ width: "100%", height: "100%" }}>
+    <Box style={{ width: "100%", height: "100%" }} >
       <Image src={background} style={{ width: "100%"}}/>
       <Popper
+      onKeyDown={handleKeyPress}
         onClose={function (
           event: React.MouseEvent<Document, MouseEvent>
         ): void {
@@ -96,6 +105,8 @@ export const Login = (props: LoginProps) => {
                 }}
                 placeholder="Mật khẩu"
                 onChange={handleChangePassword}
+                
+               
                 InputProps={{
                   endAdornment: <IconButton style={{background: colorPaper.main}} onClick={() => {setIsShow(!isShow)}}>
                     {isShow ? <EyeIcon /> : <EyeSlashIcon/>}
@@ -110,6 +121,7 @@ export const Login = (props: LoginProps) => {
                 size="large"
                 style={{ marginLeft: 180, marginTop: 40 }}
                 onClick={handleLogin}
+               
               >
                 Đăng nhập
               </Button>

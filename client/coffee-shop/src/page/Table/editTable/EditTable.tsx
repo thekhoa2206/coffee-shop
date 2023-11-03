@@ -12,7 +12,7 @@ import {
 import { CellTemplateProps } from "components/SapoGridSticky";
 import SearchBox from "components/SearchBox/SearchBox";
 import useQueryParams from "hocs/useQueryParams";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useCallback } from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import {
@@ -28,17 +28,25 @@ import QueryUtils from "utilities/QueryUtils";
 import {
   UserQuickFilterOptions,
   getUserQuickFilterLabel,
-} from "./Table.constant";
+} from "./EditTable.constant";
 import Paper from '@mui/material/Paper';
 import { UserFilterRequest } from "services/UsersService";
 import UsersService from "services/UsersService/UsersService";
-import styles from "./Table.styles";
-import { UserProps } from "./Table.types";
+import styles from "./EditTable.styles";
+import { UserProps } from "./EditTable.types";
 import TableService, { TableFilterRequest } from "services/TableService";
-import {Button, Frame, Modal, TextContainer} from '@shopify/polaris';
+import { Button, Frame, Modal, TextContainer } from '@shopify/polaris';
 import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
-const Table = (props: UserProps & PropsFromRedux) => {
-  const { classes, authState} = props;
+import {
+  IndexTable,
+  LegacyCard,
+  useIndexResourceState,
+  Text,
+  Badge,
+} from '@shopify/polaris';
+import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
+const EditTable = (props: UserProps & PropsFromRedux) => {
+  const { classes, authState } = props;
   const location = useLocation();
   const queryParams = useQueryParams();
   const [loading, setLoading] = useState<boolean>(true);
@@ -50,6 +58,9 @@ const Table = (props: UserProps & PropsFromRedux) => {
     total: 0,
   });
   const history = useHistory();
+  const [active, setActive] = useState(false);
+
+  const toggleModal =()=> {setActive(!active)};
   const getDefaultQuery = () => {
     // Không hiểu tại sao useQueryParams không dùng đk
     const currentFilter = props.history.location.search as string;
@@ -61,7 +72,8 @@ const Table = (props: UserProps & PropsFromRedux) => {
     const initFilter: UserFilterRequest = {
       page: Number(dataFromQuery["page"]) || 1,
       limit: Number(dataFromQuery["limit"]) || undefined,
-      query: dataFromQuery["query"] || undefined,    };
+      query: dataFromQuery["query"] || undefined,
+    };
     return initFilter;
   };
   const [filters, setFilters] = useState<StoctakingFilterRequest>({
@@ -104,17 +116,7 @@ const Table = (props: UserProps & PropsFromRedux) => {
     setLoading(false);
   };
 
-  const handlePageChange = (e: GridPageChangeEvent) => {
-    setLoading(true);
-    const page = e.page;
-    const newParams: Record<string, any> = {
-      ...Object.fromEntries(queryParams),
-      page: page.page,
-      limit: page.pageSize,
-    };
-    setFilters((prev) => ({ ...prev, limit: page.pageSize, page: page.page }));
-    changeQueryString(newParams);
-  };
+  
   const handleSearch = (value: any) => {
     if (!value || !value?.trim()) {
     }
@@ -126,36 +128,44 @@ const Table = (props: UserProps & PropsFromRedux) => {
     setFilters((prev) => ({ ...prev, query: value?.trim() }));
     changeQueryString(newFilters);
   };
+  const test = ()=>{
+    debugger
+    SnackbarUtils.success("Đăng nhập thành công!")
+  }
+  const rowMarkup = data.data.map((x, index) => (
+    <IndexTable.Row
+      id={x.id}
+      key={x.id}
+      position={index}
+      onClick={test}
+    >
+      <IndexTable.Cell   >
+        <Text variant="bodyMd" fontWeight="bold" as="span" tone="success"  >
+          {x.name}
+        </Text>
+      </IndexTable.Cell>
+      <IndexTable.Cell>{formatDateUTCToLocalDateString(
+        x.createdOn,
+        false,
+        "DD/MM/YYYY"
+      )}</IndexTable.Cell>
+      <IndexTable.Cell>{formatDateUTCToLocalDateString(
+        x.modifiedOn,
+        false,
+        "DD/MM/YYYY"
+      )}</IndexTable.Cell>
 
-  const renderUserStatus = (status?: number) => {
-    switch (status) {
-      case (1):
-        return (
-          <Chip
-            className="info"
-            variant="outlined"
-            size="medium"
-            label={"Đang làm việc"}
-          />
-        );
-      case (2):
-        return (
-          <Chip
-            className="warning"
-            variant="outlined"
-            size="medium"
-            label={"Nghỉ việc"}
-          />
-        );
-      default:
-        return "";
-    }
-  };
+    </IndexTable.Row>
+  ),
+  );
 
+
+  // const activator = <Button onClick={toggleModal}>Open</Button>;
 
   return (
     <>
-      <Box className={classes.container} style={{height:"100px"}}>
+
+      <Box className={classes.container} style={{ height: "100px" }}>
         <Box className={classes.header}>
           <Box className={classes.headerItem} display="flex">
             {""}
@@ -170,7 +180,7 @@ const Table = (props: UserProps & PropsFromRedux) => {
             >
               {"Thêm mới nhân viên"}
             </Button> */}
-            <Button variant="primary" tone="success" onClick={()=>{history.push("/admin/table/edit")}}>Chỉnh sửa bàn</Button>
+            <Button variant="primary" tone="success">Thêm bàn</Button>
           </Box>
         </Box>
         <Box className={classes.listBox}>
@@ -194,15 +204,17 @@ const Table = (props: UserProps & PropsFromRedux) => {
           ) : (
             <React.Fragment>
               {data.total > 0 ? (
-                (console.log("66", data),
-                data.data.map((x)=>(
-                  <Paper elevation={3} className={classes.table}  >
-                    <TableRestaurantIcon fontSize="large" color="action" style={{width:160 ,height:140}}>
-                  </TableRestaurantIcon>
-                  <Typography style={{fontSize:"20px",marginLeft:55,marginTop:"-20px"  ,fill: "#0088ff",cursor: "pointer"}}>{x.name}</Typography>
-                  </Paper>
-                  ))
-                )
+                <IndexTable
+                  itemCount={data.data.length}
+                  headings={[
+                    { title: 'Tên bàn' },
+                    { title: 'Ngày tạo' },
+                    { title: 'Ngày sửa' },
+                  ]}
+                  selectable={false}
+                >
+                  {rowMarkup}
+                </IndexTable>
               ) : (
                 <NoResultsComponent
                   message={"Không tìm thấy kết quả"}
@@ -221,6 +233,31 @@ const Table = (props: UserProps & PropsFromRedux) => {
                     initData(filters);
                 }}
             /> */}
+            <Frame>
+      <div style={{height: '500px'}}>
+        <Modal
+          open={active}
+          onClose={toggleModal}
+          title="Discard all unsaved changes"
+          primaryAction={{
+            destructive: true,
+            content: 'Discard changes',
+            onAction: toggleModal,
+          }}
+          secondaryActions={[
+            {
+              content: 'Continue editing',
+              onAction: toggleModal,
+            },
+          ]}
+        >
+          <Modal.Section>
+            If you discard changes, you’ll delete any edits you made since you
+            last saved.
+          </Modal.Section>
+        </Modal>
+      </div>
+    </Frame>
     </>
   );
 };
@@ -231,4 +268,4 @@ const mapStateToProps = (state: AppState) => ({
 });
 const connector = connect(mapStateToProps);
 type PropsFromRedux = ConnectedProps<typeof connector>;
-export default connect(mapStateToProps, {})(withStyles(styles)(Table));
+export default connect(mapStateToProps, {})(withStyles(styles)(EditTable));
