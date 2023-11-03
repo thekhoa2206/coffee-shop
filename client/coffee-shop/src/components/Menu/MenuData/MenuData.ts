@@ -89,16 +89,16 @@ const useGenMenuData = () => {
         path: "/admin/ingredients",
         typeRoute: "default",
       },
-      {
-        title: "Nhập kho",
-        path: "/admin/receipts",
-        typeRoute: "default",
-      },
-      {
-        title: "Xuất kho",
-        path: "/admin/exports",
-        typeRoute: "default",
-      },
+      // {
+      //   title: "Nhập kho",
+      //   path: "/admin/receipts",
+      //   typeRoute: "default",
+      // },
+      // {
+      //   title: "Xuất kho",
+      //   path: "/admin/exports",
+      //   typeRoute: "default",
+      // },
     ];
     return menu;
   };
@@ -137,12 +137,12 @@ const useGenMenuData = () => {
   const genMenuData = () => {
     let listMenu: MenuItem[] = [];
     listMenu.push(genMenuDashboard());
-    if(hasPermission([RolePermissionGroup.ORDER], auth.user))  listMenu.push(genMenuOrder());
-    if(hasPermission([RolePermissionGroup.CUSTOMER], auth.user))  listMenu.push(genMenuCustomer());
+    //if(hasPermission([RolePermissionGroup.ORDER], auth.user))  listMenu.push(genMenuOrder());
+    //if(hasPermission([RolePermissionGroup.CUSTOMER], auth.user))  listMenu.push(genMenuCustomer());
     if(hasPermission([RolePermissionGroup.PRODUCT], auth.user))  listMenu.push(genMenuProduct());
     if(hasPermission([RolePermissionGroup.INVENTORY, RolePermissionGroup.INGRADIENT], auth.user))  listMenu.push(genMenuInventory());
-    if(hasPermission([RolePermissionGroup.USER], auth.user))  listMenu.push(genMenuUser());
-    if(hasPermission([RolePermissionGroup.REPORT], auth.user)) listMenu.push(genMenuReport())
+    //if(hasPermission([RolePermissionGroup.USER], auth.user))  listMenu.push(genMenuUser());
+    //if(hasPermission([RolePermissionGroup.REPORT], auth.user)) listMenu.push(genMenuReport())
     return listMenu;
   };
   const genSapoMenu = async () => {
