@@ -89,11 +89,11 @@ const useGenMenuData = () => {
         path: "/admin/ingredients",
         typeRoute: "default",
       },
-      // {
-      //   title: "Nhập kho",
-      //   path: "/admin/receipts",
-      //   typeRoute: "default",
-      // },
+      {
+        title: "Nhập kho",
+        path: "/admin/receipts",
+        typeRoute: "default",
+      },
       // {
       //   title: "Xuất kho",
       //   path: "/admin/exports",
