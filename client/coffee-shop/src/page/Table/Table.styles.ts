@@ -41,6 +41,8 @@ const styles = (theme: Theme) =>
     headerItem: {
       display: "flex",
       alignItems: "center",
+      marginTop: "12px",
+      marginBottom: "12px",
     },
     utilities: {
       display: "flex",
@@ -129,7 +131,7 @@ const styles = (theme: Theme) =>
     table: {
       height: "160px",
       width: "160px",
-      marginLeft:"20px"
+      marginLeft:"20px",
     },
     tableicons: {
       height: "140px",

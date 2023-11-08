@@ -144,7 +144,9 @@ public class TableServiceImpl implements TableService {
         for (val tables : results.getContent()
         ) {
             val tableResponse = mapper.map(tables, TableResponse.class);
+            if(tableResponse.getStatus() !=2){
             tableResponses.add(tableResponse);
+            }
         }
 
         return new PagingListResponse<>(

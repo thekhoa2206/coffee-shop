@@ -38,7 +38,7 @@ public class TableController {
         return tableService.update(request, id);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id){
         tableService.delete(id);
     }

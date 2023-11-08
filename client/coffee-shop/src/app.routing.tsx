@@ -410,8 +410,8 @@ let MAIN_ROUTES = (): Route[] => [
     component: EditTable,
     extract: true,
     header: {
-      title: "Chỉnh sửa thông tin bàn",
-      linkTo: "",
+      title: "Danh sách bàn",
+      linkTo: "/admin/table",
       showNoti: false,
       withSubtitle: false,
     },

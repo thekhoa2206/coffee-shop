@@ -7,7 +7,7 @@ export type TableResponse = {
     id: number;
     name: string;
     status: number;
-    tableId: number;
+    orderId: number;
     createdOn?: string;
     createdBy?: string;
     modifiedOn?: string;
@@ -31,4 +31,5 @@ export type ListTableResponse = {
 export type TableRequest = {
     name?: string;
     status?: number;
+    id?:string;
 }

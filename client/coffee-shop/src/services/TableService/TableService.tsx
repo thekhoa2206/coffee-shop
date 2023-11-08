@@ -8,13 +8,13 @@ class UsersService {
     static async getById(id?: string): Promise<AxiosResponse<TableResponse>> {
         return axios.get(`/table/${id}`, { ...getAxiosConfig()});
     }
-    static async delete(id: string): Promise<AxiosResponse<TableResponse>> {
+    static async delete(id?: string): Promise<AxiosResponse<TableResponse>> {
         return axios.delete(`/table/${id}`, { ...getAxiosConfig()});
     }
     static async create(request: TableRequest): Promise<AxiosResponse<TableResponse>> {
         return axios.post(`/table`,request, { ...getAxiosConfig()});
     }
-    static async update(request: TableRequest, id: string): Promise<AxiosResponse<TableResponse>> {
+    static async update(request: TableRequest, id?: string): Promise<AxiosResponse<TableResponse>> {
         return axios.put(`/table/${id}`,request, { ...getAxiosConfig()});
     }
 }

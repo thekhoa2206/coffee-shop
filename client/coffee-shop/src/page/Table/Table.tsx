@@ -35,10 +35,12 @@ import UsersService from "services/UsersService/UsersService";
 import styles from "./Table.styles";
 import { UserProps } from "./Table.types";
 import TableService, { TableFilterRequest } from "services/TableService";
-import {Button, Frame, Modal, TextContainer} from '@shopify/polaris';
+import { Button, Frame, Modal, TextContainer } from '@shopify/polaris';
 import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
+import Pagination from '@mui/material/Pagination';
+import { number } from "yup";
 const Table = (props: UserProps & PropsFromRedux) => {
-  const { classes, authState} = props;
+  const { classes, authState } = props;
   const location = useLocation();
   const queryParams = useQueryParams();
   const [loading, setLoading] = useState<boolean>(true);
@@ -49,6 +51,15 @@ const Table = (props: UserProps & PropsFromRedux) => {
     data: [],
     total: 0,
   });
+  const [page, setPage] = useState<number>();
+  const handleChange = (event: any, value: any) => {
+    debugger
+    setPage(value);
+    const initFilter: TableFilterRequest = {
+      page: value,
+    };
+    initData(initFilter);
+  };
   const history = useHistory();
   const getDefaultQuery = () => {
     // Không hiểu tại sao useQueryParams không dùng đk
@@ -61,7 +72,8 @@ const Table = (props: UserProps & PropsFromRedux) => {
     const initFilter: UserFilterRequest = {
       page: Number(dataFromQuery["page"]) || 1,
       limit: Number(dataFromQuery["limit"]) || undefined,
-      query: dataFromQuery["query"] || undefined,    };
+      query: dataFromQuery["query"] || undefined,
+    };
     return initFilter;
   };
   const [filters, setFilters] = useState<StoctakingFilterRequest>({
@@ -86,21 +98,23 @@ const Table = (props: UserProps & PropsFromRedux) => {
     if (res.data)
       setData({
         data:
-          res.data.data?.map((user, index) => {
+          res.data.data?.map((table, index) => {
             return {
               stt: index + 1,
-              createdBy: user.createdBy,
-              createdOn: user.createdOn,
-              id: user.id,
-              modifiedBy: user.modifiedBy,
-              modifiedOn: user.modifiedOn,
-              name: user.name,
-              status: user.status,
-              tableId: user.tableId
+              createdBy: table.createdBy,
+              createdOn: table.createdOn,
+              id: table.id,
+              modifiedBy: table.modifiedBy,
+              modifiedOn: table.modifiedOn,
+              name: table.name,
+              status: table.status,
+              orderId: table.orderId
             };
           }) || [],
         total: res.data.metadata?.total || 0,
+
       });
+    setPage(res.data.metadata?.page)
     setLoading(false);
   };
 
@@ -155,7 +169,7 @@ const Table = (props: UserProps & PropsFromRedux) => {
 
   return (
     <>
-      <Box className={classes.container} style={{height:"100px"}}>
+      <Box className={classes.container} style={{ height: "100px" }}>
         <Box className={classes.header}>
           <Box className={classes.headerItem} display="flex">
             {""}
@@ -170,7 +184,7 @@ const Table = (props: UserProps & PropsFromRedux) => {
             >
               {"Thêm mới nhân viên"}
             </Button> */}
-            <Button variant="primary" tone="success" onClick={()=>{history.push("/admin/table/edit")}}>Chỉnh sửa bàn</Button>
+            <Button variant="primary" tone="success" onClick={() => { history.push("/admin/table/edit") }}>Chỉnh sửa bàn</Button>
           </Box>
         </Box>
         <Box className={classes.listBox}>
@@ -193,22 +207,37 @@ const Table = (props: UserProps & PropsFromRedux) => {
             <LoadingAuth />
           ) : (
             <React.Fragment>
+              <Box style={{display:"flex"}}>
               {data.total > 0 ? (
-                (console.log("66", data),
-                data.data.map((x)=>(
-                  <Paper elevation={3} className={classes.table}  >
-                    <TableRestaurantIcon fontSize="large" color="action" style={{width:160 ,height:140}}>
-                  </TableRestaurantIcon>
-                  <Typography style={{fontSize:"20px",marginLeft:55,marginTop:"-20px"  ,fill: "#0088ff",cursor: "pointer"}}>{x.name}</Typography>
-                  </Paper>
-                  ))
-                )
+                data.data.map((x) => (
+                  <Box >
+                    {x.status === 1 ?
+                      (
+                      <Box onClick={() => history.push(`/admin/orders/${x.orderId}`)}>
+                        <Paper elevation={3} className={classes.table} style={{backgroundColor:"rgb(245 240 124 / 79%)"}}   >
+                        <TableRestaurantIcon fontSize="large" color="action" style={{ width: 160, height: 140 }}>
+                        </TableRestaurantIcon>
+                        <Typography style={{ fontSize: "20px", marginLeft: 55, marginTop: "-20px", fill: "#0088ff", cursor: "pointer" }}>{x.name}</Typography>
+                      </Paper>
+                      </Box>
+                      ) : (
+                        <Box onClick={() => history.push(`/admin/orders/create`)}>
+                        <Paper elevation={3} className={classes.table}  >
+                          <TableRestaurantIcon fontSize="large" color="action" style={{ width: 160, height: 140 }}>
+                          </TableRestaurantIcon>
+                          <Typography style={{ fontSize: "20px", marginLeft: 55, marginTop: "-20px", fill: "#0088ff", cursor: "pointer" }}>{x.name}</Typography>
+                        </Paper>
+                        </Box>)}
+                  </Box>
+                ))
               ) : (
                 <NoResultsComponent
                   message={"Không tìm thấy kết quả"}
                   helpText={"Thử thay đổi điều kiện lọc hoặc từ khóa tìm kiếm"}
                 />
               )}
+              </Box>
+              <Pagination count={data.total} page={page} onChange={handleChange} style={{ float: "inline-end", marginTop: 300 }} />
             </React.Fragment>
           )}
         </Box>

@@ -41,6 +41,8 @@ const styles = (theme: Theme) =>
     headerItem: {
       display: "flex",
       alignItems: "center",
+      marginTop: "12px",
+      marginBottom: "12px",
     },
     utilities: {
       display: "flex",
