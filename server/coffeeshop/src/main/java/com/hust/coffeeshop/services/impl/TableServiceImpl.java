@@ -60,9 +60,9 @@ public class TableServiceImpl implements TableService {
     @Override
     public TableResponse getbyid(int id) {
         val table = tableRepository.findById(id);
+        if(!table.isPresent()) throw  new ErrorException("không tìm kiếm thấy bàn");
         TableResponse tableResponse = null;
         tableResponse = mapper.map(table.get(), TableResponse.class);
-        if(!table.isPresent()) throw  new ErrorException("không tìm kiếm thấy bàn");
         if(table.get().getStatus() ==1) {
             val tableOrders = tableOrderRepository.findByTableId(id);
                 if(tableOrders == null) throw  new ErrorException("không tìm kiếm thấy đơn trên cùng bàn");
@@ -144,6 +144,11 @@ public class TableServiceImpl implements TableService {
         for (val tables : results.getContent()
         ) {
             val tableResponse = mapper.map(tables, TableResponse.class);
+            if(tables.getStatus() ==1) {
+                val tableOrders = tableOrderRepository.findByTableId(tables.getId());
+                if(tableOrders == null) throw  new ErrorException("không tìm kiếm thấy đơn trên cùng bàn");
+                tableResponse.setOrderId(tableOrders.getOrder_Id());
+            }
             if(tableResponse.getStatus() !=2){
             tableResponses.add(tableResponse);
             }

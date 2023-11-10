@@ -4,7 +4,7 @@ import { StockUnitResponse } from "services/StockUnitService";
 import { Metadata } from "services/types";
 
 export type TableResponse = {
-    id: number;
+    id: string;
     name: string;
     status: number;
     orderId: number;

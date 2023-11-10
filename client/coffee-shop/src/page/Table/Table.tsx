@@ -53,7 +53,6 @@ const Table = (props: UserProps & PropsFromRedux) => {
   });
   const [page, setPage] = useState<number>();
   const handleChange = (event: any, value: any) => {
-    debugger
     setPage(value);
     const initFilter: TableFilterRequest = {
       page: value,
@@ -69,14 +68,14 @@ const Table = (props: UserProps & PropsFromRedux) => {
       const data = searchFilter.split("=");
       dataFromQuery[data[0]] = decodeURIComponent(data[1]);
     }
-    const initFilter: UserFilterRequest = {
+    const initFilter: TableFilterRequest = {
       page: Number(dataFromQuery["page"]) || 1,
       limit: Number(dataFromQuery["limit"]) || undefined,
       query: dataFromQuery["query"] || undefined,
     };
     return initFilter;
   };
-  const [filters, setFilters] = useState<StoctakingFilterRequest>({
+  const [filters, setFilters] = useState<TableFilterRequest>({
     ...getDefaultQuery(),
   });
   useEffect(() => {
@@ -132,7 +131,7 @@ const Table = (props: UserProps & PropsFromRedux) => {
   const handleSearch = (value: any) => {
     if (!value || !value?.trim()) {
     }
-    const newFilters: IngredientFilterRequest = {
+    const newFilters: TableFilterRequest = {
       ...filters,
       page: 1,
       query: value?.trim(),

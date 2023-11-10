@@ -134,6 +134,7 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                     phone: item.customerResponse?.phoneNumber,
                     total: item.total,
                     accountName: item.userResponse?.name,
+                    paymentStatus:item.paymentStatus,
                 }
             }) || [], total: res.data.metadata?.total || 0
         })

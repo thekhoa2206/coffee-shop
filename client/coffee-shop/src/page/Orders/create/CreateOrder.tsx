@@ -50,6 +50,7 @@ import {
 } from '@shopify/polaris';
 import TableService, { TableFilterRequest, TableResponse } from "services/TableService";
 import { DataResult } from "components/SapoGrid/SapoGrid.type";
+import QueryUtils from "utilities/QueryUtils";
 export interface CreateOrderProps extends WithStyles<typeof styles> { }
 const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
   const { classes, authState } = props;
@@ -122,12 +123,12 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
     }
     return total;
   };
-  useEffect(() => {
-    set((prev) => ({
-      ...prev,
-      total: totalLineAmount() - (discountTotal || 0),
-    }));
-  }, [totalLineAmount, discountTotal]);
+  // useEffect(() => {
+  //   set((prev) => ({
+  //     ...prev,
+  //     total: totalLineAmount() - (discountTotal || 0),
+  //   }));
+  // }, [totalLineAmount, discountTotal]);
 
   const createOrder = async () => {
     if (!lineItems || lineItems.length === 0) {
@@ -163,6 +164,8 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
       };
       orderLineItems.push(lineItemRequest);
     });
+    let tableId = selectedOptions.map((x) => (
+      x.id))
     let requestOrder: OrderRequest = {
       customerId: customer.id || 0,
       note: note,
@@ -170,6 +173,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
       orderItemRequest: orderLineItems,
       code: code,
       total: total || 0,
+      tableIds: tableId
     };
     try {
       let res = await OrderService.create(requestOrder);
@@ -183,76 +187,66 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
     }
   };
 
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
+  const [selectedOptions, setSelectedOptions] = useState<any[]>([]);
   const [inputValue, setInputValue] = useState('');
-  // const [options, setOptions] = useState(dataTable.data);
+  console.log("data", selectedOptions);
+  const updateText = useCallback(
 
-  // const updateText = useCallback(
-  //   (value: string) => {
-  //     setInputValue(value);
+    (value: string) => {
+      setInputValue(value);
 
-  //     if (value === '') {
-  //       setDataTbale(dataTable);
-  //       return;
-  //     }
+      if (value === '') {
+        setDataTbale(dataTable);
+        return;
+      }
+      const filterRegex = new RegExp(value, 'i');
+      const resultOptions = dataTable.filter((option) =>
+        option.name.includes(value),
+      );
+      setDataTbale(resultOptions);
+    },
+    [dataTable],
+  );
 
-  //     const filterRegex = new RegExp(value, 'i');
-  //     const resultOptions = dataTable.filter((option) =>
-  //       option.label.match(filterRegex),
-  //     );
-  //     setDataTbale(resultOptions);
-  //   },
-  //   [dataTable],
-  // );
+  const updateSelection = (selected: string) => {
+    let data = dataTable.filter((x) => x.id === selected)
+    const map = data.reduce((t, v) => {
+      const { ...rest } = v;
+      t = rest;
+      return t;
+    }, {});
+    let check = selectedOptions.filter((x) => x.id === selected)
+    if (check.length > 0) {
+      setSelectedOptions(selectedOptions.filter((option) => option.id !== selected))
+    } else {
+      setSelectedOptions([...selectedOptions, map]);
+    }
+    updateText('');
+  };
 
-  // const updateSelection = useCallback(
-  //   (selected: string) => {
-  //     if (selectedOptions.includes(selected)) {
-  //       setSelectedOptions(
-  //         selectedOptions.filter((option) => option !== selected),
-  //       );
-  //     } else {
-  //       setSelectedOptions([...selectedOptions, selected]);
-  //     }
+  console.log("check", selectedOptions.map((x) => (
+    x.id)));
 
-  //     updateText('');
-  //   },
-  //   [selectedOptions, updateText],
-  // );
+  const removeTag = useCallback(
+    (tag: string) => () => {
+      const options = [...selectedOptions];
+      options.splice(options.indexOf(tag), 1);
+      setSelectedOptions(options);
+    },
+    [selectedOptions],
+  );
 
-  // const removeTag = useCallback(
-  //   (tag: string) => () => {
-  //     const options = [...selectedOptions];
-  //     options.splice(options.indexOf(tag), 1);
-  //     setSelectedOptions(options);
-  //   },
-  //   [selectedOptions],
-  // );
 
-  // const tagsMarkup = selectedOptions.map((option) => (
-  //   <Tag key={`option-${option}`} onRemove={removeTag(option)}>
-  //     {option}
-  //   </Tag>
-  // ));
 
-console.log("check");
 
-  const optionsMarkup =
-    dataTable.length > 0
-      ? dataTable.map((x) => {
-        return (
-          <Listbox.Option
-            key={`${x.id}`}
-            value={x.name}
-            selected={selectedOptions.includes(x.name)}
-            accessibilityLabel={x.name}
-          >
-            {x.name}
-          </Listbox.Option>
-        );
-      })
-      : null;
-
+  const checkSelected = (id: string) => {
+    let data = selectedOptions.filter((option) => option.id === id)
+    if (data.length > 0) {
+      return true;
+    }
+    else return false;
+  }
   return (
     <>
       <Box className={classes.container}>
@@ -450,8 +444,11 @@ console.log("check");
             </Paper>
           </Grid>
           <Grid item xs={4}>
-            {/* <Paper className={classes.wrapperBoxInfo}>
-              <div style={{ height: '225px' }}>
+            <Paper className={classes.wrapperBoxInfo}>
+              <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
+                Thông tin bàn
+              </Typography>
+              <Box style={{ height: '100px', width: 320, marginLeft: 10 }}>
                 <Combobox
                   allowMultiple
                   activator={
@@ -474,9 +471,9 @@ console.log("check");
                         return (
                           <Listbox.Option
                             key={`${x.id}`}
-                            value={x.name}
-                            selected={selectedOptions.includes(x.name)}
-                            accessibilityLabel={x.name}
+                            value={x.id}
+                            selected={checkSelected(x.id)}
+                            accessibilityLabel={x.id}
                           >
                             {x.name}
                           </Listbox.Option>
@@ -486,10 +483,19 @@ console.log("check");
                   ) : null}
                 </Combobox>
                 <TextContainer>
-                  <LegacyStack>{tagsMarkup}</LegacyStack>
+                  <LegacyStack>
+                    {selectedOptions.map((x) => {
+                      return (
+                        <Tag key={x.id} onRemove={removeTag(x.id)}>
+                          {x.name}
+                        </Tag>
+                      )
+                    }
+                    )}
+                  </LegacyStack>
                 </TextContainer>
-              </div>
-            </Paper> */}
+              </Box>
+            </Paper>
             <Paper className={classes.wrapperBoxInfo}>
               <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                 Thông tin khách hàng

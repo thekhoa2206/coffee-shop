@@ -19,11 +19,13 @@ export type OrderStore = {
     discountTotal?: number | null;
     context?: "detail" | "create" | "edit";
     order?: OrderResponse;
+    table?:any[]|null
 }
 
 export const initOrderStore = {
     lineItems: null,
     customer: null,
+    table:null,
 }
 export const useOrderStore = create<OrderStore>((set) => ({
     ...initOrderStore,
