@@ -133,6 +133,15 @@ const useGenMenuData = () => {
     };
     return menu;
   };
+  const genTable = () => {
+    let menu: MenuItem = {
+      id: "table",
+      icon: MenuOrderIcon,
+      title: "Bàn",
+      path: "/admin/table",
+    };
+    return menu;
+  };
 
   const genMenuData = () => {
     let listMenu: MenuItem[] = [];
@@ -142,7 +151,8 @@ const useGenMenuData = () => {
     if(hasPermission([RolePermissionGroup.PRODUCT], auth.user))  listMenu.push(genMenuProduct());
     if(hasPermission([RolePermissionGroup.INVENTORY, RolePermissionGroup.INGRADIENT], auth.user))  listMenu.push(genMenuInventory());
     if(hasPermission([RolePermissionGroup.USER], auth.user))  listMenu.push(genMenuUser());
-    if(hasPermission([RolePermissionGroup.REPORT], auth.user)) listMenu.push(genMenuReport())
+    if(hasPermission([RolePermissionGroup.REPORT], auth.user)) listMenu.push(genMenuReport());
+    if(hasPermission([RolePermissionGroup.REPORT], auth.user)) listMenu.push(genTable())
     return listMenu;
   };
   const genSapoMenu = async () => {

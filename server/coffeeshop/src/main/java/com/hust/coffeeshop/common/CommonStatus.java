@@ -67,5 +67,6 @@ public class CommonStatus {
     public class Status {
         public final static int ACTIVE = 1;
         public final static int DELETED = 2;
+        public final static int EMPTY =3;
     }
 }

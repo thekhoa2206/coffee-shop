@@ -46,6 +46,8 @@ const ReportInventoryDetail = React.lazy(
   () => import("./page/Report/ReportInventory/detail")
 );
 const ReportOrder = React.lazy(() => import("./page/Report/ReportOrder"));
+const Table = React.lazy(() => import("./page/Table"));
+const EditTable = React.lazy(() => import("./page/Table/editTable"));
 const Dashboard = React.lazy(() => import("./page/Dashboard"));
 export const LAYOUT_ROUTES: Route[] = [
   {
@@ -386,6 +388,30 @@ let MAIN_ROUTES = (): Route[] => [
     header: {
       title: "Báo cáo đơn hàng",
       linkTo: "",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [RolePermissionGroup.REPORT],
+  },
+  {
+    path: "/table",
+    component: Table,
+    extract: true,
+    header: {
+      title: "Danh sách bàn",
+      linkTo: "",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [RolePermissionGroup.REPORT],
+  },
+  {
+    path: "/table/edit",
+    component: EditTable,
+    extract: true,
+    header: {
+      title: "Danh sách bàn",
+      linkTo: "/admin/table",
       showNoti: false,
       withSubtitle: false,
     },

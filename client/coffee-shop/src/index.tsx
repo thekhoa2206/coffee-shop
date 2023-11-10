@@ -12,20 +12,24 @@ import { ThemeProvider } from "@material-ui/styles";
 import { createTheme } from "theme";
 import {PolarisVizProvider} from '@shopify/polaris-viz';
 import '@shopify/polaris-viz/build/esm/styles.css';
-
+import enTranslations from '@shopify/polaris/locales/en.json';
+import { AppProvider } from "@shopify/polaris";
+import "@shopify/polaris/build/esm/styles.css";
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
-  <Provider store={storeProvider.store}>
+  <AppProvider i18n={enTranslations}>
+  <Provider store={storeProvider.store} >
       <PersistGate loading={null} persistor={storeProvider.persistor}>
       <Suspense fallback={<LoadingAuth />}>
           <CookiesProvider>
-              <PolarisVizProvider>
+              <PolarisVizProvider >
                 <App/>
               </PolarisVizProvider>
             </CookiesProvider>
         </Suspense>
       </PersistGate>
     </Provider>
+    </AppProvider>
 );
 reportWebVitals();
 

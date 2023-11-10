@@ -1,10 +1,10 @@
 package com.hust.coffeeshop.services.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hust.coffeeshop.common.*;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientFilterRequest;
 import com.hust.coffeeshop.models.dto.order.*;
+import com.hust.coffeeshop.models.dto.table.TableResponse;
 import com.hust.coffeeshop.models.entity.*;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,8 +46,10 @@ public class OrderServiceImpl implements OrderService {
     private final IngredientService ingredientService;
     private final OrderItemComboRepository orderItemComboRepository;
     private final InventoryLogRepository inventoryLogRepository;
+    private final TableOrderRepository tableOrderRepository;
+    private final TableRepository tableRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService, OrderItemComboRepository orderItemComboRepository, InventoryLogRepository inventoryLogRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService, OrderItemComboRepository orderItemComboRepository, InventoryLogRepository inventoryLogRepository, TableOrderRepository tableOrderRepository, TableRepository tableRepository) {
         this.orderRepository = orderRepository;
         this.filterRepository = filterRepository;
         this.mapper = mapper;
@@ -63,6 +64,8 @@ public class OrderServiceImpl implements OrderService {
         this.ingredientService = ingredientService;
         this.orderItemComboRepository = orderItemComboRepository;
         this.inventoryLogRepository = inventoryLogRepository;
+        this.tableOrderRepository = tableOrderRepository;
+        this.tableRepository = tableRepository;
     }
 
     /*
@@ -191,6 +194,16 @@ public class OrderServiceImpl implements OrderService {
             }
             orderItemResponses.add(orderItemResponse);
         }
+        var tableOrder = tableOrderRepository.findByOrderId(order.getId());
+        List<TableResponse> tableResponses = new ArrayList<>();
+        if(tableOrder != null && tableOrder.size()>0){
+            for (val data : tableOrder) {
+                var talble = tableRepository.findById(data.getTable_id());
+                val tableResponse = mapper.map(talble.get(), TableResponse.class);
+                tableResponses.add(tableResponse);
+            }
+            orderResponse.setTableResponses(tableResponses);
+        }
         orderResponse.setOrderItemResponses(orderItemResponses);
         return orderResponse;
     }
@@ -206,8 +219,6 @@ public class OrderServiceImpl implements OrderService {
 
         if (request.getCustomerId() == 0)
             throw new ErrorException("Khách hàng không được để trống");
-
-
         var lastId = orderRepository.getLastOrderId();
         if (request.getCode() == null)
             order.setCode("DON" + (lastId + 1));
@@ -223,6 +234,24 @@ public class OrderServiceImpl implements OrderService {
         order.setTotal(request.getTotal());
         order.setPaymentStatus(CommonStatus.PaymentStatus.UNPAID);
         order = orderRepository.save(order);
+        if(request.getTableIds().size()>0){
+            for(val tableId : request.getTableIds()){
+                TableOrder tableOrder = new TableOrder();
+                tableOrder.setOrder_Id(order.getId());
+                tableOrder.setTable_id(tableId);
+                tableOrder.setStatus(CommonStatus.Status.ACTIVE);
+                tableOrder.setCreatedOn(CommonCode.getTimestamp());
+                tableOrder.setModifiedOn(0);
+                val table =  tableRepository.findById(tableId);
+                if (!table.isPresent() || table == null ||table.get().getStatus() ==1) throw new ErrorException("Không tìm thấy bàn trống!");
+                    table.get().setStatus(CommonStatus.Status.ACTIVE);
+                try {
+                     tableOrderRepository.save(tableOrder);
+                } catch (Exception e) {
+                    throw new ErrorException("Tạo đơn hàng vào bàn thất bại");
+                }
+            }
+        }
         for (var item : request.getOrderItemRequest()) {
             var lineItem = mapper.map(item, OrderItem.class);
             lineItem.setOrderId(order.getId());
@@ -342,6 +371,24 @@ public class OrderServiceImpl implements OrderService {
         order.get().setPaymentStatus(CommonStatus.PaymentStatus.PAID);
         order.get().setModifiedOn();
         var orderNew = orderRepository.save(order.get());
+        var tableOrder = tableOrderRepository.findByOrderId(order.get().getId());
+        if(!tableOrder.isEmpty()){
+            for(val data : tableOrder){
+                data.setStatus(CommonStatus.Status.DELETED);
+                data.setModifiedOn(CommonCode.getTimestamp());
+                var table = tableRepository.findById(data.getTable_id());
+                if(!table.isPresent()){
+                    table.get().setStatus(CommonStatus.Status.EMPTY);
+                try {
+                    tableOrderRepository.save(data);
+                    tableRepository.save(table.get());
+                } catch (Exception e)
+                {
+                    throw new ErrorException("thanh toán bàn thất bại ");
+                }
+                }
+            }
+        }
         var orderResponse = mapperOrderResponse(orderNew);
         var customer = customerService.getById(orderNew.getCustomerId());
         if (customer != null) {
@@ -367,6 +414,87 @@ public class OrderServiceImpl implements OrderService {
             orderNew.setDiscountTotal(request.getDiscountTotal());
             orderNew.setCustomerId(request.getCustomerId());
             lineItems = setOrderItems(request.getOrderItemRequest(), id);
+        }
+        // cập nhập bàn
+        // tìm xem có bàn nào đang chứa đơn này không
+        var tableOrder = tableOrderRepository.findByOrderId(order.get().getId());
+        //check requets nếu không rỗng phần id bàn tiến hành cập nhập thông tin bàn
+        if(!request.getTableIds().isEmpty()){
+            // nếu có bàn
+            if(!tableOrder.isEmpty()) {
+                for(val requestId: request.getTableIds() ) {
+                    var tableIdOrderAdd = tableOrder.stream()
+                           .filter(o -> o.getTable_id() == requestId)
+                           .collect(Collectors.toList()).stream().findFirst().orElse(null);
+                    if(tableIdOrderAdd == null){
+                        TableOrder tableOrder1 = new TableOrder();
+                        tableOrder1.setTable_id(requestId);
+                        tableOrder1.setOrder_Id(order.get().getId());
+                        tableOrder1.setStatus(CommonStatus.Status.ACTIVE);
+                        tableOrder1.setCreatedOn(CommonCode.getTimestamp());
+                        tableOrder1.setModifiedOn(0);
+                        try {
+                            tableOrderRepository.save(tableOrder1);
+                            var table = tableRepository.findById(requestId);
+                            table.get().setStatus(CommonStatus.Status.ACTIVE);
+                            tableRepository.save(table.get());
+                        } catch (Exception e)
+                        {
+                            throw new ErrorException("thêm bàn thất bại ");
+                        }
+                    }
+                    for (val data : tableOrder){
+                        var tableIds = request.getTableIds().stream()
+                            .filter(o -> o.equals(data.getTable_id())).collect(Collectors.toList()).stream().findFirst().orElse(null);
+                        if(tableIds ==null){
+                            data.setStatus(CommonStatus.Status.DELETED);
+                            data.setModifiedOn(CommonCode.getTimestamp());
+                                try {
+                                    tableOrderRepository.save(data);
+                                    var table = tableRepository.findById(data.getTable_id());
+                                    table.get().setStatus(CommonStatus.Status.EMPTY);
+                                    tableRepository.save(table.get());
+                                } catch (Exception e) {
+                                    throw new ErrorException("xoá bàn thất bại ");
+                                }
+                        }
+                    }
+                }
+            }
+            // nếu không có bàn thực hiện add tất cả bàn vào đơn
+            else {
+                for (val ids : request.getTableIds()){
+                    TableOrder tableOrder1 = new TableOrder();
+                    tableOrder1.setTable_id(ids);
+                    tableOrder1.setOrder_Id(order.get().getId());
+                    tableOrder1.setStatus(CommonStatus.Status.ACTIVE);
+                    tableOrder1.setCreatedOn(CommonCode.getTimestamp());
+                    tableOrder1.setModifiedOn(0);
+                    try {
+                        tableOrderRepository.save(tableOrder1);
+                        var table = tableRepository.findById(ids);
+                        table.get().setStatus(CommonStatus.Status.ACTIVE);
+                        tableRepository.save(table.get());
+                    } catch (Exception e) {
+                        throw new ErrorException("thêm bàn thất bại ");
+                    }
+                }
+            }
+        }
+        // nếu request truyền rông thực hiện xoá thông tin có trong đơn
+        else {
+            for (val tableOrderDelete : tableOrder){
+                tableOrderDelete.setStatus(CommonStatus.Status.DELETED);
+                tableOrderDelete.setModifiedOn(CommonCode.getTimestamp());
+                try {
+                    tableOrderRepository.save(tableOrderDelete);
+                    var table = tableRepository.findById(tableOrderDelete.getTable_id());
+                    table.get().setStatus(CommonStatus.Status.EMPTY);
+                    tableRepository.save(table.get());
+                } catch (Exception e) {
+                    throw new ErrorException("xoá bàn thất bại ");
+                }
+            }
         }
         var orderResponse = mapperOrderResponse(orderNew);
         if (lineItems != null && lineItems.size() > 0) {

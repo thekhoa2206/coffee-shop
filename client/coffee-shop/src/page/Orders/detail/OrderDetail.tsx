@@ -59,13 +59,13 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
         discountTotal,
         reset,
         order,
+        table,
     } = useOrderStore();
     const history = useHistory();
     const { id } = useParams<{ id: string }>();
     const { closeModal, confirm, openModal } = useModal();
     const [openMenuCreateOrder, setOpenMenuCreateOrder] = useState(false);
     const refPrint = React.useRef<HTMLDivElement>(null);
-
     useEffect(() => {
         initData();
     }, [id])
@@ -103,7 +103,6 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
 
                 order.orderItemResponses?.map(async (li) => {
                     let variantIds: number[] = [];
-
                     let filter: VariantFilterRequest = {};
                     let comboIds: number[] = [];
                     order.orderItemResponses?.map((item) => {
@@ -177,6 +176,8 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                     discountTotal: order.discountTotal,
                     total: order.total,
                     order: order,
+                    table: order.tableResponses,
+
                 }))
             } catch (error) {
 
@@ -255,7 +256,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                         </Box>
                         <Box display="flex" alignItems="center" style={{ marginTop: 10 }}>
                             <Button startIcon={<PrintIcon />} color="inherit" variant="text" onClick={() => { printOrder() }}>In</Button>
-                            {!order?.paymentStatus || order?.paymentStatus !== PaymentStatus.PAID && 
+                            {!order?.paymentStatus || order?.paymentStatus !== PaymentStatus.PAID &&
                                 <Button startIcon={<PaymentOutlined />} color="inherit" variant="text" onClick={() => {
                                     openModal(ConfirmDialog, {
                                         confirmButtonText: "Xác nhận",
@@ -297,13 +298,12 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                 }}
                                 disableRestoreFocus
                             >
-                                {(order?.paymentStatus || order?.paymentStatus !== PaymentStatus.PAID)  && order?.status === OrderStatus.DRAFT &&
-                                    <MenuItem
+                                <MenuItem
                                     onClick={() => { history.push(`/admin/orders/${id}/edit`) }}
                                 >
                                     <PencilIcon style={{ color: "#adadad", marginRight: 10 }} /> Sửa
                                 </MenuItem>
-                                }
+
                                 <MenuItem
                                     onClick={() => {
                                         setOpenMenuCreateOrder(false);
@@ -337,48 +337,49 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                 >
                                     <OrderCancelIcon style={{ color: "#adadad", marginRight: 10 }} /> Hủy
                                 </MenuItem>
-                                {(order?.status !== OrderStatus.COMPLETED && (order?.paymentStatus && order?.paymentStatus === PaymentStatus.PAID)) &&
-                                    <MenuItem
-                                        onClick={async () => {
-                                            setOpenMenuCreateOrder(false);
-                                            try {
-                                                let res = await OrderService.updateStatus(id, OrderStatus.IN_PROGRESS);
-                                                if (res.data) {
-                                                    SnackbarUtils.success("Đơn hàng đang được thực hiện");
-                                                    set((prev) => ({
-                                                        ...prev,
-                                                        order: res.data,
-                                                    }))
-                                                }
-                                            } catch (error) {
-                                                SnackbarUtils.error(getMessageError(error));
+
+                                <MenuItem
+                                    onClick={async () => {
+                                        setOpenMenuCreateOrder(false);
+                                        try {
+                                            let res = await OrderService.updateStatus(id, OrderStatus.IN_PROGRESS);
+                                            if (res.data) {
+                                                SnackbarUtils.success("Đơn hàng đang được thực hiện");
+                                                set((prev) => ({
+                                                    ...prev,
+                                                    order: res.data,
+                                                }))
                                             }
-                                        }}
-                                    >
-                                        <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Đang thực hiện
-                                    </MenuItem>
-                                }
-                                {(order?.status !== OrderStatus.COMPLETED && (order?.paymentStatus && order?.paymentStatus === PaymentStatus.PAID)) &&
-                                    <MenuItem
-                                        onClick={async () => {
-                                            setOpenMenuCreateOrder(false);
-                                            try {
-                                                let res = await OrderService.updateStatus(id, OrderStatus.WAITING_DELIVERY);
-                                                if (res.data) {
-                                                    SnackbarUtils.success("Đơn hàng đã chuyển sang trạng thái chờ lấy đồ");
-                                                    set((prev) => ({
-                                                        ...prev,
-                                                        order: res.data,
-                                                    }))
-                                                }
-                                            } catch (error) {
-                                                SnackbarUtils.error(getMessageError(error));
+                                        } catch (error) {
+                                            SnackbarUtils.error(getMessageError(error));
+                                        }
+                                    }}
+                                >
+                                    <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Đang thực hiện
+                                </MenuItem>
+
+
+                                <MenuItem
+                                    onClick={async () => {
+                                        setOpenMenuCreateOrder(false);
+                                        try {
+                                            let res = await OrderService.updateStatus(id, OrderStatus.WAITING_DELIVERY);
+                                            if (res.data) {
+                                                SnackbarUtils.success("Đơn hàng đã chuyển sang trạng thái chờ lấy đồ");
+                                                set((prev) => ({
+                                                    ...prev,
+                                                    order: res.data,
+                                                }))
                                             }
-                                        }}
-                                    >
-                                        <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Chờ lấy đồ
-                                    </MenuItem>}
-                                {(order?.status !== OrderStatus.COMPLETED && (order?.paymentStatus && order?.paymentStatus === PaymentStatus.PAID)) && <MenuItem
+                                        } catch (error) {
+                                            SnackbarUtils.error(getMessageError(error));
+                                        }
+                                    }}
+                                >
+                                    <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Chờ lấy đồ
+                                </MenuItem>
+
+                                <MenuItem
                                     onClick={async () => {
                                         setOpenMenuCreateOrder(false);
                                         try {
@@ -396,7 +397,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                     }}
                                 >
                                     <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Hoàn thành
-                                </MenuItem>}
+                                </MenuItem>
                             </Menu>
                         </Box>
                     </Grid>
@@ -465,47 +466,82 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                     </Grid>
                     <Grid item xs={4}>
                         <Paper className={classes.wrapperBoxInfo}>
-                            <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
-                                Thông tin khách hàng
-                            </Typography>
-                            <Box
-                                className={classes.boxContentPaper}
-                                style={{ padding: "8px 16px", height: 170 }}
-                            >
-                                <Grid xs={12} style={{ padding: 0 }}>
-                                    {customer && (
-                                        <Box style={{ width: 330 }}>
-                                            <Grid xs={12} container>
-                                                <Grid xs={5} item>
-                                                    Tên khách hàng
+                            <Box>
+                                <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
+                                    Thông tin bàn
+                                </Typography>
+                                <Box
+                                    className={classes.boxContentPaper}
+                                    style={{ padding: "8px 16px", height: 70 }}
+                                >
+                                    <Grid xs={12} style={{ padding: 0 }}>
+                                        {table && (table.length > 0) ? (
+                                            table.map((x) =>
+                                                <Box style={{ width: 330 }}>
+                                                    <Grid xs={12} container>
+                                                        <Grid xs={5} item>
+                                                            Tên bàn
+                                                        </Grid>
+                                                        <Grid xs={1} item>
+                                                            :
+                                                        </Grid>
+                                                        <Grid xs={6} item>
+                                                            {x.name}
+
+                                                        </Grid>
+                                                    </Grid>
+                                                </Box>
+                                            )
+
+                                        ) : null}
+                                    </Grid>
+                                </Box>
+                            </Box>
+                        </Paper>
+                        <Paper className={classes.wrapperBoxInfo}>
+                            <Box>
+                                <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
+                                    Thông tin khách hàng
+                                </Typography>
+                                <Box
+                                    className={classes.boxContentPaper}
+                                    style={{ padding: "8px 16px", height: 70 }}
+                                >
+                                    <Grid xs={12} style={{ padding: 0 }}>
+                                        {customer && (
+                                            <Box style={{ width: 330 }}>
+                                                <Grid xs={12} container>
+                                                    <Grid xs={5} item>
+                                                        Tên khách hàng
+                                                    </Grid>
+                                                    <Grid xs={1} item>
+                                                        :
+                                                    </Grid>
+                                                    <Grid xs={6} item>
+                                                        <Link
+                                                            to={`/admin/customers`}
+                                                            target="_blank"
+                                                            style={{ fontWeight: 500 }}
+                                                        >
+                                                            {customer.name}
+                                                        </Link>
+                                                    </Grid>
                                                 </Grid>
-                                                <Grid xs={1} item>
-                                                    :
+                                                <Grid xs={12} container>
+                                                    <Grid xs={5} item>
+                                                        Sđt khách hàng
+                                                    </Grid>
+                                                    <Grid xs={1} item>
+                                                        :
+                                                    </Grid>
+                                                    <Grid xs={6} item>
+                                                        {customer.phoneNumber}
+                                                    </Grid>
                                                 </Grid>
-                                                <Grid xs={6} item>
-                                                    <Link
-                                                        to={`/admin/customers`}
-                                                        target="_blank"
-                                                        style={{ fontWeight: 500 }}
-                                                    >
-                                                        {customer.name}
-                                                    </Link>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid xs={12} container>
-                                                <Grid xs={5} item>
-                                                    Sđt khách hàng
-                                                </Grid>
-                                                <Grid xs={1} item>
-                                                    :
-                                                </Grid>
-                                                <Grid xs={6} item>
-                                                    {customer.phoneNumber}
-                                                </Grid>
-                                            </Grid>
-                                        </Box>
-                                    )}
-                                </Grid>
+                                            </Box>
+                                        )}
+                                    </Grid>
+                                </Box>
                             </Box>
                         </Paper>
                         <Paper className={classes.wrapperBoxInfo}>

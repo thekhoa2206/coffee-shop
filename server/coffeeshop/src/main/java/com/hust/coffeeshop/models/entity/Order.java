@@ -36,4 +36,5 @@ public class Order extends BaseEntity{
 
     @Column(name = "payment_status")
     private int paymentStatus ;
+
 }

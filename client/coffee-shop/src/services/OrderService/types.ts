@@ -12,6 +12,7 @@ export interface OrderResponse extends BaseResponse {
     orderItemResponses?: OrderItemResponse[];
     userResponse?: UserResponse;
     paymentStatus?: number;
+    tableResponses?:any[],
 }
 
 export type ListOrderResponse = {
@@ -48,6 +49,7 @@ export type OrderRequest = {
     discountTotal: number;
     orderItemRequest?: OrderItemRequest[];
     total?: number;
+    tableIds?: any[];
 }
 
 export type OrderItemRequest = {
