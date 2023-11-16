@@ -16,11 +16,11 @@ public interface OrderService {
 
     OrderResponse getById(int id);
 
-    OrderResponse addPayment(int id);
+    OrderResponse addPayment(int id,int userId);
 
     OrderResponse update(OrderRequest orderRequest, int id);
 
-    OrderResponse updateStatus(int id, int status);
+    OrderResponse updateStatus(int id, int status,int userId);
 
     OrderPrintForm getPrintForm(PrintOrderRequest printOrder) throws IOException, TemplateException;
 }

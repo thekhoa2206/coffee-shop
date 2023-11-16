@@ -123,12 +123,12 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
     }
     return total;
   };
-  // useEffect(() => {
-  //   set((prev) => ({
-  //     ...prev,
-  //     total: totalLineAmount() - (discountTotal || 0),
-  //   }));
-  // }, [totalLineAmount, discountTotal]);
+  useEffect(() => {
+    set((prev) => ({
+      ...prev,
+      total: totalLineAmount() - (discountTotal || 0),
+    }));
+  }, [totalLineAmount, discountTotal]);
 
   const createOrder = async () => {
     if (!lineItems || lineItems.length === 0) {

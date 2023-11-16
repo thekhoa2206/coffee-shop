@@ -307,7 +307,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                 <MenuItem
                                     onClick={() => {
                                         setOpenMenuCreateOrder(false);
-                                        if (order?.status !== OrderStatus.DRAFT) {
+                                        if (order?.status === OrderStatus.COMPLETED) {
                                             SnackbarUtils.error("Đơn hàng không thể hủy");
                                             return;
                                         }

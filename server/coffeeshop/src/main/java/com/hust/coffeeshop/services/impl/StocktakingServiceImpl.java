@@ -36,8 +36,10 @@ public class StocktakingServiceImpl implements StocktakingService {
     private final BaseService baseService;
     private final FilterRepository filterRepository;
     private final InventoryLogRepository inventoryLogRepository;
+    private final ShiftObjectRepository shiftObjectRepository;
+    private final ShiftRepository shiftRepository;
 
-    public StocktakingServiceImpl(StocktakingRepository stocktakingRepository, ModelMapper mapper, StocktakingIngredientRepository stocktakingIngredientRepository, IngredientRepository ingredientRepository, BaseService baseService, FilterRepository filterRepository, InventoryLogRepository inventoryLogRepository) {
+    public StocktakingServiceImpl(StocktakingRepository stocktakingRepository, ModelMapper mapper, StocktakingIngredientRepository stocktakingIngredientRepository, IngredientRepository ingredientRepository, BaseService baseService, FilterRepository filterRepository, InventoryLogRepository inventoryLogRepository, ShiftObjectRepository shiftObjectRepository, ShiftRepository shiftRepository) {
         this.stocktakingRepository = stocktakingRepository;
         this.mapper = mapper;
         this.stocktakingIngredientRepository = stocktakingIngredientRepository;
@@ -45,6 +47,8 @@ public class StocktakingServiceImpl implements StocktakingService {
         this.baseService = baseService;
         this.filterRepository = filterRepository;
         this.inventoryLogRepository = inventoryLogRepository;
+        this.shiftObjectRepository = shiftObjectRepository;
+        this.shiftRepository = shiftRepository;
     }
 
     @Override
@@ -170,6 +174,20 @@ public class StocktakingServiceImpl implements StocktakingService {
         }
         if (request.getStatus() == 2) {
             data.setStatus(CommonStatus.StockingStatus.WAREHOUSE);
+            if(data.getPayment() == CommonStatus.StockingPayment.ACTIVE){
+                var shift = shiftRepository.findShiftByUserId(request.getUser_id());
+                if(shift == null)  throw new ErrorException("Ca làm việc chưa mở");
+                ShiftObject shiftObject = new ShiftObject();
+                shiftObject.setShiftId(shift.getId());
+                shiftObject.setObjectId(data.getId());
+                shiftObject.setMoney(data.getTotalMoney());
+                //set trường hợp không huỷ đơn
+                shiftObject.setStatus(1);
+                shiftObject.setCreatedOn(CommonCode.getTimestamp());
+                shiftObject.setType(data.getType());
+                shiftObject.setModifiedOn(0);
+            }
+
         }
         var stocktakingNew = stocktakingRepository.save(data);
         val stocktakingIngredients = stocktakingIngredientRepository.findItemIngredientByInventoryId(id);
@@ -415,6 +433,12 @@ public class StocktakingServiceImpl implements StocktakingService {
                 stocktakingIngredientRepository.save(data);
             }
         }
+        var shiftOrder = shiftObjectRepository.findShiftByObject(stocktaking.get().getId());
+        if(shiftOrder ==null )  throw new ErrorException("ca chưa mở!");
+        shiftOrder.setStatus(2);
+        shiftOrder.setModifiedOn(CommonCode.getTimestamp());
+        shiftObjectRepository.save(shiftOrder);
+
     }
 
     //api filter

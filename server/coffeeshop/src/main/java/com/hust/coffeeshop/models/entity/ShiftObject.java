@@ -13,14 +13,14 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class ShiftObject extends BaseEntity{
-    @Column(name = "order_id")
-    private int orderId;
+    @Column(name = "object_id")
+    private int objectId;
 
     @Column(name = "shift_id")
     private int shiftId;
 
     @Column(name = "status")
-    private String status;
+    private int status;
 
     @Column(name = "type")
     private String type;

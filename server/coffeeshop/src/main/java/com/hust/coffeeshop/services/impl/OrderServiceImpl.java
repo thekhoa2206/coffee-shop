@@ -48,8 +48,10 @@ public class OrderServiceImpl implements OrderService {
     private final InventoryLogRepository inventoryLogRepository;
     private final TableOrderRepository tableOrderRepository;
     private final TableRepository tableRepository;
+    private final ShiftObjectRepository shiftObjectRepository;
+    private final ShiftRepository shiftRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService, OrderItemComboRepository orderItemComboRepository, InventoryLogRepository inventoryLogRepository, TableOrderRepository tableOrderRepository, TableRepository tableRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService, OrderItemComboRepository orderItemComboRepository, InventoryLogRepository inventoryLogRepository, TableOrderRepository tableOrderRepository, TableRepository tableRepository, ShiftObjectRepository shiftObjectRepository, ShiftRepository shiftRepository) {
         this.orderRepository = orderRepository;
         this.filterRepository = filterRepository;
         this.mapper = mapper;
@@ -66,6 +68,8 @@ public class OrderServiceImpl implements OrderService {
         this.inventoryLogRepository = inventoryLogRepository;
         this.tableOrderRepository = tableOrderRepository;
         this.tableRepository = tableRepository;
+        this.shiftObjectRepository = shiftObjectRepository;
+        this.shiftRepository = shiftRepository;
     }
 
     /*
@@ -360,7 +364,7 @@ public class OrderServiceImpl implements OrderService {
 
     //Hàm Thanh toán cho đơn hàng
     @Override
-    public OrderResponse addPayment(int id) {
+    public OrderResponse addPayment(int id,int userId) {
         if (id == 0) throw new ErrorException("Không có id đơn hàng");
         var order = orderRepository.findById(id);
         if (!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
@@ -370,6 +374,17 @@ public class OrderServiceImpl implements OrderService {
             throw new ErrorException("Đơn hàng đã hủy không thể thanh toán");
         order.get().setPaymentStatus(CommonStatus.PaymentStatus.PAID);
         order.get().setModifiedOn();
+        var shift = shiftRepository.findShiftByUserId(userId);
+        if(shift== null) throw new ErrorException("Chưa mở ca!");
+            ShiftObject  shiftObject = new ShiftObject();
+            shiftObject.setShiftId(shift.getId());
+            shiftObject.setObjectId(order.get().getId());
+            shiftObject.setMoney(order.get().getTotal());
+            shiftObject.setStatus(1);
+            shiftObject.setCreatedOn(CommonCode.getTimestamp());
+            shiftObject.setModifiedOn(0);
+            shiftObject.setType("order");
+            shiftObjectRepository.save(shiftObject);
         var orderNew = orderRepository.save(order.get());
         var tableOrder = tableOrderRepository.findByOrderId(order.get().getId());
         if(!tableOrder.isEmpty()){
@@ -377,7 +392,7 @@ public class OrderServiceImpl implements OrderService {
                 data.setStatus(CommonStatus.Status.DELETED);
                 data.setModifiedOn(CommonCode.getTimestamp());
                 var table = tableRepository.findById(data.getTable_id());
-                if(!table.isPresent()){
+                if(table.isPresent()){
                     table.get().setStatus(CommonStatus.Status.EMPTY);
                 try {
                     tableOrderRepository.save(data);
@@ -724,14 +739,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponse updateStatus(int id, int status) {
+    public OrderResponse updateStatus(int id, int status, int userId) {
         if (id == 0) throw new ErrorException("Không có id đơn hàng");
         var order = orderRepository.findById(id);
         if (!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
-        if ((order.get().getStatus() != CommonStatus.OrderStatus.DRAFT
-                && order.get().getStatus() != CommonStatus.PaymentStatus.PAID) && status == CommonStatus.OrderStatus.DELETED) {
-            throw new ErrorException("Đơn hàng không được hủy!");
-        }
+//        if ((order.get().getStatus() != CommonStatus.OrderStatus.DRAFT
+//                && order.get().getStatus() != CommonStatus.PaymentStatus.PAID) && status == CommonStatus.OrderStatus.DELETED) {
+//            throw new ErrorException("Đơn hàng không được hủy!");
+//        }
         if (status == CommonStatus.OrderStatus.COMPLETED && order.get().getStatus() == CommonStatus.OrderStatus.DELETED) {
             throw new ErrorException("Đơn hàng đã hủy không thể hoàn thành!");
         }
@@ -740,6 +755,16 @@ public class OrderServiceImpl implements OrderService {
         }
         if (order.get().getStatus() == CommonStatus.OrderStatus.COMPLETED) {
             throw new ErrorException("Đơn hàng đã hoàn thành không thể thực hiện hành động này!");
+        }
+        var shift = shiftRepository.findShiftByUserId(userId);
+        if(shift== null) throw new ErrorException("Chưa mở ca!");
+        if(status == CommonStatus.OrderStatus.DELETED) {
+            var shiftObject = shiftObjectRepository.findShiftByObject(id);
+            if (shiftObject != null) {
+                shiftObject.setStatus(2);
+                shiftObject.setModifiedOn(CommonCode.getTimestamp());
+                shiftObjectRepository.save(shiftObject);
+            }
         }
         order.get().setStatus(status);
         order.get().setModifiedOn();

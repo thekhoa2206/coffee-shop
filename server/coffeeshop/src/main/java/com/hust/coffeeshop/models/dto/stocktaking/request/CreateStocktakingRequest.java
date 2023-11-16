@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class CreateStocktakingRequest {
+    private int user_id;
     private String name;
     private String type;
     private BigDecimal totalMoney;

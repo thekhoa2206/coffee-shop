@@ -101,12 +101,12 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
         }
         return total;
     };
-    // useEffect(() => {
-    //     set((prev) => ({
-    //         ...prev,
-    //         total: totalLineAmount() - (discountTotal || 0),
-    //     }));
-    // }, [totalLineAmount, discountTotal]);
+    useEffect(() => {
+        set((prev) => ({
+            ...prev,
+            total: totalLineAmount() - (discountTotal || 0),
+        }));
+    }, [totalLineAmount, discountTotal]);
     const initData = async () => {
         let res = await OrderService.getById(id);
         if (res.data) {

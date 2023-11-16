@@ -142,6 +142,15 @@ const useGenMenuData = () => {
     };
     return menu;
   };
+  const genShift = () => {
+    let menu: MenuItem = {
+      id: "shift",
+      icon: MenuOrderIcon,
+      title: "Ca làm việc",
+      path: "/admin/shift",
+    };
+    return menu;
+  };
 
   const genMenuData = () => {
     let listMenu: MenuItem[] = [];
@@ -153,6 +162,7 @@ const useGenMenuData = () => {
     if(hasPermission([RolePermissionGroup.USER], auth.user))  listMenu.push(genMenuUser());
     if(hasPermission([RolePermissionGroup.REPORT], auth.user)) listMenu.push(genMenuReport());
     if(hasPermission([RolePermissionGroup.REPORT], auth.user)) listMenu.push(genTable())
+    if(hasPermission([RolePermissionGroup.REPORT], auth.user)) listMenu.push(genShift())
     return listMenu;
   };
   const genSapoMenu = async () => {
