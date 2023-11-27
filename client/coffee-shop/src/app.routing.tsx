@@ -49,6 +49,8 @@ const ReportOrder = React.lazy(() => import("./page/Report/ReportOrder"));
 const Table = React.lazy(() => import("./page/Table"));
 const EditTable = React.lazy(() => import("./page/Table/editTable"));
 const Dashboard = React.lazy(() => import("./page/Dashboard"));
+
+const ChannelPos = React.lazy(() => import("./page/ChannelPos/ChannelPos"))
 export const LAYOUT_ROUTES: Route[] = [
   {
     path: "/",
@@ -417,5 +419,17 @@ let MAIN_ROUTES = (): Route[] => [
     },
     authorities: [RolePermissionGroup.REPORT],
   },
+  {
+    path: "/pos",
+    component: ChannelPos,
+    extract: true,
+    header: {
+      title: "Bán hàng",
+      linkTo: "/admin/pos",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [RolePermissionGroup.POS],
+  }
 ];
 export default MAIN_ROUTES;

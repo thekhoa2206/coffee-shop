@@ -22,24 +22,27 @@ public class TableController {
     }
 
     @GetMapping
-    public PagingListResponse<TableResponse> filter(TableFilterRequest filter){
+    public PagingListResponse<TableResponse> filter(TableFilterRequest filter) {
         return tableService.filter(filter);
     }
+
     @GetMapping("/{id}")
-    public TableResponse getbyId(@PathVariable("id") int id){
-        return tableService.getbyid( id);
+    public TableResponse getbyId(@PathVariable("id") int id) {
+        return tableService.getbyid(id);
     }
+
     @PostMapping
-    public TableResponse create(@RequestBody TableRequest request){
+    public TableResponse create(@RequestBody TableRequest request) {
         return tableService.create(request);
     }
+
     @PutMapping("/{id}")
-    public TableResponse update(@RequestBody TableRequest request, @PathVariable("id") int id){
+    public TableResponse update(@RequestBody TableRequest request, @PathVariable("id") int id) {
         return tableService.update(request, id);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") int id){
+    public void delete(@PathVariable("id") int id) {
         tableService.delete(id);
     }
 }

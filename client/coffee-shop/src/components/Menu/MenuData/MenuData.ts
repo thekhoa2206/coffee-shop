@@ -143,6 +143,15 @@ const useGenMenuData = () => {
     return menu;
   };
 
+  const genPos = () => {
+    let menu: MenuItem = {
+      id: "channel-pos",
+      icon: MenuOrderIcon,
+      title: "Bán hàng",
+      path: "/admin/pos",
+    };
+    return menu;
+  };
   const genMenuData = () => {
     let listMenu: MenuItem[] = [];
     listMenu.push(genMenuDashboard());
@@ -152,7 +161,8 @@ const useGenMenuData = () => {
     if(hasPermission([RolePermissionGroup.INVENTORY, RolePermissionGroup.INGRADIENT], auth.user))  listMenu.push(genMenuInventory());
     if(hasPermission([RolePermissionGroup.USER], auth.user))  listMenu.push(genMenuUser());
     if(hasPermission([RolePermissionGroup.REPORT], auth.user)) listMenu.push(genMenuReport());
-    if(hasPermission([RolePermissionGroup.REPORT], auth.user)) listMenu.push(genTable())
+    if(hasPermission([RolePermissionGroup.REPORT], auth.user)) listMenu.push(genTable());
+    if(hasPermission([RolePermissionGroup.POS], auth.user)) listMenu.push(genPos());
     return listMenu;
   };
   const genSapoMenu = async () => {
