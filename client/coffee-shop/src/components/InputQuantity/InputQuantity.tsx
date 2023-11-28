@@ -79,14 +79,14 @@ const InputQuantity = (props: InputQuantityProps) => {
 
   return (
     <Box className={clsx(classes.root, className)}>
-      {/* <IconButton
+      <IconButton
         disabled={disabled}
         classes={{ root: classes.iconButton }}
         className={clsx("icon-btn btn-subtract", autoHidden ? "auto-hidden" : "")}
         onClick={() => handleClickBtn("down")}
       >
         <RemoveCircleOutlinedIcon fontSize="small" />
-      </IconButton> */}
+      </IconButton>
       <NumberInputTextField
         inputComponent={SapoTextField}
         textFieldProps={{
@@ -105,7 +105,7 @@ const InputQuantity = (props: InputQuantityProps) => {
         max={max}
         style={style}
       />
-{/* 
+
       <IconButton
         disabled={disabled}
         classes={{ root: classes.iconButton }}
@@ -113,7 +113,7 @@ const InputQuantity = (props: InputQuantityProps) => {
         onClick={(e) => handleClickBtn("up")}
       >
         <AddCircleOutlinedIcon fontSize="small" />
-      </IconButton> */}
+      </IconButton>
     </Box>
   );
 };
