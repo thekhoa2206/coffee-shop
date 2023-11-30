@@ -28,7 +28,6 @@ export const Login = (props: LoginProps) => {
     setPassword(e.target.value);
   };
   const handleLogin = async (e:any) => {
-    debugger
     try {
       let res = await AccountService.login({
         username: username,
@@ -55,7 +54,6 @@ export const Login = (props: LoginProps) => {
   //     }
   // })
  const handleKeyPress = (event:any) => {
-  debugger
     if(event.key === 'Enter'){
       handleLogin(event);
     }

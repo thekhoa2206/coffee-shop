@@ -63,7 +63,6 @@ const ItemEdit = (props: ItemEditProps & PropsFromRedux) => {
         },
     });
     const handleUploadFile = () => {
-        debugger
         if (fileImport) {
             if (fileImport.length === 0) {
                 SnackbarUtils.error("File upload không được để trống!");
@@ -71,7 +70,6 @@ const ItemEdit = (props: ItemEditProps & PropsFromRedux) => {
             }
             const data = new FormData();
             fileImport?.map((item) => {
-                debugger
                 data.append("files", item);
 
             });

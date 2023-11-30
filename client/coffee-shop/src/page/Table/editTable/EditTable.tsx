@@ -171,7 +171,6 @@ const EditTable = (props: UserProps & PropsFromRedux) => {
       <Toast content="Id bàn không được để trống" error onDismiss={toggleModal} />
     }
     try {
-      debugger
       let res = await TableService.delete( request?.id);
       if (res.status ===200) {
         SnackbarUtils.success("Cập nhập thông tin bàn thành công");

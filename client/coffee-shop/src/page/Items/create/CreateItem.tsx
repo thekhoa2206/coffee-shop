@@ -184,7 +184,6 @@ const CreateItem = (props: CreateItemProps & PropsFromRedux) => {
         }
     }
     const handleCreateItem = async () => {
-        debugger
         handleUploadFile()
         variants.forEach((item) => {
             if (!item.name) {

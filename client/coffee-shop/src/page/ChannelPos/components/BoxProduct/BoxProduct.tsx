@@ -4,6 +4,7 @@ import Image from "components/Image";
 import InputQuantity from "components/InputQuantity";
 import NumberInputTextField from "components/NumberInput/NumberInputTextField";
 import { DataSource } from "components/Select/types";
+import { useOrderTableStore } from "page/ChannelPos/store";
 import React, { Fragment, useCallback, useEffect, useState } from "react";
 import Avatar from "react-avatar";
 import ProductService, { ProductFilterRequest, ProductResponse } from "services/ProductService";
@@ -13,6 +14,7 @@ export type BoxProductProps = {
 }
 
 export const BoxProduct = (props: BoxProductProps) => {
+    const { addLineItem, lineItems, updateLineItem, deleteLineItem } = useOrderTableStore();
     const [filter, setFilter] = useState<ProductFilterRequest>({
         page: 1,
         limit: 20,
@@ -66,12 +68,12 @@ export const BoxProduct = (props: BoxProductProps) => {
     useEffect(() => {
         initData();
     }, []);
-    console.log(data);
-
+    console.log(lineItems);
+    
     return (
         <Box style={{ flexWrap: "wrap", display: "flex", maxHeight: 1000 }}>
-            {data?.data && data.data.map((product) => (
-                <Box key={product.id} style={{ width: 120, height: 200, padding: 10, margin: "5px" }}>
+            {data?.data && data.data.map((product, index) => (
+                <Box key={index} style={{ width: 120, height: 200, padding: 10, margin: "5px" }}>
                     <Box style={{ width: 90, height: 90, margin: "auto" }}>
                         {product?.imageUrl ? (<Image src={product?.imageUrl || ""} style={{
                             width: "80px",
@@ -94,15 +96,31 @@ export const BoxProduct = (props: BoxProductProps) => {
                     </Box>
                     <Box style={{ height: 34 }}>
                         <InputQuantity
-                            onChange={() => { }}
-                            name={"quantity"}
-                            max={99999999}
+                            onChange={(value) => {
+                                var productId = product.combo ? product.id : product.variants[0].id;
+                                var oldItem = lineItems?.find((i) => i.productId === productId);
+                                if(value === 0){
+                                    deleteLineItem(productId);
+                                    return;
+                                }
+                                if(oldItem){
+                                    updateLineItem({
+                                        ...oldItem,
+                                        quantity: value,
+                                    }, productId)
+                                }else{
+                                    addLineItem(product);
+                                }
+                            }}
+                            name={`quantity ${product.name + index}`}
+                            max={product.available}
                             className="input-price"
                             autoHidden
                             styleInput={{
                                 textAlign: "center",
                             }}
-                            value={0}
+                            value={lineItems?.find((i) => i.productId === (product.combo ? product.id : product.variants[0].id))?.quantity ? 
+                                 lineItems?.find((i) => i.productId === (product.combo ? product.id : product.variants[0].id))?.quantity || 0 : 0}
                         />
                     </Box>
                     <Box style={{ height: 80 }}><Typography>{product.name}</Typography></Box>

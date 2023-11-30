@@ -293,7 +293,6 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
     );
 
     const updateSelection = (selected: string) => {
-        debugger
         let data = dataTable?.filter((x) => x.id === selected)
         const map = data?.reduce((t, v) => {
             const { ...rest } = v;
@@ -321,7 +320,6 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
     };
     const removeTag = useCallback(
         (tag: string) => () => {
-            debugger
             if (selectedOptions) {
                 let data = selectedOptions?.filter((x) => x.id !== tag)
                 setSelectedOptions(data);
