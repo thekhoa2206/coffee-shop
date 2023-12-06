@@ -2,6 +2,7 @@ import { toNumber } from "lodash";
 import { LineItemStore } from "page/Orders/list/Orders.types";
 import { OrderResponse } from "services/OrderService";
 import { ProductResponse } from "services/ProductService";
+import { TableResponse } from "services/TableService";
 import create, { SetState } from "zustand";
 export type OrderStore = {
     lineItems?: LineItemStore[] | null;
@@ -16,12 +17,12 @@ export type OrderStore = {
     discountTotal?: number | null;
     context?: "detail" | "create" | "edit";
     order?: OrderResponse;
-    table?:any[]|null
+    tables?:TableResponse[]|null
 }
 
 export const initOrderStore = {
     lineItems: null,
-    table:null,
+    tables:null,
 }
 export const useOrderTableStore = create<OrderStore>((set) => ({
     ...initOrderStore,

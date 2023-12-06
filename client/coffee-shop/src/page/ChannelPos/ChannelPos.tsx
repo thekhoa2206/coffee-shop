@@ -1,19 +1,21 @@
-import { AppState } from "store/store";
-import { ChannelPosProps } from "./ChannelPos.type";
-import { ConnectedProps, connect } from "react-redux";
-import styles from "./ChannelPos.styles";
-import { Box, ButtonGroup, IconButton, Menu, MenuItem, RootRef, Select, Typography, withStyles } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
-import Table from "../../images/table.png"
-import Image from "components/Image";
-import TableService, { TableFilterRequest, TableResponse } from "services/TableService";
-import { colorBlue, colorGreen, colorInk, colorRedWarning } from "theme/palette";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import Popover from "components/Popover";
-import Popper from "components/Popper/PopperBase";
-import { DialogCreateOrder } from "./components/DialogCreateOrder/DialogCreateOrder";
-import Checkbox from "components/Checkbox";
+import { Box, Typography, withStyles } from "@material-ui/core";
 import Button from "components/Button";
+import Checkbox from "components/Checkbox";
+import Image from "components/Image";
+import React, { useEffect, useState } from "react";
+import { ConnectedProps, connect } from "react-redux";
+import TableService, { TableFilterRequest, TableResponse } from "services/TableService";
+import { AppState } from "store/store";
+import { colorBlue, colorGreen, colorRedWarning } from "theme/palette";
+import Table from "../../images/table.png";
+import styles from "./ChannelPos.styles";
+import { ChannelPosProps } from "./ChannelPos.type";
+import { DialogCreateOrder } from "./components/DialogCreateOrder/DialogCreateOrder";
+import { useOrderTableStore } from "./store";
+import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
+import OrderService, { OrderItemRequest, OrderRequest } from "services/OrderService";
+import { getMessageError } from "utilities";
+import { useHistory } from "react-router-dom";
 const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     const [filter, setFilter] = useState<TableFilterRequest>({
         page: 1,
@@ -22,9 +24,10 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     const [openCreateOrder, setOpenCreateOrder] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [openButton, setOpenButton] = useState(false);
-    const [selected, setSelected] = useState<TableResponse[]>([]);
     const classes = props.classes;
-    const [tables, setTables] = useState<TableResponse[]>([]);
+    const [tableRes, setTableRes] = useState<TableResponse[]>([]);
+    const { tables, set, lineItems, code, order, note, discountTotal, total, reset } = useOrderTableStore(); 
+    const history = useHistory();
     useEffect(() => {
         initData();
     }, []);
@@ -32,7 +35,7 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     const initData = async () => {
         let res = await TableService.filter(filter);
         if (res.data) {
-            setTables(res.data?.data || []);
+            setTableRes(res.data?.data || []);
         }
     }
     const genStatus = (status: number) => {
@@ -73,23 +76,119 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
         return color;
     }
     const handleChangeSelected = (item: TableResponse) => {
-        var oldTable = selected.filter((t) => t.id === item.id);
+        var oldTable = tables?.find((t) => t.id === item.id);
         if (oldTable) {
-            setSelected(selected.filter((t) => t.id !== item.id))
+            set((prev) => ({
+                ...prev,
+                tables: tables?.filter((t) => t.id !== item.id)
+            }))
         } else {
-            setSelected([...selected, item])
+            set((prev) => ({
+                ...prev,
+                tables: [...tables || [], item]
+            }))
         }
     }
+    const totalLineAmount = () => {
+        let total = 0;
+        if (lineItems && lineItems.length > 0) {
+          lineItems.map((item) => {
+            total += item.lineAmount || 0;
+          });
+        }
+        return total;
+      };
+    useEffect(() => {
+        set((prev) => ({
+          ...prev,
+          total: totalLineAmount() - (discountTotal || 0),
+        }));
+      }, [totalLineAmount, discountTotal]);
+    const createOrder = async () => {
+        if (!lineItems || lineItems.length === 0) {
+          SnackbarUtils.error("Sản phẩm không được để trống");
+          return;
+        }
+        if (code && code.includes("DON")) {
+          SnackbarUtils.error("Mã đơn hàng không được có tiền tố DON");
+          return;
+        }
+        let orderLineItems: OrderItemRequest[] = [];
+        let error = null;
+        lineItems.forEach((i) => {
+          if (i.quantity > (i.available || 0)) {
+            error = "Số lượng có thể bán nhỏ hơn số lượng bán!";
+          }
+        });
+        if (error) {
+          SnackbarUtils.error(error);
+          return;
+        }
+        lineItems.map((item) => {
+          let lineItemRequest: OrderItemRequest = {
+            productId: item.productId,
+            combo: item.combo,
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price,
+          };
+          orderLineItems.push(lineItemRequest);
+        });
+        let tableId = tables?.map((x) => (
+          x.id))
+        let requestOrder: OrderRequest = {
+          customerId: 0,
+          note: note,
+          discountTotal: discountTotal || 0,
+          orderItemRequest: orderLineItems,
+          code: code,
+          total: total || 0,
+          tableIds: tableId
+        };
+        try {
+          let res = await OrderService.create(requestOrder);
+          if (res.data) {
+            SnackbarUtils.success("Tạo đơn hàng thành công!");
+            setOpenCreateOrder(false);
+            set((prev) => ({
+                ...prev,
+                tables: null,
+            }))
+            initData();
+            reset();
+          }
+        } catch (error) {
+          SnackbarUtils.error(getMessageError(error));
+        }
+      };
     return (
         <Box style={{width: "95%"}}>
             <Box style={{width: "95%", marginTop: 10}}>                
                 <Button variant="contained" color="primary" style={{float: "right"}}
-                onClick={() => {setOpenCreateOrder(true)}}
-                >Tạo đơn hàng
+                onClick={() => {
+                    if(!tables){
+                        SnackbarUtils.error("Phải chọn bàn để tạo đơn!");
+                        return;
+                    }
+                    if(tables?.find((i) => i.status === 1)){
+                        SnackbarUtils.error("Có bàn đang sử dụng!");
+                        return;
+                    }
+                    setOpenCreateOrder(true);
+                }}
+                >
+                    Tạo đơn hàng
+                </Button>
+                <Button variant="outlined" color="primary" style={{float: "right", marginRight: 10}}
+                onClick={() => {
+                   
+                }}
+                >
+                    Đánh dấu bàn trống
                 </Button>
             </Box>
             <Box style={{ width: "95%", margin: "auto", top: "20px", display: "flex", flexWrap: "wrap", marginTop: 20 }}>
-                {tables.map((item, index) => (
+                {tableRes.map((item, index) => (
                     <Box style={{ width: 120, textAlign: "center", cursor: "pointer", margin: 10 }} key={index}
                         onClick={(event: React.MouseEvent<HTMLElement>) => {
                             handleChangeSelected(item);
@@ -99,7 +198,7 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
                         aria-describedby={item.id}
                         id={item.id}
                     >
-                        <Checkbox />
+                        <Checkbox value={item.id} checked={!!tables?.find((i) => i.id === item.id)}/>
                         <Image src={Table} style={{ width: 100 }} />
                         <Box style={{ display: "flex", width: 100, margin: "auto" }}>
                             <Box style={{ width: 10, height: 10, background: genColor(item.status), marginTop: 5, borderRadius: 50 }}></Box>
@@ -109,7 +208,7 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
 
                     </Box>
                 ))}
-                <DialogCreateOrder tables={selected} open={openCreateOrder} onClose={() => { setOpenCreateOrder(false) }} />
+                <DialogCreateOrder createOrder={createOrder} tables={tables || []} open={openCreateOrder} onClose={() => { setOpenCreateOrder(false) }} />
             </Box>
         </Box>
     );

@@ -10,11 +10,11 @@ export type BoxTotalProps = {
 }
 
 export const BoxTotal = (props: BoxTotalProps) => {
-    const { lineItems, total, order } = useOrderTableStore();
+    const { lineItems, total, order, tables } = useOrderTableStore();
 
     const totalQuantity = () => {
         var total = 0;
-        if(lineItems && lineItems.length > 0){
+        if (lineItems && lineItems.length > 0) {
             lineItems.map((i) => (total += i.quantity));
         }
         return total;
@@ -22,8 +22,8 @@ export const BoxTotal = (props: BoxTotalProps) => {
 
     const totalPrice = () => {
         var total = 0;
-        if(lineItems && lineItems.length > 0){
-            lineItems.map((i) => (total += i.quantity*i.price));
+        if (lineItems && lineItems.length > 0) {
+            lineItems.map((i) => (total += i.quantity * i.price));
         }
         return total;
     }
@@ -32,12 +32,12 @@ export const BoxTotal = (props: BoxTotalProps) => {
             <Box style={{ padding: 10 }}>
                 <Typography style={{ fontWeight: 500 }}>Tổng sản phẩm</Typography>
                 <Box>
-                        <Table>
+                    <Table>
                         <TableHead>
                             <TableRow>
                                 <TableCell width="70%">Tên</TableCell>
                                 <TableCell>SL</TableCell>
-                                <TableCell  align="right">Giá</TableCell>
+                                <TableCell align="right">Giá</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -49,17 +49,32 @@ export const BoxTotal = (props: BoxTotalProps) => {
                                 </TableRow>
                             ))}
                             <TableRow>
-                                    <TableCell><Typography></Typography></TableCell>
-                                    <TableCell><Typography></Typography>{totalQuantity()}</TableCell>
-                                    <TableCell align="right"><Typography>{formatMoney(totalPrice())}</Typography></TableCell>
+                                <TableCell><Typography></Typography></TableCell>
+                                <TableCell><Typography></Typography>{totalQuantity()}</TableCell>
+                                <TableCell align="right"><Typography>{formatMoney(totalPrice())}</Typography></TableCell>
                             </TableRow>
-                         </TableBody>
-                        </Table>
-                   
+                        </TableBody>
+                    </Table>
+
                 </Box>
             </Box>
             <Box style={{ padding: 10 }}>
-                <Typography style={{ fontWeight: 500 }}>Tổng tiền</Typography>
+                <Grid xs={12} container>
+                    <Grid item xs={6}>
+                        <Typography style={{ fontWeight: 500 }}>Bàn số</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography style={{ float: "right" }}>{tables?.map((i) => i.name).join(", ")}</Typography>
+                    </Grid>
+                </Grid>
+                <Grid xs={12} container>
+                    <Grid item xs={6}>
+                        <Typography style={{ fontWeight: 500 }}>Tổng tiền</Typography>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography style={{ float: "right" }}>{formatMoney(totalPrice())}đ</Typography>
+                    </Grid>
+                </Grid>
             </Box>
         </Box>
     );

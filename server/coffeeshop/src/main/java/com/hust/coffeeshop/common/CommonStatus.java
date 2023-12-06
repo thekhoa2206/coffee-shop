@@ -69,4 +69,11 @@ public class CommonStatus {
         public final static int DELETED = 2;
         public final static int EMPTY =3;
     }
+
+    public class Table {
+        public final static int USING = 1;
+        public final static int INACTIVE = 2;
+        public final static int EMPTY = 3;
+        public final static int DELETED = 4;
+    }
 }

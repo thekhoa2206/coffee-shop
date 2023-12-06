@@ -22,10 +22,11 @@ export type DialogCreateOrderProps = {
     open: boolean;
     onClose: () => void;
     tables: TableResponse[];
+    createOrder: () => void;
 }
 
 export const DialogCreateOrder = (props: DialogCreateOrderProps) => {
-  const { open, onClose } = props;
+  const { open, onClose, createOrder } = props;
   const {
     addLineItem,
     updateLineItem,
@@ -108,62 +109,6 @@ export const DialogCreateOrder = (props: DialogCreateOrderProps) => {
   //   }));
   // }, [totalLineAmount, discountTotal]);
 
-  const createOrder = async () => {
-    if (!lineItems || lineItems.length === 0) {
-      SnackbarUtils.error("Sản phẩm không được để trống");
-      return;
-    }
-    if (!customer) {
-      SnackbarUtils.error("Thông tin khách hàng không được để trống");
-      return;
-    }
-    if (code && code.includes("DON")) {
-      SnackbarUtils.error("Mã đơn hàng không được có tiền tố DON");
-      return;
-    }
-    let orderLineItems: OrderItemRequest[] = [];
-    let error = null;
-    lineItems.forEach((i) => {
-      if (i.quantity > (i.available || 0)) {
-        error = "Số lượng có thể bán nhỏ hơn số lượng bán!";
-      }
-    });
-    if (error) {
-      SnackbarUtils.error(error);
-      return;
-    }
-    lineItems.map((item) => {
-      let lineItemRequest: OrderItemRequest = {
-        productId: item.productId,
-        combo: item.combo,
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-      };
-      orderLineItems.push(lineItemRequest);
-    });
-    let tableId = selectedOptions.map((x) => (
-      x.id))
-    let requestOrder: OrderRequest = {
-      customerId: customer.id || 0,
-      note: note,
-      discountTotal: discountTotal || 0,
-      orderItemRequest: orderLineItems,
-      code: code,
-      total: total || 0,
-      tableIds: tableId
-    };
-    try {
-      let res = await OrderService.create(requestOrder);
-      if (res.data) {
-        SnackbarUtils.success("Tạo đơn hàng thành công!");
-        history.push(`/admin/orders/${res.data.id}`);
-        reset();
-      }
-    } catch (error) {
-      SnackbarUtils.error(getMessageError(error));
-    }
-  };
 
 
   const [selectedOptions, setSelectedOptions] = useState<any[]>([]);
@@ -177,7 +122,7 @@ export const DialogCreateOrder = (props: DialogCreateOrderProps) => {
         open={open}
         onClose={onClose}
         title={"Tạo mới đơn hàng"}
-        onOk={() => {}}
+        onOk={() => {createOrder()}}
         textOk={"Lưu"}
         minWidthPaper="90%"
         textCancel={"Thoát"}

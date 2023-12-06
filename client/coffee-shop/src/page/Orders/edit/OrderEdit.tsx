@@ -101,12 +101,12 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
         }
         return total;
     };
-    // useEffect(() => {
-    //     set((prev) => ({
-    //         ...prev,
-    //         total: totalLineAmount() - (discountTotal || 0),
-    //     }));
-    // }, [totalLineAmount, discountTotal]);
+    useEffect(() => {
+        set((prev) => ({
+            ...prev,
+            total: totalLineAmount() - (discountTotal || 0),
+        }));
+    }, [totalLineAmount, discountTotal]);
     const initData = async () => {
         let res = await OrderService.getById(id);
         if (res.data) {
@@ -226,10 +226,7 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
             SnackbarUtils.error("Sản phẩm không được để trống");
             return;
         }
-        if (!customer) {
-            SnackbarUtils.error("Thông tin khách hàng không được để trống");
-            return;
-        }
+        
         let orderLineItems: OrderItemRequest[] = [];
         // let error = null;
         // lineItems.forEach((i) => {
@@ -255,7 +252,7 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
         let tableId = selectedOptions?.map((x) => (
             x.id))
         let requestOrder: OrderRequest = {
-            customerId: customer.id || 0,
+            customerId: 0,
             note: note,
             discountTotal: discountTotal || 0,
             orderItemRequest: orderLineItems,
@@ -590,7 +587,7 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
                                 </TextContainer>
                             </Box>
                         </Paper>
-                        <Paper className={classes.wrapperBoxInfo}>
+                        {/* <Paper className={classes.wrapperBoxInfo}>
                             <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                                 Thông tin khách hàng
                             </Typography>
@@ -714,7 +711,7 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
                                     )}
                                 </Grid>
                             </Box>
-                        </Paper>
+                        </Paper> */}
                         <Paper className={classes.wrapperBoxInfo}>
                             <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                                 Thông tin bổ sung

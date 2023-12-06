@@ -498,7 +498,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                 </Box>
                             </Box>
                         </Paper>
-                        <Paper className={classes.wrapperBoxInfo}>
+                        {/* <Paper className={classes.wrapperBoxInfo}>
                             <Box>
                                 <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                                     Thông tin khách hàng
@@ -543,7 +543,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                     </Grid>
                                 </Box>
                             </Box>
-                        </Paper>
+                        </Paper> */}
                         <Paper className={classes.wrapperBoxInfo}>
                             <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                                 Thông tin bổ sung

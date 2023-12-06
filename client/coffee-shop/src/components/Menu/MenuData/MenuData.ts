@@ -156,7 +156,7 @@ const useGenMenuData = () => {
     let listMenu: MenuItem[] = [];
     listMenu.push(genMenuDashboard());
     if(hasPermission([RolePermissionGroup.ORDER], auth.user))  listMenu.push(genMenuOrder());
-    if(hasPermission([RolePermissionGroup.CUSTOMER], auth.user))  listMenu.push(genMenuCustomer());
+    //if(hasPermission([RolePermissionGroup.CUSTOMER], auth.user))  listMenu.push(genMenuCustomer());
     if(hasPermission([RolePermissionGroup.PRODUCT], auth.user))  listMenu.push(genMenuProduct());
     if(hasPermission([RolePermissionGroup.INVENTORY, RolePermissionGroup.INGRADIENT], auth.user))  listMenu.push(genMenuInventory());
     if(hasPermission([RolePermissionGroup.USER], auth.user))  listMenu.push(genMenuUser());

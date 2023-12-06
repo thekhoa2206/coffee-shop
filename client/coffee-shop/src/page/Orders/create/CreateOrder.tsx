@@ -496,7 +496,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                 </TextContainer>
               </Box>
             </Paper>
-            <Paper className={classes.wrapperBoxInfo}>
+            {/* <Paper className={classes.wrapperBoxInfo}>
               <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                 Thông tin khách hàng
               </Typography>
@@ -618,7 +618,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                   )}
                 </Grid>
               </Box>
-            </Paper>
+            </Paper> */}
             <Paper className={classes.wrapperBoxInfo}>
               <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                 Thông tin bổ sung

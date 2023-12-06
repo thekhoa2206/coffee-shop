@@ -173,10 +173,10 @@ public class OrderServiceImpl implements OrderService {
     //Hàm mapper order => orderResponse để trả về
     private OrderResponse mapperOrderResponse(Order order) {
         val orderResponse = mapper.map(order, OrderResponse.class);
-        var customer = customerService.getById(order.getCustomerId());
-        if (customer != null) {
-            orderResponse.setCustomerResponse(customer);
-        }
+//        var customer = customerService.getById(order.getCustomerId());
+//        if (customer != null) {
+//            orderResponse.setCustomerResponse(customer);
+//        }
         var orderItems = orderItemRepository.findOrderItemByOrderId(order.getId());
         List<OrderItemResponse> orderItemResponses = new ArrayList<>();
         for (var orderItem : orderItems) {
@@ -217,8 +217,8 @@ public class OrderServiceImpl implements OrderService {
         if (request.getOrderItemRequest() == null || request.getOrderItemRequest().size() == 0)
             throw new ErrorException("Đơn hàng phải có ít nhất 1 sp");
 
-        if (request.getCustomerId() == 0)
-            throw new ErrorException("Khách hàng không được để trống");
+//        if (request.getCustomerId() == 0)
+//            throw new ErrorException("Khách hàng không được để trống");
         var lastId = orderRepository.getLastOrderId();
         if (request.getCode() == null)
             order.setCode("DON" + (lastId + 1));
@@ -390,10 +390,10 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         var orderResponse = mapperOrderResponse(orderNew);
-        var customer = customerService.getById(orderNew.getCustomerId());
-        if (customer != null) {
-            orderResponse.setCustomerResponse(customer);
-        }
+//        var customer = customerService.getById(orderNew.getCustomerId());
+//        if (customer != null) {
+//            orderResponse.setCustomerResponse(customer);
+//        }
         return orderResponse;
     }
 
@@ -743,6 +743,19 @@ public class OrderServiceImpl implements OrderService {
         }
         order.get().setStatus(status);
         order.get().setModifiedOn();
+        if(status == CommonStatus.OrderStatus.COMPLETED ){
+            var tableOrders = tableOrderRepository.findByOrderId(order.get().getId());
+            if(!tableOrders.isEmpty()) {
+                for (var tableOrder: tableOrders) {
+                    var table = tableRepository.findById(tableOrder.getTable_id());
+                    if(table.isPresent()){
+                        table.get().setStatus(CommonStatus.Table.EMPTY);
+                        tableRepository.save(table.get());
+                    }
+                    tableOrder.setStatus(CommonStatus.Table.EMPTY);
+                }
+            }
+        }
         orderRepository.save(order.get());
         var orderResponse = mapperOrderResponse(order.get());
         if(status ==CommonStatus.OrderStatus.DELETED){
@@ -778,14 +791,14 @@ public class OrderServiceImpl implements OrderService {
         model.setNote(order.getNote());
         model.setPaymentStatus(order.getPaymentStatus());
         model.setStatus(order.getStatus());
-        var customer = customerService.getById(order.getCustomerId());
-        if (customer != null) {
-            OrderPrintModel.CustomerPrintModel customerPrintModel = new OrderPrintModel.CustomerPrintModel();
-            customerPrintModel.setId(customer.getId());
-            customerPrintModel.setName(customer.getName());
-            customerPrintModel.setPhone(customer.getPhoneNumber());
-            model.setCustomer(customerPrintModel);
-        }
+//        var customer = customerService.getById(order.getCustomerId());
+//        if (customer != null) {
+//            OrderPrintModel.CustomerPrintModel customerPrintModel = new OrderPrintModel.CustomerPrintModel();
+//            customerPrintModel.setId(customer.getId());
+//            customerPrintModel.setName(customer.getName());
+//            customerPrintModel.setPhone(customer.getPhoneNumber());
+//            model.setCustomer(customerPrintModel);
+//        }
         var lineItems = orderItemRepository.findOrderItemByOrderId(order.getId());
         if (lineItems != null) {
             List<OrderPrintModel.OrderItemPrintModel> itemModels = new ArrayList<>();
