@@ -23,7 +23,7 @@ import { DataSource } from "components/Select/types";
 import TextField from "components/TextField";
 import TextareaAutosize from "components/TextField/TextareaAutosize/TextareaAutosize";
 import { DialogAddCustomer } from "page/Customer/DialogAddCustomer/DialogAddCustomer";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { ConnectedProps, connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { CustomerResponse } from "services/CustomerService";
@@ -39,7 +39,19 @@ import { useOrderStore } from "../store/store";
 import styles from "./CreateOrder.styles";
 import { TableLineItem } from "./components/TableLineItem";
 import Avatar from "react-avatar";
-export interface CreateOrderProps extends WithStyles<typeof styles> {}
+import {
+  Tag,
+  Listbox,
+  Combobox,
+  Icon,
+  TextContainer,
+  LegacyStack,
+  AutoSelection,
+} from '@shopify/polaris';
+import TableService, { TableFilterRequest, TableResponse } from "services/TableService";
+import { DataResult } from "components/SapoGrid/SapoGrid.type";
+import QueryUtils from "utilities/QueryUtils";
+export interface CreateOrderProps extends WithStyles<typeof styles> { }
 const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
   const { classes, authState } = props;
   const {
@@ -58,17 +70,50 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
   const [querySearchCustomer, setQuerySearchCustomer] = useState("");
   const [openDialogAddCustomer, setOpenDialogAddCustomer] = useState(false);
   const history = useHistory();
+  const [dataTable, setDataTbale] = useState<any[]>([]);
+  useEffect(() => {
+    const initFilter: TableFilterRequest = {
+      limit: undefined,
+      query: undefined,
+    };
+    initData(initFilter);
+  }, []);
+  const initData = async (filters: TableFilterRequest) => {
+    let res = await TableService.filter(filters);
+    if (res.data)
+      setDataTbale(
+        res.data.data?.map((table, index) => {
+          return {
+            stt: index + 1,
+            createdBy: table.createdBy,
+            createdOn: table.createdOn,
+            id: table.id,
+            modifiedBy: table.modifiedBy,
+            modifiedOn: table.modifiedOn,
+            name: table.name,
+            status: table.status,
+            orderId: table.orderId
+          };
+        }) || [],
 
+      );
+  };
+  const handleChangeTable = useCallback(
+    (customer: CustomerResponse | null) => {
+      set((prev) => ({ ...prev, customer: customer }));
+    },
+    []
+  );
   const handleChangeCustomer = useCallback(
     (customer: CustomerResponse | null) => {
       set((prev) => ({ ...prev, customer: customer }));
     },
     []
   );
-    useEffect(() => {
-      reset();
-      set((prev) => ({ ...prev, context: "create", code: null }));
-    }, [])
+  useEffect(() => {
+    reset();
+    set((prev) => ({ ...prev, context: "create", code: null }));
+  }, [])
   const totalLineAmount = () => {
     let total = 0;
     if (lineItems && lineItems.length > 0) {
@@ -119,6 +164,8 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
       };
       orderLineItems.push(lineItemRequest);
     });
+    let tableId = selectedOptions.map((x) => (
+      x.id))
     let requestOrder: OrderRequest = {
       customerId: customer.id || 0,
       note: note,
@@ -126,6 +173,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
       orderItemRequest: orderLineItems,
       code: code,
       total: total || 0,
+      tableIds: tableId
     };
     try {
       let res = await OrderService.create(requestOrder);
@@ -138,6 +186,67 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
       SnackbarUtils.error(getMessageError(error));
     }
   };
+
+
+  const [selectedOptions, setSelectedOptions] = useState<any[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  console.log("data", selectedOptions);
+  const updateText = useCallback(
+
+    (value: string) => {
+      setInputValue(value);
+
+      if (value === '') {
+        setDataTbale(dataTable);
+        return;
+      }
+      const filterRegex = new RegExp(value, 'i');
+      const resultOptions = dataTable.filter((option) =>
+        option.name.includes(value),
+      );
+      setDataTbale(resultOptions);
+    },
+    [dataTable],
+  );
+
+  const updateSelection = (selected: string) => {
+    let data = dataTable.filter((x) => x.id === selected)
+    const map = data.reduce((t, v) => {
+      const { ...rest } = v;
+      t = rest;
+      return t;
+    }, {});
+    let check = selectedOptions.filter((x) => x.id === selected)
+    if (check.length > 0) {
+      setSelectedOptions(selectedOptions.filter((option) => option.id !== selected))
+    } else {
+      setSelectedOptions([...selectedOptions, map]);
+    }
+    updateText('');
+  };
+
+  console.log("check", selectedOptions.map((x) => (
+    x.id)));
+
+  const removeTag = useCallback(
+    (tag: string) => () => {
+      const options = [...selectedOptions];
+      options.splice(options.indexOf(tag), 1);
+      setSelectedOptions(options);
+    },
+    [selectedOptions],
+  );
+
+
+
+
+  const checkSelected = (id: string) => {
+    let data = selectedOptions.filter((option) => option.id === id)
+    if (data.length > 0) {
+      return true;
+    }
+    else return false;
+  }
   return (
     <>
       <Box className={classes.container}>
@@ -217,7 +326,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                       <Box style={{ width: "10%" }}>
                         <Box style={{ marginLeft: 10 }}>
                           {option.imageUrl ? (
-                            <Image src={option.imageUrl}  style={{
+                            <Image src={option.imageUrl} style={{
                               width: "40px",
                               height: "40px",
                               borderRadius: "6px"
@@ -230,7 +339,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                                 background: "#E8EAEB",
                                 borderRadius: "6px",
                               }}
-                            > <Avatar size="40" color="#B1AFAF" round="6px"  name={option.name}  maxInitials={2} /></Box>
+                            > <Avatar size="40" color="#B1AFAF" round="6px" name={option.name} maxInitials={2} /></Box>
                           )}
                         </Box>
                       </Box>
@@ -337,6 +446,58 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
           <Grid item xs={4}>
             <Paper className={classes.wrapperBoxInfo}>
               <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
+                Thông tin bàn
+              </Typography>
+              <Box style={{ height: '100px', width: 320, marginLeft: 10 }}>
+                <Combobox
+                  allowMultiple
+                  activator={
+                    <Combobox.TextField
+                      onChange={updateText}
+                      label="Tìm kiếm thông tin bàn..."
+                      labelHidden
+                      value={inputValue}
+                      placeholder="Tìm kiếm thông tin bàn..."
+                      autoComplete="off"
+                    />
+                  }
+                >
+                  {dataTable ? (
+                    <Listbox
+                      autoSelection={AutoSelection.None}
+                      onSelect={updateSelection}
+                    >
+                      {dataTable.map((x) => {
+                        return (
+                          <Listbox.Option
+                            key={`${x.id}`}
+                            value={x.id}
+                            selected={checkSelected(x.id)}
+                            accessibilityLabel={x.id}
+                          >
+                            {x.name}
+                          </Listbox.Option>
+                        )
+                      })};
+                    </Listbox>
+                  ) : null}
+                </Combobox>
+                <TextContainer>
+                  <LegacyStack>
+                    {selectedOptions.map((x) => {
+                      return (
+                        <Tag key={x.id} onRemove={removeTag(x.id)}>
+                          {x.name}
+                        </Tag>
+                      )
+                    }
+                    )}
+                  </LegacyStack>
+                </TextContainer>
+              </Box>
+            </Paper>
+            {/* <Paper className={classes.wrapperBoxInfo}>
+              <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                 Thông tin khách hàng
               </Typography>
               <Box
@@ -417,7 +578,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                               totalItems: res.data.metadata?.total || 0,
                             };
                             return Promise.resolve(dataSource);
-                          } catch (error) {}
+                          } catch (error) { }
                         }}
                         onQueryChange={(filter) => {
                           let dataSourceFilter = {} as any;
@@ -457,7 +618,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                   )}
                 </Grid>
               </Box>
-            </Paper>
+            </Paper> */}
             <Paper className={classes.wrapperBoxInfo}>
               <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                 Thông tin bổ sung

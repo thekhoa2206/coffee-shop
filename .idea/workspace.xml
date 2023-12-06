@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2dc40858-6e12-4daf-a72e-57566b298554" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/server/coffeeshop/src/main/java/com/hust/coffeeshop/models/dto/item/response/ItemRepsone.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/coffeeshop/src/main/java/com/hust/coffeeshop/models/dto/item/response/ItemRepsone.java" afterDir="false" />
-    </list>
+    <list default="true" id="2dc40858-6e12-4daf-a72e-57566b298554" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,7 +41,11 @@
       <updated>1685612651413</updated>
       <workItem from="1685612659225" duration="78000" />
       <workItem from="1685612747225" duration="886000" />
+      <workItem from="1698642733750" duration="29000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>

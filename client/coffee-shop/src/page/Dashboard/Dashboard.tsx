@@ -25,7 +25,6 @@ var username = "";
   
     var socket = new SockJS('/ws');
         stompClient = stompClient.over(socket);
-        debugger;
         stompClient.connect({}, onConnected, onError);
     event.preventDefault();
   }

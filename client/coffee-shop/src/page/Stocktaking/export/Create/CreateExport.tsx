@@ -179,7 +179,6 @@ const CreateReceipt = (props: CreateReceiptProps & PropsFromRedux) => {
     return total;
   };
   const handleWarring = ( quantity: number,id?:number)=>{
-    debugger
     let ingredients=  ingredient?.filter((x)=>x.id===id);
     const data = ingredients?.reduce((t, v) => {
    const {...rest } = v;

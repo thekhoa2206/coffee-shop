@@ -134,6 +134,7 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                     phone: item.customerResponse?.phoneNumber,
                     total: item.total,
                     accountName: item.userResponse?.name,
+                    paymentStatus:item.paymentStatus,
                 }
             }) || [], total: res.data.metadata?.total || 0
         })
@@ -302,42 +303,7 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
                                         width={100}
                                         align="left"
                                     />
-                                    <GridColumn
-                                        field="phone"
-                                        title={getOrdersQuickFilterLabel(
-                                            OrdersQuickFilterOptions.PHONE
-                                        )}
-                                        width={100}
-                                        align="left"
-                                    >
-                                        {({ dataItem }: CellTemplateProps) => {
-                                            return (
-                                                <>
-                                                    <Typography>
-                                                        {dataItem?.phone}
-                                                    </Typography>
-                                                </>
-                                            );
-                                        }}
-                                    </GridColumn>
-                                    <GridColumn
-                                        field="name"
-                                        title={getOrdersQuickFilterLabel(
-                                            OrdersQuickFilterOptions.NAME
-                                        )}
-                                        width={100}
-                                        align="left"
-                                    >
-                                        {({ dataItem }: CellTemplateProps) => {
-                                            return (
-                                                <>
-                                                    <Typography>
-                                                        {dataItem?.name}
-                                                    </Typography>
-                                                </>
-                                            );
-                                        }}
-                                    </GridColumn>
+                                   
                                     <GridColumn
                                         field="createdOn"
                                         title={getOrdersQuickFilterLabel(

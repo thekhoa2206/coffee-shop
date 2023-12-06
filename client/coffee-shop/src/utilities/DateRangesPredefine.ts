@@ -31,7 +31,6 @@ export const convertPredefinedToDate = (type: string) => {
         endDate: moment().subtract(1, "days").subtract(1, "weeks").endOf("week").add(1, "days").toDate(),
       };
     case DateRangesPredefineType.THIS_MONTH:
-      debugger
       return { startDate: moment().startOf("month").toDate(), endDate: moment().toDate() };
     case DateRangesPredefineType.LAST_MONTH:
       return {

@@ -42,7 +42,6 @@ const ChatRoom = () => {
     }
 
     const onMessageReceived = (payload: any)=>{
-      debugger;
         var payloadData = JSON.parse(payload.body);
         switch(payloadData.status){
             case "JOIN":

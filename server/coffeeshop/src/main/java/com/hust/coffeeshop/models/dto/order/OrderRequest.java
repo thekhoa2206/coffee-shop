@@ -15,4 +15,5 @@ public class OrderRequest {
     private BigDecimal discountTotal;
     private List<OrderItemRequest> orderItemRequest;
     private BigDecimal total;
+    private List<Integer> tableIds;
 }

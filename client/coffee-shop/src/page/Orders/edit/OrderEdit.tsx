@@ -42,6 +42,16 @@ import { VariantFilterRequest } from "services/VariantService";
 import VariantService from "services/VariantService/VariantService";
 import { LineItemStore } from "../list/Orders.types";
 import Chip from "components/Chip/Chip.component";
+import {
+    Tag,
+    Listbox,
+    Combobox,
+    Icon,
+    TextContainer,
+    LegacyStack,
+    AutoSelection,
+} from '@shopify/polaris';
+import TableService, { TableFilterRequest } from "services/TableService";
 export interface OrderEditProps extends WithStyles<typeof styles> { }
 const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
     const { classes, authState } = props;
@@ -59,9 +69,11 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
         reset,
         order,
         context,
+        table
     } = useOrderStore();
     const [querySearchCustomer, setQuerySearchCustomer] = useState("");
     const [openDialogAddCustomer, setOpenDialogAddCustomer] = useState(false);
+    const [dataTable, setDataTbale] = useState<any[]>([]);
     const history = useHistory();
 
     const { id } = useParams<{ id: string }>();
@@ -174,21 +186,47 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
                     discountTotal: order.discountTotal,
                     total: order.total,
                     order: order,
+                    table: order.tableResponses
                 }))
+                setSelectedOptions(table)
             } catch (error) {
 
             }
         }
     }
+    useEffect(() => {
+        const initFilter: TableFilterRequest = {
+            limit: undefined,
+            query: undefined,
+        };
+        initDataTable(initFilter);
+    }, []);
+    const initDataTable = async (filters: TableFilterRequest) => {
+        let res = await TableService.filter(filters);
+        if (res.data)
+            setDataTbale(
+                res.data.data?.map((table, index) => {
+                    return {
+                        stt: index + 1,
+                        createdBy: table.createdBy,
+                        createdOn: table.createdOn,
+                        id: table.id,
+                        modifiedBy: table.modifiedBy,
+                        modifiedOn: table.modifiedOn,
+                        name: table.name,
+                        status: table.status,
+                        orderId: table.orderId
+                    };
+                }) || [],
+
+            );
+    };
     const updateOrder = async () => {
         if (!lineItems || lineItems.length === 0) {
-          SnackbarUtils.error("Sản phẩm không được để trống");
-          return;
+            SnackbarUtils.error("Sản phẩm không được để trống");
+            return;
         }
-        if (!customer) {
-          SnackbarUtils.error("Thông tin khách hàng không được để trống");
-          return;
-        }
+        
         let orderLineItems: OrderItemRequest[] = [];
         // let error = null;
         // lineItems.forEach((i) => {
@@ -201,35 +239,101 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
         //   return;
         // }
         lineItems.map((item) => {
-          let lineItemRequest: OrderItemRequest = {
-            id: item.id,
-            productId: item.productId,
-            combo: item.combo,
-            name: item.name,
-            quantity: item.quantity,
-            price: item.price,
-          };
-          orderLineItems.push(lineItemRequest);
+            let lineItemRequest: OrderItemRequest = {
+                id: item.id,
+                productId: item.productId,
+                combo: item.combo,
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+            };
+            orderLineItems.push(lineItemRequest);
         });
+        let tableId = selectedOptions?.map((x) => (
+            x.id))
         let requestOrder: OrderRequest = {
-          customerId: customer.id || 0,
-          note: note,
-          discountTotal: discountTotal || 0,
-          orderItemRequest: orderLineItems,
-          code: code,
-          total: total || 0,
+            customerId: 0,
+            note: note,
+            discountTotal: discountTotal || 0,
+            orderItemRequest: orderLineItems,
+            code: code,
+            total: total || 0,
+            tableIds: tableId
         };
         try {
-          let res = await OrderService.update(requestOrder, id);
-          if (res.data) {
-            SnackbarUtils.success("Lưu đơn hàng thành công!");
-            history.push(`/admin/orders/${res.data.id}`);
-          }
+            let res = await OrderService.update(requestOrder, id);
+            if (res.data) {
+                SnackbarUtils.success("Lưu đơn hàng thành công!");
+                history.push(`/admin/orders/${res.data.id}`);
+            }
         } catch (error) {
-          SnackbarUtils.error(getMessageError(error));
+            SnackbarUtils.error(getMessageError(error));
         }
-      };
+    };
+    const [selectedOptions, setSelectedOptions] = useState<any[] | undefined | null>([0]);
+    const [inputValue, setInputValue] = useState('');
 
+    const updateText = useCallback(
+        (value: string) => {
+            setInputValue(value);
+            if (value === '') {
+                setDataTbale(dataTable);
+                return;
+            }
+            const filterRegex = new RegExp(value, 'i');
+            const resultOptions = dataTable?.filter((option) =>
+                option.name.includes(value),
+            );
+            setDataTbale(resultOptions);
+        },
+        [dataTable],
+    );
+
+    const updateSelection = (selected: string) => {
+        let data = dataTable?.filter((x) => x.id === selected)
+        const map = data?.reduce((t, v) => {
+            const { ...rest } = v;
+            t = rest;
+            return t;
+        }, {});
+        let check = selectedOptions?.filter((x) => x.id === selected)
+        console.log(selectedOptions);
+
+        if (check) {
+            if (check.length > 0) {
+                setSelectedOptions(selectedOptions?.filter((option) => option.id !== selected))
+            }
+            else {
+                if (selectedOptions) {
+                    setSelectedOptions([...selectedOptions, map])
+                };
+            }
+        }
+        else {
+            setSelectedOptions(data);
+        }
+
+        updateText('');
+    };
+    const removeTag = useCallback(
+        (tag: string) => () => {
+            if (selectedOptions) {
+                let data = selectedOptions?.filter((x) => x.id !== tag)
+                setSelectedOptions(data);
+            }
+        },
+        [selectedOptions],
+    );
+    const checkSelected = (id: string) => {
+        let data = selectedOptions?.filter((option) => option.id === id)
+        if (data) {
+            if (data?.length > 0) {
+                return true;
+            }
+
+        }
+        else return false;
+    }
     return (
         <>
             <Box className={classes.container}>
@@ -427,12 +531,69 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
                     </Grid>
                     <Grid item xs={4}>
                         <Paper className={classes.wrapperBoxInfo}>
+                        <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
+                                Thông tin bàn
+                            </Typography>
+                            <Box style={{ height: '100px',width:320,marginLeft:10 }}>
+                                <Combobox
+                                    allowMultiple
+                                    activator={
+                                        <Combobox.TextField
+                                            onChange={updateText}
+                                            label="Tìm kiếm thông tin bàn..."
+                                            labelHidden
+                                            value={inputValue}
+                                            placeholder="Tìm kiếm thông tin bàn..."
+                                            autoComplete="true"
+                                            
+                                        />
+                                    }
+                                >
+                                    {dataTable ? (
+                                        <Box>
+                                            <Listbox
+                                                autoSelection={AutoSelection.None}
+                                                onSelect={updateSelection}
+                                            >
+                                                {dataTable.map((x) => {
+                                                    return (
+                                                        <Listbox.Option
+                                                            key={`${x.id}`}
+                                                            value={x.id}
+                                                            selected={checkSelected(x.id)}
+                                                            accessibilityLabel={x.id}
+                                                        >
+                                                            {x.name}
+                                                        </Listbox.Option>
+                                                    )
+                                                })};
+                                            </Listbox>
+                                        </Box>
+                                    ) : null}
+                                </Combobox>
+                                <TextContainer>
+                                    <LegacyStack>
+                                        {selectedOptions?.map((x) => {
+                                            return (
+                                                <Box style={{ marginTop: 20, marginLeft: 20 }}>
+                                                    <Tag key={x.id} onRemove={removeTag(x.id)}>
+                                                        {x.name}
+                                                    </Tag>
+                                                </Box>
+                                            )
+                                        }
+                                        )}
+                                    </LegacyStack>
+                                </TextContainer>
+                            </Box>
+                        </Paper>
+                        {/* <Paper className={classes.wrapperBoxInfo}>
                             <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                                 Thông tin khách hàng
                             </Typography>
                             <Box
                                 className={classes.boxContentPaper}
-                                style={{ padding: "8px 16px", height: 170 }}
+                                style={{ padding: "8px 16px", height: 100 }}
                             >
                                 <Grid xs={12} style={{ padding: 0 }}>
                                     {customer ? (
@@ -550,7 +711,7 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
                                     )}
                                 </Grid>
                             </Box>
-                        </Paper>
+                        </Paper> */}
                         <Paper className={classes.wrapperBoxInfo}>
                             <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                                 Thông tin bổ sung

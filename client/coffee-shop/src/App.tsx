@@ -17,6 +17,7 @@ import { Login } from "page/Login/Login";
 import { login } from "store/Authenticate/authenticateSlice";
 import { getCookie } from "utilities";
 import { isNil } from "lodash";
+import ChannelPos from "page/ChannelPos/ChannelPos";
 const styles = {
   base: {
     "& span": {

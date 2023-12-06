@@ -2,6 +2,7 @@ package com.hust.coffeeshop.models.dto.order;
 
 import com.hust.coffeeshop.models.dto.BaseResponse;
 import com.hust.coffeeshop.models.dto.customer.CustomerResponse;
+import com.hust.coffeeshop.models.dto.table.TableResponse;
 import com.hust.coffeeshop.models.dto.user.UserResponse;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class OrderResponse extends BaseResponse {
     private UserResponse userResponse;
     private String note;
     private int paymentStatus;
+    private List<TableResponse> tableResponses;
 
     private List<OrderItemResponse> orderItemResponses;
 }

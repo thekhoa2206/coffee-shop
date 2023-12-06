@@ -63,7 +63,6 @@ export const DialogAddRole = (props: DialogAddRoleProps) => {
                   {RolePermissions.map((role, index) => (
                     <Box  key={index}>
                       <Checkbox checked={!!scopes.find((i) => i === role)} value={role} onChange={(e, checked) => {
-                        debugger
                         if(checked){
                           setScopes([...scopes, e.target.value])
                         }else {
