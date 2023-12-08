@@ -45,4 +45,9 @@ public class TableController {
     public void delete(@PathVariable("id") int id) {
         tableService.delete(id);
     }
+
+    @PutMapping("/{id}/update_status/{status}")
+    public void updateStatus(@PathVariable("id") String ids, @PathVariable("status") int status){
+        tableService.updateStatus(ids, status);
+    }
 }

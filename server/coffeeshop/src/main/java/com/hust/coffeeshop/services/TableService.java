@@ -11,4 +11,5 @@ public interface TableService {
     TableResponse update(TableRequest request, int id) ;
     void delete(int id) ;
     PagingListResponse<TableResponse> filter(TableFilterRequest filter);
+    void updateStatus(String ids, int status);
 }

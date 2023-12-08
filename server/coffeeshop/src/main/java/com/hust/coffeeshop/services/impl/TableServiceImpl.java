@@ -8,11 +8,13 @@ import com.hust.coffeeshop.models.dto.table.TableFilterRequest;
 import com.hust.coffeeshop.models.dto.table.TableRequest;
 import com.hust.coffeeshop.models.dto.table.TableResponse;
 import com.hust.coffeeshop.models.entity.Table;
+import com.hust.coffeeshop.models.exception.BaseException;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
 import com.hust.coffeeshop.services.TableService;
 import lombok.val;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -157,5 +159,23 @@ public class TableServiceImpl implements TableService {
         return new PagingListResponse<>(
                 tableResponses,
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results.getTotalElements()));
+    }
+    @Override
+    public void updateStatus(String ids, int status){
+        if(ids != null){
+            List<String> listIds = List.of(ids.split(","));
+            if(!listIds.isEmpty()){
+                for (var id:listIds) {
+                    var tableOrder = tableOrderRepository.findByOrderId(Integer.parseInt(id));
+
+                    if(status == CommonStatus.Table.EMPTY && !tableOrder.isEmpty()){
+                        throw new BaseException("Bàn có đơn hàng chưa thanh toán!");
+                    }
+                    var table = tableRepository.findById(Integer.parseInt(id));
+                    table.ifPresent(value -> value.setStatus(status));
+                    tableRepository.save(table.get());
+                }
+            }
+        }
     }
 }
