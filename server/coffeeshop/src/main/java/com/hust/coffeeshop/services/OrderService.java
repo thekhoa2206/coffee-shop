@@ -2,6 +2,7 @@ package com.hust.coffeeshop.services;
 
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.order.*;
+import com.hust.coffeeshop.models.entity.Order;
 import freemarker.template.TemplateException;
 
 import java.io.IOException;
@@ -23,4 +24,6 @@ public interface OrderService {
     OrderResponse updateStatus(int id, int status);
 
     OrderPrintForm getPrintForm(PrintOrderRequest printOrder) throws IOException, TemplateException;
+
+    OrderResponse mapperOrderResponse(Order order);
 }

@@ -14,6 +14,7 @@ import com.hust.coffeeshop.services.OrderService;
 import com.hust.coffeeshop.services.ProductService;
 import freemarker.template.TemplateException;
 import lombok.val;
+import org.apache.logging.log4j.ThreadContext;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -171,7 +172,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     //Hàm mapper order => orderResponse để trả về
-    private OrderResponse mapperOrderResponse(Order order) {
+    public OrderResponse mapperOrderResponse(Order order) {
         val orderResponse = mapper.map(order, OrderResponse.class);
 //        var customer = customerService.getById(order.getCustomerId());
 //        if (customer != null) {
@@ -212,6 +213,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public OrderResponse create(OrderRequest request) {
+        var username = ThreadContext.get(TheadContextEnum.JWT_USER_NAME.name());
         Order order = new Order();
         InventoryLog inventoryLog = new InventoryLog();
         if (request.getOrderItemRequest() == null || request.getOrderItemRequest().size() == 0)
@@ -226,15 +228,15 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(CommonStatus.OrderStatus.DRAFT);
         order.setCreatedOn();
         order.setModifiedOn();
-        order.setCreatedBy("admin");
-        order.setModifiedBy("admin");
+        order.setCreatedBy(username);
+        order.setModifiedBy(username);
         order.setCustomerId(request.getCustomerId());
         order.setNote(request.getNote());
         order.setDiscountTotal(request.getDiscountTotal() != null ? request.getDiscountTotal() : BigDecimal.ZERO);
         order.setTotal(request.getTotal());
         order.setPaymentStatus(CommonStatus.PaymentStatus.UNPAID);
         order = orderRepository.save(order);
-        if(request.getTableIds().size()>0){
+        if(!request.getTableIds().isEmpty()){
             for(val tableId : request.getTableIds()){
                 TableOrder tableOrder = new TableOrder();
                 tableOrder.setOrder_Id(order.getId());
@@ -243,13 +245,22 @@ public class OrderServiceImpl implements OrderService {
                 tableOrder.setCreatedOn(CommonCode.getTimestamp());
                 tableOrder.setModifiedOn(0);
                 val table =  tableRepository.findById(tableId);
-                if (!table.isPresent() || table == null ||table.get().getStatus() ==1) throw new ErrorException("Không tìm thấy bàn trống!");
-                    table.get().setStatus(CommonStatus.Status.ACTIVE);
-                try {
-                     tableOrderRepository.save(tableOrder);
-                } catch (Exception e) {
-                    throw new ErrorException("Tạo đơn hàng vào bàn thất bại");
+                var tableOrders = tableOrderRepository.findByTableId(tableId);
+                if(!tableOrders.isEmpty()){
+                    var orderIds = tableOrders.stream().map(TableOrder::getOrder_Id).collect(Collectors.toList());
+                    var orders = orderRepository.getOrderByOrderIds(orderIds);
+                    if(!orders.isEmpty()) {
+                        var orderActive = orders.stream().filter(i -> i.getPaymentStatus() == CommonStatus.PaymentStatus.UNPAID && (i.getStatus() == CommonStatus.OrderStatus.DRAFT)).collect(Collectors.toList());
+                        if ((table.isEmpty() ||table.get().getStatus() ==1 ) && !orderActive.isEmpty()) throw new ErrorException("Bàn hiện tại đang có đơn hàng. Vui lòng sửa vào đơn hàng " + orderActive.get(0).getCode()+ " !") ;
+                        table.get().setStatus(CommonStatus.Status.ACTIVE);
+                        try {
+                            tableOrderRepository.save(tableOrder);
+                        } catch (Exception e) {
+                            throw new ErrorException("Tạo đơn hàng vào bàn thất bại");
+                        }
+                    }
                 }
+
             }
         }
         for (var item : request.getOrderItemRequest()) {
@@ -258,8 +269,8 @@ public class OrderServiceImpl implements OrderService {
             checkAvailable(item);
             lineItem.setCreatedOn();
             lineItem.setModifiedOn();
-            lineItem.setCreatedBy("admin");
-            lineItem.setModifiedBy("admin");
+            lineItem.setCreatedBy(username);
+            lineItem.setModifiedBy(username);
             lineItem.setStatus(CommonStatus.OrderItemStatus.ACTIVE);
             lineItem = orderItemRepository.save(lineItem);
             if(lineItem.isCombo()){
@@ -280,8 +291,8 @@ public class OrderServiceImpl implements OrderService {
                         orderItemCombo.setStatus(CommonStatus.Status.ACTIVE);
                         orderItemCombo.setCreatedOn();
                         orderItemCombo.setModifiedOn();
-                        orderItemCombo.setCreatedBy("admin");
-                        orderItemCombo.setModifiedBy("admin");
+                        orderItemCombo.setCreatedBy(username);
+                        orderItemCombo.setModifiedBy(username);
                         orderItemCombo.setVariantId(variant.getId());
                         orderItemCombo.setComboItemId(comboItem.getId());
                         orderItemComboRepository.save(orderItemCombo);

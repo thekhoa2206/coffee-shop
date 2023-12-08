@@ -5,22 +5,25 @@ import com.hust.coffeeshop.common.CommonStatus;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.order.OrderResponse;
 import com.hust.coffeeshop.models.dto.table.TableFilterRequest;
+import com.hust.coffeeshop.models.dto.table.TableOrderResponse;
 import com.hust.coffeeshop.models.dto.table.TableRequest;
 import com.hust.coffeeshop.models.dto.table.TableResponse;
 import com.hust.coffeeshop.models.entity.Table;
+import com.hust.coffeeshop.models.entity.TableOrder;
 import com.hust.coffeeshop.models.exception.BaseException;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
+import com.hust.coffeeshop.services.OrderService;
 import com.hust.coffeeshop.services.TableService;
 import lombok.val;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,19 +36,21 @@ public class TableServiceImpl implements TableService {
     private final FilterRepository filterRepository;
     private final TableOrderRepository tableOrderRepository;
     private final OrderRepository orderRepository;
+    private final OrderService orderService;
 
-    public TableServiceImpl(ModelMapper mapper, TableRepository tableRepository, FilterRepository filterRepository, TableOrderRepository tableOrderRepository, OrderRepository orderRepository) {
+    public TableServiceImpl(ModelMapper mapper, TableRepository tableRepository, FilterRepository filterRepository, TableOrderRepository tableOrderRepository, OrderRepository orderRepository, OrderService orderService) {
         this.mapper = mapper;
         this.tableRepository = tableRepository;
         this.filterRepository = filterRepository;
         this.tableOrderRepository = tableOrderRepository;
         this.orderRepository = orderRepository;
+        this.orderService = orderService;
     }
 
     @Override
     public TableResponse create(TableRequest request) {
-        if(request.getName() == null) throw  new ErrorException("Tên bàn không được để trống");
-        Table table = mapper.map(request,Table.class);
+        if (request.getName() == null) throw new ErrorException("Tên bàn không được để trống");
+        Table table = mapper.map(request, Table.class);
         table.setStatus(CommonStatus.Status.EMPTY);
         table.setCreatedOn(CommonCode.getTimestamp());
         table.setModifiedOn(0);
@@ -59,24 +64,26 @@ public class TableServiceImpl implements TableService {
         return tableResponse;
 
     }
+
     @Override
     public TableResponse getbyid(int id) {
         val table = tableRepository.findById(id);
-        if(!table.isPresent()) throw  new ErrorException("không tìm kiếm thấy bàn");
+        if (!table.isPresent()) throw new ErrorException("không tìm kiếm thấy bàn");
         TableResponse tableResponse = null;
         tableResponse = mapper.map(table.get(), TableResponse.class);
-        if(table.get().getStatus() ==1) {
+        if (table.get().getStatus() == 1) {
             val tableOrders = tableOrderRepository.findByTableId(id);
-                if(tableOrders == null) throw  new ErrorException("không tìm kiếm thấy đơn trên cùng bàn");
-                tableResponse.setOrderId(tableOrders.getOrder_Id());
-            }
+            if (tableOrders == null) throw new ErrorException("không tìm kiếm thấy đơn trên cùng bàn");
+            tableResponse.setOrderId(tableOrders.get(0).getOrder_Id());
+        }
         return tableResponse;
     }
+
     @Override
-    public TableResponse update(TableRequest request,int id) {
+    public TableResponse update(TableRequest request, int id) {
         val table = tableRepository.findById(id);
-        if(!table.isPresent()) throw  new ErrorException("không tìm kiếm thấy bàn");
-        if(request.getName() != null) table.get().setName(request.getName());
+        if (!table.isPresent()) throw new ErrorException("không tìm kiếm thấy bàn");
+        if (request.getName() != null) table.get().setName(request.getName());
         if (request.getStatus() != 0) table.get().setStatus(request.getStatus());
         table.get().setModifiedOn(CommonCode.getTimestamp());
         TableResponse tableResponse = null;
@@ -89,10 +96,11 @@ public class TableServiceImpl implements TableService {
         return tableResponse;
 
     }
+
     @Override
     public void delete(int id) {
         val table = tableRepository.findById(id);
-        if(!table.isPresent()) throw  new ErrorException("không tìm kiếm thấy bàn");
+        if (!table.isPresent()) throw new ErrorException("không tìm kiếm thấy bàn");
         table.get().setStatus(CommonStatus.Status.DELETED);
         table.get().setModifiedOn(CommonCode.getTimestamp());
 
@@ -103,6 +111,7 @@ public class TableServiceImpl implements TableService {
         }
 
     }
+
     @Override
     public PagingListResponse<TableResponse> filter(TableFilterRequest filter) {
         Pageable pageable = PageRequest.of(
@@ -146,13 +155,13 @@ public class TableServiceImpl implements TableService {
         for (val tables : results.getContent()
         ) {
             val tableResponse = mapper.map(tables, TableResponse.class);
-            if(tables.getStatus() ==1) {
+            if (tables.getStatus() == 1) {
                 val tableOrders = tableOrderRepository.findByTableId(tables.getId());
-                if(tableOrders == null) throw  new ErrorException("không tìm kiếm thấy đơn trên cùng bàn");
-                tableResponse.setOrderId(tableOrders.getOrder_Id());
+                if (tableOrders == null) throw new ErrorException("không tìm kiếm thấy đơn trên cùng bàn");
+                tableResponse.setOrderId(tableOrders.get(0).getOrder_Id());
             }
-            if(tableResponse.getStatus() !=2){
-            tableResponses.add(tableResponse);
+            if (tableResponse.getStatus() != 2) {
+                tableResponses.add(tableResponse);
             }
         }
 
@@ -160,22 +169,82 @@ public class TableServiceImpl implements TableService {
                 tableResponses,
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results.getTotalElements()));
     }
-    @Override
-    public void updateStatus(String ids, int status){
-        if(ids != null){
-            List<String> listIds = List.of(ids.split(","));
-            if(!listIds.isEmpty()){
-                for (var id:listIds) {
-                    var tableOrder = tableOrderRepository.findByOrderId(Integer.parseInt(id));
 
-                    if(status == CommonStatus.Table.EMPTY && !tableOrder.isEmpty()){
+    @Override
+    @Transactional
+    public void updateStatus(String ids, int status) {
+        if (ids != null) {
+            List<String> listIds = List.of(ids.split(","));
+            if (!listIds.isEmpty()) {
+                for (var id : listIds) {
+                    var tableOrders = tableOrderRepository.findByTableId(Integer.parseInt(id));
+
+                    if (status == CommonStatus.Table.EMPTY) {
+                        if (tableOrders != null) {
+                            for (var tableOrder : tableOrders) {
+                                var order = orderRepository.findById(tableOrder.getOrder_Id());
+                                if (order.get().getStatus() == CommonStatus.OrderStatus.DRAFT
+                                        || order.get().getStatus() == CommonStatus.OrderStatus.WAITING_DELIVERY
+                                        || order.get().getStatus() == CommonStatus.OrderStatus.IN_PROGRESS
+                                        || order.get().getPaymentStatus() == CommonStatus.PaymentStatus.UNPAID) {
+                                    throw new BaseException("Bàn có đơn hàng chưa thanh toán!");
+                                } else {
+                                    var table = tableRepository.findById(Integer.parseInt(id));
+                                    table.ifPresent(value -> value.setStatus(status));
+                                    tableRepository.save(table.get());
+                                    tableOrder.setStatus(CommonStatus.Table.EMPTY);
+                                    tableOrderRepository.save(tableOrder);
+                                    order.get().setStatus(CommonStatus.OrderStatus.COMPLETED);
+                                    orderRepository.save(order.get());
+                                }
+                            }
+
+                        } else {
+                            var table = tableRepository.findById(Integer.parseInt(id));
+                            table.ifPresent(value -> value.setStatus(status));
+                            tableRepository.save(table.get());
+                        }
+
+                    } else {
                         throw new BaseException("Bàn có đơn hàng chưa thanh toán!");
                     }
-                    var table = tableRepository.findById(Integer.parseInt(id));
-                    table.ifPresent(value -> value.setStatus(status));
-                    tableRepository.save(table.get());
                 }
             }
         }
+    }
+
+    @Override
+    public PagingListResponse<TableOrderResponse> getOrdersByTable(TableFilterRequest filter) {
+        var tableResponses = filter(filter);
+        List<TableOrderResponse> tableOrders = new ArrayList<>();
+        for (var table : tableResponses.getData()) {
+            var tableOrder = mapperTableOrdersResponse(table);
+            tableOrders.add(tableOrder);
+        }
+        return new PagingListResponse<>(
+                tableOrders,
+                new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), tableResponses.getMetadata().getTotal()));
+    }
+
+    private TableOrderResponse mapperTableOrdersResponse(TableResponse table) {
+        TableOrderResponse tableOrderResponse = new TableOrderResponse();
+        tableOrderResponse.setTable(table);
+        if (table != null) {
+            var tableOrders = tableOrderRepository.findByTableId(table.getId());
+            if(!tableOrders.isEmpty()){
+                var orderIds = tableOrders.stream().map(TableOrder::getOrder_Id).collect(Collectors.toList());
+                var orders = orderRepository.getOrderByOrderIds(orderIds);
+                if(!orders.isEmpty()){
+                    List<OrderResponse> orderResponses = new ArrayList<>();
+                    for (var order: orders) {
+                        var orderResponse = orderService.mapperOrderResponse(order);
+                        orderResponses.add(orderResponse);
+                    }
+                    tableOrderResponse.setOrders(orderResponses);
+                }
+            }
+            return tableOrderResponse;
+        }
+        return null;
     }
 }

@@ -18,7 +18,7 @@ class UsersService {
         return axios.put(`/table/${id}`,request, { ...getAxiosConfig()});
     }
     static async updateStatus(status?: number, ids?: string): Promise<AxiosResponse<TableResponse>> {
-        return axios.put(`/table/${ids}/update-status/${status}`,{}, { ...getAxiosConfig()});
+        return axios.put(`/table/${ids}/update_status/${status}`,{}, { ...getAxiosConfig()});
     }
 }
 export default UsersService;

@@ -1,6 +1,8 @@
 package com.hust.coffeeshop.configuration.jwt;
 
+import com.hust.coffeeshop.common.TheadContextEnum;
 import com.hust.coffeeshop.services.impl.UserDetailsServiceImpl;
+import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
             String jwt = getJwt(request); // lấy jwt từ request
             if (jwt != null && tokenProvider.validateJwtToken(jwt)) {
                 String username = tokenProvider.getUserNameFromJwtToken(jwt); // lấy username từ jwt
-
+                ThreadContext.put(TheadContextEnum.JWT_USER_NAME.name(), username);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

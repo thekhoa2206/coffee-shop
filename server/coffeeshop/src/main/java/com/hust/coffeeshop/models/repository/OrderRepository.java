@@ -26,4 +26,7 @@ public interface OrderRepository  extends JpaRepository<Order, Integer>, JpaSpec
 
     @Query(value = "SELECT * FROM orders group by customer_id;", nativeQuery = true)
     List<Order> getOrderByCustomer();
+
+    @Query(value = "SELECT * FROM orders where id in (?1) ", nativeQuery = true)
+    List<Order> getOrderByOrderIds(List<Integer> orderIds);
 }

@@ -163,6 +163,14 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     };
 
     const handleUpdateStatus = async () => {
+        if(tables?.length === 0) {
+            SnackbarUtils.error("Hãy chọn bàn để làm trống!");
+            return;
+        }
+        if(tables?.find((item) => item.status === 3) ){
+            SnackbarUtils.error("Vui lòng chọn bàn Đang sử dụng!");
+            return;
+        }
         try {
             let res = await TableService.updateStatus(3, tables?.map((i) => i.id).join(","));
             if (res.data) {
@@ -182,10 +190,10 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
                             SnackbarUtils.error("Phải chọn bàn để tạo đơn!");
                             return;
                         }
-                        if (tables?.find((i) => i.status === 1)) {
-                            SnackbarUtils.error("Có bàn đang sử dụng!");
-                            return;
-                        }
+                        // if (tables?.find((i) => i.status === 1)) {
+                        //     SnackbarUtils.error("Có bàn đang sử dụng!");
+                        //     return;
+                        // }
                         setOpenCreateOrder(true);
                     }}
                 >
