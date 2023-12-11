@@ -2,14 +2,16 @@ package com.hust.coffeeshop.controllers;
 
 
 import com.hust.coffeeshop.models.dto.PagingListResponse;
+import com.hust.coffeeshop.models.dto.order.OrderFilterRequest;
 import com.hust.coffeeshop.models.dto.stockunit.StockUnitFilterRequest;
 import com.hust.coffeeshop.models.dto.stockunit.StockUnitRequest;
 import com.hust.coffeeshop.models.dto.stockunit.StockUnitResponse;
-import com.hust.coffeeshop.models.dto.table.TableFilterRequest;
-import com.hust.coffeeshop.models.dto.table.TableRequest;
-import com.hust.coffeeshop.models.dto.table.TableResponse;
+import com.hust.coffeeshop.models.dto.table.*;
 import com.hust.coffeeshop.services.TableService;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/table")
@@ -44,5 +46,17 @@ public class TableController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id) {
         tableService.delete(id);
+    }
+
+    @PutMapping("/{id}/update_status/{status}")
+    public void updateStatus(@PathVariable("id") String ids, @PathVariable("status") int status){
+        tableService.updateStatus(ids, status);
+    }
+
+    //Api chuyển bàn
+    //Api lấy thông tin đơn hàng chưa hoàn thành của bàn
+    @GetMapping("/orders")
+    public PagingListResponse<OrderTableResponse> getOrdersByTable(OrderFilterRequest filter) throws ParseException {
+        return tableService.getOrdersAndTables(filter);
     }
 }

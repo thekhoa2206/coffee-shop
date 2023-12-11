@@ -46,8 +46,8 @@ const ReportInventoryDetail = React.lazy(
   () => import("./page/Report/ReportInventory/detail")
 );
 const ReportOrder = React.lazy(() => import("./page/Report/ReportOrder"));
-const Table = React.lazy(() => import("./page/Table"));
-const EditTable = React.lazy(() => import("./page/Table/editTable"));
+// const Table = React.lazy(() => import("./page/Table"));
+const Table = React.lazy(() => import("./page/Table/editTable"));
 const Dashboard = React.lazy(() => import("./page/Dashboard"));
 
 const ChannelPos = React.lazy(() => import("./page/ChannelPos/ChannelPos"))
@@ -407,18 +407,18 @@ let MAIN_ROUTES = (): Route[] => [
     },
     authorities: [RolePermissionGroup.REPORT],
   },
-  {
-    path: "/table/edit",
-    component: EditTable,
-    extract: true,
-    header: {
-      title: "Danh sách bàn",
-      linkTo: "/admin/table",
-      showNoti: false,
-      withSubtitle: false,
-    },
-    authorities: [RolePermissionGroup.REPORT],
-  },
+  // {
+  //   path: "/table/edit",
+  //   component: EditTable,
+  //   extract: true,
+  //   header: {
+  //     title: "Danh sách bàn",
+  //     linkTo: "/admin/table",
+  //     showNoti: false,
+  //     withSubtitle: false,
+  //   },
+  //   authorities: [RolePermissionGroup.REPORT],
+  // },
   {
     path: "/pos",
     component: ChannelPos,

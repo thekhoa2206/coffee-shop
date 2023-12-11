@@ -1,5 +1,6 @@
 import { CategoryResponse } from "services/CategoryService";
 import { IngredientResponse } from "services/IngredientsService";
+import { OrderResponse } from "services/OrderService";
 import { StockUnitResponse } from "services/StockUnitService";
 import { Metadata } from "services/types";
 
@@ -33,3 +34,21 @@ export type TableRequest = {
     status?: number;
     id?:string;
 }
+
+export type OrderTableResponse = {
+    order: OrderResponse;
+    tables: TableResponse[];
+}
+
+export type ListTableOrderResponse = {
+    data?: OrderTableResponse[];
+    metadata?: Metadata;
+}
+export interface OrderResponseV2 extends OrderResponse {
+    isShow?: boolean;
+}
+export type TableOrderResponses = {
+    data?: OrderResponseV2[];
+    metadata?: Metadata;
+}
+

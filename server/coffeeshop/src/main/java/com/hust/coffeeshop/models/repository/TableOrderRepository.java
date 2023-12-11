@@ -12,7 +12,8 @@ import java.util.List;
 @Repository
 public interface TableOrderRepository extends JpaRepository<TableOrder, Integer>, JpaSpecificationExecutor<TableOrder> {
     @Query(value = "SELECT * FROM table_order WHERE table_id = ?1 AND status = 1", nativeQuery = true)
-    TableOrder findByTableId(int tableId);
+    List<TableOrder> findByTableId(int tableId);
     @Query(value = "SELECT * FROM table_order WHERE order_id = ?1 AND status = 1", nativeQuery = true)
     List<TableOrder> findByOrderId(int tableId);
+
 }
