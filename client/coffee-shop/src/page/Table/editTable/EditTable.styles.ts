@@ -30,7 +30,6 @@ const styles = (theme: Theme) =>
     listBox: {
       backgroundColor: "white",
       boxShadow: "0px 2px 4px rgba(168, 168, 168, 0.25)",
-      height: "100%",
     },
     header: {
       display: "flex",
@@ -41,8 +40,6 @@ const styles = (theme: Theme) =>
     headerItem: {
       display: "flex",
       alignItems: "center",
-      marginTop: "12px",
-      marginBottom: "12px",
     },
     utilities: {
       display: "flex",

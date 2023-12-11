@@ -10,4 +10,5 @@ export interface InputQuantityProps {
   autoHidden?: boolean;
   disabled?: boolean;
   styleInput?: React.CSSProperties;
+  isShow?: boolean;
 }

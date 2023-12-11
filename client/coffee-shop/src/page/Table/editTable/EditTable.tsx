@@ -36,7 +36,7 @@ import UsersService from "services/UsersService/UsersService";
 import styles from "./EditTable.styles";
 import { UserProps } from "./EditTable.types";
 import TableService, { TableFilterRequest, TableRequest } from "services/TableService";
-import { Button, Frame, Modal, TextContainer,Toast } from '@shopify/polaris';
+import { Button, Frame, Modal, TextContainer, Toast } from '@shopify/polaris';
 import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
 import {
   IndexTable,
@@ -56,7 +56,7 @@ const EditTable = (props: UserProps & PropsFromRedux) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [openDialogIngredient, setOpenDialogIngredient] =
     useState<boolean>(false);
-  const [table, setTable] = useState<TableRequest | undefined|null>();
+  const [table, setTable] = useState<TableRequest | undefined | null>();
   const [data, setData] = useState<DataResult>({
     data: [],
     total: 0,
@@ -125,7 +125,7 @@ const EditTable = (props: UserProps & PropsFromRedux) => {
     let request: TableRequest = {
       ...table
     }
-    if(request.name === null){
+    if (request.name === null) {
       <Toast content="Tên bàn không được để trống" error onDismiss={toggleModal} />
     }
     try {
@@ -135,7 +135,7 @@ const EditTable = (props: UserProps & PropsFromRedux) => {
         initData(filters);
         setActiveAdd(false);
         setTable(null);
-        
+
       }
     } catch (error) {
       SnackbarUtils.error(getMessageError(error));
@@ -146,7 +146,7 @@ const EditTable = (props: UserProps & PropsFromRedux) => {
     let request: TableRequest = {
       ...table
     }
-    if(request.id === null){
+    if (request.id === null) {
       <Toast content="Id bàn không được để trống" error onDismiss={toggleModal} />
     }
     try {
@@ -167,12 +167,12 @@ const EditTable = (props: UserProps & PropsFromRedux) => {
     let request: TableRequest = {
       ...table
     }
-    if(request.id === null){
+    if (request.id === null) {
       <Toast content="Id bàn không được để trống" error onDismiss={toggleModal} />
     }
     try {
-      let res = await TableService.delete( request?.id);
-      if (res.status ===200) {
+      let res = await TableService.delete(request?.id);
+      if (res.status === 200) {
         SnackbarUtils.success("Cập nhập thông tin bàn thành công");
         initData(filters);
         setTable(null);
@@ -198,47 +198,31 @@ const EditTable = (props: UserProps & PropsFromRedux) => {
     setActive(true);
     setTable({ ...table, name: x.name, id: x.id });
   }
-  const rowMarkup = data.data.map((x, index) => (
-    <IndexTable.Row
-      id={x.id}
-      key={x.id}
-      position={index}
-    >
-      <IndexTable.Cell    >
-        <Box onClick={() => test(x)}>
-          <Text variant="bodyMd" fontWeight="bold" as="span"   >
-            {x.name}
-          </Text>
-        </Box>
-      </IndexTable.Cell>
-      <IndexTable.Cell>{formatDateUTCToLocalDateString(
-        x.createdOn,
-        false,
-        "DD/MM/YYYY"
-      )}</IndexTable.Cell>
-      <IndexTable.Cell>{formatDateUTCToLocalDateString(
-        x.modifiedOn,
-        false,
-        "DD/MM/YYYY"
-      )}</IndexTable.Cell>
 
-    </IndexTable.Row>
-  ),
-  );
 
 
   // const activator = <Button onClick={toggleModal}>Open</Button>;
-
+  const handlePageChange = (e: GridPageChangeEvent) => {
+    setLoading(true)
+    const page = e.page;
+    const newParams: Record<string, any> = {
+      ...Object.fromEntries(queryParams),
+      page: page.page,
+      limit: page.pageSize,
+    };
+    setFilters((prev) => ({ ...prev, limit: page.pageSize, page: page.page }))
+    changeQueryString(newParams);
+  };
   return (
     <>
 
-      <Box className={classes.container} style={{ height: "100px" }}>
+      <Box className={classes.container}>
         <Box className={classes.header}>
           <Box className={classes.headerItem} display="flex">
             {""}
           </Box>
           <Box className={classes.headerItem}>
-            <Button variant="primary" tone="success" onClick={()=>setActiveAdd(true)}>Thêm bàn</Button>
+            <Button variant="primary" tone="success" onClick={() => setActiveAdd(true)}>Thêm bàn</Button>
           </Box>
         </Box>
         <Box className={classes.listBox}>
@@ -263,7 +247,65 @@ const EditTable = (props: UserProps & PropsFromRedux) => {
             <React.Fragment>
               {data.total > 0 ? (
                 <>
-                <IndexTable
+                  <SapoGrid
+                    data={data}
+                    page={filters?.page}
+                    pageSize={filters?.limit}
+                    onPageChange={handlePageChange}
+                    stickyHeader
+                    tableDrillDown
+                    stickyHeaderTop={52}
+                    onRowClick={(e, data) => { test(data)}}
+                    disablePaging={false}
+                  >
+                    <GridColumn
+                      field="name"
+                      title={"Tên bàn"}
+                      width={100}
+                      align="left"
+                    />
+                    <GridColumn
+                      field="createdOn"
+                      title={"Ngày tạo"}
+                      width={100}
+                      align="left"
+                    >
+                      {({ dataItem }: CellTemplateProps) => {
+                        return (
+                          <>
+                            <Typography>
+                              {formatDateUTCToLocalDateString(
+                                dataItem.createdOn,
+                                false,
+                                "DD/MM/YYYY"
+                              )}
+                            </Typography>
+                          </>
+                        );
+                      }}
+                    </GridColumn>
+                    <GridColumn
+                      field="stt"
+                      title={"Ngày sửa"}
+                      width={80}
+                      align="center"
+                      >
+                      {({ dataItem }: CellTemplateProps) => {
+                        return (
+                          <>
+                            <Typography>
+                              {formatDateUTCToLocalDateString(
+                                dataItem.modifiedOn,
+                                false,
+                                "DD/MM/YYYY"
+                              )}
+                            </Typography>
+                          </>
+                        );
+                      }}
+                    </GridColumn>
+                  </SapoGrid>
+                  {/* <IndexTable
                   itemCount={data.data.length}
                   headings={[
                     { title: 'Tên bàn' },
@@ -274,7 +316,7 @@ const EditTable = (props: UserProps & PropsFromRedux) => {
     
                 >
                   {rowMarkup}
-                </IndexTable>
+                </IndexTable> */}
 
                 </>
               ) : (
@@ -303,7 +345,7 @@ const EditTable = (props: UserProps & PropsFromRedux) => {
                 content: 'Chỉnh sửa',
                 onAction: editData,
               },
-          
+
             ]}
           >
             <Modal.Section>
@@ -322,19 +364,14 @@ const EditTable = (props: UserProps & PropsFromRedux) => {
             open={activeAdd}
             onClose={toggleModalAdd}
             title="Tạo mới bàn"
-            primaryAction={{
-              destructive: true,
-              content: 'Xoá',
-              onAction: delteData,
-            }}
             secondaryActions={[
               {
                 content: 'Tạo bàn',
                 onAction: addData,
               },
-             
+
             ]}
-           
+
           >
             <Modal.Section>
               <TextField

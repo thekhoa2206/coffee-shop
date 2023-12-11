@@ -16,12 +16,14 @@ import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 import OrderService, { OrderItemRequest, OrderRequest } from "services/OrderService";
 import { getMessageError } from "utilities";
 import { useHistory } from "react-router-dom";
+import { BoxOrder } from "./components/BoxOrder/BoxOrder";
 const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     const [filter, setFilter] = useState<TableFilterRequest>({
         page: 1,
         limit: 20
     });
     const [openCreateOrder, setOpenCreateOrder] = useState<boolean>(false);
+    const [openOrders, setOpenOrders] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [openButton, setOpenButton] = useState(false);
     const classes = props.classes;
@@ -163,11 +165,11 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     };
 
     const handleUpdateStatus = async () => {
-        if(tables?.length === 0) {
+        if (tables?.length === 0) {
             SnackbarUtils.error("Hãy chọn bàn để làm trống!");
             return;
         }
-        if(tables?.find((item) => item.status === 3) ){
+        if (tables?.find((item) => item.status === 3)) {
             SnackbarUtils.error("Vui lòng chọn bàn Đang sử dụng!");
             return;
         }
@@ -206,6 +208,7 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
                 >
                     Đánh dấu bàn trống
                 </Button>
+                <Button variant="outlined" color="primary" style={{ float: "right", marginRight: 10 }} onClick={() => {setOpenOrders(true)}}>Đơn hàng đang phục vụ</Button>
             </Box>
             <Box style={{ width: "95%", margin: "auto", top: "20px", display: "flex", flexWrap: "wrap", marginTop: 20 }}>
                 {tableRes.map((item, index) => (
@@ -230,6 +233,8 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
                 ))}
                 <DialogCreateOrder createOrder={createOrder} tables={tables || []} open={openCreateOrder} onClose={() => { setOpenCreateOrder(false) }} />
             </Box>
+            <BoxOrder
+                open={openOrders} onClose={() => {setOpenOrders(false)}}  />
         </Box>
     );
 };

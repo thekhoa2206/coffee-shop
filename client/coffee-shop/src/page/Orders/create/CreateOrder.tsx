@@ -135,10 +135,10 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
       SnackbarUtils.error("Sản phẩm không được để trống");
       return;
     }
-    if (!customer) {
-      SnackbarUtils.error("Thông tin khách hàng không được để trống");
-      return;
-    }
+    // if (!customer) {
+    //   SnackbarUtils.error("Thông tin khách hàng không được để trống");
+    //   return;
+    // }
     if (code && code.includes("DON")) {
       SnackbarUtils.error("Mã đơn hàng không được có tiền tố DON");
       return;
@@ -167,7 +167,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
     let tableId = selectedOptions.map((x) => (
       x.id))
     let requestOrder: OrderRequest = {
-      customerId: customer.id || 0,
+      customerId: 0,
       note: note,
       discountTotal: discountTotal || 0,
       orderItemRequest: orderLineItems,
@@ -418,13 +418,14 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
                                 discountTotal: value,
                               }));
                             }}
+                            autoHidden
                             name={"discount"}
                             max={99999999}
-                            autoHidden
                             className="input-price"
                             styleInput={{
                               textAlign: "right",
                             }}
+
                           />
                         }
                         style={{ marginLeft: "180px" }}
@@ -655,7 +656,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
           marginTop: "16px",
         }}
       >
-        <Button variant="outlined" color="primary">
+        <Button variant="outlined" color="primary" onClick={() => {history.push("/admin/orders")}}>
           Hủy
         </Button>
         <Button

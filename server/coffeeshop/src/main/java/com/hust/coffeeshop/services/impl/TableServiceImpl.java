@@ -3,11 +3,9 @@ package com.hust.coffeeshop.services.impl;
 import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.common.CommonStatus;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
+import com.hust.coffeeshop.models.dto.order.OrderFilterRequest;
 import com.hust.coffeeshop.models.dto.order.OrderResponse;
-import com.hust.coffeeshop.models.dto.table.TableFilterRequest;
-import com.hust.coffeeshop.models.dto.table.TableOrderResponse;
-import com.hust.coffeeshop.models.dto.table.TableRequest;
-import com.hust.coffeeshop.models.dto.table.TableResponse;
+import com.hust.coffeeshop.models.dto.table.*;
 import com.hust.coffeeshop.models.entity.Table;
 import com.hust.coffeeshop.models.entity.TableOrder;
 import com.hust.coffeeshop.models.exception.BaseException;
@@ -24,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -211,6 +210,40 @@ public class TableServiceImpl implements TableService {
                 }
             }
         }
+    }
+    @Override
+    public PagingListResponse<OrderTableResponse> getOrdersAndTables(OrderFilterRequest filter) throws ParseException {
+        filter.setStatuses("1,2,5");
+        var orders = orderService.filter(filter);
+        List<OrderTableResponse> orderTables = new ArrayList<>();
+        for (var order : orders.getData()){
+            var orderTable = mapperOrderTablesResponse(order);
+            orderTables.add(orderTable);
+        }
+        return new PagingListResponse<>(
+                orderTables,
+                new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), orders.getMetadata().getTotal()));
+    }
+    private OrderTableResponse mapperOrderTablesResponse(OrderResponse order) {
+        OrderTableResponse tableOrderResponse = new OrderTableResponse();
+        tableOrderResponse.setOrder(order);
+        if (order != null) {
+            var tableOrders = tableOrderRepository.findByTableId(order.getId());
+            if(!tableOrders.isEmpty()){
+                var tableIds = tableOrders.stream().map(TableOrder::getTable_id).collect(Collectors.toList());
+                var orders = tableRepository.getTableByTableIds(tableIds);
+                if(!orders.isEmpty()){
+                    List<TableResponse> tables = new ArrayList<>();
+                    for (var table : orders) {
+                        var tableResponse = mapper.map(table, TableResponse.class);
+                        tables.add(tableResponse);
+                    }
+                    tableOrderResponse.setTables(tables);
+                }
+            }
+            return tableOrderResponse;
+        }
+        return null;
     }
 
     @Override

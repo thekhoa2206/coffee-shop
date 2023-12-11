@@ -119,6 +119,7 @@ export const BoxProduct = (props: BoxProductProps) => {
                             styleInput={{
                                 textAlign: "center",
                             }}
+                            isShow
                             value={lineItems?.find((i) => i.productId === (product.combo ? product.id : product.variants[0].id))?.quantity ? 
                                  lineItems?.find((i) => i.productId === (product.combo ? product.id : product.variants[0].id))?.quantity || 0 : 0}
                         />
