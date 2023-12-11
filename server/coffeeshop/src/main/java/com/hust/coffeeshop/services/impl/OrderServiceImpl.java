@@ -246,6 +246,8 @@ public class OrderServiceImpl implements OrderService {
                 tableOrder.setModifiedOn(0);
                 val table =  tableRepository.findById(tableId);
                 var tableOrders = tableOrderRepository.findByTableId(tableId);
+                table.get().setStatus(CommonStatus.Table.USING);
+                tableRepository.save(table.get());
                 if(!tableOrders.isEmpty()){
                     var orderIds = tableOrders.stream().map(TableOrder::getOrder_Id).collect(Collectors.toList());
                     var orders = orderRepository.getOrderByOrderIds(orderIds);

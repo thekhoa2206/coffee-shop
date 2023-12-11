@@ -157,7 +157,7 @@ public class TableServiceImpl implements TableService {
             if (tables.getStatus() == 1) {
                 val tableOrders = tableOrderRepository.findByTableId(tables.getId());
                 if (tableOrders == null) throw new ErrorException("không tìm kiếm thấy đơn trên cùng bàn");
-                tableResponse.setOrderId(tableOrders.get(0).getOrder_Id());
+                if(!tableOrders.isEmpty()) tableResponse.setOrderId(tableOrders.get(0).getOrder_Id());
             }
             if (tableResponse.getStatus() != 2) {
                 tableResponses.add(tableResponse);

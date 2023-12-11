@@ -108,15 +108,15 @@ public class DashboardServiceImpl implements DashboardService {
         var resultOk = orderService.filter(filter);
         if(resultOk.getMetadata().getTotal() != 0)
         {
-            List<Integer> customer = resultOk.getData().stream()
-                    .map(o -> o.getCustomerResponse().getId())
-                    .collect(Collectors.toList());
-            Set<Integer> countCustomers = new HashSet<>(customer);
-            customers = countCustomers.size();
-            val orderCounts = resultOk.getData().stream()
-                    .map(o -> o.getCustomerResponse().getId())
-                    .collect(Collectors.toList());
-            orderCount = orderCounts.size();
+//            List<Integer> customer = resultOk.getData().stream()
+//                    .map(o -> o.getCustomerResponse().getId())
+//                    .collect(Collectors.toList());
+//            Set<Integer> countCustomers = new HashSet<>(customer);
+//            customers = countCustomers.size();
+//            val orderCounts = resultOk.getData().stream()
+//                    .map(o -> o.getCustomerResponse().getId())
+//                    .collect(Collectors.toList());
+//            orderCount = orderCounts.size();
             BigDecimal  totalSales = resultOk.getData().stream()
                     .map(o->o.getTotal())
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
