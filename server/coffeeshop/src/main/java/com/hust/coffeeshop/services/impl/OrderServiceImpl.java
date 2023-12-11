@@ -255,14 +255,14 @@ public class OrderServiceImpl implements OrderService {
                         var orderActive = orders.stream().filter(i -> i.getPaymentStatus() == CommonStatus.PaymentStatus.UNPAID && (i.getStatus() == CommonStatus.OrderStatus.DRAFT)).collect(Collectors.toList());
                         if ((table.isEmpty() ||table.get().getStatus() ==1 ) && !orderActive.isEmpty()) throw new ErrorException("Bàn hiện tại đang có đơn hàng. Vui lòng sửa vào đơn hàng " + orderActive.get(0).getCode()+ " !") ;
                         table.get().setStatus(CommonStatus.Status.ACTIVE);
-                        try {
-                            tableOrderRepository.save(tableOrder);
-                        } catch (Exception e) {
-                            throw new ErrorException("Tạo đơn hàng vào bàn thất bại");
-                        }
+
                     }
                 }
-
+                try {
+                    tableOrderRepository.save(tableOrder);
+                } catch (Exception e) {
+                    throw new ErrorException("Tạo đơn hàng vào bàn thất bại");
+                }
             }
         }
         for (var item : request.getOrderItemRequest()) {

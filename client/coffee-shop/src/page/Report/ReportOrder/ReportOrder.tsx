@@ -21,7 +21,7 @@ const ReportOrder = (props: ReportOrderProps & PropsFromRedux) => {
             <ReportTopProduct />
           </Grid>
           <Grid xs={6} item>
-            <ReportTopCustomer />
+            {/* <ReportTopCustomer /> */}
           </Grid>
         </Grid>
       </Box>

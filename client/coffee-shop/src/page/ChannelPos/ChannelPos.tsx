@@ -139,7 +139,7 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
         let tableId = tables?.map((x) => (
             x.id))
         let requestOrder: OrderRequest = {
-            customerId: 0,
+            customerId: 1,
             note: note,
             discountTotal: discountTotal || 0,
             orderItemRequest: orderLineItems,
@@ -201,13 +201,13 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
                 >
                     Tạo đơn hàng
                 </Button>
-                <Button variant="outlined" color="primary" style={{ float: "right", marginRight: 10 }}
+                {/* <Button variant="outlined" color="primary" style={{ float: "right", marginRight: 10 }}
                     onClick={() => {
                         handleUpdateStatus();
                     }}
                 >
                     Đánh dấu bàn trống
-                </Button>
+                </Button> */}
                 <Button variant="outlined" color="primary" style={{ float: "right", marginRight: 10 }} onClick={() => {setOpenOrders(true)}}>Đơn hàng đang phục vụ</Button>
             </Box>
             <Box style={{ width: "95%", margin: "auto", top: "20px", display: "flex", flexWrap: "wrap", marginTop: 20 }}>

@@ -253,7 +253,7 @@ public class StocktakingServiceImpl implements StocktakingService {
                             if (ingredient.get() == null)
                                 throw new ErrorException("lỗi liên kết kho" + i.getIngredientId());
                             if (request.getStatus() == 2) {
-                                if (stocktaking.get().getType().equals("Phiếu nhập")) {
+                                if (stocktaking.get().getType().equals("import")) {
 
                                     ingredient.get().setQuantity(ingredient.get().getQuantity() + i.getQuantity());
                                     try {
@@ -275,7 +275,7 @@ public class StocktakingServiceImpl implements StocktakingService {
                                     }
 
                                 }
-                                if (stocktaking.get().getType().equals("Phiếu xuất")) {
+                                if (stocktaking.get().getType().equals("export")) {
                                     ingredient.get().setQuantity(ingredient.get().getQuantity() - i.getQuantity());
                                     try {
                                         val ingre=  ingredientRepository.save(ingredient.get());

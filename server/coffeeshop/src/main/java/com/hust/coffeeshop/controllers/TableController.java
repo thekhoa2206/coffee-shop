@@ -7,6 +7,7 @@ import com.hust.coffeeshop.models.dto.stockunit.StockUnitFilterRequest;
 import com.hust.coffeeshop.models.dto.stockunit.StockUnitRequest;
 import com.hust.coffeeshop.models.dto.stockunit.StockUnitResponse;
 import com.hust.coffeeshop.models.dto.table.*;
+import com.hust.coffeeshop.models.exception.BaseException;
 import com.hust.coffeeshop.services.TableService;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,6 +51,9 @@ public class TableController {
 
     @PutMapping("/{id}/update_status/{status}")
     public void updateStatus(@PathVariable("id") String ids, @PathVariable("status") int status){
+        if(ids.equals("undefined")){
+            throw new BaseException("Không có bàn!");
+        }
         tableService.updateStatus(ids, status);
     }
 

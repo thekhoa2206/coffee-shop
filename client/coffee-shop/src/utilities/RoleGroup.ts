@@ -21,8 +21,8 @@ export const RolePermissionGroup = {
         switch (name) {
             case RolePermissionGroup.ORDER:
                 return 'Quản lý đơn hàng';
-            case RolePermissionGroup.CUSTOMER:
-                return 'Quản lý khách hàng';
+            // case RolePermissionGroup.CUSTOMER:
+            //     return 'Quản lý khách hàng';
             case RolePermissionGroup.USER:
                 return 'Quản lý người dùng';
             case RolePermissionGroup.PRODUCT:
@@ -43,7 +43,7 @@ export const RolePermissionGroup = {
 
 export const RolePermissions = [
     RolePermissionGroup.ORDER, 
-    RolePermissionGroup.CUSTOMER, 
+    RolePermissionGroup.POS, 
     RolePermissionGroup.USER, 
     RolePermissionGroup.PRODUCT, 
     RolePermissionGroup.INGRADIENT, 
