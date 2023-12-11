@@ -127,6 +127,13 @@ export const BoxOrder = (props: BoxOrderProps) => {
             </DialogTitle>
             <DialogContent dividers={true} dividerBottom={true} className={classes.dialogContent}>
                 <Box padding={"10px"}>
+                    <Grid xs={12} container spacing={2}>
+                        <Grid item xs={1}>
+                        </Grid>
+                        <Grid item xs={3}><Typography style={{ fontWeight: 500 }}>Mã đơn hàng</Typography></Grid>
+                        <Grid item xs={4}><Typography style={{ fontWeight: 500 }}>Bàn</Typography></Grid>
+                        <Grid item xs={4}><Typography style={{ fontWeight: 500 }}>Trạng thái</Typography></Grid>
+                    </Grid>
                     {orders.data && orders.data?.map((item) => (
                         <Box key={item.id} onClick={() => { handleOpenDrillDown(item.id) }}>
                             <Grid xs={12} container spacing={2}>
@@ -151,15 +158,15 @@ export const BoxOrder = (props: BoxOrderProps) => {
                                             <TableBody>
                                                 {item.orderItemResponses && item.orderItemResponses.map((lineItem, index) => (
                                                     <TableRow>
-                                                        <TableCell><Typography  style={{fontSize: 12}}>{lineItem.name}</Typography></TableCell>
-                                                        <TableCell><Typography  style={{fontSize: 12}}>{lineItem.quantity}</Typography></TableCell>
-                                                        <TableCell align="right"><Typography  style={{fontSize: 12}}>{formatMoney(lineItem.price)}</Typography></TableCell>
+                                                        <TableCell><Typography style={{ fontSize: 12 }}>{lineItem.name}</Typography></TableCell>
+                                                        <TableCell><Typography style={{ fontSize: 12 }}>{lineItem.quantity}</Typography></TableCell>
+                                                        <TableCell align="right"><Typography style={{ fontSize: 12 }}>{formatMoney(lineItem.price)}</Typography></TableCell>
                                                     </TableRow>
                                                 ))}
                                                 <TableRow>
                                                     <TableCell><Typography></Typography></TableCell>
-                                                    <TableCell><Typography  style={{fontSize: 12}}>{item.orderItemResponses && totalQuantity(item.orderItemResponses)}</Typography></TableCell>
-                                                    <TableCell align="right"><Typography  style={{fontSize: 12}}>{item.orderItemResponses &&  formatMoney(totalPrice(item.orderItemResponses))}</Typography></TableCell>
+                                                    <TableCell><Typography style={{ fontSize: 12 }}>{item.orderItemResponses && totalQuantity(item.orderItemResponses)}</Typography></TableCell>
+                                                    <TableCell align="right"><Typography style={{ fontSize: 12 }}>{item.orderItemResponses && formatMoney(totalPrice(item.orderItemResponses))}</Typography></TableCell>
                                                 </TableRow>
                                             </TableBody>
                                         </Table>
