@@ -167,7 +167,7 @@ const CreateOrder = (props: CreateOrderProps & PropsFromRedux) => {
     let tableId = selectedOptions.map((x) => (
       x.id))
     let requestOrder: OrderRequest = {
-      customerId: 0,
+      customerId: 1,
       note: note,
       discountTotal: discountTotal || 0,
       orderItemRequest: orderLineItems,

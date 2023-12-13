@@ -171,6 +171,7 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
                         name: li.name,
                         variants: variants,
                         id: li.id,
+                        status: li.status,
                     }
                     set((prev) => ({
                         ...prev,
@@ -344,7 +345,7 @@ const OrderEdit = (props: OrderEditProps & PropsFromRedux) => {
                                 Thông tin sản phẩm
                             </Typography>
                             <Box className={classes.boxContentPaper}>
-                                {order?.status === 1 && order?.paymentStatus === 1 &&
+                                {order?.paymentStatus !== 2 &&
                                     <SelectInfinite
                                         inputProps={{
                                             id: "buttonF3",

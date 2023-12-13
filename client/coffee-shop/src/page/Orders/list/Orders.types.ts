@@ -36,4 +36,5 @@ export interface LineItemStore {
    available: number;
    isShow?: boolean;
    itemCombos?: OrderItemComboResponse[];
+   status?: number;
 }

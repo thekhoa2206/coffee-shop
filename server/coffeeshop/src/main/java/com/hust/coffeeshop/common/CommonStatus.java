@@ -60,8 +60,14 @@ public class CommonStatus {
         public final static int PAID = 2;
     }
     public class OrderItemStatus {
-        public final static int ACTIVE = 1;
-        public final static int DELETED = 2;
+        public final static int DELETED = 4;
+        public final static int DRAFT = 1;
+        // Trạng thái đang pha chế
+        public final static int IN_PROGRESS = 5;
+        //Trạng thái đang chờ lấy đồ
+        public final static int WAITING_DELIVERY = 2;
+        //Trạng thái đã giao
+        public final static int COMPLETED = 3;
     }
 
     public class Status {

@@ -10,9 +10,11 @@ import {
 } from "@material-ui/core";
 import BoxNoDataComponent from "components/BoxNoData/BoxNoData.component";
 import Button from "components/Button";
+import Chip from "components/Chip";
 import InputQuantity from "components/InputQuantity/InputQuantity";
 import CloseSmallIcon from "components/SVG/CloseSmallIcon";
 import { useOrderStore } from "page/Orders/store/store";
+import { OrderStatus } from "page/Orders/utils/OrderContants";
 import React, { Fragment } from "react";
 import {
   formatMoney
@@ -21,7 +23,22 @@ export type TableLineItemProps = {};
 export const TableLineItem = (props: TableLineItemProps) => {
   const { } = props;
   const { lineItems, updateLineItem, deleteLineItem, context, order } = useOrderStore();
-  
+  const renderOrderStatus = (status?: number) => {
+    switch (status) {
+        case OrderStatus.DRAFT:
+            return <Chip className="default" variant="outlined" size="small" label={OrderStatus.getName(status)} />;
+        case OrderStatus.IN_PROGRESS:
+            return <Chip className="info" variant="outlined" size="small" label={OrderStatus.getName(status)} />;
+        case OrderStatus.WAITING_DELIVERY:
+            return <Chip className="warning" variant="outlined" size="small" label={OrderStatus.getName(status)} />;
+        case OrderStatus.COMPLETED:
+            return <Chip className="success" variant="outlined" size="small" label={OrderStatus.getName(status)} />;
+        case OrderStatus.DELETED:
+            return <Chip className="danger" variant="outlined" size="small" label={OrderStatus.getName(status)} />;
+        default:
+            return "";
+    }
+};
   return (
     <Fragment>
       <Table stickyHeader>
@@ -31,6 +48,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
           <TableCell>Số lượng</TableCell>
           <TableCell>Giá tiền</TableCell>
           <TableCell>Thành tiền</TableCell>
+          <TableCell>Trạng thái</TableCell>
           {(context !== "detail" && order && order?.paymentStatus === 1 && order?.status === 1) || (context === "create") && (<TableCell></TableCell>)}
         </TableHead>
         {lineItems &&
@@ -71,6 +89,7 @@ export const TableLineItem = (props: TableLineItemProps) => {
                   />) : (<Typography>{formatMoney(item.price || 0)}</Typography>)}
                 </TableCell>
                 <TableCell>{formatMoney(item.lineAmount || 0)}</TableCell>
+                <TableCell>{renderOrderStatus(item.status)}</TableCell>
                 {(context !== "detail" && order && order?.status === 1 && order?.paymentStatus === 1) || (context === "create") && (
                   <TableCell>
                     <IconButton

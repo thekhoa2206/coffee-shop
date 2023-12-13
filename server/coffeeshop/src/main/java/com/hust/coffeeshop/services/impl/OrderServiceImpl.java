@@ -140,7 +140,7 @@ public class OrderServiceImpl implements OrderService {
             Filter modifiedOn = Filter.builder()
                     .field("modifiedOn")
                     .operator(QueryOperator.GREATER_THAN)
-                    .value(String.valueOf((CommonCode.getMilliSeconds(filter.getModifiedOnMin(), "yyyy-MM-dd'T'HH:mm:ss'Z'")  + 25200000)))
+                    .value(String.valueOf((CommonCode.getMilliSeconds(filter.getModifiedOnMin(), "yyyy-MM-dd'T'HH:mm:ss'Z'") + 25200000)))
                     .build();
             filters.add(modifiedOn);
         }
@@ -148,7 +148,7 @@ public class OrderServiceImpl implements OrderService {
             Filter modifiedOn = Filter.builder()
                     .field("modifiedOn")
                     .operator(QueryOperator.LESS_THAN)
-                    .value(String.valueOf((CommonCode.getMilliSeconds(filter.getModifiedOnMax(), "yyyy-MM-dd'T'HH:mm:ss'Z'")+ 25200000)))
+                    .value(String.valueOf((CommonCode.getMilliSeconds(filter.getModifiedOnMax(), "yyyy-MM-dd'T'HH:mm:ss'Z'") + 25200000)))
                     .build();
             filters.add(modifiedOn);
         }
@@ -195,9 +195,9 @@ public class OrderServiceImpl implements OrderService {
             }
             orderItemResponses.add(orderItemResponse);
         }
-        var tableOrder = tableOrderRepository.findByOrderId(order.getId());
+        var tableOrder = tableOrderRepository.findByAllStatusOrderId(order.getId());
         List<TableResponse> tableResponses = new ArrayList<>();
-        if(tableOrder != null && tableOrder.size()>0){
+        if (tableOrder != null && tableOrder.size() > 0) {
             for (val data : tableOrder) {
                 var talble = tableRepository.findById(data.getTable_id());
                 val tableResponse = mapper.map(talble.get(), TableResponse.class);
@@ -236,24 +236,25 @@ public class OrderServiceImpl implements OrderService {
         order.setTotal(request.getTotal());
         order.setPaymentStatus(CommonStatus.PaymentStatus.UNPAID);
         order = orderRepository.save(order);
-        if(!request.getTableIds().isEmpty()){
-            for(val tableId : request.getTableIds()){
+        if (!request.getTableIds().isEmpty()) {
+            for (val tableId : request.getTableIds()) {
                 TableOrder tableOrder = new TableOrder();
                 tableOrder.setOrder_Id(order.getId());
                 tableOrder.setTable_id(tableId);
                 tableOrder.setStatus(CommonStatus.Status.ACTIVE);
                 tableOrder.setCreatedOn(CommonCode.getTimestamp());
                 tableOrder.setModifiedOn(0);
-                val table =  tableRepository.findById(tableId);
+                val table = tableRepository.findById(tableId);
                 var tableOrders = tableOrderRepository.findByTableId(tableId);
                 table.get().setStatus(CommonStatus.Table.USING);
                 tableRepository.save(table.get());
-                if(!tableOrders.isEmpty()){
+                if (!tableOrders.isEmpty()) {
                     var orderIds = tableOrders.stream().map(TableOrder::getOrder_Id).collect(Collectors.toList());
                     var orders = orderRepository.getOrderByOrderIds(orderIds);
-                    if(!orders.isEmpty()) {
+                    if (!orders.isEmpty()) {
                         var orderActive = orders.stream().filter(i -> i.getPaymentStatus() == CommonStatus.PaymentStatus.UNPAID && (i.getStatus() == CommonStatus.OrderStatus.DRAFT)).collect(Collectors.toList());
-                        if ((table.isEmpty() ||table.get().getStatus() ==1 ) && !orderActive.isEmpty()) throw new ErrorException("Bàn hiện tại đang có đơn hàng. Vui lòng sửa vào đơn hàng " + orderActive.get(0).getCode()+ " !") ;
+                        if ((table.isEmpty() || table.get().getStatus() == 1) && !orderActive.isEmpty())
+                            throw new ErrorException("Bàn hiện tại đang có đơn hàng. Vui lòng sửa vào đơn hàng " + orderActive.get(0).getCode() + " !");
                         table.get().setStatus(CommonStatus.Status.ACTIVE);
 
                     }
@@ -273,9 +274,9 @@ public class OrderServiceImpl implements OrderService {
             lineItem.setModifiedOn();
             lineItem.setCreatedBy(username);
             lineItem.setModifiedBy(username);
-            lineItem.setStatus(CommonStatus.OrderItemStatus.ACTIVE);
+            lineItem.setStatus(CommonStatus.OrderItemStatus.DRAFT);
             lineItem = orderItemRepository.save(lineItem);
-            if(lineItem.isCombo()){
+            if (lineItem.isCombo()) {
                 var combo = comboRepository.findById(lineItem.getProductId());
                 if (!combo.isPresent() || combo == null) throw new ErrorException("Không tìm thấy combo!");
                 var comboItems = comboItemRepository.findComboItemByComboId(combo.get().getId());
@@ -373,6 +374,7 @@ public class OrderServiceImpl implements OrderService {
 
     //Hàm Thanh toán cho đơn hàng
     @Override
+    @Transactional
     public OrderResponse addPayment(int id) {
         if (id == 0) throw new ErrorException("Không có id đơn hàng");
         var order = orderRepository.findById(id);
@@ -385,22 +387,21 @@ public class OrderServiceImpl implements OrderService {
         order.get().setModifiedOn();
         var orderNew = orderRepository.save(order.get());
         var tableOrder = tableOrderRepository.findByOrderId(order.get().getId());
-        if(!tableOrder.isEmpty()){
-            for(val data : tableOrder){
+        if (!tableOrder.isEmpty()) {
+            for (val data : tableOrder) {
                 data.setStatus(CommonStatus.Status.DELETED);
                 data.setModifiedOn(CommonCode.getTimestamp());
                 var table = tableRepository.findById(data.getTable_id());
-                if(!table.isPresent()){
+                if (table.isPresent()) {
                     table.get().setStatus(CommonStatus.Status.EMPTY);
-                try {
-                    tableOrderRepository.save(data);
-                    tableRepository.save(table.get());
-                } catch (Exception e)
-                {
-                    throw new ErrorException("thanh toán bàn thất bại ");
-                }
+                    try {
+                        tableRepository.save(table.get());
+                    } catch (Exception e) {
+                        throw new ErrorException("thanh toán bàn thất bại ");
+                    }
                 }
             }
+            tableOrderRepository.saveAll(tableOrder);
         }
         var orderResponse = mapperOrderResponse(orderNew);
 //        var customer = customerService.getById(orderNew.getCustomerId());
@@ -421,6 +422,7 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItemResponse> lineItems = new ArrayList<>();
         orderNew.setNote(request.getNote());
         orderNew.setModifiedOn();
+        orderNew.setStatus(CommonStatus.OrderStatus.DRAFT);
         if (orderNew.getStatus() == CommonStatus.OrderStatus.DRAFT) {
             orderNew.setTotal(request.getTotal());
             orderNew.setCode(request.getCode());
@@ -432,14 +434,14 @@ public class OrderServiceImpl implements OrderService {
         // tìm xem có bàn nào đang chứa đơn này không
         var tableOrder = tableOrderRepository.findByOrderId(order.get().getId());
         //check requets nếu không rỗng phần id bàn tiến hành cập nhập thông tin bàn
-        if(!request.getTableIds().isEmpty()){
+        if (!request.getTableIds().isEmpty()) {
             // nếu có bàn
-            if(!tableOrder.isEmpty()) {
-                for(val requestId: request.getTableIds() ) {
+            if (!tableOrder.isEmpty()) {
+                for (val requestId : request.getTableIds()) {
                     var tableIdOrderAdd = tableOrder.stream()
-                           .filter(o -> o.getTable_id() == requestId)
-                           .collect(Collectors.toList()).stream().findFirst().orElse(null);
-                    if(tableIdOrderAdd == null){
+                            .filter(o -> o.getTable_id() == requestId)
+                            .collect(Collectors.toList()).stream().findFirst().orElse(null);
+                    if (tableIdOrderAdd == null) {
                         TableOrder tableOrder1 = new TableOrder();
                         tableOrder1.setTable_id(requestId);
                         tableOrder1.setOrder_Id(order.get().getId());
@@ -451,32 +453,31 @@ public class OrderServiceImpl implements OrderService {
                             var table = tableRepository.findById(requestId);
                             table.get().setStatus(CommonStatus.Status.ACTIVE);
                             tableRepository.save(table.get());
-                        } catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             throw new ErrorException("thêm bàn thất bại ");
                         }
                     }
-                    for (val data : tableOrder){
+                    for (val data : tableOrder) {
                         var tableIds = request.getTableIds().stream()
-                            .filter(o -> o.equals(data.getTable_id())).collect(Collectors.toList()).stream().findFirst().orElse(null);
-                        if(tableIds ==null){
+                                .filter(o -> o.equals(data.getTable_id())).collect(Collectors.toList()).stream().findFirst().orElse(null);
+                        if (tableIds == null) {
                             data.setStatus(CommonStatus.Status.DELETED);
                             data.setModifiedOn(CommonCode.getTimestamp());
-                                try {
-                                    tableOrderRepository.save(data);
-                                    var table = tableRepository.findById(data.getTable_id());
-                                    table.get().setStatus(CommonStatus.Status.EMPTY);
-                                    tableRepository.save(table.get());
-                                } catch (Exception e) {
-                                    throw new ErrorException("xoá bàn thất bại ");
-                                }
+                            try {
+                                tableOrderRepository.save(data);
+                                var table = tableRepository.findById(data.getTable_id());
+                                table.get().setStatus(CommonStatus.Status.EMPTY);
+                                tableRepository.save(table.get());
+                            } catch (Exception e) {
+                                throw new ErrorException("xoá bàn thất bại ");
+                            }
                         }
                     }
                 }
             }
             // nếu không có bàn thực hiện add tất cả bàn vào đơn
             else {
-                for (val ids : request.getTableIds()){
+                for (val ids : request.getTableIds()) {
                     TableOrder tableOrder1 = new TableOrder();
                     tableOrder1.setTable_id(ids);
                     tableOrder1.setOrder_Id(order.get().getId());
@@ -496,7 +497,7 @@ public class OrderServiceImpl implements OrderService {
         }
         // nếu request truyền rông thực hiện xoá thông tin có trong đơn
         else {
-            for (val tableOrderDelete : tableOrder){
+            for (val tableOrderDelete : tableOrder) {
                 tableOrderDelete.setStatus(CommonStatus.Status.DELETED);
                 tableOrderDelete.setModifiedOn(CommonCode.getTimestamp());
                 try {
@@ -538,12 +539,14 @@ public class OrderServiceImpl implements OrderService {
                 item.setCreatedBy("admin");
                 item.setModifiedBy("admin");
                 item.setCreatedOn();
-                item.setStatus(CommonStatus.OrderItemStatus.ACTIVE);
+                item.setStatus(CommonStatus.OrderItemStatus.DRAFT);
                 checkInventoryUpdate(itemNew, TypeAction.ADD, null);
                 item = orderItemRepository.save(item);
-                var orderItemCombos = setOrderItemCombo(item, TypeAction.ADD);
                 OrderItemResponse itemResponse = mapper.map(item, OrderItemResponse.class);
-                itemResponse.setOrderItemComboResponses(orderItemCombos);
+                if(item.isCombo()){
+                    var orderItemCombos = setOrderItemCombo(item, TypeAction.ADD);
+                    itemResponse.setOrderItemComboResponses(orderItemCombos);
+                }
                 itemResponses.add(itemResponse);
 
             } else {
@@ -560,8 +563,10 @@ public class OrderServiceImpl implements OrderService {
                     itemOld.setModifiedOn();
                     OrderItemResponse itemResponse = mapper.map(itemOld, OrderItemResponse.class);
                     itemResponses.add(itemResponse);
-                    var orderItemCombos = setOrderItemCombo(itemOld, TypeAction.UPDATE);
-                    itemResponse.setOrderItemComboResponses(orderItemCombos);
+                    if(itemOld.isCombo()){
+                        var orderItemCombos = setOrderItemCombo(itemOld, TypeAction.UPDATE);
+                        itemResponse.setOrderItemComboResponses(orderItemCombos);
+                    }
                     orderItemRepository.save(itemOld);
                 }
             }
@@ -737,6 +742,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public OrderResponse updateStatus(int id, int status) {
         if (id == 0) throw new ErrorException("Không có id đơn hàng");
         var order = orderRepository.findById(id);
@@ -754,14 +760,43 @@ public class OrderServiceImpl implements OrderService {
         if (order.get().getStatus() == CommonStatus.OrderStatus.COMPLETED) {
             throw new ErrorException("Đơn hàng đã hoàn thành không thể thực hiện hành động này!");
         }
+        var orderItems = orderItemRepository.findOrderItemByOrderId(order.get().getId());
+        if (status == CommonStatus.OrderStatus.IN_PROGRESS) {
+            if (!orderItems.isEmpty()) {
+                for (var item : orderItems) {
+                    if (item.getStatus() != CommonStatus.OrderStatus.DELETED
+                            && item.getStatus() != CommonStatus.OrderStatus.COMPLETED
+                            && item.getStatus() != CommonStatus.OrderStatus.WAITING_DELIVERY) {
+                        item.setStatus(CommonStatus.OrderItemStatus.IN_PROGRESS);
+                    }
+                }
+            }
+        } else if (status == CommonStatus.OrderStatus.WAITING_DELIVERY) {
+            if (!orderItems.isEmpty()) {
+                for (var item : orderItems) {
+                    if (item.getStatus() != CommonStatus.OrderStatus.DELETED
+                            && item.getStatus() != CommonStatus.OrderStatus.COMPLETED) {
+                        item.setStatus(CommonStatus.OrderItemStatus.WAITING_DELIVERY);
+                    }
+                }
+            }
+        } else if (status == CommonStatus.OrderStatus.COMPLETED) {
+            if (!orderItems.isEmpty()) {
+                for (var item : orderItems) {
+                    if (item.getStatus() != CommonStatus.OrderStatus.DELETED) {
+                        item.setStatus(CommonStatus.OrderItemStatus.COMPLETED);
+                    }
+                }
+            }
+        }
         order.get().setStatus(status);
         order.get().setModifiedOn();
-        if(status == CommonStatus.OrderStatus.COMPLETED ){
+        if (status == CommonStatus.OrderStatus.COMPLETED && order.get().getPaymentStatus() == CommonStatus.PaymentStatus.PAID) {
             var tableOrders = tableOrderRepository.findByOrderId(order.get().getId());
-            if(!tableOrders.isEmpty()) {
-                for (var tableOrder: tableOrders) {
+            if (!tableOrders.isEmpty()) {
+                for (var tableOrder : tableOrders) {
                     var table = tableRepository.findById(tableOrder.getTable_id());
-                    if(table.isPresent()){
+                    if (table.isPresent()) {
                         table.get().setStatus(CommonStatus.Table.EMPTY);
                         tableRepository.save(table.get());
                     }
@@ -771,8 +806,11 @@ public class OrderServiceImpl implements OrderService {
         }
         orderRepository.save(order.get());
         var orderResponse = mapperOrderResponse(order.get());
-        if(status ==CommonStatus.OrderStatus.DELETED){
-            saveinventory(orderResponse,status);
+        if(status == CommonStatus.OrderStatus.DELETED && orderItems.stream().anyMatch(i -> i.getStatus() != CommonStatus.OrderItemStatus.DRAFT)){
+            throw new ErrorException("Đơn hàng không thể hủy!");
+        }
+        if (status == CommonStatus.OrderStatus.DELETED) {
+            saveinventory(orderResponse, status);
         }
         return orderResponse;
     }
@@ -825,10 +863,10 @@ public class OrderServiceImpl implements OrderService {
                 itemModel.setPrice(lineItem.getPrice());
                 itemModel.setStatus(lineItem.getStatus());
                 itemModel.setName(lineItem.getName());
-                if(itemModel.isCombo()){
+                if (itemModel.isCombo()) {
                     List<OrderPrintModel.OrderVariantComboPrintModel> variantModels = new ArrayList<>();
                     var itemCombos = orderItemComboRepository.findOrderItemComboByOrderItemId(itemModel.getId());
-                    for (var itemCombo: itemCombos) {
+                    for (var itemCombo : itemCombos) {
                         OrderPrintModel.OrderVariantComboPrintModel variantModel = new OrderPrintModel.OrderVariantComboPrintModel();
                         variantModel.setId(itemCombo.getId());
                         variantModel.setPrice(itemCombo.getPrice());
@@ -847,18 +885,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     //Hàm save and log inventory
-    private void saveinventory(OrderResponse order,int status) {
-        if(order.getOrderItemResponses().size()>0){
-            for(val oderItem : order.getOrderItemResponses())
-            {
-                if(oderItem.isCombo()){
-                    for (val dataCombo :oderItem.getOrderItemComboResponses()){
+    private void saveinventory(OrderResponse order, int status) {
+        if (order.getOrderItemResponses().size() > 0) {
+            for (val oderItem : order.getOrderItemResponses()) {
+                if (oderItem.isCombo()) {
+                    for (val dataCombo : oderItem.getOrderItemComboResponses()) {
                         val itemIngredient = itemIngredientRepository.findItemIngredientByVariantId(dataCombo.getVariantId());
-                        for(val dataIngredient : itemIngredient){
+                        for (val dataIngredient : itemIngredient) {
                             val ingredient = ingredientRepository.findById(dataIngredient.getIngredientId());
-                            Integer changerAmount  = 0;
-                            changerAmount = dataIngredient.getAmountConsume()*dataCombo.getQuantity();
-                            if(status != CommonStatus.OrderStatus.DELETED){
+                            Integer changerAmount = 0;
+                            changerAmount = dataIngredient.getAmountConsume() * dataCombo.getQuantity();
+                            if (status != CommonStatus.OrderStatus.DELETED) {
                                 InventoryLog inventoryLog = new InventoryLog();
                                 //lưu vào bảng log kho
                                 inventoryLog.setCode(order.getCode());
@@ -869,11 +906,10 @@ public class OrderServiceImpl implements OrderService {
                                 inventoryLog.setType("order");
                                 inventoryLog.setIngredientId(ingredient.get().getId());
                                 inventoryLog.setStockRemain(ingredient.get().getQuantity());
-                            inventoryLog.setAmountChargeInUnit("-"+changerAmount);
-                            inventoryLog.setStatus(1);
-                            inventoryLogRepository.save(inventoryLog);
-                            }
-                            else {
+                                inventoryLog.setAmountChargeInUnit("-" + changerAmount);
+                                inventoryLog.setStatus(1);
+                                inventoryLogRepository.save(inventoryLog);
+                            } else {
                                 InventoryLog inventoryLog = new InventoryLog();
                                 //lưu vào bảng log kho
                                 inventoryLog.setCode(order.getCode());
@@ -884,20 +920,19 @@ public class OrderServiceImpl implements OrderService {
                                 inventoryLog.setType("order");
                                 inventoryLog.setIngredientId(ingredient.get().getId());
                                 inventoryLog.setStockRemain(ingredient.get().getQuantity());
-                                inventoryLog.setAmountChargeInUnit("+"+changerAmount);
+                                inventoryLog.setAmountChargeInUnit("+" + changerAmount);
                                 inventoryLog.setStatus(2);
                                 inventoryLogRepository.save(inventoryLog);
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     val itemIngredient = itemIngredientRepository.findItemIngredientByVariantId(oderItem.getProductId());
-                    for(val dataIngredient : itemIngredient){
+                    for (val dataIngredient : itemIngredient) {
                         val ingredient = ingredientRepository.findById(dataIngredient.getIngredientId());
-                        Integer changerAmount  = 0;
-                        changerAmount = dataIngredient.getAmountConsume()*oderItem.getQuantity();
-                        if(status != CommonStatus.OrderStatus.DELETED){
+                        Integer changerAmount = 0;
+                        changerAmount = dataIngredient.getAmountConsume() * oderItem.getQuantity();
+                        if (status != CommonStatus.OrderStatus.DELETED) {
                             InventoryLog inventoryLog = new InventoryLog();
                             //lưu vào bảng log kho
                             inventoryLog.setCode(order.getCode());
@@ -908,11 +943,10 @@ public class OrderServiceImpl implements OrderService {
                             inventoryLog.setType("order");
                             inventoryLog.setIngredientId(ingredient.get().getId());
                             inventoryLog.setStockRemain(ingredient.get().getQuantity());
-                            inventoryLog.setAmountChargeInUnit("-"+changerAmount);
+                            inventoryLog.setAmountChargeInUnit("-" + changerAmount);
                             inventoryLog.setStatus(1);
                             inventoryLogRepository.save(inventoryLog);
-                        }
-                        else {
+                        } else {
                             InventoryLog inventoryLog = new InventoryLog();
                             //lưu vào bảng log kho
                             inventoryLog.setCode(order.getCode());
@@ -923,7 +957,7 @@ public class OrderServiceImpl implements OrderService {
                             inventoryLog.setType("order");
                             inventoryLog.setIngredientId(ingredient.get().getId());
                             inventoryLog.setStockRemain(ingredient.get().getQuantity());
-                            inventoryLog.setAmountChargeInUnit("+"+changerAmount);
+                            inventoryLog.setAmountChargeInUnit("+" + changerAmount);
                             inventoryLog.setStatus(2);
                             inventoryLogRepository.save(inventoryLog);
                         }

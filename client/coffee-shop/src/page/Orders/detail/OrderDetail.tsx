@@ -161,6 +161,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                         lineAmount: li.quantity * li.price,
                         name: li.name,
                         variants: variants,
+                        status: li.status
                     }
                     set((prev) => ({
                         ...prev,

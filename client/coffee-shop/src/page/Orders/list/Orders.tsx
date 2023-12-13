@@ -166,15 +166,15 @@ const Orders = (props: OrdersProps & PropsFromRedux) => {
     const renderOrderStatus = (status?: number) => {
         switch (status) {
             case OrderStatus.DRAFT:
-                return <Chip className="default" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
+                return <Chip className="default" variant="outlined" size="small" label={OrderStatus.getName(status)} />;
             case OrderStatus.IN_PROGRESS:
-                return <Chip className="info" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
+                return <Chip className="info" variant="outlined" size="small" label={OrderStatus.getName(status)} />;
             case OrderStatus.WAITING_DELIVERY:
-                return <Chip className="warning" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
+                return <Chip className="warning" variant="outlined" size="small" label={OrderStatus.getName(status)} />;
             case OrderStatus.COMPLETED:
-                return <Chip className="success" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
+                return <Chip className="success" variant="outlined" size="small" label={OrderStatus.getName(status)} />;
             case OrderStatus.DELETED:
-                return <Chip className="danger" variant="outlined" size="medium" label={OrderStatus.getName(status)} />;
+                return <Chip className="danger" variant="outlined" size="small" label={OrderStatus.getName(status)} />;
             default:
                 return "";
         }
