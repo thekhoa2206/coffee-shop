@@ -2,6 +2,7 @@ package com.hust.coffeeshop.services.impl;
 
 import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.common.CommonStatus;
+import com.hust.coffeeshop.common.TheadContextEnum;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.order.OrderFilterRequest;
 import com.hust.coffeeshop.models.dto.order.OrderResponse;
@@ -14,7 +15,9 @@ import com.hust.coffeeshop.models.repository.*;
 import com.hust.coffeeshop.services.OrderService;
 import com.hust.coffeeshop.services.TableService;
 import lombok.val;
+import org.apache.logging.log4j.ThreadContext;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -279,5 +282,47 @@ public class TableServiceImpl implements TableService {
             return tableOrderResponse;
         }
         return null;
+    }
+    @Override
+    public void changeTableOrder(ChangeTableOrderRequest request){
+        var username = ThreadContext.get(TheadContextEnum.JWT_USER_NAME.name());
+
+        if(request.getTableOlds() == null || request.getTableOlds().isEmpty()) throw new BaseException("Vui lòng chọn bàn để chuyển");
+        if(request.getTableNews() == null || request.getTableNews().isEmpty()) throw new BaseException("Vui lòng chọn bàn mới để chuyển");
+            var tableOrderNews = tableOrderRepository.findByTableIds(request.getTableNews());
+            if(tableOrderNews != null || !tableOrderNews.isEmpty()){
+                throw  new BaseException("Bàn đã có người sử dụng");
+            }
+            var tableOrderOlds = tableOrderRepository.findByTableIds(request.getTableOlds());
+            List<Integer> orderIds = null;
+            if(!tableOrderOlds.isEmpty()){
+                orderIds = tableOrderOlds.stream().map(TableOrder::getOrder_Id).collect(Collectors.toList());
+                var tableOrders = tableOrderOlds.stream().map(tableOrder -> {
+                    tableOrder.setStatus(CommonStatus.Table.INACTIVE);
+                    return tableOrder;
+                }).collect(Collectors.toList());
+                tableOrderRepository.saveAll(tableOrders);
+            }
+            if(orderIds != null){
+                var orders = orderRepository.getOrderByOrderIds(orderIds);
+                for (var id : request.getTableNews()) {
+                    var table = tableRepository.findById(id);
+                    table.get().setStatus(CommonStatus.Table.USING);
+                    List<TableOrder> tableOrders = new ArrayList<>();
+                    orders.forEach(order ->{
+                        var tableOrder = new TableOrder();
+                        tableOrder.setTable_id(id);
+                        tableOrder.setOrder_Id(order.getId());
+                        tableOrder.setCreatedOn();
+                        tableOrder.setModifiedOn();
+                        tableOrder.setCreatedBy(username);
+                        tableOrder.setModifiedBy(username);
+                        tableOrders.add(tableOrder);
+                    });
+                    tableOrderRepository.saveAll(tableOrders);
+                    tableRepository.save(table.get());
+                }
+            }
+
     }
 }

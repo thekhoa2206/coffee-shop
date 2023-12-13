@@ -58,6 +58,11 @@ public class TableController {
     }
 
     //Api chuyển bàn
+    @PutMapping("/{id}/change-table")
+    public void changeTableOrder(ChangeTableOrderRequest request){
+        tableService.changeTableOrder(request);
+    }
+
     //Api lấy thông tin đơn hàng chưa hoàn thành của bàn
     @GetMapping("/orders")
     public PagingListResponse<OrderTableResponse> getOrdersByTable(OrderFilterRequest filter) throws ParseException {

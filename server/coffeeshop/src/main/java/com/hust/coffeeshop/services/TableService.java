@@ -17,4 +17,6 @@ public interface TableService {
     PagingListResponse<TableOrderResponse> getOrdersByTable(TableFilterRequest filter);
 
     PagingListResponse<OrderTableResponse> getOrdersAndTables(OrderFilterRequest filter) throws ParseException;
+
+    void changeTableOrder(ChangeTableOrderRequest request);
 }
