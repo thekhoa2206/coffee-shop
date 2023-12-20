@@ -12,5 +12,5 @@ public class IngredientRequest {
     private int quantity;
     private BigDecimal exportPrice;
     private int stockUnitId;
-
+    private boolean product;
 }

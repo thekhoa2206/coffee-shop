@@ -1,4 +1,5 @@
 import { Box, Grid, MenuItem, Typography } from "@material-ui/core";
+import Checkbox from "components/Checkbox";
 import Dialog from "components/Dialog";
 import NumberInputTextField from "components/NumberInput/NumberInputTextField";
 import Select from "components/Select/Index";
@@ -28,6 +29,7 @@ export const DialogAddIngredient = (props: DialogAddIngredientProps) => {
                 exportPrice: props.ingredient.exportPrice,
                 quantity: props.ingredient.quantity,
                 stockUnitId: props.ingredient.stockUnitResponse?.id,
+                product: props.ingredient.product
             })
         }
     }, [props.ingredient])
@@ -47,18 +49,18 @@ export const DialogAddIngredient = (props: DialogAddIngredientProps) => {
         };
         if (ingredient) {
             IngredientsService.create(ingredientAdd)
-            .then(async (res) => {
-                if (res) {
-                    onClose();
-                    if (res.data) {
-                        if (initData) initData(res.data);
-                        SnackbarUtils.success("Tạo mới nguyên liệu thành công!");
+                .then(async (res) => {
+                    if (res) {
+                        onClose();
+                        if (res.data) {
+                            if (initData) initData(res.data);
+                            SnackbarUtils.success("Tạo mới nguyên liệu thành công!");
+                        }
                     }
-                }
-            })
-            .catch((err) => {
-                SnackbarUtils.error(getMessageError(err));
-            });
+                })
+                .catch((err) => {
+                    SnackbarUtils.error(getMessageError(err));
+                });
         }
     };
     return (
@@ -130,6 +132,10 @@ export const DialogAddIngredient = (props: DialogAddIngredientProps) => {
                                     })}
                                 </Select>
                             </Grid>
+                        </Grid>
+                        <Grid xs={12} style={{ display: "flex", marginTop: 10 }}>
+                            <Checkbox checked={ingredient?.product} onChange={(e, value) => {setIngredient({ ...ingredient, product: value });}}/>
+                            <Typography>Nguyên liệu là mặt hàng bán</Typography>
                         </Grid>
                     </Box>
                 }

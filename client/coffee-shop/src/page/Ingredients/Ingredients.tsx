@@ -29,6 +29,7 @@ import { DialogEditIngredient } from "./component/DialogEditIngredient";
 import { IngredientsStatus } from "./utils/IngredientContants";
 import Chip from "components/Chip/Chip.component";
 import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
+import { colorInk, colorOrange, colorRedWarning } from "theme/palette";
 
 const Ingredients = (props: IngredientProps & PropsFromRedux) => {
     const { classes, authState } = props;
@@ -55,6 +56,7 @@ const Ingredients = (props: IngredientProps & PropsFromRedux) => {
             page: Number(dataFromQuery["page"]) || 1,
             limit: Number(dataFromQuery["limit"]) || undefined,
             query: dataFromQuery["query"] || undefined,
+            ids: dataFromQuery["ids"] || undefined,
         };
         return initFilter;
     };
@@ -273,7 +275,7 @@ const Ingredients = (props: IngredientProps & PropsFromRedux) => {
                                     {({ dataItem }: CellTemplateProps) => {
                                         return (
                                             <>
-                                                <Typography>
+                                                <Typography style={{color: dataItem.quantity > 100 ? "black" : colorRedWarning.primary.main}}>
                                                     {dataItem.quantity || 0}
                                                 </Typography>
                                             </>

@@ -94,11 +94,11 @@ const useGenMenuData = () => {
         path: "/admin/receipts",
         typeRoute: "default",
       },
-      // {
-      //   title: "Xuất kho",
-      //   path: "/admin/exports",
-      //   typeRoute: "default",
-      // },
+      {
+        title: "Xuất kho",
+        path: "/admin/exports",
+        typeRoute: "default",
+      },
     ];
     return menu;
   };

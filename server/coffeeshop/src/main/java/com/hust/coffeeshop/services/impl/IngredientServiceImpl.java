@@ -2,6 +2,7 @@ package com.hust.coffeeshop.services.impl;
 
 import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.common.CommonStatus;
+import com.hust.coffeeshop.common.TheadContextEnum;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientFilterRequest;
 import com.hust.coffeeshop.models.dto.ingredient.IngredientRequest;
@@ -12,6 +13,7 @@ import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
 import com.hust.coffeeshop.services.IngredientService;
 import lombok.val;
+import org.apache.logging.log4j.ThreadContext;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +35,10 @@ public class IngredientServiceImpl implements IngredientService {
     private final StocktakingRepository stocktakingRepository;
     private final InventoryLogRepository inventoryLogRepository;
 
-    public IngredientServiceImpl(IngredientRepository ingredientRepository, ItemIngredientRepository itemIngredientRepository, ModelMapper mapper, FilterRepository filterRepository, StockUnitRepository stockUnitRepository, StocktakingRepository stocktakingRepository, InventoryLogRepository inventoryLogRepository) {
+    private final ItemRepository itemRepository;
+    private final VariantRepository variantRepository;
+
+    public IngredientServiceImpl(IngredientRepository ingredientRepository, ItemIngredientRepository itemIngredientRepository, ModelMapper mapper, FilterRepository filterRepository, StockUnitRepository stockUnitRepository, StocktakingRepository stocktakingRepository, InventoryLogRepository inventoryLogRepository, ItemRepository itemRepository, VariantRepository variantRepository) {
         this.ingredientRepository = ingredientRepository;
         this.itemIngredientRepository = itemIngredientRepository;
         this.mapper = mapper;
@@ -41,6 +46,8 @@ public class IngredientServiceImpl implements IngredientService {
         this.stockUnitRepository = stockUnitRepository;
         this.stocktakingRepository = stocktakingRepository;
         this.inventoryLogRepository = inventoryLogRepository;
+        this.itemRepository = itemRepository;
+        this.variantRepository = variantRepository;
     }
 
     @Override
@@ -54,13 +61,14 @@ public class IngredientServiceImpl implements IngredientService {
         ingredient.setModifiedOn(0);
         ingredient.setQuantity(request.getQuantity());
         ingredient.setStockUnitId(request.getStockUnitId());
+        ingredient.setProduct(request.isProduct());
         StockUnit stockUnit = new StockUnit();
         if (request.getStockUnitId() == 0) {
             stockUnit = stockUnitRepository.findById(request.getStockUnitId()).get();
         }
 
         ingredient = ingredientRepository.save(ingredient);
-
+        if(request.isProduct()) saveVariant(request, ingredient.getId());
         var stockUnitResponse = mapper.map(stockUnit, StockUnitResponse.class);
         stockUnitResponse.set();
         var ingredientResponse = mapper.map(ingredient, IngredientResponse.class);
@@ -68,7 +76,46 @@ public class IngredientServiceImpl implements IngredientService {
         ingredientResponse.setStockUnitResponse(stockUnitResponse);
         return ingredientResponse;
     }
+    private void saveVariant(IngredientRequest request, int id){
+        var username = ThreadContext.get(TheadContextEnum.JWT_USER_NAME.name());
+        if(request.isProduct()){
+            Item item = new Item();
+            item.setName(request.getName());
+            item.setStatus(CommonStatus.ItemIngredientStatus.ACTIVE);
+            item.setCreatedOn();
+            item.setModifiedOn();
+            item.setStockUnitId(request.getStockUnitId());
+            item.setCreatedBy(username);
+            item.setModifiedBy(username);
 
+            item = itemRepository.save(item);
+
+            Variant variant = new Variant();
+            variant.setStatus(1);
+            variant.setName(request.getName());
+            variant.setPrice(request.getExportPrice());
+            variant.setCreatedBy(username);
+            variant.setModifiedBy(username);
+            variant.setItemId(item.getId());
+            variant.setModifiedOn();
+            variant.setCreatedOn();
+
+            variant = variantRepository.save(variant);
+
+            ItemIngredient itemIngredient = new ItemIngredient();
+            itemIngredient.setIngredientId(id);
+            itemIngredient.setVariantId(variant.getId());
+            itemIngredient.setItemId(item.getId());
+            itemIngredient.setStatus(1);
+            itemIngredient.setCreatedBy(username);
+            itemIngredient.setModifiedBy(username);
+            itemIngredient.setModifiedOn();
+            itemIngredient.setCreatedOn();
+            itemIngredient.setAmountConsume(1);
+
+            itemIngredientRepository.save(itemIngredient);
+        }
+    }
     @Override
     public IngredientResponse update(IngredientRequest request, int id) {
         if (id == 0) throw new ErrorException("Không có thông tin nguyên liệu");
@@ -79,6 +126,10 @@ public class IngredientServiceImpl implements IngredientService {
         ingredient.setExportPrice(request.getExportPrice());
         ingredient.setStockUnitId(request.getStockUnitId());
         ingredient.setModifiedOn(0);
+        if(request.isProduct() && !ingredient.isProduct()){
+            saveVariant(request, ingredient.getId());
+        }
+        ingredient.setProduct(request.isProduct());
         ingredient = ingredientRepository.save(ingredient);
         var ingredientResponse = mapper.map(ingredient, IngredientResponse.class);
         ingredientResponse.set();

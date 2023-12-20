@@ -19,6 +19,7 @@ export type IngredientRequest = {
   quantity?: number;
   exportPrice?: number;
   stockUnitId?: number;
+  product?: boolean;
 }
 
 export type IngredientResponse = {
@@ -31,5 +32,6 @@ export type IngredientResponse = {
   quantity?: number;
   exportPrice?: number;
   status?: number;
+  product?: boolean;
   stockUnitResponse?: StockUnitResponse;
 }

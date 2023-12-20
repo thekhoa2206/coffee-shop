@@ -1,3 +1,5 @@
+import { IngredientResponse } from "services/IngredientsService";
+
 export type DashboardRequest ={
   createdOnMin?: string;
   createdOnMax?: string;
@@ -34,6 +36,7 @@ export type DashboardResponse = {
      exportMoney:number;
      // tiền nhập kho
      importMoney:number;
+     ingredients: IngredientResponse[]
 }
 
 export type AggregateRevenueResponse = {

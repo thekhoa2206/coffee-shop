@@ -4,17 +4,19 @@ import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.models.dto.dashboard.request.DashboardRequest;
 import com.hust.coffeeshop.models.dto.dashboard.response.AggregateRevenueResponse;
 import com.hust.coffeeshop.models.dto.dashboard.response.DashboardResponse;
+import com.hust.coffeeshop.models.dto.ingredient.IngredientResponse;
 import com.hust.coffeeshop.models.dto.order.OrderFilterRequest;
-import com.hust.coffeeshop.models.dto.reportOrder.ReportRevenueResponse;
+import com.hust.coffeeshop.models.repository.IngredientRepository;
 import com.hust.coffeeshop.models.repository.OrderRepository;
 import com.hust.coffeeshop.models.repository.StocktakingRepository;
 import com.hust.coffeeshop.services.DashboardService;
+import com.hust.coffeeshop.services.IngredientService;
 import com.hust.coffeeshop.services.OrderService;
 import lombok.val;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.ParseException;
 import java.util.*;
@@ -26,10 +28,18 @@ public class DashboardServiceImpl implements DashboardService {
     private final OrderService orderService;
     private  final StocktakingRepository stocktakingRepository;
 
-    public DashboardServiceImpl(OrderRepository orderRepository, OrderService orderService, StocktakingRepository stocktakingRepository) {
+    private final IngredientRepository ingredientRepository;
+    private final IngredientService ingredientService;
+
+    private final ModelMapper mapper;
+
+    public DashboardServiceImpl(OrderRepository orderRepository, OrderService orderService, StocktakingRepository stocktakingRepository, IngredientRepository ingredientRepository, IngredientService ingredientService, ModelMapper mapper) {
         this.orderRepository = orderRepository;
         this.orderService = orderService;
         this.stocktakingRepository = stocktakingRepository;
+        this.ingredientRepository = ingredientRepository;
+        this.ingredientService = ingredientService;
+        this.mapper = mapper;
     }
     // Thông số trên Dashboard
     @Override
@@ -153,6 +163,14 @@ public class DashboardServiceImpl implements DashboardService {
         }
         response.setExportMoney(exportMoney);
         response.setImportMoney(importMoney);
+
+        var ingredients = ingredientRepository.filterLimitQuantity(100);
+        if(!ingredients.isEmpty()){
+            var ingredientResponses = ingredients.stream().map(i -> {
+                return mapper.map(i, IngredientResponse.class);
+            }).collect(Collectors.toList());
+            response.setIngredients(ingredientResponses);
+        }
         return response;
     }
     @Override

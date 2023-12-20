@@ -19,4 +19,5 @@ public class IngredientResponse extends BaseResponse {
     private String stockUnitId;
     private BigDecimal exportPrice;
     private StockUnitResponse stockUnitResponse;
+    private boolean isProduct;
 }

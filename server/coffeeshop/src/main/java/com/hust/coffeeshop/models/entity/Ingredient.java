@@ -27,4 +27,7 @@ public class Ingredient extends BaseEntity{
 
     @Column(name = "export_price")
     private BigDecimal exportPrice;
+
+    @Column(name = "is_product", nullable = true)
+    private boolean isProduct;
 }

@@ -19,7 +19,7 @@ export const getIngredientsQuickFilterLabel = (key: string) => {
         case IngredientsQuickFilterOptions.NAME:
             return `Tên nguyên liệu`;
         case IngredientsQuickFilterOptions.QUANTITY:
-            return `Số lượng`;
+            return `Số lượng/Khối lượng`;
         case IngredientsQuickFilterOptions.STATUS:
             return `Trạng thái`;
         case IngredientsQuickFilterOptions.PRICE:

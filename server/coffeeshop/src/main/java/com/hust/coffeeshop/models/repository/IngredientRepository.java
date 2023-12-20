@@ -23,4 +23,7 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Integer>
     @Query(value = "SELECT ingredient.* FROM ingredient WHERE created_on >=?1 AND created_on <=?2 ", nativeQuery = true)
     Page<Ingredient> findByDate(long startDate, long endDate, Pageable var1);
 
+    @Query(value = "SELECT ingredient.* FROM ingredient WHERE  quantity <= ?1", nativeQuery = true)
+    List<Ingredient> filterLimitQuantity(int limitQuantity);
+
 }

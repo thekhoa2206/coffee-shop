@@ -27,14 +27,18 @@ import FilterDatePredefined from "components/SapoFilter/FilterItemsV2/FilterItem
 import Button from "components/Button";
 import DashboardService from "services/DashboardService/DashboardService";
 import { DashboardRequest, DashboardResponse } from "services/DashboardService";
+import { colorBlue } from "theme/palette";
+import { useHistory } from "react-router-dom";
 const DashboardRevenue = (props: RevenueProps) => {
   const { classes } = props;
   const [data, setData] = useState<DataSeries[]>([]);
   const [dataTop, setDataTop] = useState<DashboardResponse | undefined>();
   const [filter, setFilter] = useState<DashboardRequest>(
-     {
+    {
       createdOnPredefined: "today"
-  });
+    });
+  const history = useHistory();
+
   useEffect(() => {
     initData();
     initDataTop();
@@ -342,11 +346,14 @@ const DashboardRevenue = (props: RevenueProps) => {
           >
             <Box style={{ padding: 6 }}>
               <Typography style={{ color: "rgb(244, 148, 35)" }}>
-                Số khách hàng
+                Nguyên liệu sắp hết
               </Typography>
               <Typography style={{ fontSize: 24, marginTop: 10 }}>
-                {dataTop?.customers ? dataTop.customers : 0}
+                {dataTop?.ingredients ? dataTop.ingredients.length : 0}
               </Typography>
+              {dataTop?.ingredients && <Typography style={{ fontSize: 12, marginLeft: "70%", color: colorBlue.primary.main, cursor: "pointer" }} >
+                <span onClick={() => { history.push(`/admin/ingredients?ids=${dataTop?.ingredients.map(i => i.id).join(",")}`) }}>Xem chi tiết</span>
+              </Typography>}
             </Box>
           </Grid>
           <Grid
@@ -418,7 +425,7 @@ const DashboardRevenue = (props: RevenueProps) => {
                 TB doanh thu/ hoá đơn
               </Typography>
               <Typography style={{ fontSize: 24, marginTop: 10 }}>
-                {dataTop?.averageOrderValue ? formatMoney(dataTop.averageOrderValue)  : "--"}đ
+                {dataTop?.averageOrderValue ? formatMoney(dataTop.averageOrderValue) : "--"}đ
               </Typography>
             </Box>
           </Grid>

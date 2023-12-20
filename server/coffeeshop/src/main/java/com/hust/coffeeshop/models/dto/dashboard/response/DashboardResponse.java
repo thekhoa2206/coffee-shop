@@ -1,9 +1,12 @@
 package com.hust.coffeeshop.models.dto.dashboard.response;
 
+import com.hust.coffeeshop.models.dto.ingredient.IngredientResponse;
+import com.hust.coffeeshop.models.entity.Ingredient;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,5 +31,7 @@ public class DashboardResponse {
     private  BigDecimal exportMoney;
     // tiền nhập kho
     private BigDecimal importMoney;
+
+    private List<IngredientResponse> ingredients;
 
 }
