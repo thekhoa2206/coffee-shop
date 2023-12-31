@@ -12,6 +12,10 @@ import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 import useStyles from "./BoxOrder.style";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import { ArrowDropUp } from "@material-ui/icons";
+import Button from "components/Button";
+import { toString } from "lodash";
+import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
+import useModal from "components/Modal/useModal";
 
 export type BoxOrderProps = {
     open: boolean;
@@ -21,6 +25,7 @@ export type BoxOrderProps = {
 
 export const BoxOrder = (props: BoxOrderProps) => {
     const classes = useStyles();
+    const { closeModal, confirm, openModal } = useModal();
     const {
         onClose,
         open,
@@ -36,7 +41,8 @@ export const BoxOrder = (props: BoxOrderProps) => {
     });
 
     const [filter, setFilter] = useState<OrderFilter>({
-        statuses: "1,2,5",
+        statuses: "5,3",
+        paymentStatus: "1"
     });
     const handleClose = () => {
         onClose();
@@ -101,6 +107,30 @@ export const BoxOrder = (props: BoxOrderProps) => {
         }
         return total;
     }
+
+    const addPayment = async (orderId: number) => {
+        try {
+            let res = await OrderService.addPayment(toString(orderId));
+            if (res) {
+                SnackbarUtils.success("Thanh toán đơn hàng thành công")
+                initData();
+            }
+        } catch (error) {
+            SnackbarUtils.error(getMessageError(error));
+        }
+    }
+
+    const finishItem = async (orderId: number, itemIds: string) => {
+        try {
+            let res = await OrderService.updateStatusItem(orderId, itemIds);
+            if (res) {
+                SnackbarUtils.success("Trả đồ thành công")
+                initData();
+            }
+        } catch (error) {
+            SnackbarUtils.error(getMessageError(error));
+        }
+    }
     return (
         <Dialog
             onClose={handleClose}
@@ -135,10 +165,10 @@ export const BoxOrder = (props: BoxOrderProps) => {
                         <Grid item xs={4}><Typography style={{ fontWeight: 500 }}>Trạng thái</Typography></Grid>
                     </Grid>
                     {orders.data && orders.data?.map((item) => (
-                        <Box key={item.id} onClick={() => { handleOpenDrillDown(item.id) }}>
+                        <Box key={item.id}>
                             <Grid xs={12} container spacing={2}>
                                 <Grid item xs={1}>
-                                    <Box style={{ marginTop: -3 }}><IconButton style={{ width: 20, height: 20 }}>{item.isShow ? <ArrowDropUp style={{ width: 20, color: colorBlue.primary.main }} /> : <ArrowDropDownIcon style={{ width: 20 }} />}</IconButton></Box>
+                                    <Box style={{ marginTop: -3 }}  onClick={() => { handleOpenDrillDown(item.id) }}><IconButton style={{ width: 20, height: 20 }}>{item.isShow ? <ArrowDropUp style={{ width: 20, color: colorBlue.primary.main }} /> : <ArrowDropDownIcon style={{ width: 20 }} />}</IconButton></Box>
                                 </Grid>
                                 <Grid item xs={3} onClick={() => { handleOpenDrillDown(item.id) }}><Typography style={{ color: colorBlue.primary.main, fontSize: 12, cursor: "pointer" }}>{item.code}</Typography></Grid>
                                 <Grid item xs={4}>{item.tableResponses && item.tableResponses?.map((t) => t.name).join(", ")}</Grid>
@@ -153,6 +183,7 @@ export const BoxOrder = (props: BoxOrderProps) => {
                                                     <TableCell width="70%">Tên</TableCell>
                                                     <TableCell>SL</TableCell>
                                                     <TableCell align="right">Giá</TableCell>
+                                                    <TableCell align="right"></TableCell>
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>
@@ -161,17 +192,31 @@ export const BoxOrder = (props: BoxOrderProps) => {
                                                         <TableCell><Typography style={{ fontSize: 12 }}>{lineItem.name}</Typography></TableCell>
                                                         <TableCell><Typography style={{ fontSize: 12 }}>{lineItem.quantity}</Typography></TableCell>
                                                         <TableCell align="right"><Typography style={{ fontSize: 12 }}>{formatMoney(lineItem.price)}</Typography></TableCell>
+                                                        <TableCell><Button color="primary" disabled={lineItem.status === OrderStatus.COMPLETED} onClick={() => {finishItem(item.id, toString(lineItem.id))}}>Trả đồ</Button></TableCell>
                                                     </TableRow>
                                                 ))}
                                                 <TableRow>
                                                     <TableCell><Typography></Typography></TableCell>
                                                     <TableCell><Typography style={{ fontSize: 12 }}>{item.orderItemResponses && totalQuantity(item.orderItemResponses)}</Typography></TableCell>
                                                     <TableCell align="right"><Typography style={{ fontSize: 12 }}>{item.orderItemResponses && formatMoney(totalPrice(item.orderItemResponses))}</Typography></TableCell>
+                                                    
                                                 </TableRow>
                                             </TableBody>
                                         </Table>
 
                                     </Box>
+                                    <Button color="primary" onClick={() => {
+                                        openModal(ConfirmDialog, {
+                                            confirmButtonText: "Xác nhận",
+                                            message: `Bạn có muốn thanh toán đơn hàng ${item.code} không?`,
+                                            title: "Thanh toán đơn hàng",
+                                            cancelButtonText: "Thoát",
+                                        }).result.then((res) => {
+                                            if (res) {
+                                                addPayment(item.id);
+                                            }
+                                        })
+                                    }}>Thanh toán</Button>
                                 </Box>
                             )}
                         </Box>

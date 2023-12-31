@@ -45,4 +45,6 @@ public class IngredientController extends BaseException {
     public void delete(@PathVariable("id") int id){
         ingredientService.delete(id);
     }
+
+
 }

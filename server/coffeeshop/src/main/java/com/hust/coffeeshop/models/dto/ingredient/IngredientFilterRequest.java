@@ -13,4 +13,6 @@ public class IngredientFilterRequest extends PagingFilterRequest {
     private String query;
     private String statuses;
     private List<Integer> variantIds;
+    private long createdOnMax;
+    private long createdOnMin;
 }

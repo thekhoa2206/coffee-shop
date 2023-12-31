@@ -6,6 +6,7 @@ import com.hust.coffeeshop.models.dto.ingredient.IngredientFilterRequest;
 import com.hust.coffeeshop.models.dto.order.*;
 import com.hust.coffeeshop.models.dto.table.TableResponse;
 import com.hust.coffeeshop.models.entity.*;
+import com.hust.coffeeshop.models.exception.BaseException;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
 import com.hust.coffeeshop.services.CustomerService;
@@ -225,7 +226,7 @@ public class OrderServiceImpl implements OrderService {
         if (request.getCode() == null)
             order.setCode("DON" + (lastId + 1));
         else order.setCode(request.getCode());
-        order.setStatus(CommonStatus.OrderStatus.DRAFT);
+        order.setStatus(CommonStatus.OrderStatus.IN_PROGRESS);
         order.setCreatedOn();
         order.setModifiedOn();
         order.setCreatedBy(username);
@@ -252,7 +253,7 @@ public class OrderServiceImpl implements OrderService {
                     var orderIds = tableOrders.stream().map(TableOrder::getOrder_Id).collect(Collectors.toList());
                     var orders = orderRepository.getOrderByOrderIds(orderIds);
                     if (!orders.isEmpty()) {
-                        var orderActive = orders.stream().filter(i -> i.getPaymentStatus() == CommonStatus.PaymentStatus.UNPAID && (i.getStatus() == CommonStatus.OrderStatus.DRAFT)).collect(Collectors.toList());
+                        var orderActive = orders.stream().filter(i -> i.getPaymentStatus() == CommonStatus.PaymentStatus.UNPAID && (i.getStatus() == CommonStatus.OrderStatus.IN_PROGRESS)).collect(Collectors.toList());
                         if ((table.isEmpty() || table.get().getStatus() == 1) && !orderActive.isEmpty())
                             throw new ErrorException("Bàn hiện tại đang có đơn hàng. Vui lòng sửa vào đơn hàng " + orderActive.get(0).getCode() + " !");
                         table.get().setStatus(CommonStatus.Status.ACTIVE);
@@ -274,7 +275,7 @@ public class OrderServiceImpl implements OrderService {
             lineItem.setModifiedOn();
             lineItem.setCreatedBy(username);
             lineItem.setModifiedBy(username);
-            lineItem.setStatus(CommonStatus.OrderItemStatus.DRAFT);
+            lineItem.setStatus(CommonStatus.OrderItemStatus.IN_PROGRESS);
             lineItem = orderItemRepository.save(lineItem);
             if (lineItem.isCombo()) {
                 var combo = comboRepository.findById(lineItem.getProductId());
@@ -385,6 +386,9 @@ public class OrderServiceImpl implements OrderService {
             throw new ErrorException("Đơn hàng đã hủy không thể thanh toán");
         order.get().setPaymentStatus(CommonStatus.PaymentStatus.PAID);
         order.get().setModifiedOn();
+        if(order.get().getStatus() != CommonStatus.OrderStatus.COMPLETED){
+            throw new ErrorException("Đơn hàng chưa trả hết đồ không thể thanh toán");
+        }
         var orderNew = orderRepository.save(order.get());
         var tableOrder = tableOrderRepository.findByOrderId(order.get().getId());
         if (!tableOrder.isEmpty()) {
@@ -422,8 +426,8 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItemResponse> lineItems = new ArrayList<>();
         orderNew.setNote(request.getNote());
         orderNew.setModifiedOn();
-        orderNew.setStatus(CommonStatus.OrderStatus.DRAFT);
-        if (orderNew.getStatus() == CommonStatus.OrderStatus.DRAFT) {
+        orderNew.setStatus(CommonStatus.OrderStatus.IN_PROGRESS);
+        if (orderNew.getStatus() == CommonStatus.OrderStatus.IN_PROGRESS) {
             orderNew.setTotal(request.getTotal());
             orderNew.setCode(request.getCode());
             orderNew.setDiscountTotal(request.getDiscountTotal());
@@ -539,7 +543,7 @@ public class OrderServiceImpl implements OrderService {
                 item.setCreatedBy("admin");
                 item.setModifiedBy("admin");
                 item.setCreatedOn();
-                item.setStatus(CommonStatus.OrderItemStatus.DRAFT);
+                item.setStatus(CommonStatus.OrderItemStatus.IN_PROGRESS);
                 checkInventoryUpdate(itemNew, TypeAction.ADD, null);
                 item = orderItemRepository.save(item);
                 OrderItemResponse itemResponse = mapper.map(item, OrderItemResponse.class);
@@ -747,7 +751,7 @@ public class OrderServiceImpl implements OrderService {
         if (id == 0) throw new ErrorException("Không có id đơn hàng");
         var order = orderRepository.findById(id);
         if (!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
-        if ((order.get().getStatus() != CommonStatus.OrderStatus.DRAFT
+        if ((order.get().getStatus() != CommonStatus.OrderStatus.IN_PROGRESS
                 && order.get().getStatus() != CommonStatus.PaymentStatus.PAID) && status == CommonStatus.OrderStatus.DELETED) {
             throw new ErrorException("Đơn hàng không được hủy!");
         }
@@ -765,18 +769,8 @@ public class OrderServiceImpl implements OrderService {
             if (!orderItems.isEmpty()) {
                 for (var item : orderItems) {
                     if (item.getStatus() != CommonStatus.OrderStatus.DELETED
-                            && item.getStatus() != CommonStatus.OrderStatus.COMPLETED
-                            && item.getStatus() != CommonStatus.OrderStatus.WAITING_DELIVERY) {
-                        item.setStatus(CommonStatus.OrderItemStatus.IN_PROGRESS);
-                    }
-                }
-            }
-        } else if (status == CommonStatus.OrderStatus.WAITING_DELIVERY) {
-            if (!orderItems.isEmpty()) {
-                for (var item : orderItems) {
-                    if (item.getStatus() != CommonStatus.OrderStatus.DELETED
                             && item.getStatus() != CommonStatus.OrderStatus.COMPLETED) {
-                        item.setStatus(CommonStatus.OrderItemStatus.WAITING_DELIVERY);
+                        item.setStatus(CommonStatus.OrderItemStatus.IN_PROGRESS);
                     }
                 }
             }
@@ -806,7 +800,7 @@ public class OrderServiceImpl implements OrderService {
         }
         orderRepository.save(order.get());
         var orderResponse = mapperOrderResponse(order.get());
-        if(status == CommonStatus.OrderStatus.DELETED && orderItems.stream().anyMatch(i -> i.getStatus() != CommonStatus.OrderItemStatus.DRAFT)){
+        if(status == CommonStatus.OrderStatus.DELETED && orderItems.stream().anyMatch(i -> i.getStatus() != CommonStatus.OrderItemStatus.IN_PROGRESS)){
             throw new ErrorException("Đơn hàng không thể hủy!");
         }
         if (status == CommonStatus.OrderStatus.DELETED) {
@@ -963,6 +957,39 @@ public class OrderServiceImpl implements OrderService {
                         }
                     }
                 }
+            }
+        }
+    }
+    @Override
+    @Transactional
+    public void updateStatusItem(int orderId, String itemIds){
+        var order = orderRepository.findById(orderId);
+        if(order.isEmpty()) throw new ErrorException("Không tìm thấy đơn hàng");
+
+        var items = orderItemRepository.findOrderItemByOrderId(orderId);
+        List<String> itemChangeIds = List.of(itemIds.split(","));
+        if(!items.isEmpty() && !itemChangeIds.isEmpty()){
+            items = items.stream().filter(i ->
+                    itemChangeIds.stream().filter(item ->
+                            item.equals(i.getId().toString())).findFirst().orElse(null) != null
+            ).peek(m -> m.setStatus(CommonStatus.OrderStatus.COMPLETED)).collect(Collectors.toList());
+            orderItemRepository.saveAll(items);
+        }
+    }
+
+
+    @Override
+    public void updateStatusOrder(int orderId, String itemIds){
+        var order = orderRepository.findById(orderId);
+        if(order.isEmpty()) throw new ErrorException("Không tìm thấy đơn hàng");
+
+        var items = orderItemRepository.findOrderItemByOrderId(orderId);
+        List<String> itemChangeIds = List.of(itemIds.split(","));
+        if(!items.isEmpty() && !itemChangeIds.isEmpty()){
+            items = items.stream().filter(i -> i.getStatus() == CommonStatus.OrderStatus.IN_PROGRESS).collect(Collectors.toList());
+            if(items.isEmpty()){
+                order.get().setStatus(CommonStatus.OrderStatus.COMPLETED);
+                orderRepository.save(order.get());
             }
         }
     }

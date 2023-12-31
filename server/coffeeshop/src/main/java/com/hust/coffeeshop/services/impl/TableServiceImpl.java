@@ -185,9 +185,7 @@ public class TableServiceImpl implements TableService {
                         if (tableOrders != null) {
                             for (var tableOrder : tableOrders) {
                                 var order = orderRepository.findById(tableOrder.getOrder_Id());
-                                if (order.get().getStatus() == CommonStatus.OrderStatus.DRAFT
-                                        || order.get().getStatus() == CommonStatus.OrderStatus.WAITING_DELIVERY
-                                        || order.get().getStatus() == CommonStatus.OrderStatus.IN_PROGRESS
+                                if (order.get().getStatus() == CommonStatus.OrderStatus.IN_PROGRESS
                                         || order.get().getPaymentStatus() == CommonStatus.PaymentStatus.UNPAID) {
                                     throw new BaseException("Bàn có đơn hàng chưa thanh toán!");
                                 } else {

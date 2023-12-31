@@ -1,13 +1,13 @@
 package com.hust.coffeeshop.services.impl;
 
 import com.hust.coffeeshop.common.CommonCode;
+import com.hust.coffeeshop.common.CommonStatus;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.order.OrderFilterRequest;
+import com.hust.coffeeshop.models.dto.report.inventory.request.ReportInventoryRequest;
 import com.hust.coffeeshop.models.dto.reportOrder.*;
-import com.hust.coffeeshop.models.exception.ErrorException;
-import com.hust.coffeeshop.models.repository.OrderItemComboRepository;
-import com.hust.coffeeshop.models.repository.OrderItemRepository;
-import com.hust.coffeeshop.models.repository.OrderRepository;
+import com.hust.coffeeshop.models.entity.*;
+import com.hust.coffeeshop.models.repository.*;
 import com.hust.coffeeshop.services.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -26,8 +26,16 @@ public class ReportOrderServiceImpl implements ReportOrderService {
     private final CustomerService customerService;
     private final ProductService productService;
     private final VariantService variantService;
+    private final ComboRepository comboRepository;
+    private final ItemRepository itemRepository;
+    private final ItemIngredientRepository itemIngredientRepository;
+    private final ComboItemRepository comboItemRepository;
 
-    public ReportOrderServiceImpl(OrderRepository orderRepository, OrderItemRepository orderItemRepository, ModelMapper mapper, OrderService orderService, CustomerService customerService, ProductService productService, VariantService variantService) {
+    private final OrderItemComboRepository orderItemComboRepository;
+    private final VariantRepository variantRepository;
+    private final IngredientRepository ingredientRepository;
+
+    public ReportOrderServiceImpl(OrderRepository orderRepository, OrderItemRepository orderItemRepository, ModelMapper mapper, OrderService orderService, CustomerService customerService, ProductService productService, VariantService variantService, ComboRepository comboRepository, ItemRepository itemRepository, ItemIngredientRepository itemIngredientRepository, ComboItemRepository comboItemRepository, OrderItemComboRepository orderItemComboRepository, VariantRepository variantRepository, IngredientRepository ingredientRepository) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.mapper = mapper;
@@ -35,6 +43,13 @@ public class ReportOrderServiceImpl implements ReportOrderService {
         this.customerService = customerService;
         this.productService = productService;
         this.variantService = variantService;
+        this.comboRepository = comboRepository;
+        this.itemRepository = itemRepository;
+        this.itemIngredientRepository = itemIngredientRepository;
+        this.comboItemRepository = comboItemRepository;
+        this.orderItemComboRepository = orderItemComboRepository;
+        this.variantRepository = variantRepository;
+        this.ingredientRepository = ingredientRepository;
     }
 
     //  - Thông số sản phẩm bán hàng
@@ -178,4 +193,50 @@ public class ReportOrderServiceImpl implements ReportOrderService {
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), reportCustomers.size()));
     }
 
+    @Override
+    public ReportOrderResponse reportSale(ReportInventoryRequest request){
+        var orders = orderRepository.getOrdersByCreatedDate(request.getStartDate(), request.getEndDate());
+        ReportOrderResponse report = new  ReportOrderResponse();
+        report.setQuantityOrder(BigDecimal.valueOf(orders.size()));
+        var totalOrders = BigDecimal.ZERO;
+        var totalOrderCancel = BigDecimal.ZERO;
+        var totalIngredient = BigDecimal.ZERO;
+        var totalIngredientCancel = BigDecimal.ZERO;
+        for (var order: orders){
+            totalOrders = totalOrders.add(order.getTotal());
+            if(order.getStatus() == CommonStatus.OrderStatus.DELETED){
+                totalOrderCancel = totalOrderCancel.add(order.getTotal());
+                totalIngredient = getTotal(totalIngredientCancel, order);
+            }
+            totalIngredient = getTotal(totalIngredient, order);
+        }
+        return report;
+    }
+
+    private BigDecimal getTotal(BigDecimal totalIngredient, Order order) {
+        var orderItems = orderItemRepository.findOrderItemByOrderId(order.getId());
+        if(!orderItems.isEmpty()){
+            for (var lineItem: orderItems) {
+                var ingredients = getIngredientByLineItem(lineItem);
+                for (var ingredient: ingredients) {
+                    totalIngredient = totalIngredient.add(ingredient.getExportPrice().multiply(BigDecimal.valueOf(lineItem.getQuantity())));
+                }
+            }
+        }
+        return totalIngredient;
+    }
+
+    private List<Ingredient> getIngredientByLineItem(OrderItem item){
+        List<Integer> ingredientIds = new ArrayList<>();
+        if(item.isCombo()){
+            var orderVariantCombo = orderItemComboRepository.findOrderItemComboByOrderItemId(item.getId());
+            var productIngredients = itemIngredientRepository.findItemIngredientByVariantIds(orderVariantCombo.stream().map(OrderItemCombo::getVariantId).collect(Collectors.toList()));
+            ingredientIds.addAll(productIngredients.stream().map(ItemIngredient::getIngredientId).collect(Collectors.toList()));
+        } else{
+            var variant = variantService.getById(item.getProductId());
+            var productIngredients = itemIngredientRepository.findItemIngredientByVariantId(variant.getId());
+            ingredientIds.addAll(productIngredients.stream().map(ItemIngredient::getIngredientId).collect(Collectors.toList()));
+        }
+        return ingredientRepository.findByIds(ingredientIds);
+    }
 }

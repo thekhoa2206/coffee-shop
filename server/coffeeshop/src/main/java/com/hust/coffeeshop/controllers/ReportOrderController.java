@@ -1,6 +1,9 @@
 package com.hust.coffeeshop.controllers;
 
+import com.hust.coffeeshop.common.CommonCode;
 import com.hust.coffeeshop.models.dto.PagingListResponse;
+import com.hust.coffeeshop.models.dto.report.inventory.request.FilterinventoryRequest;
+import com.hust.coffeeshop.models.dto.report.inventory.request.ReportInventoryRequest;
 import com.hust.coffeeshop.models.dto.reportOrder.*;
 import com.hust.coffeeshop.services.ReportOrderService;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -40,5 +43,20 @@ public class ReportOrderController {
     @GetMapping("/products")
     public List<ReportProductResponse> reportTopProducts(ReportProductFilter filterRequest) throws ParseException {
         return orderService.reportTopProducts(filterRequest);
+    }
+
+    @GetMapping("/sales")
+    public ReportOrderResponse reportSale(FilterinventoryRequest request) throws ParseException {
+        ReportInventoryRequest requests = new ReportInventoryRequest();
+        if (request.getEndDate() != null && request.getStartDate() != null) {
+            Long startDate = CommonCode.getMilliSeconds(request.getStartDate(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
+            Long endtDate = CommonCode.getMilliSeconds(request.getEndDate(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
+            requests.setEndDate(endtDate + 86400000);
+            requests.setStartDate(startDate);
+        } else {
+            requests.setEndDate(0);
+            requests.setStartDate(0);
+        }
+        return orderService.reportSale(requests);
     }
 }

@@ -5,6 +5,7 @@ import com.hust.coffeeshop.models.dto.PagingListResponse;
 import com.hust.coffeeshop.models.dto.report.inventory.request.FilterinventoryRequest;
 import com.hust.coffeeshop.models.dto.report.inventory.request.ReportInventoryRequest;
 import com.hust.coffeeshop.models.dto.report.inventory.response.ReportInventoryDetailResponse;
+import com.hust.coffeeshop.models.dto.report.inventory.response.ReportInventoryOnhand;
 import com.hust.coffeeshop.models.dto.report.inventory.response.ReportInventoryResponse;
 import com.hust.coffeeshop.models.dto.report.inventory.response.StockEventsResponse;
 import com.hust.coffeeshop.services.InventoryService;
@@ -48,5 +49,22 @@ public class ReportInventoryController {
             requests.setStartDate(0);
         }
         return inventoryService.reportInventoryDetail(requests,id);
+    }
+
+    @GetMapping(value = "/onhand")
+    public ReportInventoryOnhand inventoryOnhand(FilterinventoryRequest request) throws ParseException {
+        ReportInventoryRequest requests = new ReportInventoryRequest();
+        if(request.getEndDate() != null && request.getStartDate() != null){
+            Long startDate= CommonCode.getMilliSeconds(request.getStartDate(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
+            Long endtDate= CommonCode.getMilliSeconds(request.getEndDate(),"yyyy-MM-dd'T'HH:mm:ss'Z'");
+            requests.setEndDate(endtDate+86400000);
+            requests.setStartDate(startDate);
+            requests.setLimit(request.getLimit());
+            requests.setPage(request.getPage());
+        }else {
+            requests.setEndDate(0);
+            requests.setStartDate(0);
+        }
+        return inventoryService.inventoryOnhand(requests);
     }
 }

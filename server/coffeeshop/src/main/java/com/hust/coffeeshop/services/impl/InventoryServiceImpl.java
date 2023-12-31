@@ -1,17 +1,17 @@
 package com.hust.coffeeshop.services.impl;
 
 import com.hust.coffeeshop.models.dto.PagingListResponse;
+import com.hust.coffeeshop.models.dto.ingredient.IngredientFilterRequest;
 import com.hust.coffeeshop.models.dto.report.inventory.request.ReportInventoryRequest;
-import com.hust.coffeeshop.models.dto.report.inventory.response.ReportInventoryDetailResponse;
-import com.hust.coffeeshop.models.dto.report.inventory.response.ReportInventoryResponse;
-import com.hust.coffeeshop.models.dto.report.inventory.response.StockEventsResponse;
+import com.hust.coffeeshop.models.dto.report.inventory.response.*;
 import com.hust.coffeeshop.models.entity.InventoryLog;
-import com.hust.coffeeshop.models.entity.StocktakingIngredient;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
+import com.hust.coffeeshop.services.IngredientService;
 import com.hust.coffeeshop.services.InventoryService;
+import io.swagger.models.auth.In;
 import lombok.val;
-import org.springframework.data.domain.Page;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -30,10 +30,13 @@ public class InventoryServiceImpl implements InventoryService {
     private final StockUnitRepository stockUnitRepository;
     private final InventoryLogRepository inventoryLogRepository;
 
-    public InventoryServiceImpl(IngredientRepository ingredientRepository, StockUnitRepository stockUnitRepository,InventoryLogRepository inventoryLogRepository) {
+    private final IngredientService ingredientService;
+
+    public InventoryServiceImpl(IngredientRepository ingredientRepository, StockUnitRepository stockUnitRepository, InventoryLogRepository inventoryLogRepository, IngredientService ingredientService) {
         this.ingredientRepository = ingredientRepository;
         this.stockUnitRepository = stockUnitRepository;
         this.inventoryLogRepository = inventoryLogRepository;
+        this.ingredientService = ingredientService;
     }
 
     @Override
@@ -64,17 +67,18 @@ public class InventoryServiceImpl implements InventoryService {
             List<InventoryLog> dataNew = results.stream()
                     .filter(o -> o.getIngredientId() == dataIngredient)
                     .collect(Collectors.toList());
-            val startAmounts = dataNew.stream()
-                    .filter(o -> o.getCreatedOn() < request.getStartDate())
-                    .findFirst();
-            if (startAmounts.isPresent()) {
-                startAmount = startAmounts.get().getStockRemain();
-            }
+//            val startAmounts = dataNew.stream()
+//                    .filter(o -> o.getCreatedOn() < request.getStartDate())
+//                    .findFirst();
+//            if (startAmounts.isPresent()) {
+//                startAmount = startAmounts.get().getStockRemain();
+//            }
             val endAmounts = dataNew.stream()
                     .filter(o -> o.getCreatedOn() < request.getEndDate())
                     .findFirst();
             if (endAmounts.isPresent()) {
                 endAmount = endAmounts.get().getStockRemain();
+                startAmount = endAmount - (Integer.parseInt(endAmounts.get().getAmountChargeInUnit()));
             }
             //bán
             List<InventoryLog> orders = dataNew.stream()
@@ -99,19 +103,22 @@ public class InventoryServiceImpl implements InventoryService {
             }
             val ingredient = ingredientRepository.findById(dataIngredient);
             ReportInventoryResponse response = new ReportInventoryResponse();
-            response.setIngredientId(ingredient.get().getId());
+            if(ingredient.isPresent()) {
+                response.setIngredientId(ingredient.get().getId());
+                response.setIngredientName(ingredient.get().getName());
+                response.setIngredientId(ingredient.get().getId());
+                BigDecimal p = new BigDecimal(endAmount);
+                BigDecimal a = ingredient.get().getExportPrice().multiply(p);
+                response.setTotalCode(a);
+                response.setStartAmount(startAmount);
+                val stockUnit = stockUnitRepository.findById(ingredient.get().getStockUnitId());
+                response.setUnitName(stockUnit.get().getName());
+            }
             response.setAmountDecrease(amountDecrease);
             response.setAmountIncrease(amountIncrease);
             response.setAmountPurchase(amountPurchase);
             response.setEndAmount(endAmount);
-            response.setStartAmount(startAmount);
-            response.setIngredientName(ingredient.get().getName());
-            response.setIngredientId(ingredient.get().getId());
-            BigDecimal p = new BigDecimal(endAmount);
-            BigDecimal a = ingredient.get().getExportPrice().multiply(p);
-            response.setTotalCode(a);
-            val stockUnit = stockUnitRepository.findById(ingredient.get().getStockUnitId());
-            response.setUnitName(stockUnit.get().getName());
+
             reportInventoryResponses.add(response);
         }
         return new PagingListResponse<>(
@@ -175,5 +182,33 @@ public class InventoryServiceImpl implements InventoryService {
                 stockEventsResponses,
                 new PagingListResponse.Metadata(request.getPage(), request.getLimit(), results.size()));
 
+    }
+
+    @Override
+   public ReportInventoryOnhand inventoryOnhand(ReportInventoryRequest request){
+        IngredientFilterRequest filterRequest = new IngredientFilterRequest();
+        filterRequest.setLimit(request.getLimit());
+        filterRequest.setPage(request.getPage());
+        var ingredients = ingredientService.filterIngredient(filterRequest);
+        List<IngredientOnhandResponse> ingredientOnhandResponses = new ArrayList<>();
+        val results = inventoryLogRepository.findInventoryLogByDate1(request.getStartDate(), request.getEndDate());
+        if(ingredients.getContent() != null && !ingredients.getContent().isEmpty()){
+            ingredientOnhandResponses = ingredients.getContent().stream().map(i -> {
+                var inventoryLogs = results.stream().filter(r -> r.getIngredientId() == i.getId()).collect(Collectors.toList());
+                int totalAmountChargeIn = inventoryLogs.stream().map(InventoryLog::getAmountChargeInUnit).collect(Collectors.toList())
+                        .stream().mapToInt(Integer::parseInt).sum();
+                IngredientOnhandResponse ingredient = new IngredientOnhandResponse();
+                BeanUtils.copyProperties(i, ingredient);
+                ingredient.setPrice(i.getExportPrice());
+                ingredient.setQuantityOnhand(BigDecimal.valueOf(i.getQuantity() - totalAmountChargeIn));
+                return ingredient;
+            }).collect(Collectors.toList());
+        }
+        PagingListResponse<IngredientOnhandResponse> ingredientResponse = new PagingListResponse<>(
+                ingredientOnhandResponses, new PagingListResponse.Metadata(request.getPage(), request.getLimit(), ingredients.getTotalElements()));
+
+        ReportInventoryOnhand onhand = new ReportInventoryOnhand();
+        onhand.setInventories(ingredientResponse);
+        return onhand;
     }
 }

@@ -112,6 +112,11 @@ const useGenMenuData = () => {
     };
     menu.subMenus = [
       {
+        title: "Báo cáo tổng quan",
+        path: "/admin/report/dashboard",
+        typeRoute: "default",
+      },
+      {
         title: "Báo cáo kho",
         path: "/admin/report/inventory",
         typeRoute: "default",
