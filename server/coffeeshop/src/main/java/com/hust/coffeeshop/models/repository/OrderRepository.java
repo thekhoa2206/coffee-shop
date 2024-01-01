@@ -29,4 +29,6 @@ public interface OrderRepository  extends JpaRepository<Order, Integer>, JpaSpec
 
     @Query(value = "SELECT * FROM orders where id in (?1) ", nativeQuery = true)
     List<Order> getOrderByOrderIds(List<Integer> orderIds);
+    @Query(value = "SELECT * FROM orders where created_on >= ?1 and created_on <= ?2 ", nativeQuery = true)
+    List<Order> getOrdersByCreatedDate(long startDate, long endDate);
 }

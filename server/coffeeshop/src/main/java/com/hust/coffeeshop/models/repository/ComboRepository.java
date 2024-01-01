@@ -30,4 +30,5 @@ public interface ComboRepository  extends JpaRepository<Combo, Integer>, JpaSpec
             "and i.status in (?2)  and " +
             "lower(concat(i.name, '', i.description)) like lower(?1)))); ", nativeQuery = true)
     List<Combo> findComboByQuery(String query, List<Integer> statuses);
+
 }

@@ -21,7 +21,7 @@ export interface ReportCustomerResponse {
     totalDiscount?: number;
     quantity?: number;
 }
-export interface ReportCustomer{
+export interface ReportCustomer {
     data: ReportCustomerResponse[];
     metadata?: Metadata;
 }
@@ -33,4 +33,15 @@ export interface ReportProductResponse {
 
 export interface ReportProductFilter extends ReportFilterRequest {
     top?: number;
+}
+
+export interface ReportSaleResponse {
+    quantityOrder?: number;
+    quantityOrderCancel?: number;
+    totalOrder?: number;
+    totalOrderCancel?: number;
+    // Tổng tiền nguyên liệu đã dùng
+    totalIngredient?: number;
+    // Tổng tiền nguyên liệu bị huỷ
+    totalIngredientCancel?: number;
 }

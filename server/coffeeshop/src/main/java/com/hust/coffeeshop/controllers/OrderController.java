@@ -54,4 +54,9 @@ public class OrderController extends BaseException {
     public OrderPrintForm printForm(PrintOrderRequest input) throws TemplateException, IOException {
         return orderService.getPrintForm(input);
     }
+    @PutMapping("/{id}/update_item/{item_ids}")
+    public void updateStatusLineItem(@PathVariable("id") int id, @PathVariable("item_ids") String itemIds){
+        orderService.updateStatusItem(id, itemIds);
+        orderService.updateStatusOrder(id, itemIds);
+    }
 }

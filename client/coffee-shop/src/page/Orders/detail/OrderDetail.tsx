@@ -339,7 +339,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                     <OrderCancelIcon style={{ color: "#adadad", marginRight: 10 }} /> Hủy
                                 </MenuItem>
 
-                                <MenuItem
+                                {/* <MenuItem
                                     onClick={async () => {
                                         setOpenMenuCreateOrder(false);
                                         try {
@@ -357,10 +357,10 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                     }}
                                 >
                                     <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Đang thực hiện
-                                </MenuItem>
+                                </MenuItem> */}
 
 
-                                <MenuItem
+                                {/* <MenuItem
                                     onClick={async () => {
                                         setOpenMenuCreateOrder(false);
                                         try {
@@ -378,7 +378,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                     }}
                                 >
                                     <OrderIcon style={{ color: "#adadad", marginRight: 10 }} /> Chờ lấy đồ
-                                </MenuItem>
+                                </MenuItem> */}
 
                                 <MenuItem
                                     onClick={async () => {
@@ -386,7 +386,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                         try {
                                             let res = await OrderService.updateStatus(id, OrderStatus.COMPLETED);
                                             if (res.data) {
-                                                SnackbarUtils.success("Đơn hàng đã hoàn thành");
+                                                SnackbarUtils.success("Đơn hàng đã giao cho khách");
                                                 set((prev) => ({
                                                     ...prev,
                                                     order: res.data,

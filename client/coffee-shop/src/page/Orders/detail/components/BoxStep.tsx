@@ -16,25 +16,15 @@ interface BoxStepProps {
 const BoxStep = memo((props: BoxStepProps & PropsFromRedux) => {
     const classes = useStyles();
     const { order } = props;
-    const isDraft = useMemo(() => order?.status === OrderStatus.DRAFT, [order?.status]);
     const isCompleted = useMemo(() => order?.status === OrderStatus.COMPLETED, [order?.status]);
     const isInProgress = useMemo(() => order?.status === OrderStatus.IN_PROGRESS, [order?.status]);
-    const isWaitingDelivery = useMemo(() => order?.status === OrderStatus.WAITING_DELIVERY, [order?.status]);
     const isDeleted = useMemo(() => order?.status === OrderStatus.DELETED, [order?.status]);
 
     const steps: { label: string; time?: string }[] = useMemo(
         () => [
             {
-                label: "Đặt đồ",
-                time: order?.createdOn ? formatDateTime(order?.createdOn) : "",
-            },
-            {
                 label: "Đang pha chế",
                 time: isInProgress && order?.createdOn ? formatDateTime(order?.createdOn) : "",
-            },
-            {
-                label: "Chờ lấy đồ",
-                time: isWaitingDelivery && order?.createdOn ? formatDateTime(order?.createdOn) : "",
             },
             {
                 label: order?.status === OrderStatus.DELETED ? "Huỷ đơn" : "Hoàn thành",
@@ -53,21 +43,21 @@ const BoxStep = memo((props: BoxStepProps & PropsFromRedux) => {
                         disabled={
                             !(
                                 idx === 0 ||
-                                (idx === 1 && (isDeleted || isCompleted || isWaitingDelivery || isInProgress)) ||
-                                (idx === 2 && (isDeleted || isCompleted || isWaitingDelivery)) ||
+                                (idx === 1 && (isDeleted || isCompleted || isInProgress)) ||
+                                (idx === 2 && (isDeleted || isCompleted)) ||
                                 (idx === 3 && order?.status === OrderStatus.DELETED) || (isCompleted)
                             )
                         }
                         active={
                             idx === 0 ||
-                            (idx === 1 && (isDeleted || isCompleted || isWaitingDelivery || isInProgress)) ||
-                            (idx === 2 && (isDeleted || isCompleted || isWaitingDelivery )) ||
+                            (idx === 1 && (isDeleted || isCompleted || isInProgress)) ||
+                            (idx === 2 && (isDeleted || isCompleted )) ||
                             (idx === 3 && order?.status === OrderStatus.DELETED) || (isCompleted)
                         }
                         completed={
                             idx === 0 ||
-                            (idx === 1 && (isDeleted || isCompleted || isWaitingDelivery || isInProgress)) ||
-                            (idx === 2 && (isDeleted || isCompleted || isWaitingDelivery )) ||
+                            (idx === 1 && (isDeleted || isCompleted || isInProgress)) ||
+                            (idx === 2 && (isDeleted || isCompleted )) ||
                             (idx === 3 && order?.status === OrderStatus.DELETED) || (isCompleted)
                         }
                     >

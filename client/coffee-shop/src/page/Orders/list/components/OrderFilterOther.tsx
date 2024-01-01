@@ -136,12 +136,8 @@ const OrderFilterOther = (props: OrderFilterOtherProps) => {
                             let page = filter.page;
                             let options = [
                                 {
-                                    value: OrderStatus.DRAFT,
-                                    label: OrderStatus.getName(OrderStatus.DRAFT),
-                                },
-                                {
-                                    value: OrderStatus.WAITING_DELIVERY,
-                                    label: OrderStatus.getName(OrderStatus.WAITING_DELIVERY),
+                                    value: OrderStatus.IN_PROGRESS,
+                                    label: OrderStatus.getName(OrderStatus.IN_PROGRESS),
                                 },
                                 {
                                     value: OrderStatus.COMPLETED,

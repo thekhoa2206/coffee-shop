@@ -1,5 +1,5 @@
 
-import { BaseFilter, Metadata } from "services/types";
+import { BaseFilter, BaseResponse, Metadata } from "services/types";
 
 export type ReportInventoryResponse = {
      ingredientName : string;
@@ -64,4 +64,15 @@ export type StockEvent = {
     type?:string;
     notes?:string;
     stockRemain?:string;
+}
+
+export interface IngredientOnhandResponse extends BaseResponse {
+    name?: string;
+    price?: number;
+    quantityOnhand?: number;
+}
+
+export type ListIngredientOnHand = {
+    inventories?: IngredientOnhandResponse[];
+    metadata?: Metadata;
 }

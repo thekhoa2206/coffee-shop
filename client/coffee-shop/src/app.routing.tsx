@@ -46,6 +46,7 @@ const ReportInventoryDetail = React.lazy(
   () => import("./page/Report/ReportInventory/detail")
 );
 const ReportOrder = React.lazy(() => import("./page/Report/ReportOrder"));
+const ReportDashboard = React.lazy(() => import("./page/Report/ReportDashboard"));
 // const Table = React.lazy(() => import("./page/Table"));
 const Table = React.lazy(() => import("./page/Table/editTable"));
 const Dashboard = React.lazy(() => import("./page/Dashboard"));
@@ -430,6 +431,18 @@ let MAIN_ROUTES = (): Route[] => [
       withSubtitle: false,
     },
     authorities: [RolePermissionGroup.POS],
+  },
+  {
+    path: "/report/dashboard",
+    component: ReportDashboard,
+    extract: true,
+    header: {
+      title: "Tổng quan báo cáo",
+      linkTo: "/admin/report/dashboard",
+      showNoti: false,
+      withSubtitle: false,
+    },
+    authorities: [RolePermissionGroup.REPORT],
   }
 ];
 export default MAIN_ROUTES;

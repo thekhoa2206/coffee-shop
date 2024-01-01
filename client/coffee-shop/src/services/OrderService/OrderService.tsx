@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { getAxiosConfig } from "../config";
 import { ListOrderResponse, OrderFilter, OrderPrintForm, OrderPrintFormFilter, OrderRequest, OrderResponse } from "./types";
+import { IOInventoryFilter } from "services/InventoryService/types";
 class OrderService {
     static async filter(filter?: OrderFilter): Promise<AxiosResponse<ListOrderResponse>> {
         return axios.get(`/orders`, { ...getAxiosConfig(), params: filter});
@@ -22,6 +23,9 @@ class OrderService {
     }
     static async printForm(print?: OrderPrintFormFilter): Promise<AxiosResponse<OrderPrintForm>> {
         return axios.get(`/orders/print_forms`, { ...getAxiosConfig(), params: print});
+    }
+    static async updateStatusItem(orderId: number, itemIds: String): Promise<AxiosResponse<OrderPrintForm>> {
+        return axios.put(`/orders/${orderId}/update_item/${itemIds}`,{}, { ...getAxiosConfig()});
     }
 }
 export default OrderService;

@@ -26,4 +26,8 @@ public interface OrderService {
     OrderPrintForm getPrintForm(PrintOrderRequest printOrder) throws IOException, TemplateException;
 
     OrderResponse mapperOrderResponse(Order order);
+
+    void updateStatusItem(int orderId, String itemIds);
+
+    void updateStatusOrder(int orderId, String itemIds);
 }

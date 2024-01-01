@@ -263,6 +263,23 @@ public class IngredientServiceImpl implements IngredientService {
                     .build();
             filters.add(statuses1);
         }
+        //createdOn
+        if (filter.getCreatedOnMin() != 0) {
+            Filter createdOnMin = Filter.builder()
+                    .field("createdOn")
+                    .operator(QueryOperator.GREATER_THAN)
+                    .value(String.valueOf(filter.getCreatedOnMin()))
+                    .build();
+            filters.add(createdOnMin);
+        }
+        if (filter.getCreatedOnMax() != 0) {
+            Filter createdOnMax = Filter.builder()
+                    .field("createdOn")
+                    .operator(QueryOperator.LESS_THAN)
+                    .value(String.valueOf(filter.getCreatedOnMax()))
+                    .build();
+            filters.add(createdOnMax);
+        }
         Page<Ingredient> results;
         if (filters.size() > 0)
             results = ingredientRepository.findAll(filterRepository.getSpecificationFromFilters(filters), pageable);
