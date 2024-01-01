@@ -140,29 +140,29 @@ public class ReportOrderServiceImpl implements ReportOrderService {
         if (result.getMetadata().getTotal() != 0) {
             for (var order : result.getData()) {
                 if (reportCustomers.size() > 0) {
-                    var customer = reportCustomers
-                            .stream().filter(r -> r.getCustomer().getId() == order.getCustomerResponse().getId()).collect(Collectors.toList())
-                            .stream().findFirst().orElse(null);
-                    if (customer != null && customer.getCustomer() != null) {
-                        customer.setQuantity(customer.getQuantity() + 1);
-                        customer.setTotalDiscount(customer.getTotalDiscount().add(order.getDiscountTotal()));
-                        customer.setTotal(customer.getTotal().add(order.getTotal()));
-                        reportCustomers = reportCustomers
-                                .stream().map(r -> {
-                                    if (r.getCustomer().getId() == order.getCustomerResponse().getId()) {
-                                        return customer;
-                                    } else return r;
-                                }).collect(Collectors.toList());
-
-
-                    } else {
-                        ReportCustomerResponse reportCustomer = new ReportCustomerResponse();
-                        reportCustomer.setCustomer(order.getCustomerResponse());
-                        reportCustomer.setQuantity(1);
-                        reportCustomer.setTotal(order.getTotal());
-                        reportCustomer.setTotalDiscount(order.getDiscountTotal());
-                        reportCustomers.add(reportCustomer);
-                    }
+//                    var customer = reportCustomers
+//                            .stream().filter(r -> r.getCustomer().getId() == order.getCustomerResponse().getId()).collect(Collectors.toList())
+//                            .stream().findFirst().orElse(null);
+//                    if (customer != null && customer.getCustomer() != null) {
+//                        customer.setQuantity(customer.getQuantity() + 1);
+//                        customer.setTotalDiscount(customer.getTotalDiscount().add(order.getDiscountTotal()));
+//                        customer.setTotal(customer.getTotal().add(order.getTotal()));
+//                        reportCustomers = reportCustomers
+//                                .stream().map(r -> {
+//                                    if (r.getCustomer().getId() == order.getCustomerResponse().getId()) {
+//                                        return customer;
+//                                    } else return r;
+//                                }).collect(Collectors.toList());
+//
+//
+//                    } else {
+//                        ReportCustomerResponse reportCustomer = new ReportCustomerResponse();
+//                        reportCustomer.setCustomer(order.getCustomerResponse());
+//                        reportCustomer.setQuantity(1);
+//                        reportCustomer.setTotal(order.getTotal());
+//                        reportCustomer.setTotalDiscount(order.getDiscountTotal());
+//                        reportCustomers.add(reportCustomer);
+//                    }
                 } else {
                     ReportCustomerResponse reportCustomer = new ReportCustomerResponse();
                     reportCustomer.setCustomer(order.getCustomerResponse());

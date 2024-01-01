@@ -72,7 +72,7 @@ public class ItemServiceImpl implements ItemService {
         item.setDiscountPercentage(request.getDiscountPercentage());
         StockUnit stockUnit = new StockUnit();
         if (request.getStockUnitId() != 0) {
-            stockUnit = stockUnitRepository.findById(request.getStockUnitId()).get();
+            stockUnit = stockUnitRepository.findById(3).get();
         }
         var stockUnitResponse = mapper.map(stockUnit, StockUnitResponse.class);
         stockUnitResponse.set();

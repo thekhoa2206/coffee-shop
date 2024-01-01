@@ -7,9 +7,7 @@ import React, { useState } from "react";
 import { useCookies } from "react-cookie";
 import AccountService from "services/AccountService";
 import { colorPaper } from "theme/palette";
-import {
-  getMessageError
-} from "utilities";
+import { getMessageError } from "utilities";
 import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 import background from "../../images/login.jpg";
 import { LoginProps } from "./Login.types";
@@ -27,7 +25,7 @@ export const Login = (props: LoginProps) => {
   const handleChangePassword = (e: any) => {
     setPassword(e.target.value);
   };
-  const handleLogin = async (e:any) => {
+  const handleLogin = async (e: any) => {
     try {
       let res = await AccountService.login({
         username: username,
@@ -53,23 +51,23 @@ export const Login = (props: LoginProps) => {
   //         window.location.href = `admin/dashboard`
   //     }
   // })
- const handleKeyPress = (event:any) => {
-    if(event.key === 'Enter'){
+  const handleKeyPress = (event: any) => {
+    if (event.key === "Enter") {
       handleLogin(event);
     }
-  }
+  };
 
   return (
-    <Box style={{ width: "100%", height: "100%" }} >
-      <Image src={background} style={{ width: "100%"}}/>
+    <Box style={{ width: "100%", height: "100%" }}>
+      <Image src={background} style={{ width: "100%" }} />
       <Popper
-      onKeyDown={handleKeyPress}
+        onKeyDown={handleKeyPress}
         onClose={function (
           event: React.MouseEvent<Document, MouseEvent>
         ): void {
           throw new Error("Function not implemented.");
         }}
-        style={{marginLeft: "700px", height: "252px", marginTop: "100px"}}
+        style={{ marginLeft: "700px", height: "252px", marginTop: "100px" }}
         children={
           <Box
             style={{
@@ -79,7 +77,17 @@ export const Login = (props: LoginProps) => {
               border: "1px solid #D3D5D7",
             }}
           >
-            <Typography style={{fontSize: 20, fontWeight: 500, marginBottom: 20, marginTop: 20}} align="center">Đăng nhập</Typography>
+            <Typography
+              style={{
+                fontSize: 20,
+                fontWeight: 500,
+                marginBottom: 20,
+                marginTop: 20,
+              }}
+              align="center"
+            >
+              Đăng nhập
+            </Typography>
             <Box>
               <TextField
                 size="medium"
@@ -94,7 +102,7 @@ export const Login = (props: LoginProps) => {
             </Box>
             <Box>
               <TextField
-                type={isShow ?  "text" : "password"}
+                type={isShow ? "text" : "password"}
                 size="medium"
                 style={{
                   width: 400,
@@ -103,12 +111,17 @@ export const Login = (props: LoginProps) => {
                 }}
                 placeholder="Mật khẩu"
                 onChange={handleChangePassword}
-                
-               
                 InputProps={{
-                  endAdornment: <IconButton style={{background: colorPaper.main}} onClick={() => {setIsShow(!isShow)}}>
-                    {isShow ? <EyeIcon /> : <EyeSlashIcon/>}
-                  </IconButton>,
+                  endAdornment: (
+                    <IconButton
+                      style={{ background: colorPaper.main }}
+                      onClick={() => {
+                        setIsShow(!isShow);
+                      }}
+                    >
+                      {isShow ? <EyeIcon /> : <EyeSlashIcon />}
+                    </IconButton>
+                  ),
                 }}
               />
             </Box>
@@ -119,7 +132,6 @@ export const Login = (props: LoginProps) => {
                 size="large"
                 style={{ marginLeft: 180, marginTop: 40 }}
                 onClick={handleLogin}
-               
               >
                 Đăng nhập
               </Button>
