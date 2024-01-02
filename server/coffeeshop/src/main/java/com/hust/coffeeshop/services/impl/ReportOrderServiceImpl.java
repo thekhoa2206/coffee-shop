@@ -202,14 +202,21 @@ public class ReportOrderServiceImpl implements ReportOrderService {
         var totalOrderCancel = BigDecimal.ZERO;
         var totalIngredient = BigDecimal.ZERO;
         var totalIngredientCancel = BigDecimal.ZERO;
+        var quantityOrderCancel = BigDecimal.ZERO;
         for (var order: orders){
             totalOrders = totalOrders.add(order.getTotal());
             if(order.getStatus() == CommonStatus.OrderStatus.DELETED){
                 totalOrderCancel = totalOrderCancel.add(order.getTotal());
+                quantityOrderCancel.add(BigDecimal.ONE);
                 totalIngredient = getTotal(totalIngredientCancel, order);
             }
             totalIngredient = getTotal(totalIngredient, order);
         }
+        report.setTotalOrder(totalOrders);
+        report.setQuantityOrderCancel(totalOrderCancel);
+        report.setTotalIngredient(totalIngredient);
+        report.setQuantityOrderCancel(quantityOrderCancel);
+        report.setTotalOrderCancel(totalOrderCancel);
         return report;
     }
 
