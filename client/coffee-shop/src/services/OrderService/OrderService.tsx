@@ -27,5 +27,12 @@ class OrderService {
     static async updateStatusItem(orderId: number, itemIds: String): Promise<AxiosResponse<OrderPrintForm>> {
         return axios.put(`/orders/${orderId}/update_item/${itemIds}`,{}, { ...getAxiosConfig()});
     }
+
+    static async splitOrder(requests?: OrderRequest[], id?: string): Promise<AxiosResponse<OrderResponse>> {
+        return axios.put(`/orders/${id}/split_order`,requests, { ...getAxiosConfig()});
+    }
+    static async joinOrder(requests?: OrderRequest[], id?: string): Promise<AxiosResponse<OrderResponse>> {
+        return axios.put(`/orders/${id}/join_order`,requests, { ...getAxiosConfig()});
+    }
 }
 export default OrderService;

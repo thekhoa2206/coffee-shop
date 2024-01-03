@@ -43,6 +43,7 @@ export interface OrderItemComboResponse extends BaseResponse {
 }
 
 export type OrderRequest = {
+    id?: number;
     code?: string | null;
     customerId: number;
     note?: string | null;
@@ -50,6 +51,8 @@ export type OrderRequest = {
     orderItemRequest?: OrderItemRequest[];
     total?: number;
     tableIds?: any[];
+    status?: number;
+    paymentStatus?: number;
 }
 
 export type OrderItemRequest = {

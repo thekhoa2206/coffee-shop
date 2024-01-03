@@ -13,10 +13,11 @@ import { ChannelPosProps } from "./ChannelPos.type";
 import { DialogCreateOrder } from "./components/DialogCreateOrder/DialogCreateOrder";
 import { useOrderTableStore } from "./store";
 import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
-import OrderService, { OrderItemRequest, OrderRequest } from "services/OrderService";
+import OrderService, { OrderItemRequest, OrderRequest, OrderResponse } from "services/OrderService";
 import { getMessageError } from "utilities";
 import { useHistory } from "react-router-dom";
 import { BoxOrder } from "./components/BoxOrder/BoxOrder";
+import { DialogSplitOrder } from "./components/DialogSplitOrder/DialogSplitOrder";
 const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     const [filter, setFilter] = useState<TableFilterRequest>({
         page: 1,
@@ -24,6 +25,8 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     });
     const [openCreateOrder, setOpenCreateOrder] = useState<boolean>(false);
     const [openOrders, setOpenOrders] = useState<boolean>(false);
+    const [orderSplit, setOrderSplit] = useState<OrderResponse>();
+    const [openSplitOrders, setOpenSplitOrders] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [openButton, setOpenButton] = useState(false);
     const classes = props.classes;
@@ -183,6 +186,11 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
             SnackbarUtils.error(getMessageError(error));
         }
     }
+
+    const createSplitOrder = (order: OrderResponse) => {
+        setOrderSplit(order);
+        setOpenSplitOrders(true);
+    }
     return (
         <Box style={{ width: "95%" }}>
             <Box style={{ width: "95%", marginTop: 10 }}>
@@ -234,7 +242,9 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
                 <DialogCreateOrder createOrder={createOrder} tables={tables || []} open={openCreateOrder} onClose={() => { setOpenCreateOrder(false) }} />
             </Box>
             <BoxOrder
-                open={openOrders} onClose={() => {setOpenOrders(false)}}  />
+                open={openOrders} onClose={() => {setOpenOrders(false)}}  createSplitOrder={createSplitOrder}/>
+
+            {orderSplit && <DialogSplitOrder order={orderSplit} open={openSplitOrders} onClose={() => {setOpenSplitOrders(false)}}/>}
         </Box>
     );
 };

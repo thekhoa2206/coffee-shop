@@ -993,5 +993,84 @@ public class OrderServiceImpl implements OrderService {
             }
         }
     }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void splitOrder(int orderId, List<OrderRequest> requests){
+        if(!requests.isEmpty()){
+            for (var request : requests) {
+                if(request.getId() != 0){
+                    var order = orderRepository.findById(request.getId());
+                    var itemIds = request.getOrderItemRequest().stream().map(OrderItemRequest::getId).collect(Collectors.toList());
+                    var lineItems = orderItemRepository.findByIds(itemIds);
+                    BigDecimal total = BigDecimal.ZERO;
+                    for (var item : lineItems
+                         ) {
+                        total = total.add(item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+                    }
+                    order.get().setTotal(total);
+                    orderRepository.save(order.get());
+                }else {
+                    var order = new Order();
+                    order.setStatus(request.getStatus());
+                    order.setNote(request.getNote());
+                    var lastId = orderRepository.getLastOrderId();
+                    if (request.getCode() == null)
+                        order.setCode("DON" + (lastId + 1));
+                    String username = ThreadContext.get(TheadContextEnum.JWT_USER_NAME.name());
+                    order.setCreatedBy(username);
+                    order.setCustomerId(1);
+                    order.setModifiedOn();
+                    order.setCreatedOn();
+                    order.setDiscountTotal(request.getDiscountTotal());
+                    var itemIds = request.getOrderItemRequest().stream().map(OrderItemRequest::getId).collect(Collectors.toList());
+                    var lineItems = orderItemRepository.findByIds(itemIds);
+                    BigDecimal total = BigDecimal.ZERO;
+                    for (var item : lineItems
+                    ) {
+                        total = total.add(item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
+                    }
+                    order.setTotal(total);
+                    order = orderRepository.save(order);
+                    var id = order.getId();
+                    lineItems.forEach(i -> i.setOrderId(id));
+                    orderItemRepository.saveAll(lineItems);
+                }
+            }
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void joinOrder(int orderId, List<OrderRequest> requests){
+        if(!requests.isEmpty()){
+            var orderIds = requests.stream().map(OrderRequest::getId).collect(Collectors.toList());
+            var lineItems = orderItemRepository.findOrderItemByOrderIds(orderIds);
+            for (var request : requests) {
+                if(request.getId() == orderId){
+                    var order = orderRepository.findById(orderId);
+                    BigDecimal total = BigDecimal.ZERO;
+                    for (var i : lineItems) {
+                        total = total.add(i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())));
+                        i.setOrderId(orderId);
+                        if(i.isCombo()){
+                            var combos = orderItemComboRepository.findOrderItemComboByOrderItemId(i.getId());
+                            if (!combos.isEmpty()){
+                                combos.forEach(c -> c.setOrderId(orderId));
+                                orderItemComboRepository.saveAll(combos);
+                            }
+                        }
+                    }
+                    order.get().setTotal(total);
+                    orderItemRepository.saveAll(lineItems);
+                    orderRepository.save(order.get());
+                }else {
+                    var order = orderRepository.findById(request.getId());
+                    order.get().setStatus(CommonStatus.OrderStatus.DELETED);
+                    orderRepository.save(order.get());
+                }
+            }
+        }
+    }
 }
 

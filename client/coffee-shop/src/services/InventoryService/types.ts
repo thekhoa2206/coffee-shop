@@ -73,6 +73,6 @@ export interface IngredientOnhandResponse extends BaseResponse {
 }
 
 export type ListIngredientOnHand = {
-    inventories?: IngredientOnhandResponse[];
+    data?: IngredientOnhandResponse[];
     metadata?: Metadata;
 }

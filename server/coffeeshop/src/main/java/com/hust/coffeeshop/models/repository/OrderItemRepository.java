@@ -15,4 +15,10 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Integer>, 
     List<OrderItem> findOrderItemByOrderId(int  orderId);
     @Query(value = "SELECT  order_item.* FROM order_item WHERE  product_id=?1 AND  created_on>=?2 AND created_on<=?3 AND combo=0 ", nativeQuery = true)
     List<OrderItem>  findOrderItemByIngredientId(int variantId, long startDate, long endDate);
+
+    @Query(value = "SELECT order_item.* FROM order_item WHERE order_id in (?1) AND status != 4", nativeQuery = true)
+    List<OrderItem> findOrderItemByOrderIds(List<Integer>  orderIds);
+
+    @Query(value = "SELECT order_item.* FROM order_item WHERE id in (?1) AND status != 4", nativeQuery = true)
+    List<OrderItem> findByIds(List<Integer>  ids);
 }

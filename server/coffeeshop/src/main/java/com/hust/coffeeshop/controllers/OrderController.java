@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/orders")
@@ -58,5 +59,17 @@ public class OrderController extends BaseException {
     public void updateStatusLineItem(@PathVariable("id") int id, @PathVariable("item_ids") String itemIds){
         orderService.updateStatusItem(id, itemIds);
         orderService.updateStatusOrder(id, itemIds);
+    }
+
+    //APi tách đơn
+    @PutMapping("/{id}/split_order")
+    public void splitOrder(@PathVariable("id") int id, @RequestBody List<OrderRequest> requests){
+        orderService.splitOrder(id, requests);
+    }
+
+    //APi gộp đơn hàng
+    @PutMapping("/{id}/join_order")
+    public void joinOrder(@PathVariable("id") int id, @RequestBody List<OrderRequest> requests){
+        orderService.joinOrder(id, requests);
     }
 }

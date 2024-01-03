@@ -4,7 +4,7 @@ import DialogContent from "components/Dialog/DialogContent";
 import { CloseIcon } from "components/SVG";
 import { OrderStatus } from "page/Orders/utils/OrderContants";
 import React, { useEffect, useState } from "react";
-import OrderService, { OrderFilter, OrderItemResponse } from "services/OrderService";
+import OrderService, { OrderFilter, OrderItemResponse, OrderResponse } from "services/OrderService";
 import { TableOrderResponses } from "services/TableService";
 import { colorBlue } from "theme/palette";
 import { formatMoney, getMessageError } from "utilities";
@@ -16,20 +16,24 @@ import Button from "components/Button";
 import { toString } from "lodash";
 import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
 import useModal from "components/Modal/useModal";
+import { DialogSplitOrder } from "../DialogSplitOrder/DialogSplitOrder";
 
 export type BoxOrderProps = {
     open: boolean;
     onClose: () => void;
     classRoot?: string;
+    createSplitOrder: (order: OrderResponse) => void;
 }
 
 export const BoxOrder = (props: BoxOrderProps) => {
     const classes = useStyles();
+    const [openSplitOrders, setOpenSplitOrders] = useState<boolean>(false);
     const { closeModal, confirm, openModal } = useModal();
     const {
         onClose,
         open,
         classRoot,
+        createSplitOrder,
     } = props;
     const [orders, setOrders] = useState<TableOrderResponses>({
         data: [],
@@ -217,13 +221,18 @@ export const BoxOrder = (props: BoxOrderProps) => {
                                             }
                                         })
                                     }}>Thanh toán</Button>
+                                    <Button color="primary" onClick={() => {createSplitOrder(item)}}>
+                                        Tách đơn
+                                    </Button>
                                 </Box>
                             )}
+
                         </Box>
                     ))
                     }
                 </Box>
             </DialogContent>
+
         </Dialog>
     );
 }

@@ -7,6 +7,7 @@ import freemarker.template.TemplateException;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 
 public interface OrderService {
     //api filter
@@ -30,4 +31,8 @@ public interface OrderService {
     void updateStatusItem(int orderId, String itemIds);
 
     void updateStatusOrder(int orderId, String itemIds);
+
+    void splitOrder(int orderId, List<OrderRequest> requests);
+
+    void joinOrder(int orderId, List<OrderRequest> requests);
 }

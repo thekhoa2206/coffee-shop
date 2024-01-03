@@ -8,7 +8,7 @@ class InventoryService {
     static async detail(filter?: IOInventoryFilter,id?: string): Promise<AxiosResponse<ReportInventoryDetailResponse>> {
         return axios.get(`/report/inventory/${id}`, { ...getAxiosConfig(), params: filter});
     }
-    static async onHand(filter?: IOInventoryFilter): Promise<AxiosResponse<ListIngredientOnHand>> {
+    static async onHand(filter?: IOInventoryFilter): Promise<AxiosResponse<{inventories: ListIngredientOnHand}>> {
         return axios.get(`/report/inventory/onhand`, { ...getAxiosConfig(), params: filter});
     }
 }

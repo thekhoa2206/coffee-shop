@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderRequest {
+    private int id;
     private String code;
     private int customerId;
     private String note;
@@ -16,4 +17,6 @@ public class OrderRequest {
     private List<OrderItemRequest> orderItemRequest;
     private BigDecimal total;
     private List<Integer> tableIds;
+    private int status;
+    private int paymentStatus;
 }
