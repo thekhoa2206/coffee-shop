@@ -16,4 +16,5 @@ public class OrderFilterRequest extends PagingFilterRequest {
     private String createdOnMin;
     private String modifiedOnMax;
     private String modifiedOnMin;
+    private String tableIds;
 }

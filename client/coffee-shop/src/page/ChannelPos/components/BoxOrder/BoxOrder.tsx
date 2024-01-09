@@ -5,7 +5,7 @@ import { CloseIcon } from "components/SVG";
 import { OrderStatus } from "page/Orders/utils/OrderContants";
 import React, { useEffect, useState } from "react";
 import OrderService, { OrderFilter, OrderItemResponse, OrderResponse } from "services/OrderService";
-import { TableOrderResponses } from "services/TableService";
+import { TableOrderResponses, TableResponse } from "services/TableService";
 import { colorBlue } from "theme/palette";
 import { formatMoney, getMessageError } from "utilities";
 import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
@@ -23,6 +23,8 @@ export type BoxOrderProps = {
     onClose: () => void;
     classRoot?: string;
     createSplitOrder: (order: OrderResponse) => void;
+    createJoinOrder: (order: OrderResponse) => void;
+    tables?: TableResponse[];
 }
 
 export const BoxOrder = (props: BoxOrderProps) => {
@@ -34,6 +36,8 @@ export const BoxOrder = (props: BoxOrderProps) => {
         open,
         classRoot,
         createSplitOrder,
+        tables,
+        createJoinOrder,
     } = props;
     const [orders, setOrders] = useState<TableOrderResponses>({
         data: [],
@@ -56,6 +60,9 @@ export const BoxOrder = (props: BoxOrderProps) => {
     }, [open])
     const initData = async () => {
         try {
+            if (tables && tables.length > 0) {
+                filter.tableIds = tables?.map((i) => i.id).join(",");
+            } else filter.tableIds = undefined;
             var res = await OrderService.filter(filter);
             if (res.data) {
                 setOrders(res.data);
@@ -172,7 +179,7 @@ export const BoxOrder = (props: BoxOrderProps) => {
                         <Box key={item.id}>
                             <Grid xs={12} container spacing={2}>
                                 <Grid item xs={1}>
-                                    <Box style={{ marginTop: -3 }}  onClick={() => { handleOpenDrillDown(item.id) }}><IconButton style={{ width: 20, height: 20 }}>{item.isShow ? <ArrowDropUp style={{ width: 20, color: colorBlue.primary.main }} /> : <ArrowDropDownIcon style={{ width: 20 }} />}</IconButton></Box>
+                                    <Box style={{ marginTop: -3 }} onClick={() => { handleOpenDrillDown(item.id) }}><IconButton style={{ width: 20, height: 20 }}>{item.isShow ? <ArrowDropUp style={{ width: 20, color: colorBlue.primary.main }} /> : <ArrowDropDownIcon style={{ width: 20 }} />}</IconButton></Box>
                                 </Grid>
                                 <Grid item xs={3} onClick={() => { handleOpenDrillDown(item.id) }}><Typography style={{ color: colorBlue.primary.main, fontSize: 12, cursor: "pointer" }}>{item.code}</Typography></Grid>
                                 <Grid item xs={4}>{item.tableResponses && item.tableResponses?.map((t) => t.name).join(", ")}</Grid>
@@ -196,34 +203,39 @@ export const BoxOrder = (props: BoxOrderProps) => {
                                                         <TableCell><Typography style={{ fontSize: 12 }}>{lineItem.name}</Typography></TableCell>
                                                         <TableCell><Typography style={{ fontSize: 12 }}>{lineItem.quantity}</Typography></TableCell>
                                                         <TableCell align="right"><Typography style={{ fontSize: 12 }}>{formatMoney(lineItem.price)}</Typography></TableCell>
-                                                        <TableCell><Button color="primary" disabled={lineItem.status === OrderStatus.COMPLETED} onClick={() => {finishItem(item.id, toString(lineItem.id))}}>Trả đồ</Button></TableCell>
+                                                        <TableCell><Button color="primary" disabled={lineItem.status === OrderStatus.COMPLETED} onClick={() => { finishItem(item.id, toString(lineItem.id)) }}>Trả đồ</Button></TableCell>
                                                     </TableRow>
                                                 ))}
                                                 <TableRow>
                                                     <TableCell><Typography></Typography></TableCell>
                                                     <TableCell><Typography style={{ fontSize: 12 }}>{item.orderItemResponses && totalQuantity(item.orderItemResponses)}</Typography></TableCell>
                                                     <TableCell align="right"><Typography style={{ fontSize: 12 }}>{item.orderItemResponses && formatMoney(totalPrice(item.orderItemResponses))}</Typography></TableCell>
-                                                    
+
                                                 </TableRow>
                                             </TableBody>
                                         </Table>
 
                                     </Box>
-                                    <Button color="primary" onClick={() => {
-                                        openModal(ConfirmDialog, {
-                                            confirmButtonText: "Xác nhận",
-                                            message: `Bạn có muốn thanh toán đơn hàng ${item.code} không?`,
-                                            title: "Thanh toán đơn hàng",
-                                            cancelButtonText: "Thoát",
-                                        }).result.then((res) => {
-                                            if (res) {
-                                                addPayment(item.id);
-                                            }
-                                        })
-                                    }}>Thanh toán</Button>
-                                    <Button color="primary" onClick={() => {createSplitOrder(item)}}>
-                                        Tách đơn
-                                    </Button>
+                                    <Box style={{display: "flex"}}>
+                                        <Button color="primary" onClick={() => {
+                                            openModal(ConfirmDialog, {
+                                                confirmButtonText: "Xác nhận",
+                                                message: `Bạn có muốn thanh toán đơn hàng ${item.code} không?`,
+                                                title: "Thanh toán đơn hàng",
+                                                cancelButtonText: "Thoát",
+                                            }).result.then((res) => {
+                                                if (res) {
+                                                    addPayment(item.id);
+                                                }
+                                            })
+                                        }}>Thanh toán</Button>
+                                        <Button color="primary" onClick={() => { createSplitOrder(item) }}>
+                                            Tách đơn
+                                        </Button>
+                                        <Button color="primary" onClick={() => { createJoinOrder(item) }}>
+                                            Gộp đơn
+                                        </Button>
+                                    </Box>
                                 </Box>
                             )}
 

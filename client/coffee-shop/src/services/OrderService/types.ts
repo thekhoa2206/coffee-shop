@@ -108,5 +108,6 @@ export class OrderFilter implements IOOrderFilter {
       public createdOnMin?: string,
       public createdOnMax?: string,
       public createdOnPredefined?: string,
+      public tableIds?: string,
     ) {}
   }

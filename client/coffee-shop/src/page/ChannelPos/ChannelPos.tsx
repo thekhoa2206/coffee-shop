@@ -18,6 +18,7 @@ import { getMessageError } from "utilities";
 import { useHistory } from "react-router-dom";
 import { BoxOrder } from "./components/BoxOrder/BoxOrder";
 import { DialogSplitOrder } from "./components/DialogSplitOrder/DialogSplitOrder";
+import { DialogJoinOrder } from "./components/DialogJoinOrder/DialogJoinOrder";
 const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     const [filter, setFilter] = useState<TableFilterRequest>({
         page: 1,
@@ -26,6 +27,7 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     const [openCreateOrder, setOpenCreateOrder] = useState<boolean>(false);
     const [openOrders, setOpenOrders] = useState<boolean>(false);
     const [orderSplit, setOrderSplit] = useState<OrderResponse>();
+    const [openOrderJoin, setOpenOrderJoin] = useState<boolean>(false);
     const [openSplitOrders, setOpenSplitOrders] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [openButton, setOpenButton] = useState(false);
@@ -191,6 +193,11 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
         setOrderSplit(order);
         setOpenSplitOrders(true);
     }
+
+    const createJoinOrder = (order: OrderResponse) => {
+        setOrderSplit(order);
+        setOpenSplitOrders(true);
+    }
     return (
         <Box style={{ width: "95%" }}>
             <Box style={{ width: "95%", marginTop: 10 }}>
@@ -216,7 +223,7 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
                 >
                     Đánh dấu bàn trống
                 </Button> */}
-                <Button variant="outlined" color="primary" style={{ float: "right", marginRight: 10 }} onClick={() => {setOpenOrders(true)}}>Đơn hàng đang phục vụ</Button>
+                <Button variant="outlined" color="primary" style={{ float: "right", marginRight: 10 }} onClick={() => { setOpenOrders(true) }}>Đơn hàng đang phục vụ</Button>
             </Box>
             <Box style={{ width: "95%", margin: "auto", top: "20px", display: "flex", flexWrap: "wrap", marginTop: 20 }}>
                 {tableRes.map((item, index) => (
@@ -242,9 +249,11 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
                 <DialogCreateOrder createOrder={createOrder} tables={tables || []} open={openCreateOrder} onClose={() => { setOpenCreateOrder(false) }} />
             </Box>
             <BoxOrder
-                open={openOrders} onClose={() => {setOpenOrders(false)}}  createSplitOrder={createSplitOrder}/>
+                open={openOrders} onClose={() => { setOpenOrders(false) }} createSplitOrder={createSplitOrder} tables={tables || []} createJoinOrder={createJoinOrder} />
 
-            {orderSplit && <DialogSplitOrder order={orderSplit} open={openSplitOrders} onClose={() => {setOpenSplitOrders(false)}}/>}
+            {orderSplit && <DialogSplitOrder order={orderSplit} open={openSplitOrders} onClose={() => { setOpenSplitOrders(false) }} />}
+            {orderSplit && <DialogJoinOrder order={orderSplit} open={openOrderJoin} onClose={() => { setOpenOrderJoin(false) }} />}
+
         </Box>
     );
 };

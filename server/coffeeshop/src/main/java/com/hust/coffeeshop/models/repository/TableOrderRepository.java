@@ -15,7 +15,7 @@ public interface TableOrderRepository extends JpaRepository<TableOrder, Integer>
     List<TableOrder> findByTableId(int tableId);
     @Query(value = "SELECT * FROM table_order WHERE order_id = ?1 AND status = 1", nativeQuery = true)
     List<TableOrder> findByOrderId(int tableId);
-    @Query(value = "SELECT * FROM table_order WHERE order_id ịn (?1) AND status = 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM table_order WHERE table_id in (?1) AND status = 1", nativeQuery = true)
     List<TableOrder> findByTableIds(List<Integer> ids);
 
 

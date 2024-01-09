@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -85,6 +86,15 @@ public class OrderServiceImpl implements OrderService {
                 filter.setIds(new ArrayList<>());
             }
             filter.setQuery(null);
+        }
+        if(filter.getTableIds() != null){
+            List<Integer> tableIds = Stream.of(filter.getTableIds().split(",")).map(Integer::parseInt).collect(Collectors.toList());
+            var tableOrders = tableOrderRepository.findByTableIds(tableIds);
+            if(!tableOrders.isEmpty()){
+                var ids = tableOrders.stream().map(TableOrder::getOrder_Id).distinct().collect(Collectors.toList());
+                if(filter.getIds() != null && !filter.getIds().isEmpty()) filter.getIds().addAll(ids);
+                else filter.setIds(ids);
+            }
         }
         Pageable pageable = PageRequest.of(
                 filter.getPage() - 1,
