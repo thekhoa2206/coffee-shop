@@ -324,7 +324,7 @@ const SelectInfinite = memo(
           referenceElement={refInput.current}
           open={open}
           style={{
-            zIndex: 999,
+            zIndex: 99999,
           }}
           ignoreEventCloseInRootRef
           onClose={handleClosePopover}

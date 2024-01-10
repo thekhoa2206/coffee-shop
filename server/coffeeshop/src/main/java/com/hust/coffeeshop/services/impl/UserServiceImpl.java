@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    //api tạo
+    //hàm tạo người dùng
     @Override
     public UserResponse create(CreateUserRequest request) {
         if (request.getName() == null) throw new ErrorException("Tên  nhân viên không được để trống");
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
         }
         return userResponse;
     }
-    //api tạo
+    //hàm cập nhật thông tin người dùng
     @Override
     public UserResponse update(CreateUserRequest request,int id) {
         val users = userRepository.findById(id);
@@ -103,6 +103,7 @@ public class UserServiceImpl implements UserService {
         }
         return userResponse;
     }
+    //Hàm lấy thông tin người dùng theo id
     @Override
     public UserResponse getById(int id) {
         val users = userRepository.findById(id);
@@ -114,6 +115,7 @@ public class UserServiceImpl implements UserService {
         }
          return userResponse;
     }
+    //HÀm Xoá thông tin user
     @Override
         public void deleteById(int id) {
         val users = userRepository.findById(id);
@@ -126,6 +128,7 @@ public class UserServiceImpl implements UserService {
             throw new ErrorException("Xoá nhân viên thất bại");
         }
     }
+    //Hàm lọc danh sách user
     @Override
     public PagingListResponse<UserResponse> filterUser(IngredientFilterRequest filter){
         Pageable pageable = PageRequest.of(

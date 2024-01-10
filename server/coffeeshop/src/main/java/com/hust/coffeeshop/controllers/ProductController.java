@@ -19,6 +19,7 @@ public class ProductController {
         this.productService = productService;
     }
 
+    //Api lọc danh sách sản phẩm (combo + phiên bản) bán hàng để tạo đơn hàng
     @GetMapping
     public PagingListResponse<ProductResponse> filter(ProductFilterRequest filter){
         return productService.filter(filter);

@@ -21,24 +21,29 @@ public class ComboController {
         this.comboService = comboService;
     }
 
+    //Api lấy thông tin sản phẩm combo bằng id
     @GetMapping("/{id}")
     public ComboRespone getById(@PathVariable("id") int id)
     {
         return comboService.getbyId(id);
     }
 
+    //Api lọc danh sách các combo
     @GetMapping
     public PagingListResponse<ComboRespone> filter(ItemRequest filter){
         return comboService.filter(filter);
     }
+    //Api tạo combo
     @PostMapping
     public ComboRespone create(@RequestBody CreateComboRequest request) throws IOException {
         return comboService.create(request);
     }
+    //Api sửa combo
     @PutMapping("/{id}")
     public ComboRespone update(@RequestBody CreateComboRequest request, @PathVariable("id") int id){
         return comboService.update(request,id);
     }
+    //Api xoá combo
     @DeleteMapping
     public void delete(@PathVariable("id") int id){
         comboService.delete(id);

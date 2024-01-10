@@ -18,11 +18,12 @@ public class RoleController extends BaseException {
     public RoleController(RoleService roleService) {
         this.roleService = roleService;
     }
-    // tạo role mới
+    // tạo quyền mới
     @PostMapping
     public RoleResponse create(@RequestBody CreateRoleRequest request){
         return roleService.create(request);
     }
+    //Api lọc danh sách quyền
     @GetMapping
     public PagingListResponse<RoleResponse> filter(ItemRequest filter){
         return roleService.filter(filter);

@@ -1,7 +1,7 @@
 package com.hust.coffeeshop.common;
 
 import java.util.HashMap;
-
+// Mẫu in của đơn hàng
 public class PrintVariableMap {
     public static final HashMap<String, String> ORDER = new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;

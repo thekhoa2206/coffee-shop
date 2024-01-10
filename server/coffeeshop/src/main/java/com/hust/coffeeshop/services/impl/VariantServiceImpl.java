@@ -44,6 +44,7 @@ public class VariantServiceImpl implements VariantService {
         this.productService = productService;
     }
 
+    //Hàm lọc danh sách phiên bản sản phẩm
     @Override
     public PagingListResponse<VariantRepsone> filter(VariantFilterRequest filter) {
         Pageable pageable = PageRequest.of(
@@ -109,6 +110,7 @@ public class VariantServiceImpl implements VariantService {
                 variantRepsones,
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results != null ? results.getTotalElements() : 0));
     }
+    //Hàm lấy thông tin phiên bản sản phẩm theo id
     @Override
     public VariantRepsone getById(int id){
         if(id == 0){

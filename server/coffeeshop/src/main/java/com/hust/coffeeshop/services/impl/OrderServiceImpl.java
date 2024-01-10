@@ -6,10 +6,8 @@ import com.hust.coffeeshop.models.dto.ingredient.IngredientFilterRequest;
 import com.hust.coffeeshop.models.dto.order.*;
 import com.hust.coffeeshop.models.dto.table.TableResponse;
 import com.hust.coffeeshop.models.entity.*;
-import com.hust.coffeeshop.models.exception.BaseException;
 import com.hust.coffeeshop.models.exception.ErrorException;
 import com.hust.coffeeshop.models.repository.*;
-import com.hust.coffeeshop.services.CustomerService;
 import com.hust.coffeeshop.services.IngredientService;
 import com.hust.coffeeshop.services.OrderService;
 import com.hust.coffeeshop.services.ProductService;
@@ -39,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
     private final FilterRepository filterRepository;
     private final ModelMapper mapper;
     private final OrderItemRepository orderItemRepository;
-    private final CustomerService customerService;
+
     private final ProductService productService;
     private final ComboRepository comboRepository;
     private final ComboItemRepository comboItemRepository;
@@ -52,12 +50,11 @@ public class OrderServiceImpl implements OrderService {
     private final TableOrderRepository tableOrderRepository;
     private final TableRepository tableRepository;
 
-    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, CustomerService customerService, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService, OrderItemComboRepository orderItemComboRepository, InventoryLogRepository inventoryLogRepository, TableOrderRepository tableOrderRepository, TableRepository tableRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, FilterRepository filterRepository, ModelMapper mapper, OrderItemRepository orderItemRepository, ProductService productService, ComboRepository comboRepository, ComboItemRepository comboItemRepository, ItemIngredientRepository itemIngredientRepository, IngredientRepository ingredientRepository, VariantRepository variantRepository, IngredientService ingredientService, OrderItemComboRepository orderItemComboRepository, InventoryLogRepository inventoryLogRepository, TableOrderRepository tableOrderRepository, TableRepository tableRepository) {
         this.orderRepository = orderRepository;
         this.filterRepository = filterRepository;
         this.mapper = mapper;
         this.orderItemRepository = orderItemRepository;
-        this.customerService = customerService;
         this.productService = productService;
         this.comboRepository = comboRepository;
         this.comboItemRepository = comboItemRepository;
@@ -755,6 +752,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    //Hàm cập nhật trạng thái đơn hàng
     @Override
     @Transactional(rollbackOn = Exception.class)
     public OrderResponse updateStatus(int id, int status) {
@@ -970,6 +968,8 @@ public class OrderServiceImpl implements OrderService {
             }
         }
     }
+
+    //Hàm update trạng thái của từng đồ uống trong đơn hàng
     @Override
     @Transactional
     public void updateStatusItem(int orderId, String itemIds){
@@ -988,6 +988,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+    //HÀm update trạng thái đơn hàng
     @Override
     public void updateStatusOrder(int orderId, String itemIds){
         var order = orderRepository.findById(orderId);
@@ -1004,6 +1005,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    //Hàm tách đơn hàng
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void splitOrder(int orderId, List<OrderRequest> requests){
@@ -1050,6 +1052,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    //Hàm gộp đơn hàng
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void joinOrder(int orderId, List<OrderRequest> requests){

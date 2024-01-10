@@ -59,7 +59,7 @@ public class ItemServiceImpl implements ItemService {
         this.categoryRepository = categoryRepository;
     }
 
-    //api tạo
+    //Hàm tạo mới mặt hàng
     @Override
     @Transactional(rollbackOn = Exception.class)
     public ItemRepsone create(CreateItemRequest request) {
@@ -138,7 +138,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepsone;
     }
 
-    //api update
+    //Hàm cập nhật thông tin mặt hàng
     @Override
     @Transactional(rollbackOn = Exception.class)
     public ItemRepsone update(CreateItemRequest request, int id) {
@@ -163,7 +163,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepsone;
     }
 
-    //api get id
+    //Hàm lấy thông tin mặt hàng bởi id
     @Override
     public ItemRepsone getById(int id) {
         if (id == 0) throw new ErrorException("Không có id");
@@ -209,7 +209,7 @@ public class ItemServiceImpl implements ItemService {
         return itemResponse;
     }
 
-    //api xóa
+    //Hàm xoá thông tin mặt hàng
     @Override
     public void delete(int id) {
         val item = itemRepository.findById(id);
@@ -230,7 +230,7 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    //api filter
+    //hàm lọc danh sách mặt hàng
     @Override
     public PagingListResponse<ItemRepsone> filter(ItemRequest filter) {
         Pageable pageable = PageRequest.of(
@@ -290,6 +290,7 @@ public class ItemServiceImpl implements ItemService {
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results.getTotalElements()));
     }
 
+    //Hàm cập nhật phiên bản sản phẩm
     @Transactional(rollbackOn = Exception.class)
     public void updateVariant(List<CreateVariantRequest> variantRequests, List<Variant> variants, int itemId) {
         List<Variant> variantNews = new ArrayList<>();
@@ -337,6 +338,7 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+    //Hàm cập nhật thông tin nguyên liệu khi thay đổi mặt hàng
     @Transactional(rollbackOn = Exception.class)
     public void updateIngredients(List<IngredientCreateItemRequest> ingredientItemRequests, List<ItemIngredient> itemIngredients, int itemId, int variantId) {
         List<ItemIngredient> itemIngredientNews = new ArrayList<>();

@@ -38,6 +38,7 @@ public class StockUnitServiceImpl implements StockUnitService {
     }
 
 
+    //Hàm tạo mới đơn vị
     @Override
     public StockUnitResponse create(StockUnitRequest request) {
         if (request.getName() == null) throw new ErrorException("Tên đơn vị không được để trống");
@@ -52,6 +53,7 @@ public class StockUnitServiceImpl implements StockUnitService {
         return stockUnitResponse;
     }
 
+    //Hàm cập nhật đơn vị
     @Override
     public StockUnitResponse update(StockUnitRequest request, int id) {
         if (id == 0) throw new ErrorException("Không tìm thấy thông tin đơn vị");
@@ -65,6 +67,7 @@ public class StockUnitServiceImpl implements StockUnitService {
         return stockUnitResponse;
     }
 
+    //Hàm xoá đơn vị
     @Override
     public void delete(int id) {
         if (id == 0) throw new ErrorException("Không tìm thấy thông tin đơn vị");
@@ -74,6 +77,7 @@ public class StockUnitServiceImpl implements StockUnitService {
         stockUnitRepository.save(stockUnit);
     }
 
+    //Hàm lấy thông tin đơn vị theo id
     @Override
     public StockUnitResponse getById(int id) {
         if (id == 0) throw new ErrorException("Không tìm thấy thông tin đơn vị");
@@ -83,6 +87,7 @@ public class StockUnitServiceImpl implements StockUnitService {
         return stockUnitResponse;
     }
 
+    //Hàm lọc danh sách đơn vị
     @Override
     public PagingListResponse<StockUnitResponse> filter(StockUnitFilterRequest filter) {
         Pageable pageable = PageRequest.of(

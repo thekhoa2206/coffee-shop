@@ -49,6 +49,7 @@ public class TableServiceImpl implements TableService {
         this.orderService = orderService;
     }
 
+    //Hàm Tạo mới bàn
     @Override
     public TableResponse create(TableRequest request) {
         if (request.getName() == null) throw new ErrorException("Tên bàn không được để trống");
@@ -67,6 +68,7 @@ public class TableServiceImpl implements TableService {
 
     }
 
+    //Hàm lấy thông tin bàn theo id
     @Override
     public TableResponse getbyid(int id) {
         val table = tableRepository.findById(id);
@@ -80,7 +82,7 @@ public class TableServiceImpl implements TableService {
         }
         return tableResponse;
     }
-
+    //Hàm cập nhật thông tin bàn
     @Override
     public TableResponse update(TableRequest request, int id) {
         val table = tableRepository.findById(id);
@@ -98,7 +100,7 @@ public class TableServiceImpl implements TableService {
         return tableResponse;
 
     }
-
+    //Hàm xoá bàn
     @Override
     public void delete(int id) {
         val table = tableRepository.findById(id);
@@ -113,7 +115,7 @@ public class TableServiceImpl implements TableService {
         }
 
     }
-
+    //Hàm lọc danh sách bàn
     @Override
     public PagingListResponse<TableResponse> filter(TableFilterRequest filter) {
         Pageable pageable = PageRequest.of(
@@ -171,7 +173,7 @@ public class TableServiceImpl implements TableService {
                 tableResponses,
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results.getTotalElements()));
     }
-
+    //Hàm cập nhật thông tin trạng thái của bàn
     @Override
     @Transactional
     public void updateStatus(String ids, int status) {
@@ -212,6 +214,7 @@ public class TableServiceImpl implements TableService {
             }
         }
     }
+    //Hàm lọc danh sách bàn và  thông tin đơn hàng
     @Override
     public PagingListResponse<OrderTableResponse> getOrdersAndTables(OrderFilterRequest filter) throws ParseException {
         filter.setStatuses("1,2,5");
@@ -225,6 +228,8 @@ public class TableServiceImpl implements TableService {
                 orderTables,
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), orders.getMetadata().getTotal()));
     }
+    //Hàm map object order => OrderTable
+
     private OrderTableResponse mapperOrderTablesResponse(OrderResponse order) {
         OrderTableResponse tableOrderResponse = new OrderTableResponse();
         tableOrderResponse.setOrder(order);
@@ -247,6 +252,7 @@ public class TableServiceImpl implements TableService {
         return null;
     }
 
+    //Hàm lấy thông tin đơn hàng theo bàn
     @Override
     public PagingListResponse<TableOrderResponse> getOrdersByTable(TableFilterRequest filter) {
         var tableResponses = filter(filter);
@@ -260,6 +266,7 @@ public class TableServiceImpl implements TableService {
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), tableResponses.getMetadata().getTotal()));
     }
 
+    //Hàm map object table => tableOrder
     private TableOrderResponse mapperTableOrdersResponse(TableResponse table) {
         TableOrderResponse tableOrderResponse = new TableOrderResponse();
         tableOrderResponse.setTable(table);
@@ -281,6 +288,7 @@ public class TableServiceImpl implements TableService {
         }
         return null;
     }
+    //Hàm chuyển bàn
     @Override
     public void changeTableOrder(ChangeTableOrderRequest request){
         var username = ThreadContext.get(TheadContextEnum.JWT_USER_NAME.name());

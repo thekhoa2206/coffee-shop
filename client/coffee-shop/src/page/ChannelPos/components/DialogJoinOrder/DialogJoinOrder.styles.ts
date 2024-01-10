@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: "16px", width: "293px",
         },
         infiniteList: {
+          zIndex: 10000,
           "&>.InfiniteScroll-BoxCreate": {
             padding: "0 42px",
           },

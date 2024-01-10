@@ -40,25 +40,27 @@ public class StockingController extends BaseException {
 
         return user;
     }
-    // tạo user mới
+    //Api tạo mới phiếu xuất nhập kho
     @PostMapping
     public StocktakingReponse create(@RequestBody CreateStocktakingRequest request, HttpServletRequest requestHttp)
     { return stocktakingService.create(request,requestHttp);
     }
+    //Api lấy thông tin phiếu xuất nhập kho theo id
     @GetMapping("/{id}")
     public StocktakingReponse getById(@PathVariable("id") int id){
         return stocktakingService.getbyId(id);
     }
-
+    //Api lọc danh sách phiếu xuất nhập
     @GetMapping
     public PagingListResponse<StocktakingReponse> filter(StoctakingFilterRequest filter){
         return stocktakingService.filter(filter);
     }
+    //APi update phiếu xuất nhập kho
     @PutMapping("/{id}")
     public StocktakingReponse update(@RequestBody CreateStocktakingRequest request, @PathVariable("id") int id,HttpServletRequest requestHttp){
         return stocktakingService.update(request, id,requestHttp);
     }
-
+    //Api xoá phiếu xuất, nhập kho
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id){
         stocktakingService.delete(id);

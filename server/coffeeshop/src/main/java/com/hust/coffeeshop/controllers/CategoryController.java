@@ -19,6 +19,7 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    //APi filter danh sách category
     @GetMapping
     public PagingListResponse<CategoryResponse> filter(CategoryFilterRequest filter){
         return categoryService.filter(filter);

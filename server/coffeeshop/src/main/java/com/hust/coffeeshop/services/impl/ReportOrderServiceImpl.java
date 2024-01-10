@@ -23,7 +23,6 @@ public class ReportOrderServiceImpl implements ReportOrderService {
     private final OrderItemRepository orderItemRepository;
     private final ModelMapper mapper;
     private final OrderService orderService;
-    private final CustomerService customerService;
     private final ProductService productService;
     private final VariantService variantService;
     private final ComboRepository comboRepository;
@@ -35,12 +34,11 @@ public class ReportOrderServiceImpl implements ReportOrderService {
     private final VariantRepository variantRepository;
     private final IngredientRepository ingredientRepository;
 
-    public ReportOrderServiceImpl(OrderRepository orderRepository, OrderItemRepository orderItemRepository, ModelMapper mapper, OrderService orderService, CustomerService customerService, ProductService productService, VariantService variantService, ComboRepository comboRepository, ItemRepository itemRepository, ItemIngredientRepository itemIngredientRepository, ComboItemRepository comboItemRepository, OrderItemComboRepository orderItemComboRepository, VariantRepository variantRepository, IngredientRepository ingredientRepository) {
+    public ReportOrderServiceImpl(OrderRepository orderRepository, OrderItemRepository orderItemRepository, ModelMapper mapper, OrderService orderService, ProductService productService, VariantService variantService, ComboRepository comboRepository, ItemRepository itemRepository, ItemIngredientRepository itemIngredientRepository, ComboItemRepository comboItemRepository, OrderItemComboRepository orderItemComboRepository, VariantRepository variantRepository, IngredientRepository ingredientRepository) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.mapper = mapper;
         this.orderService = orderService;
-        this.customerService = customerService;
         this.productService = productService;
         this.variantService = variantService;
         this.comboRepository = comboRepository;
@@ -52,7 +50,6 @@ public class ReportOrderServiceImpl implements ReportOrderService {
         this.ingredientRepository = ingredientRepository;
     }
 
-    //  - Thông số sản phẩm bán hàng
 
     //	- Top sản phẩm bán chạy
     @Override

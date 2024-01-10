@@ -29,22 +29,19 @@ public class ReportOrderController {
     public ReportOrderController(ReportOrderService orderService) {
         this.orderService = orderService;
     }
-
-    @GetMapping("/customers")
-    public PagingListResponse<ReportCustomerResponse> reportTopCustomer(ReportFilterRequest filterRequest) throws ParseException {
-        return orderService.reportTopCustomer(filterRequest);
-    }
-
+    //Api báo cáo doanh thu theo thời gian ở báo cáo đơn hàng
     @GetMapping("/revenues")
     public List<ReportRevenueResponse> reportRevenue(ReportFilterRequest filterRequest) throws ParseException {
         return orderService.reportRevenue(filterRequest);
     }
 
+    //Api báo cáo top sản phẩm theo thời gian ở báo cáo đơn hàng
     @GetMapping("/products")
     public List<ReportProductResponse> reportTopProducts(ReportProductFilter filterRequest) throws ParseException {
         return orderService.reportTopProducts(filterRequest);
     }
 
+    //Api báo cáo bán hàng theo thời gian ở tổng quan báo cáo
     @GetMapping("/sales")
     public ReportOrderResponse reportSale(FilterinventoryRequest request) throws ParseException {
         ReportInventoryRequest requests = new ReportInventoryRequest();

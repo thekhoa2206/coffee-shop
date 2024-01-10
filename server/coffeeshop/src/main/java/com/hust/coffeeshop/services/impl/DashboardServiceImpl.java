@@ -41,7 +41,7 @@ public class DashboardServiceImpl implements DashboardService {
         this.ingredientService = ingredientService;
         this.mapper = mapper;
     }
-    // Thông số trên Dashboard
+    //Hàm lấy thông tin Thông số đơn hàng, đơn huỷ, số tiền xuất nhập kho theo thời gian trên Dashboard
     @Override
     public DashboardResponse filter(DashboardRequest request) throws ParseException {
         //Số khách hàng
@@ -173,6 +173,7 @@ public class DashboardServiceImpl implements DashboardService {
         }
         return response;
     }
+    //Hàm lấy thông tin báo cáo doanh thu theo thời gian
     @Override
     public List<AggregateRevenueResponse> reportAggregateRevenue (DashboardRequest request) throws ParseException {
         OrderFilterRequest filter = new OrderFilterRequest();

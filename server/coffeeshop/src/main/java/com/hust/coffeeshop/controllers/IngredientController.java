@@ -21,25 +21,30 @@ public class IngredientController extends BaseException {
         this.ingredientService = ingredientService;
     }
 
+    //Api lấy thông tin của nguyên liệu theo id
     @GetMapping("/{id}")
     public IngredientResponse getById(@PathVariable("id") int id){
         return ingredientService.getById(id);
     }
 
+    //Api lọc danh sách nguyên liệu
     @GetMapping
     public PagingListResponse<IngredientResponse> filter(IngredientFilterRequest filter){
         return ingredientService.filter(filter);
     }
 
+    //Api tạo mới nguyên liệu
     @PostMapping
     public IngredientResponse create(@RequestBody IngredientRequest request){
         return ingredientService.create(request);
     }
+    //Api cập nhật nguyên liệu
     @PutMapping("/{id}")
     public IngredientResponse update(@RequestBody IngredientRequest request, @PathVariable("id") int id){
         return ingredientService.update(request, id);
     }
 
+    //Api xoá nguyên liệu
     @DeleteMapping("/{id}")
     @CrossOrigin
     public void delete(@PathVariable("id") int id){

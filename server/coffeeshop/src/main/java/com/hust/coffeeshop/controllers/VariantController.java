@@ -16,7 +16,7 @@ public class VariantController {
     public VariantController(VariantService variantService) {
         this.variantService = variantService;
     }
-
+    //Api lọc danh sách phiên bản mặt hàng
     @GetMapping
     public PagingListResponse<VariantRepsone> filter(VariantFilterRequest filter){
         return variantService.filter(filter);

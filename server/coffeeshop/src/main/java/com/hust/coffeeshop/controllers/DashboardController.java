@@ -25,10 +25,12 @@ public class DashboardController {
         this.dashboardService = dashboardService;
     }
 
+    //APi báo cáo thông tin đơn hàng, xuất nhập kho, doanh thu và tổng giá trị hoàn huỷ của đơn hàng theo thời gian
     @GetMapping
     public DashboardResponse filter(DashboardRequest filter) throws ParseException {
         return dashboardService.filter(filter);
     }
+    //Api báo cáo tổng hợp về doanh thu theo thời gian
     @GetMapping("/aggregateRevenue")
     public List<AggregateRevenueResponse> reportAggregateRevenue(DashboardRequest filter) throws ParseException {
         return dashboardService.reportAggregateRevenue(filter);

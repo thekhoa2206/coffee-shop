@@ -22,6 +22,7 @@ public class ReportInventoryController {
     public ReportInventoryController(InventoryService inventoryService) {
         this.inventoryService = inventoryService;
     }
+    //Api lọc danh sách xuất nhập tồn kho
     @GetMapping
     public PagingListResponse<ReportInventoryResponse> filter(FilterinventoryRequest request) throws ParseException {
         ReportInventoryRequest requests = new ReportInventoryRequest();
@@ -36,6 +37,7 @@ public class ReportInventoryController {
         }
         return inventoryService.reportInventory(requests);
     }
+    //Api lấy thông tin chi tiết thay đổi kho(+ - kho) của nguyên liệu
     @GetMapping(value = "/{id}")
     public ReportInventoryDetailResponse Detail(@PathVariable("id") int id, FilterinventoryRequest request) throws ParseException {
         ReportInventoryRequest requests = new ReportInventoryRequest();
@@ -51,6 +53,7 @@ public class ReportInventoryController {
         return inventoryService.reportInventoryDetail(requests,id);
     }
 
+    //Api báo cáo tồn kho theo thời gian
     @GetMapping(value = "/onhand")
     public ReportInventoryOnhand inventoryOnhand(FilterinventoryRequest request) throws ParseException {
         ReportInventoryRequest requests = new ReportInventoryRequest();

@@ -7,11 +7,14 @@ import TableService, { TableFilterRequest, TableResponse } from "services/TableS
 import { BoxProduct } from "../BoxProduct/BoxProduct";
 import { BoxTotal } from "../BoxTotal/BoxTotal";
 import useStyles from "./DialogJoinOrder.styles";
-import OrderService, { OrderItemRequest, OrderItemResponse, OrderRequest, OrderResponse } from "services/OrderService";
+import OrderService, { OrderFilter, OrderItemRequest, OrderItemResponse, OrderRequest, OrderResponse } from "services/OrderService";
 import { Button, Checkbox, Grid, List, ListItem, ListItemIcon, ListItemText, Paper } from "@mui/material";
 import { formatMoney, getMessageError } from "utilities";
 import { toString } from "lodash";
 import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
+import SelectInfinite from "components/Select/SelectInfinite";
+import { DataSource } from "components/Select/types";
+import NoResultsComponent from "components/NoResults/NoResultsComponent";
 export type DialogJoinOrderProps = {
     open: boolean;
     onClose: () => void;
@@ -41,16 +44,14 @@ export const DialogJoinOrder = (props: DialogJoinOrderProps) => {
     } = useOrderStore();
     const classes = useStyles();
     const [checked, setChecked] = React.useState<OrderItemResponse[]>([]);
-    const [oldOrder, setOldOrder] = React.useState<OrderItemResponse[]>([]);
-    const [newOrder, setNewOrder] = React.useState<OrderItemResponse[]>([]);
+    const [oldOrder, setOldOrder] = React.useState<OrderResponse>();
+    const [newOrder, setNewOrder] = React.useState<OrderResponse>();
     const history = useHistory();
 
 
-    const oldOrderChecked = intersection(checked, oldOrder);
-    const newOrderChecked = intersection(checked, newOrder);
 
     useEffect(() => {
-        if (order?.orderItemResponses) setOldOrder(order.orderItemResponses)
+        if (order?.orderItemResponses) setOldOrder(order)
     }, [order]);
     const handleToggle = (value: OrderItemResponse) => () => {
         const orderItem = checked.find((item) => item.id === value.id);
@@ -65,34 +66,13 @@ export const DialogJoinOrder = (props: DialogJoinOrderProps) => {
         setChecked(newChecked);
     };
 
-    const handleAllRight = () => {
-        setNewOrder(newOrder.concat(oldOrder));
-        setOldOrder([]);
-    };
 
-    const handleCheckedRight = () => {
-        setNewOrder(newOrder.concat(oldOrderChecked));
-        setOldOrder(not(oldOrder, oldOrderChecked));
-        setChecked(not(checked, oldOrderChecked));
-    };
-
-    const handleCheckedLeft = () => {
-        setOldOrder(oldOrder.concat(newOrderChecked));
-        setNewOrder(not(newOrder, newOrderChecked));
-        setChecked(not(checked, newOrderChecked));
-    };
-
-    const handleAllLeft = () => {
-        setOldOrder(oldOrder.concat(newOrder));
-        setNewOrder([]);
-    };
-
-    const onSplitOrder = async() => {
+    const onSplitOrder = async () => {
         var requests: OrderRequest[] = [];
 
         let orderLineItemOlds: OrderItemRequest[] = [];
         var totalOldOrder = 0;
-        oldOrder.map((item) => {
+        oldOrder?.orderItemResponses?.map((item) => {
             let lineItemRequest: OrderItemRequest = {
                 id: item.id,
                 productId: item.productId,
@@ -101,7 +81,7 @@ export const DialogJoinOrder = (props: DialogJoinOrderProps) => {
                 quantity: item.quantity,
                 price: item.price,
             };
-            totalOldOrder += item.quantity*item.price;
+            totalOldOrder += item.quantity * item.price;
             orderLineItemOlds.push(lineItemRequest);
         });
         let tableId = order.tableResponses?.map((i) => i.id);
@@ -121,7 +101,7 @@ export const DialogJoinOrder = (props: DialogJoinOrderProps) => {
         //Đơn mới
         let orderLineItemNews: OrderItemRequest[] = [];
         var totalNewOrder = 0;
-        newOrder.map((item) => {
+        newOrder?.orderItemResponses?.map((item) => {
             let lineItemRequest: OrderItemRequest = {
                 id: item.id,
                 productId: item.productId,
@@ -130,11 +110,11 @@ export const DialogJoinOrder = (props: DialogJoinOrderProps) => {
                 quantity: item.quantity,
                 price: item.price,
             };
-            totalNewOrder += item.quantity*item.price;
+            totalNewOrder += item.quantity * item.price;
             orderLineItemNews.push(lineItemRequest);
         });
         let requestNewOrder: OrderRequest = {
-            id: 0,
+            id: newOrder?.id,
             customerId: 1,
             note: order.note,
             discountTotal: 0,
@@ -148,16 +128,16 @@ export const DialogJoinOrder = (props: DialogJoinOrderProps) => {
 
         requests.push(requestNewOrder);
         try {
-            var res = await OrderService.splitOrder(requests, toString(order.id));
-            if(res){
-                SnackbarUtils.success("Tách đơn thành công");
+            var res = await OrderService.joinOrder(requests, toString(order.id));
+            if (res) {
+                SnackbarUtils.success("Gộp đơn thành công");
                 onClose();
             }
         } catch (error) {
             SnackbarUtils.error(getMessageError(error));
 
         }
-        
+
     }
 
     const customList = (items: OrderItemResponse[], isNewOrder: boolean) => (
@@ -191,21 +171,7 @@ export const DialogJoinOrder = (props: DialogJoinOrderProps) => {
         </Paper>
     );
 
-    const totalOldOrder = useMemo(() => {
-        var total = 0;
-        oldOrder.map((i) => {
-            total += i.quantity * i.price;
-        })
-        return total;
-    }, [oldOrder])
-
-    const totalNewOrder = useMemo(() => {
-        var total = 0;
-        newOrder.map((i) => {
-            total += i.quantity * i.price;
-        })
-        return total;
-    }, [newOrder])
+    
 
     return (
         <Fragment>
@@ -213,9 +179,9 @@ export const DialogJoinOrder = (props: DialogJoinOrderProps) => {
                 open={open}
                 onClose={onClose}
                 title={"Gộp đơn hàng"}
-                onOk={() => {onSplitOrder() }}
+                onOk={() => { onSplitOrder() }}
                 textOk={"Lưu"}
-                minWidthPaper="70%"
+                minWidthPaper="40%"
                 textCancel={"Thoát"}
                 isCancel={true}
                 DialogTitleProps={{
@@ -225,64 +191,57 @@ export const DialogJoinOrder = (props: DialogJoinOrderProps) => {
                     <Box padding={"6px"} style={{ maxHeight: 1000, display: "flex" }}>
                         <Grid container spacing={2} justifyContent="center" alignItems="center">
                             <Grid item >
-                                <Typography style={{fontSize: 16, fontWeight: "bold", marginBottom: 10}}>Đơn hàng {order.code}</Typography>
-                                {customList(oldOrder, false)}
-                                <ListItem>
-                                    <ListItemText primary={`Tổng: `} />
-                                    <ListItemText primary={`${formatMoney(totalOldOrder)}đ`} />
-                                </ListItem>
+                                <Typography style={{ fontSize: 16, fontWeight: "bold", marginBottom: 10 }}>Đơn hàng {order.code}</Typography>
                             </Grid>
                             <Grid item>
-                                <Grid container direction="column" alignItems="center">
-                                    <Button
-                                        sx={{ my: 0.5 }}
-                                        variant="outlined"
-                                        size="small"
-                                        onClick={handleAllRight}
-                                        disabled={oldOrder.length === 0}
-                                        aria-label="move all right"
-                                    >
-                                        ≫
-                                    </Button>
-                                    <Button
-                                        sx={{ my: 0.5 }}
-                                        variant="outlined"
-                                        size="small"
-                                        onClick={handleCheckedRight}
-                                        disabled={oldOrderChecked.length === 0}
-                                        aria-label="move selected right"
-                                    >
-                                        &gt;
-                                    </Button>
-                                    <Button
-                                        sx={{ my: 0.5 }}
-                                        variant="outlined"
-                                        size="small"
-                                        onClick={handleCheckedLeft}
-                                        disabled={newOrderChecked.length === 0}
-                                        aria-label="move selected left"
-                                    >
-                                        &lt;
-                                    </Button>
-                                    <Button
-                                        sx={{ my: 0.5 }}
-                                        variant="outlined"
-                                        size="small"
-                                        onClick={handleAllLeft}
-                                        disabled={newOrder.length === 0}
-                                        aria-label="move all left"
-                                    >
-                                        ≪
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                            <Grid item>
-                            <Typography style={{fontSize: 16, fontWeight: "bold", marginBottom: 10}}>Đơn hàng mới tách</Typography>
-                                {customList(newOrder, true)}
-                                <ListItem>
-                                    <ListItemText primary={`Tổng: `} />
-                                    <ListItemText primary={`${formatMoney(totalNewOrder)}đ`} />
-                                </ListItem>
+                                <Typography style={{  fontSize: 16, fontWeight: "bold", marginBottom: 10, marginTop: 40 }}>Đơn hàng cần gộp {newOrder ? newOrder.code : "---"}</Typography>
+                                <Box style={{}}>
+                                    <Box>
+                                        <SelectInfinite
+                                            getOptionLabel={(item) => item?.name || ""}
+                                            fetchDataSource={async (filter: OrderFilter) => {
+                                                filter.statuses = "5,3";
+                                                filter.paymentStatus = "1";
+                                                let res = await OrderService.filter(filter);
+                                                const dataSource = {} as DataSource;
+                                                if (res.data.data) {
+                                                    dataSource.data = res.data.data;
+                                                    dataSource.metaData = {
+                                                        totalPage: Math.ceil((res.data.metadata?.total || 0) / (filter.limit || 10)),
+                                                        totalItems: (res.data.metadata?.total || 0),
+                                                    };
+                                                }
+                                                return Promise.resolve(dataSource);
+                                            }}
+                                            onQueryChange={(filter: any) => {
+                                                let dataSourceFilter: OrderFilter = {
+                                                    limit: 10,
+                                                    query: filter.query,
+                                                    page: filter.page || 1,
+                                                };
+                                                return dataSourceFilter;
+                                            }}
+                                            renderOption={(option: OrderResponse) => (
+                                                <Box style={{ width: "100%", lineHeight: "40px", padding: "16px 0px", cursor: "pointer", zIndex: 10000}}>
+                                                    <Typography style={{ marginLeft: "16px" }}>{option.code} - Tổng: {formatMoney(option.total)}</Typography>
+                                                </Box>
+                                            )}
+                                            placeholder="Tìm kiếm nguyên liệu"
+                                            onChange={(order: OrderResponse) => {
+                                                setNewOrder(order);
+                                            }}
+                                            value={null}
+                                            className={classes.infiniteList}
+                                            NoResultsComponent={() => (
+                                                <NoResultsComponent
+                                                    nameObject="đơn hàng"
+                                                    helpText={"Thử thay đổi từ khóa tìm kiếm hoặc thêm mới"}
+                                                    style={{ padding: "48px 0 84px" }}
+                                                />
+                                            )}
+                                        />
+                                    </Box>
+                                </Box>
                             </Grid>
                         </Grid>
                     </Box>

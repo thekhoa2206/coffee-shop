@@ -39,6 +39,7 @@ public class InventoryServiceImpl implements InventoryService {
         this.ingredientService = ingredientService;
     }
 
+    //Hàm báo cáo kho
     @Override
     public PagingListResponse<ReportInventoryResponse> reportInventory(ReportInventoryRequest request) {
         Pageable pageable = PageRequest.of(
@@ -126,6 +127,7 @@ public class InventoryServiceImpl implements InventoryService {
                 new PagingListResponse.Metadata(request.getPage(), request.getLimit(), targetIngredientId.size()));
     }
 
+    //Hàm báo cáo thay đổi kho chi tiết của nguyên liệu
     @Override
     public ReportInventoryDetailResponse reportInventoryDetail(ReportInventoryRequest request, int id) {
         val ingredient = ingredientRepository.findById(id);
@@ -136,6 +138,7 @@ public class InventoryServiceImpl implements InventoryService {
         return reportInventoryDetailResponse;
     }
 
+    //Hàm lấy thông tin thay đổi xuất nhập kho
     public PagingListResponse<StockEventsResponse> stockEventsResponses(ReportInventoryRequest request, int id) {
         Pageable pageable = PageRequest.of(
                 request.getPage() - 1,
@@ -184,6 +187,7 @@ public class InventoryServiceImpl implements InventoryService {
 
     }
 
+    //Hàm báo cáo tồn kho
     @Override
    public ReportInventoryOnhand inventoryOnhand(ReportInventoryRequest request){
         IngredientFilterRequest filterRequest = new IngredientFilterRequest();

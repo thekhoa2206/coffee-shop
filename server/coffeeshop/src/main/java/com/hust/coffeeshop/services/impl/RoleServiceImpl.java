@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class RoleServiceImpl implements RoleService {
+public class  RoleServiceImpl implements RoleService {
         private final RoleRepository roleRepository;
     private final ModelMapper mapper;
     private final FilterRepository filterRepository;
@@ -40,7 +40,7 @@ public class RoleServiceImpl implements RoleService {
         this.filterRepository = filterRepository;
     }
 
-    //api tạo
+    //Hàm tạo mới quyền
     @Override
     public RoleResponse create(CreateRoleRequest request) {
         if(request.getName()== null ) throw new ErrorException("Tên quyền không được để trống ");
@@ -58,7 +58,7 @@ public class RoleServiceImpl implements RoleService {
         }
         return roleResponse;
     }
-    //api get id
+    //Hàm lấy thông tin quyền theo id
     @Override
     public Role getById(int id) {
         if (id == 0) throw new ErrorException("Không có id");
@@ -67,7 +67,7 @@ public class RoleServiceImpl implements RoleService {
         var roleResponse = mapper.map(role.get(), Role.class);
         return roleResponse;
     }
-    //api filter
+    //hàm lọc danh sách quyền
     @Override
     public PagingListResponse<RoleResponse> filter(ItemRequest filter) {
         Pageable pageable = PageRequest.of(

@@ -23,44 +23,40 @@ public class TableController {
     public TableController(TableService tableService) {
         this.tableService = tableService;
     }
-
+    //Api lọc danh sách bàn
     @GetMapping
     public PagingListResponse<TableResponse> filter(TableFilterRequest filter) {
         return tableService.filter(filter);
     }
-
+    //Api lấy thông tin bàn theo id
     @GetMapping("/{id}")
     public TableResponse getbyId(@PathVariable("id") int id) {
         return tableService.getbyid(id);
     }
-
+    //Api tạo mới bàn
     @PostMapping
     public TableResponse create(@RequestBody TableRequest request) {
         return tableService.create(request);
     }
-
+    //Api cập nhật thông tin bàn
     @PutMapping("/{id}")
     public TableResponse update(@RequestBody TableRequest request, @PathVariable("id") int id) {
         return tableService.update(request, id);
     }
 
+    //Api xoá bàn
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id) {
         tableService.delete(id);
     }
 
+    //Api cập nhật trạng thái bàn
     @PutMapping("/{id}/update_status/{status}")
     public void updateStatus(@PathVariable("id") String ids, @PathVariable("status") int status){
         if(ids.equals("undefined")){
             throw new BaseException("Không có bàn!");
         }
         tableService.updateStatus(ids, status);
-    }
-
-    //Api chuyển bàn
-    @PutMapping("/{id}/change-table")
-    public void changeTableOrder(ChangeTableOrderRequest request){
-        tableService.changeTableOrder(request);
     }
 
     //Api lấy thông tin đơn hàng chưa hoàn thành của bàn

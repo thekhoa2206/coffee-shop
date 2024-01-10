@@ -23,23 +23,27 @@ public class UserController extends BaseException {
         this.userService = userService;
     }
 
-    // tạo user mới
+    //Api tạo mới người dùng
     @PostMapping
     public UserResponse create(@RequestBody CreateUserRequest request){
         return userService.create(request);
     }
+    //Api lấy thông tin người dùng theo id
     @GetMapping("/{id}")
     public UserResponse getById(@PathVariable("id") int id){
         return userService.getById(id);
     }
+    //Api cập nhật thông tin người dùng
     @PutMapping("/{id}")
     public UserResponse update(@RequestBody CreateUserRequest request, @PathVariable("id") int id){
         return userService.update(request, id);
     }
+    //Api xoá người dùng
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") int id){
         userService.deleteById(id);
     }
+    //Api lọc danh sách người dùng
     @GetMapping
     public PagingListResponse<UserResponse> filter(IngredientFilterRequest filter){
         return userService.filterUser(filter);

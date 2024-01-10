@@ -126,6 +126,7 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
+    //Hàm mapping product variant
     private List<ProductResponse.ProductVariantResponse> mapperProductVariants(int productId, boolean isCombo) {
         List<ProductResponse.ProductVariantResponse> productVariants = new ArrayList<>();
         //với sp combo

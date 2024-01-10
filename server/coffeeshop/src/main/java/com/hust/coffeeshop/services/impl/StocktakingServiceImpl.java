@@ -47,6 +47,7 @@ public class StocktakingServiceImpl implements StocktakingService {
         this.inventoryLogRepository = inventoryLogRepository;
     }
 
+    //Hàm tạo mới phiếu xuất, nhập kho
     @Override
     public StocktakingReponse create(CreateStocktakingRequest request, HttpServletRequest requestHttp) {
 //        var user= baseService.getuser(requestHttp);
@@ -147,7 +148,7 @@ public class StocktakingServiceImpl implements StocktakingService {
         return inventoryReponse;
     }
 
-    //api update
+    //Hàm cập nhật thông tin phiếu xuất, nhập kho
     @Override
     @Transactional(rollbackOn = Exception.class)
     public StocktakingReponse update(CreateStocktakingRequest request, int id, HttpServletRequest requestHttp) {
@@ -345,7 +346,7 @@ public class StocktakingServiceImpl implements StocktakingService {
         return inventoryReponse;
     }
 
-    //get theo id
+    //hàm lấy thông tin phiếu xuất nhập theo id
     @Override
     public StocktakingReponse getbyId(int id) {
         val stocktaking = stocktakingRepository.findById(id);
@@ -367,7 +368,7 @@ public class StocktakingServiceImpl implements StocktakingService {
 
     }
 
-    // xóa
+    // hàm xoá phiếu nhập, xuất
     @Override
     public void delete(int id) {
         val stocktaking = stocktakingRepository.findById(id);
@@ -417,7 +418,7 @@ public class StocktakingServiceImpl implements StocktakingService {
         }
     }
 
-    //api filter
+    //Hàm lọc danh sách phiếu xuất nhập
     @Override
     public PagingListResponse<StocktakingReponse> filter(StoctakingFilterRequest filter) {
         Pageable pageable = PageRequest.of(
@@ -489,8 +490,9 @@ public class StocktakingServiceImpl implements StocktakingService {
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results.getTotalElements()));
     }
 
+    //Hàm lấy thông tin danh sách nguyên liệu và tồn kho, giá trị tồn của từng nguyên liệu
     @Transactional(rollbackOn = Exception.class)
-    List<StocktakingIngredientReponse> getIngredients(List<StocktakingIngredient> stocktakingIngredients) {
+    public List<StocktakingIngredientReponse> getIngredients(List<StocktakingIngredient> stocktakingIngredients) {
         if (stocktakingIngredients.size() != 0) {
             List<StocktakingIngredientReponse> stocktakingIngredientRepons = new ArrayList<>();
             for (val i : stocktakingIngredients) {

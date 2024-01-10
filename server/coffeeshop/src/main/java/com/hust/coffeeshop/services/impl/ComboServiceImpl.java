@@ -59,6 +59,7 @@ public class ComboServiceImpl implements ComboService {
         this.filterRepository = filterRepository;
     }
 
+    //Hàm tạo mới sản phẩm combo
     @Override
     public ComboRespone create(CreateComboRequest request) throws IOException {
         if (request.getName() == null) throw new ErrorException("Tên combo không được để trống");
@@ -117,7 +118,7 @@ public class ComboServiceImpl implements ComboService {
         }
 
     }
-
+    //hàm Cập nhật thông tin sản phẩm combo
     @Override
     public ComboRespone update(CreateComboRequest request, int id) {
         var combo = comboRepository.findById(id);
@@ -140,6 +141,7 @@ public class ComboServiceImpl implements ComboService {
         comboRespone.setCategory(category);
         return comboRespone;
     }
+    //HÀm lấy thông tin combo theo id
     @Override
     public ComboRespone getbyId(int id) {
         if(id==0) throw new ErrorException("id không được để trống");
@@ -168,6 +170,7 @@ public class ComboServiceImpl implements ComboService {
         return comboRespone;
     }
 
+    //HÀm lấy thông tin mặt hàng theo id
     @Transactional(rollbackOn = Exception.class)
     public ItemRepsone getbyItemId(int itemid, int variantId){
         var item = itemRepository.findById(itemid);
@@ -179,7 +182,7 @@ public class ComboServiceImpl implements ComboService {
         itemRepsone.setVariants(variantRepsones);
         return itemRepsone;
     }
-    //api xóa
+    //api xóa combo
     @Override
     public void delete(int id) {
         if(id==0) throw new ErrorException("id không được để trống");
@@ -197,7 +200,7 @@ public class ComboServiceImpl implements ComboService {
             throw new ErrorException("Xóa mặt hàng thất bại");
         }
     }
-    //api filter
+    //Hàm lọc danh sách combo
     @Override
     public PagingListResponse<ComboRespone> filter(ItemRequest filter) {
         Pageable pageable = PageRequest.of(
@@ -250,8 +253,9 @@ public class ComboServiceImpl implements ComboService {
                 comboRespones,
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results.getTotalElements()));
     }
+    //Hàm cập nhật thông tin phiên bản sản phẩm
     @Transactional(rollbackOn = Exception.class)
-    void updateVariant(List<VariantComboRequest> variantRequests, List<ComboItem> comboItems,int comboId)
+    public void updateVariant(List<VariantComboRequest> variantRequests, List<ComboItem> comboItems,int comboId)
     {
         List<ComboItem> comboItemNews = new ArrayList<>();
         if (comboItems != null) {

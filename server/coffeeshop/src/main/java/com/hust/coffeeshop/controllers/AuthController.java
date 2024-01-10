@@ -64,6 +64,7 @@ public class AuthController extends BaseController {
         return jwtData;
     }
 
+    // APi lấy thông tin người dùng đã login
     @GetMapping(value = "/profiles")
     public UserResponse getProfile(HttpServletRequest request) {
         var jwt = request.getHeader("Authorization");

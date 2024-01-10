@@ -36,26 +36,31 @@ public class CategoryServiceImpl implements CategoryService {
         this.filterRepository = filterRepository;
     }
 
+    //Haàm tạo loại sản phẩm
     @Override
     public CategoryResponse create(CategoryRequest request) {
         return null;
     }
 
+    //Hàm cập nhật loại sản phẩm
     @Override
     public CategoryResponse update(CategoryRequest request, int id) {
         return null;
     }
 
+    //Hàm xoá loại sản phẩm
     @Override
     public void delete(int id) {
 
     }
 
+    //Hàm lấy thông tin loại sản phẩm theo id
     @Override
     public CategoryResponse getById(int id) {
         return null;
     }
 
+    //Hàm lấy danh sách sản phẩm
     @Override
     public PagingListResponse<CategoryResponse> filter(CategoryFilterRequest filter) {
         Pageable pageable = PageRequest.of(

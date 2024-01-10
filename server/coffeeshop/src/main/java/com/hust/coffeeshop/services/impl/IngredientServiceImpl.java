@@ -50,6 +50,7 @@ public class IngredientServiceImpl implements IngredientService {
         this.variantRepository = variantRepository;
     }
 
+    //Hàm tạo mới nguyên liệu
     @Override
     public IngredientResponse create(IngredientRequest request) {
         if (request.getName() == null) throw new ErrorException("Tên nguyên liệu không được để trống");
@@ -76,6 +77,7 @@ public class IngredientServiceImpl implements IngredientService {
         ingredientResponse.setStockUnitResponse(stockUnitResponse);
         return ingredientResponse;
     }
+    //Hàm lưu thông tin phiên bản
     private void saveVariant(IngredientRequest request, int id){
         var username = ThreadContext.get(TheadContextEnum.JWT_USER_NAME.name());
         if(request.isProduct()){
@@ -116,6 +118,7 @@ public class IngredientServiceImpl implements IngredientService {
             itemIngredientRepository.save(itemIngredient);
         }
     }
+    //Hàm cập nhật thông tin nguyên liệu
     @Override
     public IngredientResponse update(IngredientRequest request, int id) {
         if (id == 0) throw new ErrorException("Không có thông tin nguyên liệu");
@@ -136,6 +139,7 @@ public class IngredientServiceImpl implements IngredientService {
         return ingredientResponse;
     }
 
+    //Hàm xoá nguyên liệu
     @Override
     public void delete(int id) {
         if (id == 0) throw new ErrorException("Không có thông tin nguyên liệu");
@@ -172,7 +176,7 @@ public class IngredientServiceImpl implements IngredientService {
         inventoryLogRepository.save(inventoryLog);
     }
 
-
+    //HÀm lấy thông tin nguyên liệu theo id
     @Override
     public IngredientResponse getById(int id) {
         if (id == 0) throw new ErrorException("Không có thông tin nguyên liệu");
@@ -186,7 +190,7 @@ public class IngredientServiceImpl implements IngredientService {
         }
         return ingredientResponse;
     }
-
+    //Hàm lọc danh sách nguyên liệu
     @Override
     public PagingListResponse<IngredientResponse> filter(IngredientFilterRequest filter) {
         var results = filterIngredient(filter);
@@ -204,6 +208,7 @@ public class IngredientServiceImpl implements IngredientService {
                 ingredientResponses,
                 new PagingListResponse.Metadata(filter.getPage(), filter.getLimit(), results.getTotalElements()));
     }
+    //Hàm lọc danh sách nguyên liệu
     @Override
     public Page<Ingredient> filterIngredient(IngredientFilterRequest filter){
         Pageable pageable = PageRequest.of(

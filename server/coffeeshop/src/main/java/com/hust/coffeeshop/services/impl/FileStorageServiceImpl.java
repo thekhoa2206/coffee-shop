@@ -39,6 +39,7 @@ private final FileRepository fileRepository;
     public FileStorageServiceImpl(FileRepository fileRepository) {
         this.fileRepository = fileRepository;
     }
+   //Hàm upload file ảnh của sản phẩm
     @Override
     public FileResponse uploadFile(MultipartFile[] files) throws IOException {
         FileResponse fileResponse = new FileResponse();
@@ -78,6 +79,7 @@ private final FileRepository fileRepository;
             return fileResponse;
 
     }
+    //Hàm lấy thông tin ảnh để xem ảnh
     @Override
     public ResponseEntity<byte[]> getImage (int id) throws IOException {
         val dbFile = fileRepository.findById(id);

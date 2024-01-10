@@ -27,6 +27,7 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     const [openCreateOrder, setOpenCreateOrder] = useState<boolean>(false);
     const [openOrders, setOpenOrders] = useState<boolean>(false);
     const [orderSplit, setOrderSplit] = useState<OrderResponse>();
+    const [orderJoin, setOrderJoin] = useState<OrderResponse>();
     const [openOrderJoin, setOpenOrderJoin] = useState<boolean>(false);
     const [openSplitOrders, setOpenSplitOrders] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -195,8 +196,8 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     }
 
     const createJoinOrder = (order: OrderResponse) => {
-        setOrderSplit(order);
-        setOpenSplitOrders(true);
+        setOrderJoin(order);
+        setOpenOrderJoin(true);
     }
     return (
         <Box style={{ width: "95%" }}>
@@ -252,7 +253,7 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
                 open={openOrders} onClose={() => { setOpenOrders(false) }} createSplitOrder={createSplitOrder} tables={tables || []} createJoinOrder={createJoinOrder} />
 
             {orderSplit && <DialogSplitOrder order={orderSplit} open={openSplitOrders} onClose={() => { setOpenSplitOrders(false) }} />}
-            {orderSplit && <DialogJoinOrder order={orderSplit} open={openOrderJoin} onClose={() => { setOpenOrderJoin(false) }} />}
+            {orderJoin && <DialogJoinOrder order={orderJoin} open={openOrderJoin} onClose={() => { setOpenOrderJoin(false) }} />}
 
         </Box>
     );

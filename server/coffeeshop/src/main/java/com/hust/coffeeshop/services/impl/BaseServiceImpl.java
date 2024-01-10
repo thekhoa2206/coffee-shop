@@ -17,6 +17,7 @@ public class BaseServiceImpl implements BaseService {
         this.jwtProvider = jwtProvider;
         this.userRepository = userRepository;
     }
+    //HÀm lấy thông tin user bằng token
     public User getuser(HttpServletRequest request){
         String tokenBearer = request.getHeader("Authorization");
         String[] splits = tokenBearer.split("");
