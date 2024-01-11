@@ -56,10 +56,14 @@ import {
 import Image from "components/Image";
 import AvatarDefaultIcon from "components/SVG/AvatarDefaultIcon";
 import { useDropzone } from "react-dropzone";
+import useModal from "components/Modal/useModal";
+import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
 export interface UpdateComboProps extends WithStyles<typeof styles> { }
 const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
   const { classes, authState } = props;
   const [categories, setCategories] = useState<CategoryResponse[]>();
+  const { closeModal, confirm, openModal } = useModal();
+
   const [category, setCategory] = useState<
     CategoryResponse | undefined | null
   >();
@@ -229,6 +233,20 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
       SnackbarUtils.error(getMessageError(error));
     }
   };
+
+  const handleDelete = async () => {
+    try {
+      let res = await ComboService.delete(id);
+      SnackbarUtils.success("Xoá combo thành công");
+    } catch (error) {
+      SnackbarUtils.error(getMessageError(error));
+    }
+
+  }
+
+  
+
+  
   return (
     <>
       <Box className={classes.container}>
@@ -535,7 +553,22 @@ const UpdateCombo = (props: UpdateComboProps & PropsFromRedux) => {
             marginTop: "16px",
           }}
         >
-          <Button variant="outlined" color="primary" onClick={() => history.push(`/admin/combos`)}>
+          <Button variant="outlined" btnType="destruction" color="primary"  onClick={() => {
+            openModal(ConfirmDialog, {
+              confirmButtonText: "Xoá",
+              message:
+                "Bạn có muốn xoá sản phẩm combo không? Thao tác này không thể hoàn tác",
+              title: "Xoá sản phẩm combo",
+              cancelButtonText: "Thoát",
+            }).result.then((res) => {
+              if (res) {
+                handleDelete();
+              }
+            });
+          }}>
+            Xoá
+          </Button>
+          <Button variant="outlined" style={{ marginLeft: "16px" }} color="primary" onClick={() => history.push(`/admin/combos`)}>
             Hủy
           </Button>
           <Button

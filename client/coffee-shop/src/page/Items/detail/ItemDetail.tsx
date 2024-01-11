@@ -9,12 +9,15 @@ import CategoryService from "services/CategoryService/CategoryService";
 import { ItemResponse } from "services/ItemsService";
 import ItemsService from "services/ItemsService/ItemsService";
 import { AppState } from "store/store";
-import { formatDateUTCToLocalDateString, formatMoney } from "utilities";
+import { formatDateUTCToLocalDateString, formatMoney, getMessageError } from "utilities";
 import styles from "./ItemDetail.styles";
 import HeaderAction from "components/HeaderAction/HeaderAction";
 import Button from "components/Button";
 import Image from "components/Image";
 import AvatarDefaultIcon from "components/SVG/AvatarDefaultIcon";
+import useModal from "components/Modal/useModal";
+import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
+import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 export interface CreateItemProps extends WithStyles<typeof styles> {
 
 }
@@ -24,6 +27,8 @@ const ItemDetail = (props: CreateItemProps & PropsFromRedux) => {
     const [categories, setCategories] = useState<CategoryResponse[]>();
     const [category, setCategory] = useState<CategoryResponse | undefined | null>();
     const [itemResponse, setItemResponse] = useState<ItemResponse>();
+    const { closeModal, confirm, openModal } = useModal();
+
     const { id } = useParams<{ id: string }>();
     useEffect(() => {
         initItemIngredient();
@@ -35,15 +40,40 @@ const ItemDetail = (props: CreateItemProps & PropsFromRedux) => {
             setCategory(res.data.category);
         }
     }
+
+    const handleDelete = async () => {
+        try {
+          let res = await ItemsService.delete(id);
+          SnackbarUtils.success("Xoá mặt hàng thành công");
+        } catch (error) {
+          SnackbarUtils.error(getMessageError(error));
+        }
+    
+      }
+    
     return (
         <>
             <Box style={{ width: "1072px", margin: "auto", height: 40, marginBottom: 10, marginTop: 16 }}>
                 <Grid container xs={12} spacing={2}>
                     <Grid item xs={6}>
-
+                        <Button variant="outlined" btnType="destruction" color="primary" onClick={() => {
+                            openModal(ConfirmDialog, {
+                                confirmButtonText: "Xoá",
+                                message:
+                                    "Bạn có muốn xoá mặt hàng không? Thao tác này không thể hoàn tác",
+                                title: "Xoá mặt hàng",
+                                cancelButtonText: "Thoát",
+                            }).result.then((res) => {
+                                if (res) {
+                                    handleDelete();
+                                }
+                            });
+                        }}>
+                            Xoá
+                        </Button>
                     </Grid>
-                    <Grid item xs={6}> 
-                        <Button variant="contained" color="primary" style={{float: "right"}} onClick={() => {history.push(`/admin/items/${id}/edit`)}}>Sửa</Button>
+                    <Grid item xs={6}>
+                        <Button variant="contained" color="primary" style={{ float: "right" }} onClick={() => { history.push(`/admin/items/${id}/edit`) }}>Sửa</Button>
                     </Grid>
                 </Grid>
             </Box>
@@ -114,7 +144,7 @@ const ItemDetail = (props: CreateItemProps & PropsFromRedux) => {
                     </Grid>
                     <Grid item xs={4}>
                         <Paper className={classes.wrapperBoxInfo}>
-   
+
                             <Typography variant="h6" style={{ padding: "12px 24px 16px" }}>
                                 Thông tin mặt hàng
                             </Typography>
