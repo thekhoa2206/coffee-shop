@@ -15,6 +15,7 @@ import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
 import SelectInfinite from "components/Select/SelectInfinite";
 import { DataSource } from "components/Select/types";
 import NoResultsComponent from "components/NoResults/NoResultsComponent";
+import { useOrderTableStore } from "page/ChannelPos/store";
 export type DialogJoinOrderProps = {
     open: boolean;
     onClose: () => void;
@@ -29,24 +30,12 @@ function not(a: OrderItemResponse[], b: OrderItemResponse[]) {
 }
 export const DialogJoinOrder = (props: DialogJoinOrderProps) => {
     const { open, onClose, order } = props;
-    const {
-        addLineItem,
-        updateLineItem,
-        deleteLineItem,
-        lineItems,
-        code,
-        note,
-        set,
-        customer,
-        total,
-        discountTotal,
-        reset,
-    } = useOrderStore();
     const classes = useStyles();
     const [checked, setChecked] = React.useState<OrderItemResponse[]>([]);
     const [oldOrder, setOldOrder] = React.useState<OrderResponse>();
     const [newOrder, setNewOrder] = React.useState<OrderResponse>();
     const history = useHistory();
+    const { isInitData, set } = useOrderTableStore();
 
 
 
@@ -132,6 +121,7 @@ export const DialogJoinOrder = (props: DialogJoinOrderProps) => {
             if (res) {
                 SnackbarUtils.success("Gộp đơn thành công");
                 onClose();
+                set((prev) => ({...prev, isInitData: true,}))
             }
         } catch (error) {
             SnackbarUtils.error(getMessageError(error));

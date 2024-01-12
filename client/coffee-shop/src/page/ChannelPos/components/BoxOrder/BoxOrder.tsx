@@ -17,6 +17,7 @@ import { toString } from "lodash";
 import ConfirmDialog from "components/Dialog/ConfirmDialog/ConfirmDialog";
 import useModal from "components/Modal/useModal";
 import { DialogSplitOrder } from "../DialogSplitOrder/DialogSplitOrder";
+import { useOrderTableStore } from "page/ChannelPos/store";
 
 export type BoxOrderProps = {
     open: boolean;
@@ -39,6 +40,8 @@ export const BoxOrder = (props: BoxOrderProps) => {
         tables,
         createJoinOrder,
     } = props;
+    const { isInitData } = useOrderTableStore();
+
     const [orders, setOrders] = useState<TableOrderResponses>({
         data: [],
         metadata: {
@@ -57,7 +60,7 @@ export const BoxOrder = (props: BoxOrderProps) => {
     };
     useEffect(() => {
         initData();
-    }, [open])
+    }, [open, isInitData])
     const initData = async () => {
         try {
             if (tables && tables.length > 0) {

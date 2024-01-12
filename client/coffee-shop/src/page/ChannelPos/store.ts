@@ -5,6 +5,7 @@ import { ProductResponse } from "services/ProductService";
 import { TableResponse } from "services/TableService";
 import create, { SetState } from "zustand";
 export type OrderStore = {
+    isInitData?: boolean;
     lineItems?: LineItemStore[] | null;
     code?: string | null;
     note?: string | null;

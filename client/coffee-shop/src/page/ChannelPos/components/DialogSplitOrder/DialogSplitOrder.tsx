@@ -12,6 +12,7 @@ import { Button, Checkbox, Grid, List, ListItem, ListItemIcon, ListItemText, Pap
 import { formatMoney, getMessageError } from "utilities";
 import { toString } from "lodash";
 import SnackbarUtils from "utilities/SnackbarUtilsConfigurator";
+import { useOrderTableStore } from "page/ChannelPos/store";
 export type DialogSplitOrderProps = {
     open: boolean;
     onClose: () => void;
@@ -26,25 +27,13 @@ function not(a: OrderItemResponse[], b: OrderItemResponse[]) {
 }
 export const DialogSplitOrder = (props: DialogSplitOrderProps) => {
     const { open, onClose, order } = props;
-    const {
-        addLineItem,
-        updateLineItem,
-        deleteLineItem,
-        lineItems,
-        code,
-        note,
-        set,
-        customer,
-        total,
-        discountTotal,
-        reset,
-    } = useOrderStore();
     const classes = useStyles();
     const [checked, setChecked] = React.useState<OrderItemResponse[]>([]);
     const [oldOrder, setOldOrder] = React.useState<OrderItemResponse[]>([]);
     const [newOrder, setNewOrder] = React.useState<OrderItemResponse[]>([]);
     const history = useHistory();
 
+    const { isInitData, set } = useOrderTableStore();
 
     const oldOrderChecked = intersection(checked, oldOrder);
     const newOrderChecked = intersection(checked, newOrder);
@@ -151,6 +140,10 @@ export const DialogSplitOrder = (props: DialogSplitOrderProps) => {
             var res = await OrderService.splitOrder(requests, toString(order.id));
             if(res){
                 SnackbarUtils.success("Tách đơn thành công");
+                set((prev) => ({
+                    ...prev,
+                    isInitData: true,
+                }))
                 onClose();
             }
         } catch (error) {

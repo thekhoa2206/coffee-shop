@@ -1030,10 +1030,12 @@ public class OrderServiceImpl implements OrderService {
                     if (request.getCode() == null)
                         order.setCode("DON" + (lastId + 1));
                     String username = ThreadContext.get(TheadContextEnum.JWT_USER_NAME.name());
-                    order.setCreatedBy(username);
+                    order.setCreatedBy("admin");
+                    order.setModifiedBy(username);
                     order.setCustomerId(1);
                     order.setModifiedOn();
                     order.setCreatedOn();
+                    order.setPaymentStatus(request.getPaymentStatus());
                     order.setDiscountTotal(request.getDiscountTotal());
                     var itemIds = request.getOrderItemRequest().stream().map(OrderItemRequest::getId).collect(Collectors.toList());
                     var lineItems = orderItemRepository.findByIds(itemIds);
