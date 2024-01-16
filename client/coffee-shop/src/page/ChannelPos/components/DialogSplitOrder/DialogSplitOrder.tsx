@@ -40,6 +40,7 @@ export const DialogSplitOrder = (props: DialogSplitOrderProps) => {
 
     useEffect(() => {
         if (order?.orderItemResponses) setOldOrder(order.orderItemResponses)
+        setNewOrder([])
     }, [order]);
     const handleToggle = (value: OrderItemResponse) => () => {
         const orderItem = checked.find((item) => item.id === value.id);

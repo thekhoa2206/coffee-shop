@@ -4,6 +4,7 @@ import Image from "components/Image";
 import InputQuantity from "components/InputQuantity";
 import NumberInputTextField from "components/NumberInput/NumberInputTextField";
 import { DataSource } from "components/Select/types";
+import TextField from "components/TextField";
 import { useOrderTableStore } from "page/ChannelPos/store";
 import React, { Fragment, useCallback, useEffect, useState } from "react";
 import Avatar from "react-avatar";
@@ -18,7 +19,7 @@ export const BoxProduct = (props: BoxProductProps) => {
     const [filter, setFilter] = useState<ProductFilterRequest>({
         page: 1,
         limit: 20,
-        query: '',
+        query: "",
         combo: true
     });
     const [data, setData] = useState<DataSource>();
@@ -71,6 +72,16 @@ export const BoxProduct = (props: BoxProductProps) => {
     console.log(lineItems);
     
     return (
+        <>
+        <Box style={{width: 400, margin: "auto"}}><TextField 
+        onChange={(e: any) => {
+            setFilter({
+                ...filter,
+                query: e.target.value,
+            })
+            initData();
+        }}
+        fullWidth placeholder="Tìm kiếm mặt hàng"/></Box>
         <Box style={{ flexWrap: "wrap", display: "flex", maxHeight: 1000 }}>
             {data?.data && data.data.map((product, index) => (
                 <Box key={index} style={{ width: 120, height: 200, padding: 10, margin: "5px" }}>
@@ -128,5 +139,7 @@ export const BoxProduct = (props: BoxProductProps) => {
                 </Box>
             ))}
         </Box>
+        </>
+        
     );
 };

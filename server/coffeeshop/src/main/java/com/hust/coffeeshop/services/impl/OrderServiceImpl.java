@@ -583,14 +583,14 @@ public class OrderServiceImpl implements OrderService {
             }
 
             for (var item : orderItems) {
-                var itemDeleted = orderItems.stream().filter(i -> i.getId() == item.getId())
+                var itemDeleted = requests.stream().filter(i -> i.getId() == item.getId())
                         .collect(Collectors.toList())
                         .stream().findFirst().orElse(null);
                 if (itemDeleted == null) {
                     item.setStatus(CommonStatus.OrderItemStatus.DELETED);
                     item.setModifiedOn();
                     checkInventoryUpdate(null, TypeAction.DELETED, item);
-                    setOrderItemCombo(item, TypeAction.DELETED);
+                    if(item.isCombo()) setOrderItemCombo(item, TypeAction.DELETED);
                     orderItemRepository.save(item);
                 }
             }
@@ -1087,5 +1087,6 @@ public class OrderServiceImpl implements OrderService {
             }
         }
     }
+
 }
 

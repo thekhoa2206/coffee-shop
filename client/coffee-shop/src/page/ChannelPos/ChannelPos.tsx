@@ -19,6 +19,7 @@ import { useHistory } from "react-router-dom";
 import { BoxOrder } from "./components/BoxOrder/BoxOrder";
 import { DialogSplitOrder } from "./components/DialogSplitOrder/DialogSplitOrder";
 import { DialogJoinOrder } from "./components/DialogJoinOrder/DialogJoinOrder";
+import { toString } from "lodash";
 const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     const [filter, setFilter] = useState<TableFilterRequest>({
         page: 1,
@@ -31,6 +32,7 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     const [openOrderJoin, setOpenOrderJoin] = useState<boolean>(false);
     const [openSplitOrders, setOpenSplitOrders] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+    const [orderEdit, setOrderEdit] = useState<OrderResponse>();
     const [openButton, setOpenButton] = useState(false);
     const classes = props.classes;
     const [tableRes, setTableRes] = useState<TableResponse[]>([]);
@@ -170,25 +172,63 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
         }
     };
 
-    const handleUpdateStatus = async () => {
-        if (tables?.length === 0) {
-            SnackbarUtils.error("Hãy chọn bàn để làm trống!");
+    const updateOrder = async () => {
+        if (!lineItems || lineItems.length === 0) {
+            SnackbarUtils.error("Sản phẩm không được để trống");
             return;
         }
-        if (tables?.find((item) => item.status === 3)) {
-            SnackbarUtils.error("Vui lòng chọn bàn Đang sử dụng!");
-            return;
-        }
+        
+        let orderLineItems: OrderItemRequest[] = [];
+        // let error = null;
+        // lineItems.forEach((i) => {
+        //   if (i.quantity > (i.available || 0)) {
+        //     error = "Số lượng có thể bán nhỏ hơn số lượng bán!";
+        //   }
+        // });
+        // if (error) {
+        //   SnackbarUtils.error(error);
+        //   return;
+        // }
+        lineItems.map((item) => {
+            let lineItemRequest: OrderItemRequest = {
+                id: item.id,
+                productId: item.productId,
+                combo: item.combo,
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+            };
+            orderLineItems.push(lineItemRequest);
+        });
+        let tableId = tables?.map((x) => (
+            x.id))
+        let requestOrder: OrderRequest = {
+            customerId: 1,
+            note: note,
+            discountTotal: discountTotal || 0,
+            orderItemRequest: orderLineItems,
+            code: code,
+            total: total || 0,
+            tableIds: tableId
+        };
+       if(orderEdit?.id){
         try {
-            let res = await TableService.updateStatus(3, tables?.map((i) => i.id).join(","));
+            let res = await OrderService.update(requestOrder, toString(orderEdit?.id));
             if (res.data) {
-                SnackbarUtils.success("Làm trống bàn thành công!");
+                SnackbarUtils.success("Lưu đơn hàng thành công!");
+                setOpenCreateOrder(false);
+                set((prev) => ({
+                    ...prev,
+                    tables: null,
+                }))
                 initData();
+                reset();
             }
         } catch (error) {
             SnackbarUtils.error(getMessageError(error));
         }
-    }
+       }
+    };
 
     const createSplitOrder = (order: OrderResponse) => {
         setOrderSplit(order);
@@ -198,6 +238,10 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
     const createJoinOrder = (order: OrderResponse) => {
         setOrderJoin(order);
         setOpenOrderJoin(true);
+    }
+    const addProduct = (order: OrderResponse) => {
+        setOpenCreateOrder(true);
+        setOrderEdit(order);
     }
     return (
         <Box style={{ width: "95%" }}>
@@ -247,10 +291,10 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
 
                     </Box>
                 ))}
-                <DialogCreateOrder createOrder={createOrder} tables={tables || []} open={openCreateOrder} onClose={() => { setOpenCreateOrder(false) }} />
+                <DialogCreateOrder order={orderEdit} updateOrder={updateOrder} createOrder={createOrder} tables={tables || []} open={openCreateOrder} onClose={() => { setOpenCreateOrder(false) }}/>
             </Box>
             <BoxOrder
-                open={openOrders} onClose={() => { setOpenOrders(false) }} createSplitOrder={createSplitOrder} tables={tables || []} createJoinOrder={createJoinOrder} />
+                open={openOrders} onClose={() => { setOpenOrders(false) }} createSplitOrder={createSplitOrder} tables={tables || []} createJoinOrder={createJoinOrder}  addProduct={addProduct}/>
 
             {orderSplit && <DialogSplitOrder order={orderSplit} open={openSplitOrders} onClose={() => { setOpenSplitOrders(false) }} />}
             {orderJoin && <DialogJoinOrder order={orderJoin} open={openOrderJoin} onClose={() => { setOpenOrderJoin(false) }} />}

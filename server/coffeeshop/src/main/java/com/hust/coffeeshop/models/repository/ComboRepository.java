@@ -13,7 +13,7 @@ import java.util.List;
 public interface ComboRepository  extends JpaRepository<Combo, Integer>, JpaSpecificationExecutor<Combo> {
     //filter combo theo query(tên variant, tên sản phẩm, tên combo)
     @Query(value = "Select * from combo as o " +
-            "where o.status in (?2) and (lower(concat(o.name, '', o.description)) like lower(?1) " +
+            "where o.status in (?2) and (lower(concat(o.name)) like lower(?1) " +
             "or EXISTS ( Select * from combo_item as ci where " +
             "ci.combo_id = o.id " +
             "and ci.status in (?2) and " +
@@ -28,7 +28,7 @@ public interface ComboRepository  extends JpaRepository<Combo, Integer>, JpaSpec
             "where " +
             "i.id = ci.item_id " +
             "and i.status in (?2)  and " +
-            "lower(concat(i.name, '', i.description)) like lower(?1)))); ", nativeQuery = true)
+            "lower(concat(i.name)) like lower(?1)))); ", nativeQuery = true)
     List<Combo> findComboByQuery(String query, List<Integer> statuses);
 
 }

@@ -78,4 +78,5 @@ public class OrderController extends BaseException {
     public void joinOrder(@PathVariable("id") int id, @RequestBody List<OrderRequest> requests){
         orderService.joinOrder(id, requests);
     }
+
 }

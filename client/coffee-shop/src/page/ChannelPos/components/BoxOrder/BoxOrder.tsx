@@ -26,6 +26,7 @@ export type BoxOrderProps = {
     createSplitOrder: (order: OrderResponse) => void;
     createJoinOrder: (order: OrderResponse) => void;
     tables?: TableResponse[];
+    addProduct: (order: OrderResponse) => void;
 }
 
 export const BoxOrder = (props: BoxOrderProps) => {
@@ -39,6 +40,7 @@ export const BoxOrder = (props: BoxOrderProps) => {
         createSplitOrder,
         tables,
         createJoinOrder,
+        addProduct,
     } = props;
     const { isInitData } = useOrderTableStore();
 
@@ -237,6 +239,9 @@ export const BoxOrder = (props: BoxOrderProps) => {
                                         </Button>
                                         <Button color="primary" onClick={() => { createJoinOrder(item) }}>
                                             Gộp đơn
+                                        </Button>
+                                        <Button color="primary" onClick={() => { addProduct(item) }}>
+                                            Thêm đồ
                                         </Button>
                                     </Box>
                                 </Box>

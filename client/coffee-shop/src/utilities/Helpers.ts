@@ -3,7 +3,6 @@ import _, { camelCase, isNil } from "lodash";
 import moment from "moment";
 import { OptionsObject, SnackbarKey, SnackbarMessage } from "notistack";
 import { UserResponse } from "services/AccountService";
-import { CityDistrict, CityResponse, DistrictResponse } from "services/AddressService";
 import { getNamePredefinedDate } from "./DateRangesPredefine";
 import SnackbarUtils from "./SnackbarUtilsConfigurator";
 
@@ -815,29 +814,6 @@ export function getLinkFileImportByCountry(link: { [key: string]: string }) {
   return country && link[`${country}`] ? link[`${country}`] : link["vi"];
 }
 
-export const mapToCityDistricts = (cities: CityResponse[], districts: DistrictResponse[]) => {
-  const cityDistricts: CityDistrict[] = [];
-  if (cities.length > 0 && districts.length > 0) {
-    cities.forEach((item) => {
-      let listDistrictInCity = districts.filter((m) => m.city_id === item.id);
-      if (!listDistrictInCity) {
-        return;
-      }
-      listDistrictInCity.forEach((itemDistrict) => {
-        if (cityDistricts !== undefined) {
-          cityDistricts.push({
-            id: `${item.id.toString()} - ${itemDistrict.id.toString()}`,
-            district_id: itemDistrict.id,
-            city_id: item.id,
-            city_name: item.name,
-            district_name: itemDistrict.name,
-          });
-        }
-      });
-    });
-  }
-  return cityDistricts;
-};
 export const formatStringLength = (dataString: string, lengthData: number) => {
   return dataString != null
     ? dataString.length > lengthData
