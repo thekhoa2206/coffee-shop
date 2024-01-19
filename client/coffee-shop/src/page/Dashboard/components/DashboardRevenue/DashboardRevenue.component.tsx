@@ -212,7 +212,7 @@ const DashboardRevenue = (props: RevenueProps) => {
             marginBottom: 24,
             padding: 20,
             background: "#FFFFFF",
-            height: 80,
+            height: 100,
             boxShadow: "0 2px 4px hsla(0,0%,66%,.25)",
             borderRadius: 3,
           }}

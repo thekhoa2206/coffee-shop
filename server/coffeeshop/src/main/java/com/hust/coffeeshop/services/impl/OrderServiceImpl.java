@@ -394,7 +394,7 @@ public class OrderServiceImpl implements OrderService {
         order.get().setPaymentStatus(CommonStatus.PaymentStatus.PAID);
         order.get().setModifiedOn();
         if(order.get().getStatus() != CommonStatus.OrderStatus.COMPLETED){
-            throw new ErrorException("Đơn hàng chưa trả hết đồ không thể thanh toán");
+            order.get().setStatus(CommonStatus.OrderStatus.COMPLETED);
         }
         var orderNew = orderRepository.save(order.get());
         var tableOrder = tableOrderRepository.findByOrderId(order.get().getId());
