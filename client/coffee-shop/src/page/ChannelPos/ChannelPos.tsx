@@ -200,7 +200,7 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
             };
             orderLineItems.push(lineItemRequest);
         });
-        let tableId = tables?.map((x) => (
+        let tableId = order?.tableResponses?.map((x) => (
             x.id))
         let requestOrder: OrderRequest = {
             customerId: 1,
@@ -222,6 +222,7 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
                     tables: null,
                 }))
                 initData();
+                setOpenOrders(false);
                 reset();
             }
         } catch (error) {
