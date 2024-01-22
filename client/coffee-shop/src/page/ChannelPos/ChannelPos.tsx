@@ -295,7 +295,15 @@ const ChannelPos = (props: ChannelPosProps & PropsFromRedux) => {
                 <DialogCreateOrder order={orderEdit} updateOrder={updateOrder} createOrder={createOrder} tables={tables || []} open={openCreateOrder} onClose={() => { setOpenCreateOrder(false) }}/>
             </Box>
             <BoxOrder
-                open={openOrders} onClose={() => { setOpenOrders(false) }} createSplitOrder={createSplitOrder} tables={tables || []} createJoinOrder={createJoinOrder}  addProduct={addProduct}/>
+                open={openOrders} onClose={() => { setOpenOrders(false) }} createSplitOrder={createSplitOrder} tables={tables || []} createJoinOrder={createJoinOrder}  addProduct={addProduct} initDataPos={
+                    () => {
+                        setTimeout(() => {
+                            initData();
+                            setOpenOrders(false);
+                            reset();
+                        }, 500)
+                    }
+                }/>
 
             {orderSplit && <DialogSplitOrder order={orderSplit} open={openSplitOrders} onClose={() => { setOpenSplitOrders(false) }} />}
             {orderJoin && <DialogJoinOrder order={orderJoin} open={openOrderJoin} onClose={() => { setOpenOrderJoin(false) }} />}

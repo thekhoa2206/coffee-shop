@@ -27,6 +27,7 @@ export type BoxOrderProps = {
     createJoinOrder: (order: OrderResponse) => void;
     tables?: TableResponse[];
     addProduct: (order: OrderResponse) => void;
+    initDataPos: () => void;
 }
 
 export const BoxOrder = (props: BoxOrderProps) => {
@@ -41,6 +42,7 @@ export const BoxOrder = (props: BoxOrderProps) => {
         tables,
         createJoinOrder,
         addProduct,
+        initDataPos,
     } = props;
     const { isInitData } = useOrderTableStore();
 
@@ -231,6 +233,7 @@ export const BoxOrder = (props: BoxOrderProps) => {
                                             }).result.then((res) => {
                                                 if (res) {
                                                     addPayment(item.id);
+                                                    initDataPos();
                                                 }
                                             })
                                         }}>Thanh toán</Button>
