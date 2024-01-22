@@ -17,6 +17,7 @@ export const RolePermissionGroup = {
     INGRADIENT: 'ingradient',
     INVENTORY: 'inventory',
     POS: 'pos',
+    TABLE: 'table',
     getName: (name: string) => {
         switch (name) {
             case RolePermissionGroup.ORDER:
@@ -35,6 +36,8 @@ export const RolePermissionGroup = {
                 return 'Báo cáo thống kê';
             case RolePermissionGroup.POS:
                 return 'Bán hàng';
+            case RolePermissionGroup.TABLE:
+                return 'Quản lý bàn';
             default:
                 return "";
         }

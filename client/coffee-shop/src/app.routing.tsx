@@ -406,7 +406,7 @@ let MAIN_ROUTES = (): Route[] => [
       showNoti: false,
       withSubtitle: false,
     },
-    authorities: [RolePermissionGroup.REPORT],
+    authorities: [RolePermissionGroup.TABLE],
   },
   // {
   //   path: "/table/edit",
