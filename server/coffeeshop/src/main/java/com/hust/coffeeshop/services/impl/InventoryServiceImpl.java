@@ -75,7 +75,7 @@ public class InventoryServiceImpl implements InventoryService {
 //                startAmount = startAmounts.get().getStockRemain();
 //            }
             val endAmounts = dataNew.stream()
-                    .filter(o -> o.getCreatedOn() < request.getEndDate())
+                    .filter(o -> o.getCreatedOn() < request.getEndDate() )
                     .findFirst();
             if (endAmounts.isPresent()) {
                 endAmount = endAmounts.get().getStockRemain();

@@ -56,7 +56,7 @@ const ReportInventory = (props: ReportInventoryProps & PropsFromRedux) => {
     let _filters = cloneDeep(filters);
     if (_filters?.createdOnPredefined) {
       let newDateCreatedOn = convertPredefinedToDate(_filters?.createdOnPredefined);
-      _filters.startDate = formatDateUTC(newDateCreatedOn.startDate, false);
+      _filters.startDate = formatDateUTC(newDateCreatedOn.startDate, true);
       _filters.endDate = formatDateUTC(newDateCreatedOn.endDate, true);
     }
     let res = await InventoryService.filter(_filters);

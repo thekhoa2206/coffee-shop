@@ -445,7 +445,7 @@ public class OrderServiceImpl implements OrderService {
         // tìm xem có bàn nào đang chứa đơn này không
         var tableOrder = tableOrderRepository.findByOrderId(order.get().getId());
         //check requets nếu không rỗng phần id bàn tiến hành cập nhập thông tin bàn
-        if (!request.getTableIds().isEmpty()) {
+        if (request.getTableIds() != null && !request.getTableIds().isEmpty()) {
             // nếu có bàn
             if (!tableOrder.isEmpty()) {
                 for (val requestId : request.getTableIds()) {
@@ -759,18 +759,9 @@ public class OrderServiceImpl implements OrderService {
         if (id == 0) throw new ErrorException("Không có id đơn hàng");
         var order = orderRepository.findById(id);
         if (!order.isPresent()) throw new ErrorException("Không tìm thấy thông tin đơn hàng");
-        if ((order.get().getStatus() != CommonStatus.OrderStatus.IN_PROGRESS
-                && order.get().getStatus() != CommonStatus.PaymentStatus.PAID) && status == CommonStatus.OrderStatus.DELETED) {
-            throw new ErrorException("Đơn hàng không được hủy!");
-        }
-        if (status == CommonStatus.OrderStatus.COMPLETED && order.get().getStatus() == CommonStatus.OrderStatus.DELETED) {
-            throw new ErrorException("Đơn hàng đã hủy không thể hoàn thành!");
-        }
+
         if (order.get().getStatus() == CommonStatus.OrderStatus.DELETED) {
             throw new ErrorException("Đơn hàng đã hủy không thể thực hiện!");
-        }
-        if (order.get().getStatus() == CommonStatus.OrderStatus.COMPLETED) {
-            throw new ErrorException("Đơn hàng đã hoàn thành không thể thực hiện hành động này!");
         }
         var orderItems = orderItemRepository.findOrderItemByOrderId(order.get().getId());
         if (status == CommonStatus.OrderStatus.IN_PROGRESS) {

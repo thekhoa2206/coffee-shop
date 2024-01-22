@@ -308,10 +308,6 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                                 <MenuItem
                                     onClick={() => {
                                         setOpenMenuCreateOrder(false);
-                                        if (order?.status !== OrderStatus.DRAFT) {
-                                            SnackbarUtils.error("Đơn hàng không thể hủy");
-                                            return;
-                                        }
                                         openModal(ConfirmDialog, {
                                             title: "Hủy đơn hàng",
                                             message: "Bạn có chắc chắn muốn hủy đơn hàng này không? Thao tác không thể khôi phục.",
