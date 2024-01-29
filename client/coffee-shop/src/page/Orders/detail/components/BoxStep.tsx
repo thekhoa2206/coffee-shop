@@ -43,22 +43,16 @@ const BoxStep = memo((props: BoxStepProps & PropsFromRedux) => {
                         disabled={
                             !(
                                 idx === 0 ||
-                                (idx === 1 && (isDeleted || isCompleted || isInProgress)) ||
-                                (idx === 2 && (isDeleted || isCompleted)) ||
-                                (idx === 3 && order?.status === OrderStatus.DELETED) || (isCompleted)
+                                (idx === 1 && order?.status === OrderStatus.DELETED) || (isCompleted)
                             )
                         }
                         active={
                             idx === 0 ||
-                            (idx === 1 && (isDeleted || isCompleted || isInProgress)) ||
-                            (idx === 2 && (isDeleted || isCompleted )) ||
-                            (idx === 3 && order?.status === OrderStatus.DELETED) || (isCompleted)
+                            (idx === 1 && order?.status === OrderStatus.DELETED) || (isCompleted)
                         }
                         completed={
                             idx === 0 ||
-                            (idx === 1 && (isDeleted || isCompleted || isInProgress)) ||
-                            (idx === 2 && (isDeleted || isCompleted )) ||
-                            (idx === 3 && order?.status === OrderStatus.DELETED) || (isCompleted)
+                            (idx === 1 && order?.status === OrderStatus.DELETED) || (isCompleted)
                         }
                     >
                         <StepLabel StepIconComponent={((idx === 2 && order?.status === OrderStatus.DELETED)) ? CancelIcon : undefined}>

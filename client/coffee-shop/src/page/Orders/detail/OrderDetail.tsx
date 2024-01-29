@@ -239,6 +239,7 @@ const OrderDetail = (props: OrderDetailProps & PropsFromRedux) => {
                     ...prev,
                     order: order,
                 }))
+                initData();
             }
         } catch (error) {
             SnackbarUtils.error(getMessageError(error));
